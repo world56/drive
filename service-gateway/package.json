@@ -1,0 +1,19 @@
+{
+  "name": "service-gateway",
+  "version": "0.0.1",
+  "description": "gateway",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon ."
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@fastify/http-proxy": "^9.0.0",
+    "@fastify/middie": "^8.1.0",
+    "@fastify/rate-limit": "^8.0.0",
+    "fastify": "^4.15.0",
+    "ioredis": "^5.3.2",
+    "nodemon": "^2.0.22"
+  }
+}
