@@ -1,4 +1,4 @@
-import Query from './QUery';
+import Query from './Query';
 import styles from './index.module.sass';
 import privateRoutes from '@/router/paths/private';
 
