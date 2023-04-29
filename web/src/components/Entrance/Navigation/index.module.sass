@@ -1,0 +1,39 @@
+.nav
+  float: left
+  width: 250px
+  overflow: hidden
+  padding-top: 5px
+  user-select: none
+  background: #fff
+  height: calc(100% - 66px)
+  border-right: 1px solid #f1f2f4
+
+  ul
+    margin: 0
+    padding: 0
+    list-style: none
+
+  li
+    height: 50px
+    & > div
+      width: 85%
+      margin: auto
+      display: flex
+      line-height: 50px
+      padding-left: 20px
+      align-items: center
+
+      span
+        color: #444746
+
+      :global(.anticon)
+        font-size: 22px
+        margin-right: 16px
+
+      &:hover
+        cursor: pointer
+        font-weight: bold
+        border-radius: 8px
+        background: rgba(132, 133, 141,.18)
+        span
+          color: #25262B

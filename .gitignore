@@ -8,7 +8,7 @@ yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
 
-service-gateway/node_modules/
+node_modules/
 
 # IDE - VSCode
 .vscode/*
