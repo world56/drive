@@ -1,15 +1,23 @@
 import { message } from "antd";
 import { JSEncrypt } from "jsencrypt";
+import { getSecretKey } from "@/api/auth";
 
-export async function encryption(text: string) {
-  const publicKey = await (await fetch("")).json();
+export function isVoid(param: unknown): param is boolean {
+  return (
+    param === undefined || param === null || param === "" || Number.isNaN(param)
+  );
+}
+
+export async function encryption(text: string | object) {
+  const publicKey = await getSecretKey();
   const encrypt = new JSEncrypt();
   encrypt.setPublicKey(publicKey);
-  const code = encrypt.encrypt(text);
+  const str = JSON.stringify(text);
+  const code = encrypt.encrypt(str);
   if (code) {
     return code;
   } else {
-    message.error("登录错误，请联系管理员");
+    message.error("encryption failed");
     return Promise.reject("format error");
   }
 }

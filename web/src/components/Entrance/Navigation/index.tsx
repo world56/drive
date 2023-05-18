@@ -1,26 +1,16 @@
-import Query from './Query';
-import styles from './index.module.sass';
 import privateRoutes from '@/router/paths/private';
+import styles from './index.module.sass';
 
-/**
- * @name Navigation 导航
- */
+
 
 const Navigation = () => {
   return (
-    <div className={styles.nav}>
-      <ul>
-        <Query />
-        {privateRoutes.map(v => <li key={v.title}>
-          <div>
-            <span>
-              {v.icon}
-              <span>{v.title}</span>
-            </span>
-          </div>
-        </li>)}
-      </ul>
-    </div>
+    <nav className={styles.nav}>
+    {privateRoutes.map(v=><a key={v.path}>
+      {v.icon}
+      <p>{v.title}</p>
+    </a>)}
+    </nav>
   );
 };
 

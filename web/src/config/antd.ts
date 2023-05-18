@@ -10,22 +10,22 @@ export const CONFIG_ANTD: ConfigProviderProps = {
   locale: zhCN,
   theme: {
     token: {
-      borderRadius: 8,
-      // 品牌主色
-      colorPrimary: "#121726",
-      // // 背景边框颜色
-      // colorBorderBg: "red",
-      // 主色浅色背景色
-      colorPrimaryBg: "rgba(132, 133, 141,.2)",
-      // 基础文本色
-      colorTextBase: "#121726",
-      // 边框色
-      colorBorder: "#121726",
-      lineWidth: 2.9,
-      controlOutlineWidth: 0,
-      // placeholder颜色
-      // colorTextQuaternary: "#666",
-      // colorLinkActive:'red'
+      // borderRadius: 8,
+      // // 品牌主色
+      // colorPrimary: "#121726",
+      // // // 背景边框颜色
+      // // colorBorderBg: "red",
+      // // 主色浅色背景色
+      // colorPrimaryBg: "rgba(132, 133, 141,.2)",
+      // // 基础文本色
+      // colorTextBase: "#121726",
+      // // 边框色
+      // colorBorder: "#121726",
+      // lineWidth: 2.9,
+      // controlOutlineWidth: 0,
+      // // placeholder颜色
+      // // colorTextQuaternary: "#666",
+      // // colorLinkActive:'red'
     },
   },
   form: {
@@ -42,7 +42,7 @@ export const FORM_ACCOUNT_RULES = [
 
 export const FORM_PASSWORD_RULES = [
   { required: true, message: "请输入登录密码" },
-  { min: 6, message: "密码不得少于6位字符" },
+  { min: 5, message: "密码不得少于5位字符" },
   { max: 20, message: "密码最多不得超过20位字符" },
   { message: "只允许包含数字、字母、下划线", pattern: /^[0-9a-zA-Z_]{1,}$/ },
 ];

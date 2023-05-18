@@ -1,19 +1,23 @@
 {
   "name": "service-gateway",
   "version": "0.0.1",
-  "description": "gateway",
+  "description": "drive-gateway",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon ."
+    "start": "node ./src/.",
+    "start:dev": "nodemon ./src/."
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@fastify/http-proxy": "^9.0.0",
-    "@fastify/middie": "^8.1.0",
-    "@fastify/rate-limit": "^8.0.0",
     "fastify": "^4.15.0",
-    "ioredis": "^5.3.2",
+    "@fastify/redis": "^6.1.1",
+    "@fastify/http-proxy": "^9.0.0",
+    "@fastify/rate-limit": "^8.0.0",
+    "fast-json-stringify": "^5.7.0",
+    "@fastify/one-line-logger": "^1.2.0"
+  },
+  "devDependencies": {
     "nodemon": "^2.0.22"
   }
 }

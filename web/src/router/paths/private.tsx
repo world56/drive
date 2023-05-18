@@ -11,43 +11,43 @@ import { lazy } from "react";
 
 const privateRoutes = [
   {
-    title: '资源管理',
+    title: '资源',
     icon: <FolderOutlined />,
     path: '/',
     element: lazy(() => import("@/page/home"))
   },
   {
-    title: '收藏夹',
+    title: '收藏',
     icon: <HeartOutlined />,
     path: '/',
     element: lazy(() => import("@/page/home"))
   },
   {
-    title: '下载排行榜',
+    title: '排行',
     icon: <TrophyOutlined />,
     path: '/',
     element: lazy(() => import("@/page/home"))
   },
   {
-    title: '最近上传',
+    title: '最近',
     icon: <HistoryOutlined />,
     path: '/',
     element: lazy(() => import("@/page/home"))
   },
   {
-    title: '用户与权限',
+    title: '用户',
     icon: <UserOutlined />,
     path: '/',
     element: lazy(() => import("@/page/home"))
   },
   {
-    title: '操作日志',
+    title: '日志',
     icon: <EyeOutlined />,
     path: '/',
     element: lazy(() => import("@/page/home"))
   },
   {
-    title: '系统配置',
+    title: '设置',
     icon: <ToolOutlined />,
     path: '/',
     element: lazy(() => import("@/page/home"))

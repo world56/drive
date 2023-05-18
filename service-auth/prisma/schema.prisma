@@ -1,0 +1,29 @@
+generator client {
+  referentialIntegrity = "prisma"
+  provider             = "prisma-client-js"
+  binaryTargets        = ["native", "linux-musl-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_MYSQL")
+}
+
+generator js {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id         String     @id @default(uuid())
+  name       String?
+  account    String     @unique
+  password   String
+  status     Int        @default(1)
+  isSuper    Int        @default(0) @map("is_super") @db.Int()
+  createTime DateTime   @default(now()) @map("create_time")
+
+  @@unique([account, password])
+  @@index([account])
+  @@index([isSuper])
+  @@map("user")
+}
