@@ -35,3 +35,9 @@ export function login(data: string) {
     data,
   });
 }
+
+export function logout() {
+  return request<boolean>("auth/account/logout", {
+    method: ENUM_HTTP.REQUEST_MODE.POST,
+  });
+}

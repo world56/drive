@@ -16,6 +16,7 @@ const userSlice = createSlice({
       return action.payload;
     },
     delUserInfo() {
+      document.title = "Welcome";
       cookie.remove(TOKEN_KEY);
       return {};
     },

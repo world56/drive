@@ -9,7 +9,7 @@ export class CryptoController {
   public constructor(private readonly CryptoService: CryptoService) {}
 
   @ApiOperation({
-    summary: '返回公钥（客户端）',
+    summary: '获取公钥（客户端）',
   })
   @ApiOkResponse({
     type: String,
