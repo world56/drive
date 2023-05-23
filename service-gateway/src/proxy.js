@@ -10,7 +10,11 @@ module.exports = function (app) {
       prefix: v.prefix,
       upstream: v.upstream,
       async preHandler(req, reply) {
-        return filterWhitelist(req,v.whitelist) || (await auth(app, req, reply));
+        if (v.auth && !filterWhitelist(req, v.whitelist)) {
+          return await auth(app, req, reply);
+        } else {
+          return true;
+        }
       },
       replyOptions: {
         onResponse,

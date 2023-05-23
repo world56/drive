@@ -1,0 +1,38 @@
+generator client {
+  referentialIntegrity = "prisma"
+  provider             = "prisma-client-js"
+  binaryTargets        = ["native", "linux-musl-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_MYSQL")
+}
+
+generator js {
+  provider = "prisma-client-js"
+}
+
+model Explorer {
+  id         String     @id @default(uuid())
+  name       String
+  path       String?
+  url        String?
+  fullName   String     @map("full_name")
+  size       BigInt?    @default(0)
+  type       Int
+  suffix     String?    @db.VarChar(10)
+  parentId   String?    @map("parent_id")
+  remark     String?
+  createTime DateTime   @default(now()) @map("create_time")
+  creatorId  String     @map("creator_id")
+  children   Explorer[] @relation("rel_explorer")
+  parent     Explorer?  @relation("rel_explorer", fields: [parentId], references: [id])
+
+  @@index([path])
+  @@index([size])
+  @@index([type])
+  @@index([parentId])
+  @@index([createTime])
+  @@map("explorer")
+}

@@ -1,3 +1,7 @@
+.select
+  color: #0F172A
+  background: #F1F5F9
+
 .nav
   width: 80px
   height: 100%
@@ -8,6 +12,9 @@
   align-items: center
   flex-direction: column
   border-right: 1px solid #f1f2f4
+
+  .select
+    @extend .select
   a
     width: 68px
     height: 68px
@@ -19,6 +26,7 @@
     flex-direction: column
     justify-content: center
     color: rgba(#636D7E,1)
+    text-decoration: none
 
     p
       margin: 0
@@ -31,6 +39,4 @@
       font-size: 27px
 
     &:hover
-      color: #0F172A
-      // background: rgba(#0F172A,0.2 )
-      background: #F1F5F9
+      @extend .select

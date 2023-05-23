@@ -4,7 +4,6 @@ const UNAUTHORIZED = { code: 401, message: "用户登陆超时" };
 module.exports = async function (app, request, reply) {
   try {
     const { authorization } = request.headers;
-    console.log("@authorization", authorization);
     if (authorization) {
       const id = await app.redis.hget(`drive:user:${authorization}`, "id");
       if (id) {

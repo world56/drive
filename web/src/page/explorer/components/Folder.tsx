@@ -17,10 +17,10 @@ const treeData: DataNode[] = [
     key: '0-1',
     children: [
       { title: '穿越火线', key: '0-1-0' },
-      { 
-        title: '使命召唤OL系列', 
-        key: '0-1-1' ,
-        children:[
+      {
+        title: '使命召唤OL系列',
+        key: '0-1-1',
+        children: [
           { title: '穿越火线穿越火线穿越火线穿越火线穿越火线穿越火线', key: '0-1-0-1' },
           { title: '穿越火线', key: '0-1-0-2' }
         ]
@@ -28,7 +28,7 @@ const treeData: DataNode[] = [
     ],
   },
   {
-    title: '仙剑奇侠传系列"',
+    title: '仙剑奇侠传系列',
     key: '0-0-9-1',
   },
   {
@@ -109,8 +109,7 @@ const treeData: DataNode[] = [
   },
 ];
 
-
-const FolderTree = () => {
+const Folder = () => {
   return (
     <div
       className={styles.folder}
@@ -119,11 +118,9 @@ const FolderTree = () => {
         multiple
         blockNode
         treeData={treeData}
-        onSelect={e => console.log(e)
-        }
       />
     </div>
   );
 };
 
-export default FolderTree;
+export default Folder;

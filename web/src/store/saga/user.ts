@@ -7,8 +7,9 @@ import * as ActionsMiddleware from "./actions";
 import { login, getUserInfo } from "@/api/auth";
 import { put, call, throttle, takeLatest } from "redux-saga/effects";
 
-import type { TypeUser } from "@/interface/user";
 import { SAGA_DEBOUNCE } from "@/config/request";
+
+import type { TypeUser } from "@/interface/user";
 
 function* taskInUserLogin(
   data: ReturnType<typeof ActionsMiddleware.userLogin>,

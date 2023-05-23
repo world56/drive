@@ -4,53 +4,46 @@ import {
   UserOutlined,
   HeartOutlined,
   FolderOutlined,
-  TrophyOutlined,
-  HistoryOutlined,
+  DashboardOutlined,
 } from '@ant-design/icons';
 import { lazy } from "react";
 
 const privateRoutes = [
   {
+    title: '看板',
+    icon: <DashboardOutlined />,
+    path: '/',
+    element: lazy(() => import("@/page/kanban"))
+  },
+  {
     title: '资源',
     icon: <FolderOutlined />,
-    path: '/',
-    element: lazy(() => import("@/page/home"))
+    path: '/explorer',
+    element: lazy(() => import("@/page/explorer"))
   },
   {
     title: '收藏',
     icon: <HeartOutlined />,
-    path: '/',
-    element: lazy(() => import("@/page/home"))
-  },
-  {
-    title: '排行',
-    icon: <TrophyOutlined />,
-    path: '/',
-    element: lazy(() => import("@/page/home"))
-  },
-  {
-    title: '最近',
-    icon: <HistoryOutlined />,
-    path: '/',
-    element: lazy(() => import("@/page/home"))
+    path: '/favorite',
+    element: lazy(() => import("@/page/favorite"))
   },
   {
     title: '用户',
     icon: <UserOutlined />,
-    path: '/',
-    element: lazy(() => import("@/page/home"))
+    path: '/user',
+    element: lazy(() => import("@/page/user"))
   },
   {
     title: '日志',
     icon: <EyeOutlined />,
-    path: '/',
-    element: lazy(() => import("@/page/home"))
+    path: '/log',
+    element: lazy(() => import("@/page/log"))
   },
   {
     title: '设置',
     icon: <ToolOutlined />,
-    path: '/',
-    element: lazy(() => import("@/page/home"))
+    path: '/system',
+    element: lazy(() => import("@/page/system"))
   },
 ];
 

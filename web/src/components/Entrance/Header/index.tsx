@@ -1,10 +1,11 @@
+import { memo } from 'react';
+import router from '@/router';
 import { Dropdown } from 'antd';
 import { logout } from '@/api/auth';
 import Avatar from 'react-nice-avatar';
 import styles from './index.module.sass';
 import ICON_LOGO from '@/assets/logo.svg';
 import { useActions, useStore } from '@/hooks';
-import { useNavigate } from 'react-router-dom';
 import { PoweroffOutlined, LockOutlined } from '@ant-design/icons';
 
 import type { MenuInfo } from 'rc-menu/lib/interface';
@@ -15,14 +16,13 @@ const Header = () => {
   const { user } = useStore();
   const actions = useActions();
 
-  const navigate = useNavigate();
-
   async function onClick(e: MenuInfo) {
     switch (e.key) {
       case '0':
         await logout();
         actions.delUserInfo();
-        return navigate('/login');
+        router.navigate('/login');
+        return;
       default: return;
     }
   };
@@ -51,7 +51,7 @@ const Header = () => {
 
       <Dropdown arrow menu={{ items, onClick }}>
         <div className={styles.user}>
-          <Avatar />
+          <Avatar isGradient />
           <span>{user.name}</span>
         </div>
       </Dropdown>
@@ -59,4 +59,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default memo(Header);
