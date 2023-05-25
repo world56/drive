@@ -3,7 +3,7 @@ function toJSON(chunks = []) {
   const res = JSON.parse(Buffer.concat(chunks));
   if (res && res.statusCode) {
     content.code = res.statusCode;
-    content.message = `${res.error} ${res.message}`;
+    content.message = res.message;
   } else {
     content.content = res;
   }

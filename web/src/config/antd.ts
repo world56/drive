@@ -33,6 +33,9 @@ export const CONFIG_ANTD: ConfigProviderProps = {
   },
 };
 
+/**
+ * @name FORM_ACCOUNT_RULES 正则 校验用户账户合法性
+ */
 export const FORM_ACCOUNT_RULES = [
   { required: true, message: "请输入登录账号" },
   { min: 5, message: "最少5位字符" },
@@ -40,6 +43,9 @@ export const FORM_ACCOUNT_RULES = [
   { message: "只允许包含数字、字母、下划线", pattern: /^[0-9a-zA-Z_]{1,}$/ },
 ];
 
+/**
+ * @name FORM_ACCOUNT_RULES 正则 校验用户密码合法性
+ */
 export const FORM_PASSWORD_RULES = [
   { required: true, message: "请输入登录密码" },
   { min: 5, message: "密码不得少于5位字符" },

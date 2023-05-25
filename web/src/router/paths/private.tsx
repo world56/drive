@@ -18,8 +18,8 @@ const privateRoutes = [
   {
     title: '资源',
     icon: <FolderOutlined />,
-    path: '/explorer',
-    element: lazy(() => import("@/page/explorer"))
+    path: '/resource',
+    element: lazy(() => import("@/page/resource"))
   },
   {
     title: '收藏',

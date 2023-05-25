@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { FileModule } from './module/file/file.module';
-import { RedisModule } from './common/redis/redis.module';
+import { FavoritesModule } from './module/favorites/favorites.module';
+import { ResourcesModule } from './module/resources/resources.module';
 
 @Module({
   imports: [
-    FileModule,
-    RedisModule,
+    ResourcesModule,
+    FavoritesModule,
     ConfigModule.forRoot({ envFilePath: `.env` }),
   ],
 })

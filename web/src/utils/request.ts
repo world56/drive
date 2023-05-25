@@ -5,11 +5,14 @@ import { extend } from "umi-request";
 import { ActionsUser } from "@/store/user";
 
 import { ENUM_HTTP } from "@/enum/http";
-import { TOKEN_KEY } from "@/config/user";
-import { REQUEST_TIMEOUT, API_PROXY_PASS_URL } from "@/config/request";
+import {
+  TOKEN_KEY,
+  REQUEST_TIMEOUT,
+  API_PROXY_AUTH_URL,
+  API_PROXY_EXPLORER_URL,
+} from "@/config/request";
 
 import type { ResponseError } from "umi-request";
-import type { HttpRequestHeader } from "antd/es/upload/interface";
 
 export interface ServiceResponse<T> {
   content: T;
@@ -18,23 +21,36 @@ export interface ServiceResponse<T> {
 }
 
 async function errorHandler(res: ResponseError) {
+  console.log(res);
   return Promise.reject(res.response);
 }
 
 const request = extend({
-  prefix: API_PROXY_PASS_URL,
   timeout: REQUEST_TIMEOUT,
   errorHandler,
 });
 
 request.interceptors.request.use(
   (url, options) => {
-    const token = Cookies.get(TOKEN_KEY);
-    const headers: HttpRequestHeader = {};
-    if (token) {
-      headers.Authorization = token;
+    const Authorization = Cookies.get(TOKEN_KEY);
+    const config = {
+      url,
+      options: {
+        ...options,
+        headers: Authorization ? { Authorization } : undefined,
+      },
+    };
+    switch (options.proxy) {
+      case ENUM_HTTP.PROXY.AUTH:
+        config.url = API_PROXY_AUTH_URL + url;
+        break;
+      case ENUM_HTTP.PROXY.EXPLORER:
+        config.url = API_PROXY_EXPLORER_URL + url;
+        break;
+      default:
+        break;
     }
-    return { url, options: { ...options, headers } };
+    return config;
   },
   {
     global: true,

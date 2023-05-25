@@ -1,7 +1,7 @@
 import cookie from "js-cookie";
 import { createSlice } from "@reduxjs/toolkit";
 
-import { TOKEN_KEY } from "@/config/user";
+import { TOKEN_KEY } from "@/config/request";
 
 import type { TypeUser } from "@/interface/user";
 import type { PayloadAction } from "@reduxjs/toolkit/dist";

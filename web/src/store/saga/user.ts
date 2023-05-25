@@ -2,7 +2,7 @@ import { message } from "antd";
 import Cookies from "js-cookie";
 import { encryption } from "@/utils";
 import { ActionsUser } from "../user";
-import { TOKEN_KEY } from "@/config/user";
+import { TOKEN_KEY } from "@/config/request";
 import * as ActionsMiddleware from "./actions";
 import { login, getUserInfo } from "@/api/auth";
 import { put, call, throttle, takeLatest } from "redux-saga/effects";
@@ -26,7 +26,7 @@ function* taskInGetUserInfo() {
   try {
     const user: TypeUser.DTO = yield getUserInfo();
     yield put(ActionsUser.setUserInfo(user));
-    document.title = 'DriveCloud';
+    document.title = "DriveCloud";
   } catch {
     message.error("获取用户信息失败");
     Cookies.remove(TOKEN_KEY);

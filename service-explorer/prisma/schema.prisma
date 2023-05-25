@@ -13,7 +13,7 @@ generator js {
   provider = "prisma-client-js"
 }
 
-model Explorer {
+model Resource {
   id         String     @id @default(uuid())
   name       String
   path       String?
@@ -26,13 +26,13 @@ model Explorer {
   remark     String?
   createTime DateTime   @default(now()) @map("create_time")
   creatorId  String     @map("creator_id")
-  children   Explorer[] @relation("rel_explorer")
-  parent     Explorer?  @relation("rel_explorer", fields: [parentId], references: [id])
+  children   Resource[] @relation("rel_resource")
+  parent     Resource?  @relation("rel_resource", fields: [parentId], references: [id])
 
   @@index([path])
   @@index([size])
   @@index([type])
   @@index([parentId])
   @@index([createTime])
-  @@map("explorer")
+  @@map("resource")
 }
