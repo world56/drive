@@ -16,6 +16,14 @@ export class ResourcesService {
     });
   }
 
+  findFolders() {
+    return this.PrismaService.resource.findMany({
+      where: { type: ENUM_EXPLORER.TYPE.FOLDER },
+      orderBy: { createTime: 'asc' },
+    });
+  }
+
+
   createFolder(body: ResourceDTO, creatorId: string) {
     return this.PrismaService.resource.create({
       data: {

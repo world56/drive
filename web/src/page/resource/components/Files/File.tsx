@@ -1,9 +1,52 @@
+import {
+  EyeOutlined,
+  FormOutlined,
+  DragOutlined,
+  HeartOutlined,
+  DeleteOutlined,
+  CloudDownloadOutlined,
+} from "@ant-design/icons";
 import { Dropdown } from "antd";
 import styles from "./index.module.sass";
 import { stopPropagation } from "@/utils";
-import { TypeResource } from "@/interface/resource";
 
-const items = [{ label: "上传资源", key: 1 }];
+import type { MenuProps } from "antd";
+import type { TypeResource } from "@/interface/resource";
+
+const items: MenuProps["items"] = [
+  {
+    icon: <EyeOutlined />,
+    label: "预览",
+    key: 0,
+  },
+  {
+    icon: <HeartOutlined />,
+    label: "收藏",
+    key: 1,
+  },
+  { type: "divider" },
+  {
+    icon: <FormOutlined />,
+    label: "编辑",
+    key: 2,
+  },
+  {
+    icon: <DragOutlined />,
+    label: "移动至",
+    key: 3,
+  },
+  { type: "divider" },
+  {
+    icon: <CloudDownloadOutlined />,
+    label: "下载",
+    key: 5,
+  },
+  {
+    icon: <DeleteOutlined className="danger" />,
+    label: <span className="danger">删除</span>,
+    key: 6,
+  },
+];
 
 /**
  * @name File 资源、文件图标

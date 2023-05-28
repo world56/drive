@@ -13,7 +13,15 @@ export class ResourcesController {
   public constructor(private readonly ResourcesService: ResourcesService) {}
 
   @ApiOperation({
-    summary: '获取文件夹内资源列表',
+    summary: '获取全部文件夹',
+  })
+  @Get('folders')
+  getList() {
+    return this.ResourcesService.findFolders();
+  }
+
+  @ApiOperation({
+    summary: '获取文件夹下资源列表',
   })
   @Get('list')
   findList(@Query() query: FindResourcesListDTO) {

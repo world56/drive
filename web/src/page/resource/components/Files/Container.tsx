@@ -99,7 +99,7 @@ const Container: React.FC<TypeFilesContainerProps> = ({
       </Button>
     </div>
     <Spin spinning={loading} tip="正在加载资源目录" />
-    <Dropdown menu={{ items, onClick: onMenu }} trigger={["contextMenu"]}>
+    <Dropdown trigger={["contextMenu"]} menu={{ items, onClick: onMenu }}>
       <div
         onClick={onSelect}
         className={styles.layout}

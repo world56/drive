@@ -1,5 +1,7 @@
 import zhCN from "antd/locale/zh_CN";
 
+import { DB_PRIMARY_KEY } from "./db";
+
 import type { ConfigProviderProps } from "antd/es/config-provider";
 
 /**
@@ -31,6 +33,16 @@ export const CONFIG_ANTD: ConfigProviderProps = {
   form: {
     validateMessages: { required: "该字段不得为空" },
   },
+};
+
+
+/**
+ * @name CONFIG_ANTD_COMP_FIELD antd默认匹配字段
+ */
+export const CONFIG_ANTD_COMP_FIELD = {
+  title: "name",
+  key: DB_PRIMARY_KEY,
+  children: "children",
 };
 
 /**
