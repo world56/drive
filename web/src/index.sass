@@ -2,14 +2,12 @@ $red: #f56c6c
 $greed: #67c23a
 $yellow: #e6a23c
 
-
 html,body,#root
   margin: 0
   height: 100%
   overflow: hidden
   background: rgb(249, 249, 249)
   font-family: 13px/27px Roboto,Arial,sans-serif
-
 
 .danger
   color: $red
@@ -31,3 +29,19 @@ html,body,#root
 
 .ant-modal-confirm-content
   padding: 10px 0
+
+.loading
+  position: relative
+  :global(.ant-spin)
+    top: 0
+    left: 0
+    width: 100%
+    position: absolute
+    height: calc(100% - 100px)
+    display: flex
+    align-items: center
+    flex-direction: column
+    justify-content: center
+    z-index: 2
+    :global(.ant-spin-text)
+      margin-top: 8px

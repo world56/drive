@@ -1,12 +1,14 @@
-import { isVoid } from "@/utils";
-import { Form, Input } from "antd";
+import { isEmpty } from "@/utils";
+import FolderSelect from "./FolderSelect";
+import { Form, Input, message } from "antd";
 import { Modal } from "@/components/Layout";
-import { useEffect, useState } from "react";
-import { createFolder } from "@/api/resource";
 import { FormHideKey } from "@/components/Form";
+import { useCallback, useEffect, useState } from "react";
+import { createFolder, getResourceDetails, updateFolder } from "@/api/resource";
 
 import { ENUM_RESOURCE } from "@/enum/resource";
 
+import type { TypeCommon } from "@/interface/common";
 import type { TypeResource } from "@/interface/resource";
 
 export interface TypeEditResourceProps
@@ -35,12 +37,10 @@ const Edit: React.FC<TypeEditResourceProps> = ({
 
   async function onSubmit() {
     const values = await form.validateFields();
-    await createFolder(values);
+    if (id) await updateFolder(values);
+    else await createFolder(values);
+    message.success("操作成功");
     onCancel();
-    // if (id) await updateFolder(values);
-    // else await createFolder(values);
-    // message.success("创建成功");
-    // onCancel();
   }
 
   function onCancel() {
@@ -49,30 +49,30 @@ const Edit: React.FC<TypeEditResourceProps> = ({
     onClose();
   }
 
-  // const initialize = useCallback(
-  //   async (id: TypeListEditParam["id"]) => {
-  //     try {
-  //       setLoad(true);
-  //       const data = await getFolderDetails({ id: id! });
-  //       setFileType(data.type);
-  //       form.setFieldsValue(data);
-  //       setLoad(false);
-  //     } catch (e) {
-  //       setLoad(false);
-  //     }
-  //   },
-  //   [form],
-  // );
-
-  // useEffect(() => {
-  //   id && initialize(id);
-  // }, [id, initialize]);
+  const initialize = useCallback(
+    async (id: TypeCommon.PrimaryKey) => {
+      try {
+        setLoad(true);
+        const data = await getResourceDetails({ id: id! });
+        setFileType(data.type);
+        form.setFieldsValue(data);
+        setLoad(false);
+      } catch (e) {
+        setLoad(false);
+      }
+    },
+    [form],
+  );
 
   useEffect(() => {
-    !isVoid(parentId) && form.setFieldsValue({ parentId });
+    id && initialize(id);
+  }, [id, initialize]);
+
+  useEffect(() => {
+    !isEmpty(parentId) && form.setFieldsValue({ parentId });
   }, [parentId, form]);
 
-  const isFolder = isVoid(fileType) || fileType === ENUM_RESOURCE.TYPE.FOLDER;
+  const isFolder = isEmpty(fileType) || fileType === ENUM_RESOURCE.TYPE.FOLDER;
 
   return (
     <Modal
@@ -86,13 +86,13 @@ const Edit: React.FC<TypeEditResourceProps> = ({
       <Form form={form} layout="vertical">
         <FormHideKey />
 
-        {/* <Form.Item
+        <Form.Item
           name="parentId"
           label="所属目录"
           rules={isFolder ? undefined : rules}
         >
           <FolderSelect disabledId={[id!]} />
-        </Form.Item> */}
+        </Form.Item>
 
         <Form.Item name="name" label="名称" rules={rules}>
           <Input placeholder="请输入文件夹名称" allowClear />

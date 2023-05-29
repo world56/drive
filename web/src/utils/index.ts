@@ -3,12 +3,21 @@ import { JSEncrypt } from "jsencrypt";
 import { getSecretKey } from "@/api/auth";
 
 /**
- * @name isVoid 判断是否为空值
+ * @name isEmpty 判断是否为空值
  */
-export function isVoid(param: unknown): param is boolean {
-  return (
-    param === undefined || param === null || param === "" || Number.isNaN(param)
-  );
+export function isEmpty(param: unknown): param is boolean {
+  if (
+    param === undefined ||
+    param === null ||
+    param === "" ||
+    Number.isNaN(param)
+  ) {
+    return true;
+  } else if (Array.isArray(param) && !param.length) {
+    return true;
+  } else {
+    return false;
+  }
 }
 
 /**

@@ -12,7 +12,7 @@ export class ResourcesService {
 
   findList(id: string) {
     return this.PrismaService.resource.findMany({
-      where: { id },
+      where: { parentId: id },
     });
   }
 
@@ -22,7 +22,6 @@ export class ResourcesService {
       orderBy: { createTime: 'asc' },
     });
   }
-
 
   createFolder(body: ResourceDTO, creatorId: string) {
     return this.PrismaService.resource.create({

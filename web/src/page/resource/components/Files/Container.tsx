@@ -6,12 +6,15 @@ import {
   CloudUploadOutlined,
   SortDescendingOutlined,
 } from "@ant-design/icons";
+import { useStore } from "@/hooks";
 import styles from "./index.module.sass";
-import { stopPropagation } from "@/utils";
+// import { useSearchParams } from "react-router-dom";
+import { isEmpty, stopPropagation } from "@/utils";
 import { Dropdown, Empty, Breadcrumb, Button, Spin } from "antd";
 
 import type { TypeFilesProps } from ".";
 import type { MenuProps, SpinProps } from "antd";
+import { useMemo } from "react";
 
 export enum ENUM_MENU_TYPE {
   /** @param UPLOAD 上传资源 */
@@ -83,37 +86,57 @@ const Container: React.FC<TypeFilesContainerProps> = ({
   loading,
   onSelect,
   children,
-}) => (
-  <div className={styles.files}>
-    <div className={styles.nav}>
-      <Breadcrumb
-        items={[
-          { title: <HomeOutlined /> },
-          { title: "视频资源" },
-          { title: "国产电影" },
-          { title: "流浪地球" },
-        ]}
-      />
-      <Button icon={<CloudUploadOutlined />} size="small">
-        上传
-      </Button>
-    </div>
-    <Spin spinning={loading} tip="正在加载资源目录" />
-    <Dropdown trigger={["contextMenu"]} menu={{ items, onClick: onMenu }}>
-      <div
-        onClick={onSelect}
-        className={styles.layout}
-        onContextMenu={stopPropagation}
-      >
-        {children || (
-          <Empty
-            description="资源目录为空"
-            image={Empty.PRESENTED_IMAGE_SIMPLE}
-          />
-        )}
+}) => {
+  const { resource } = useStore();
+
+  const { path, foldersObj } = resource;
+
+  useMemo(() => {
+    const route = []
+  }, [path, foldersObj]);
+
+  // const [, setSearch] = useSearchParams();
+
+  return (
+    <div className={styles.files}>
+      <div className={styles.nav}>
+        <Breadcrumb
+          items={[
+            {
+              title: (
+                <>
+                  <HomeOutlined /> 主页
+                </>
+              ),
+            },
+            ...resource.path.map((k) => ({
+              title: resource.foldersObj?.[k]?.name,
+            })),
+          ]}
+        />
+        <Button icon={<CloudUploadOutlined />} size="small">
+          上传
+        </Button>
       </div>
-    </Dropdown>
-  </div>
-);
+      {loading ? <Spin spinning={loading} tip="正在加载资源目录" /> : null}
+      <Dropdown trigger={["contextMenu"]} menu={{ items, onClick: onMenu }}>
+        <div
+          onClick={onSelect}
+          className={styles.layout}
+          onContextMenu={stopPropagation}
+        >
+          {isEmpty(children) ? (
+            <Empty
+              description="资源列表为空"
+              image={Empty.PRESENTED_IMAGE_SIMPLE}
+            />
+          ) : (
+            children
+          )}
+        </div>
+      </Dropdown>
+    </div>
+  );
+};
 
 export default Container;

@@ -28,10 +28,34 @@ export function getFolders() {
 }
 
 /**
+ * @name getResourceDetails 获取资源详情
+ */
+export function getResourceDetails(
+  params: Required<TypeResource.QueryResources>,
+) {
+  return request<TypeResource.DTO>("resource/details", {
+    method: ENUM_HTTP.REQUEST_MODE.GET,
+    proxy: ENUM_HTTP.PROXY.EXPLORER,
+    params,
+  });
+}
+
+/**
  * @name createFolder 创建文件夹
  */
 export function createFolder(data: TypeResource.DTO) {
   return request("resource/create", {
+    method: ENUM_HTTP.REQUEST_MODE.POST,
+    proxy: ENUM_HTTP.PROXY.EXPLORER,
+    data,
+  });
+}
+
+/**
+ * @name updateFolder 编辑文件夹、资源信息
+ */
+export function updateFolder(data: TypeResource.DTO) {
+  return request("resource/update", {
     method: ENUM_HTTP.REQUEST_MODE.POST,
     proxy: ENUM_HTTP.PROXY.EXPLORER,
     data,

@@ -12,7 +12,7 @@ import { SAGA_DEBOUNCE } from "@/config/request";
 import type { TypeUser } from "@/interface/user";
 
 function* taskInUserLogin(
-  data: ReturnType<typeof ActionsMiddleware.userLogin>,
+  data: ReturnType<typeof ActionsMiddleware.login>,
 ) {
   try {
     const param: string = yield encryption(data.payload);
@@ -38,7 +38,7 @@ function* taskInGetUserInfo() {
 }
 
 export default function* SagaUser() {
-  yield takeLatest(ActionsMiddleware.userLogin.type, taskInUserLogin);
+  yield takeLatest(ActionsMiddleware.login.type, taskInUserLogin);
   yield throttle(
     SAGA_DEBOUNCE,
     ActionsMiddleware.getUserInfo.type,

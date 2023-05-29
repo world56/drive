@@ -12,7 +12,7 @@ const userSlice = createSlice({
   name: "USER",
   initialState: DEFAULT_USER,
   reducers: {
-    setUserInfo: (state, action: PayloadAction<TypeUser.DTO, string>) => {
+    setUserInfo: (_state, action: PayloadAction<TypeUser.DTO, string>) => {
       return action.payload;
     },
     delUserInfo() {

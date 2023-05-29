@@ -3,6 +3,7 @@ import Container from "./Container";
 
 import type { TypeResource } from "@/interface/resource";
 import type { TypeFilesContainerProps } from "./Container";
+
 export interface TypeFilesProps
   extends Pick<TypeFilesContainerProps, "onMenu" | "loading"> {
   /** @param list 资源列表 */

@@ -6,7 +6,6 @@ export interface TypeListToTree
   extends Pick<TypeCommon.DTO, "id" | "name">,
     Partial<Pick<TypeCommon.DTO, "parentId">> {}
 
-
 /**
  * @name listToTree 转换成树结构
  * @param list 一维数组

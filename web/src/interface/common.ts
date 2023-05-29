@@ -1,6 +1,9 @@
 
 export namespace TypeCommon {
 
+  /**
+   * @name PrimaryKey 主键ID
+   */
   export type PrimaryKey = string;
 
   export interface DTO<T = PrimaryKey> {
