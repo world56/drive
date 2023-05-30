@@ -12,7 +12,7 @@ export class ResourcesService {
 
   findList(id: string) {
     return this.PrismaService.resource.findMany({
-      where: { parentId: id },
+      where: id ? { parentId: id } : { parentId: { equals: null } },
     });
   }
 

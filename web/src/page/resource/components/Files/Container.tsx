@@ -1,20 +1,20 @@
 import {
-  HomeOutlined,
   SyncOutlined,
   TableOutlined,
   FolderAddOutlined,
   CloudUploadOutlined,
   SortDescendingOutlined,
 } from "@ant-design/icons";
-import { useStore } from "@/hooks";
+import Navigation from "./Navigation";
 import styles from "./index.module.sass";
-// import { useSearchParams } from "react-router-dom";
 import { isEmpty, stopPropagation } from "@/utils";
-import { Dropdown, Empty, Breadcrumb, Button, Spin } from "antd";
+import { Dropdown, Empty, Button, Spin } from "antd";
+
+import { ENUM_RESOURCE } from "@/enum/resource";
 
 import type { TypeFilesProps } from ".";
 import type { MenuProps, SpinProps } from "antd";
-import { useMemo } from "react";
+import type { TypeResource } from "@/interface/resource";
 
 export enum ENUM_MENU_TYPE {
   /** @param UPLOAD 上传资源 */
@@ -31,8 +31,11 @@ export interface TypeFilesContainerProps extends TypeFilesProps {
   loading: SpinProps["spinning"];
   /** @param onMenu 鼠标右键菜单操作 */
   onMenu: MenuProps["onClick"];
-  /** @param onSelect 选择对应的资源菜单操作 */
-  onSelect(e: React.MouseEvent<HTMLDivElement>): void;
+  /**
+   * @name onPreview 双击 预览、打开文件夹
+   * @description 这里只负责出参，不符合要求的双击事件，不会触发调用
+   */
+  onPreview(type: ENUM_RESOURCE.TYPE, id: TypeResource.DTO["id"]): void;
 }
 
 const items: MenuProps["items"] = [
@@ -84,36 +87,24 @@ const items: MenuProps["items"] = [
 const Container: React.FC<TypeFilesContainerProps> = ({
   onMenu,
   loading,
-  onSelect,
   children,
+  onPreview,
 }) => {
-  const { resource } = useStore();
-
-  const { path, foldersObj } = resource;
-
-  useMemo(() => {
-    const route = []
-  }, [path, foldersObj]);
-
-  // const [, setSearch] = useSearchParams();
+  /**
+   * @name onDoubleClick 双击目标元素
+   */
+  function onDoubleClick(e: React.MouseEvent<HTMLDivElement>) {
+    const targetElement = e.target as HTMLElement;
+    const ele = targetElement.closest("div");
+    const { type, id } = ele!.dataset;
+    if (!type || !id) return;
+    onPreview(Number(type), id);
+  }
 
   return (
     <div className={styles.files}>
       <div className={styles.nav}>
-        <Breadcrumb
-          items={[
-            {
-              title: (
-                <>
-                  <HomeOutlined /> 主页
-                </>
-              ),
-            },
-            ...resource.path.map((k) => ({
-              title: resource.foldersObj?.[k]?.name,
-            })),
-          ]}
-        />
+        <Navigation />
         <Button icon={<CloudUploadOutlined />} size="small">
           上传
         </Button>
@@ -121,8 +112,8 @@ const Container: React.FC<TypeFilesContainerProps> = ({
       {loading ? <Spin spinning={loading} tip="正在加载资源目录" /> : null}
       <Dropdown trigger={["contextMenu"]} menu={{ items, onClick: onMenu }}>
         <div
-          onClick={onSelect}
           className={styles.layout}
+          onDoubleClick={onDoubleClick}
           onContextMenu={stopPropagation}
         >
           {isEmpty(children) ? (

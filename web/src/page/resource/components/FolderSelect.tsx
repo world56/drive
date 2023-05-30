@@ -16,7 +16,7 @@ const FolderSelect: React.FC<TypeFolderTreeProps> = ({
   disabledId = [],
   ...treeSelectProps
 }) => {
-  const { resource } = useStore();
+  const resource = useStore('resource');
 
   const idKeys = useMemo(
     () =>

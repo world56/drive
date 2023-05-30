@@ -10,6 +10,9 @@
     justify-content: space-between
     padding: 10px 12px
     background: #fff
+    li
+      cursor: pointer
+
   .layout
     display: flex
     padding: 15px
@@ -25,8 +28,6 @@
       align-items: center
       flex-direction: column
 
-  
-
 .file
   width: 160px
   height: 140px
@@ -36,7 +37,8 @@
   border-radius: 2px
   margin: 0 10px 10px 0
   border: 1px solid rgba(204,204 ,204,0.4)
-  & > div
+  & > span
+    display: block
     width: 100%
     height: 74%
     border-radius: 3px

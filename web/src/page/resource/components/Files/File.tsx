@@ -6,6 +6,7 @@ import {
   DeleteOutlined,
   CloudDownloadOutlined,
 } from "@ant-design/icons";
+import { memo } from "react";
 import { Dropdown } from "antd";
 import styles from "./index.module.sass";
 import { stopPropagation } from "@/utils";
@@ -54,13 +55,18 @@ const items: MenuProps["items"] = [
 const File: React.FC<TypeResource.DTO> = (props) => {
   return (
     <Dropdown menu={{ items }} destroyPopupOnHide trigger={["contextMenu"]}>
-      <div className={styles.file} onContextMenu={stopPropagation}>
-        <div>
+      <div
+        data-id={props.id}
+        data-type={props.type}
+        className={styles.file}
+        onContextMenu={stopPropagation}
+      >
+        <span>
           <img
             src="https://img.pconline.com.cn/images/upload/upc/tx/photoblog/1411/24/c6/41272187_41272187_1416843675065.jpg"
             alt="#"
           />
-        </div>
+        </span>
         <p>{props.name}</p>
         <p>
           <span>3MB</span>
@@ -71,4 +77,4 @@ const File: React.FC<TypeResource.DTO> = (props) => {
   );
 };
 
-export default File;
+export default memo(File);

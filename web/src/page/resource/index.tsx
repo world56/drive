@@ -17,7 +17,7 @@ import type { TypeEditResourceProps } from "./components/Edit";
  */
 const Resource = () => {
   const actions = useActions();
-  const { resource } = useStore();
+  const resource = useStore('resource');
 
   const [edit, setEdit] = useState<Omit<TypeEditResourceProps, "onClose">>({
     open: false,

@@ -1,38 +1,35 @@
 import { Spin, Tree } from "antd";
+import { useStore } from "@/hooks";
 import styles from "./index.module.sass";
-import { useActions, useStore } from "@/hooks";
-import { useSearchParams } from "react-router-dom";
+import { useToFolder } from "../../hooks";
+import { useEffect, useState } from "react";
 
 import { CONFIG_ANTD_COMP_FIELD } from "@/config/antd";
+
+import type { TypeResource } from "@/interface/resource";
 
 /**
  * @name Folder 文件夹目录树
  */
 const Folder: React.FC = () => {
-  const actions = useActions();
-  const { resource } = useStore();
+  const toFolder = useToFolder();
+  const resource = useStore('resource');
 
-  const [, setSearch] = useSearchParams();
+  const [expandedKeys, setExpandedKeys] = useState<
+    Array<TypeResource.DTO["id"]>
+  >([]);
 
-  function onSelect(ids: React.Key[]) {
-    const [id] = ids;
-    const path = getPath(id as string);
-    actions.setPath(path);
-    setSearch({ path }, { replace: true });
+  function onSelect([id]: React.Key[]) {
+    toFolder(id as string);
   }
 
-  function getPath(id: string) {
-    const ids: string[] = [id];
-    while (true) {
-      const target = resource.foldersObj[id];
-      if (target.parentId) {
-        id = target.parentId;
-        ids.unshift(target.parentId);
-      } else {
-        return ids;
-      }
-    }
+  function onExpand(keys: React.Key[]) {
+    setExpandedKeys(keys as string[]);
   }
+
+  useEffect(() => {
+    setExpandedKeys((ids) => Array.from(new Set([...ids, ...resource.path])));
+  }, [resource.path]);
 
   return (
     <div className={styles.folder}>
@@ -42,10 +39,11 @@ const Folder: React.FC = () => {
           multiple
           blockNode
           onSelect={onSelect}
-          defaultExpandedKeys={resource.path}
+          onExpand={onExpand}
+          expandedKeys={expandedKeys}
           fieldNames={CONFIG_ANTD_COMP_FIELD}
           treeData={resource.folderTree as []}
-          defaultSelectedKeys={[resource.path.at(-1)!]}
+          selectedKeys={[resource.path.at(-1)!]}
         />
       ) : null}
     </div>

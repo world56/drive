@@ -1,5 +1,8 @@
 import File from "./File";
 import Container from "./Container";
+import { useToFolder } from "../../hooks";
+
+import { ENUM_RESOURCE } from "@/enum/resource";
 
 import type { TypeResource } from "@/interface/resource";
 import type { TypeFilesContainerProps } from "./Container";
@@ -14,12 +17,21 @@ export interface TypeFilesProps
  * @name Files 文件列表
  */
 const Files: React.FC<TypeFilesProps> = ({ list, onMenu, loading }) => {
-  const onSelect: TypeFilesContainerProps["onSelect"] = (e) => {
-    console.log(e);
+
+  const toFolder = useToFolder();
+
+  // 预览、打开
+  const onPreview: TypeFilesContainerProps["onPreview"] = (type, id) => {
+    switch (type) {
+      case ENUM_RESOURCE.TYPE.FOLDER:
+        return toFolder(id);
+      default:
+        return;
+    }
   };
 
   return (
-    <Container onMenu={onMenu} loading={loading} onSelect={onSelect}>
+    <Container loading={loading} onMenu={onMenu} onPreview={onPreview}>
       {list?.map((v) => (
         <File key={v.id} {...v} />
       ))}

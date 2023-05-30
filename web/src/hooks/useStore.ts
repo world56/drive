@@ -1,9 +1,8 @@
 import store from "@/store";
 import { useSelector, shallowEqual } from "react-redux";
 
-export default function useStore() {
-  return useSelector(
-    (state: ReturnType<typeof store.getState>) => state,
-    shallowEqual,
-  );
-};
+type TypeRootStore = ReturnType<typeof store.getState>;
+
+export default function useStore<T extends keyof TypeRootStore>(key: T) {
+  return useSelector((state: TypeRootStore) => state[key], shallowEqual);
+}

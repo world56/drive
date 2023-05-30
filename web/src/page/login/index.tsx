@@ -12,8 +12,9 @@ import { FORM_ACCOUNT_RULES, FORM_PASSWORD_RULES } from "@/config/antd";
 import type { TypeUser } from "@/interface/user";
 
 const Login = () => {
-  const { user } = useStore();
   const actions = useActions();
+  const user = useStore('user');
+
   const navigate = useNavigate();
 
   const [form] = Form.useForm<TypeUser.Login>();
