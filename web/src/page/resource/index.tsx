@@ -17,7 +17,7 @@ import type { TypeEditResourceProps } from "./components/Edit";
  */
 const Resource = () => {
   const actions = useActions();
-  const resource = useStore('resource');
+  const resource = useStore("resource");
 
   const [edit, setEdit] = useState<Omit<TypeEditResourceProps, "onClose">>({
     open: false,
@@ -44,6 +44,7 @@ const Resource = () => {
 
   function onClose() {
     setEdit({ open: false });
+    actions.getFolders();
     run();
   }
 

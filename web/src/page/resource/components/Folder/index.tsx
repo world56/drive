@@ -13,7 +13,7 @@ import type { TypeResource } from "@/interface/resource";
  */
 const Folder: React.FC = () => {
   const toFolder = useToFolder();
-  const resource = useStore('resource');
+  const resource = useStore("resource");
 
   const [expandedKeys, setExpandedKeys] = useState<
     Array<TypeResource.DTO["id"]>
@@ -23,12 +23,14 @@ const Folder: React.FC = () => {
     toFolder(id as string);
   }
 
-  function onExpand(keys: React.Key[]) {
-    setExpandedKeys(keys as string[]);
-  }
-
   useEffect(() => {
-    setExpandedKeys((ids) => Array.from(new Set([...ids, ...resource.path])));
+    setExpandedKeys((ids) => {
+      const target = resource.path.at(-1);
+      const index = ids.findIndex((v) => target === v);
+      const newIds = Array.from(new Set([...ids, ...resource.path]));
+      if (~index) return newIds.filter((v) => v !== target);
+      else return newIds;
+    });
   }, [resource.path]);
 
   return (
@@ -39,7 +41,6 @@ const Folder: React.FC = () => {
           multiple
           blockNode
           onSelect={onSelect}
-          onExpand={onExpand}
           expandedKeys={expandedKeys}
           fieldNames={CONFIG_ANTD_COMP_FIELD}
           treeData={resource.folderTree as []}
