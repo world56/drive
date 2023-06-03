@@ -1,8 +1,7 @@
 import { Spin, Tree } from "antd";
-import { useStore } from "@/hooks";
 import styles from "./index.module.sass";
-import { useToFolder } from "../../hooks";
 import { useEffect, useState } from "react";
+import { useStore, useToFolder } from "@/hooks";
 
 import { CONFIG_ANTD_COMP_FIELD } from "@/config/antd";
 

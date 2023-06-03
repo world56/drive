@@ -1,0 +1,113 @@
+.open
+  width: 340px !important
+  height: 500px !important
+
+.close
+  overflow: hidden
+
+.layout
+  width: 260px
+  height: 52px
+  right: 15px
+  bottom: 15px
+  position: fixed
+  transition: 0.5s
+  background: #fff
+  border-radius: 8px
+  box-shadow: 0 0 1px 1px rgb(28 28 32 / 5%), 0 8px 24px rgb(28 28 32 / 12%)
+
+  & > div > div > div:nth-last-child(1)
+    border-bottom: none
+
+  .header
+    height: 52px
+    display: flex
+    padding: 0 15px
+    font-size: 15px
+    overflow: hidden
+    user-select: none
+    align-items: center
+    justify-content: space-between
+    border-bottom: 1px solid rgba(28, 28, 32, 0.05)
+
+    &:hover
+      cursor: pointer
+      border-radius: 8px 8px 0 0
+      background: rgba(0, 0, 0, .05)
+
+    .icon
+      margin-right: 12px
+      svg
+        font-size: 18px
+
+    .status
+      display: flex
+      align-items: center
+      & > span:nth-child(2)
+        font-weight: bold
+      & > span:nth-child(3)
+        margin: 0 8px
+        &::before
+          content: ""
+          display: block
+          width: 2px
+          height: 2px
+          background: black
+      & > span:nth-child(4)
+        font-weight: 300
+
+  .btn
+    width: 58px
+    display: flex
+    align-items: center
+    justify-content: space-between
+    :global(.anticon)
+      width: 24px
+      height: 24px
+      display: flex
+      cursor: pointer
+      border-radius: 50%
+      align-content: center
+      justify-content: center
+      background: rgb(245, 245, 246)
+      svg
+        font-size: 17px
+        fill: rgb(98,99,102)
+        &:hover
+          svg
+            fill: black
+
+  .item
+    width: 320px !important
+    height: 55px
+    display: flex
+    align-items: center
+    padding: 0 10px 0 11px
+    border-bottom: 1px solid rgba(28, 28, 32, 0.05)
+
+    img
+      width: 32px
+      margin-right: 7.5px
+
+    p
+      margin: 0
+
+    & div:nth-child(2)
+      margin: 0
+      width: 201px
+      font-size: 14px
+      padding-right: 16.5px
+
+      p
+        overflow: hidden
+        white-space: nowrap
+        text-overflow: ellipsis
+
+      p:nth-child(1)
+        color: rgba(0, 0, 0, 0.7)
+
+      p:nth-child(2)
+        user-select: none
+        font-size: 12px
+        font-weight: 300
+        color: #878D96

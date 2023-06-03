@@ -16,17 +16,19 @@
   .layout
     display: flex
     padding: 15px
-    height: calc(100% - 111px)
-    flex-wrap: wrap
     flex-grow: 1
+    flex-wrap: wrap
     align-content: flex-start
+    height: calc(100% - 111px)
+
     :global(.ant-empty-normal)
       width: 100%
-      height: calc(100% - 47px)
       display: flex
-      justify-content: center
+      user-select: none
       align-items: center
       flex-direction: column
+      justify-content: center
+      height: calc(100% - 47px)
 
 .file
   width: 160px

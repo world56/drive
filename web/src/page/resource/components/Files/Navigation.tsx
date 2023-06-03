@@ -1,7 +1,6 @@
 import { useMemo } from "react";
 import { Breadcrumb } from "antd";
-import { useStore } from "@/hooks";
-import { useToFolder } from "../../hooks";
+import { useStore, useToFolder } from "@/hooks";
 import { HomeOutlined } from "@ant-design/icons";
 
 /**

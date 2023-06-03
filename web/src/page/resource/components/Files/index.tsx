@@ -1,6 +1,6 @@
 import File from "./File";
 import Container from "./Container";
-import { useToFolder } from "../../hooks";
+import { useToFolder } from "@/hooks";
 
 import { ENUM_RESOURCE } from "@/enum/resource";
 
