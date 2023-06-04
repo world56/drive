@@ -1,6 +1,7 @@
 import { useState } from "react";
 import styles from "./index.module.sass";
 import { SyncOutlined, CloseOutlined, PauseOutlined } from "@ant-design/icons";
+import { useStore } from "@/hooks";
 
 interface TypeUploadContainerProps {
   children?: React.ReactNode;
@@ -11,6 +12,8 @@ interface TypeUploadContainerProps {
  * @description 进度
  */
 const Container: React.FC<TypeUploadContainerProps> = ({ children }) => {
+  const { UPLOAD } = useStore("config");
+
   const [open, setOpen] = useState(false);
 
   function onClick() {
@@ -18,7 +21,11 @@ const Container: React.FC<TypeUploadContainerProps> = ({ children }) => {
   }
 
   return (
-    <div className={`${styles.layout} ${open ? styles.open : styles.close}`}>
+    <div
+      className={`${UPLOAD ? styles.layout : "none"} ${
+        open ? styles.open : styles.close
+      }`}
+    >
       <div onClick={onClick} className={styles.header} title="点击打开、收起">
         <div className={styles.status}>
           <SyncOutlined className={styles.icon} />

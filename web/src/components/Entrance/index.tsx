@@ -4,15 +4,19 @@ import Navigation from "./Navigation";
 import styles from "./index.module.sass";
 import { Outlet } from "react-router-dom";
 
-const Entrance = () => (
-  <>
-    <Header />
-    <main className={styles.main}>
-      <Navigation />
-      <Outlet />
-      <Upload />
-    </main>
-  </>
-);
+const Entrance = () => {
+  console.log('@-Entrance');
+  
+  return (
+    <>
+      <Header />
+      <main className={styles.main}>
+        <Navigation />
+        <Outlet />
+        <Upload />
+      </main>
+    </>
+  );
+};
 
 export default Entrance;

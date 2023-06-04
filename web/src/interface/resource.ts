@@ -16,7 +16,7 @@ export namespace TypeResource {
     /** @param path 资源路径 */
     path: string;
     /** @param size 资源大小 */
-    size: number;
+    size: string;
     /** @param url 预览路径  */
     url?: string;
     /** @param suffix 格式 */
@@ -62,4 +62,5 @@ export namespace TypeResource {
    */
   export interface QueryGlobalExplorer
     extends Partial<Pick<DTO, "name" | "type">> {}
+
 }

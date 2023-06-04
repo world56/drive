@@ -3,6 +3,7 @@ import Edit from "./components/Edit";
 import Files from "./components/Files";
 import Folder from "./components/Folder";
 import styles from "./index.module.sass";
+import { createUpload } from "@/utils/file";
 import { useEffect, useState } from "react";
 import { getResources } from "@/api/resource";
 import { useStore, useActions } from "@/hooks";
@@ -37,6 +38,8 @@ const Resource = () => {
         return setEdit({ open: true, parentId });
       case ENUM_MENU_TYPE.REFRESH:
         return run();
+      case ENUM_MENU_TYPE.UPLOAD:
+        return createUpload();
       default:
         return;
     }

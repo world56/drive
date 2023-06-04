@@ -1,23 +1,29 @@
 import { memo } from "react";
-import { ICON } from "./utils";
 import styles from "./index.module.sass";
+import { getFileIcon } from "@/utils/file";
 import { ReloadOutlined, FolderOutlined } from "@ant-design/icons";
 
+import type { TypeUploadStatus } from "./utils";
 import type { ListChildComponentProps } from "react-window";
 
-interface TypeItemProps {
-  // url: string;
-}
+type TypeItemProps = Array<TypeUploadStatus[keyof TypeUploadStatus]>;
 
 /**
  * @name Item 资源状态
  */
-const Item: React.FC<ListChildComponentProps<TypeItemProps>> = ({ style }) => {
+const Item: React.FC<ListChildComponentProps<TypeItemProps>> = ({
+  data,
+  index,
+  style,
+}) => {
+
+  const target = data[index];
+
   return (
     <div className={styles.item} style={style}>
-      <img src={ICON.IMG} alt="#" />
+      <img src={getFileIcon(target.suffix)} alt="#" />
       <div>
-        <p>OmniConverter全能转换</p>
+        <p>{target?.name}</p>
         <p>
           <span>上传中</span>
           &nbsp;

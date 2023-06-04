@@ -16,9 +16,15 @@ export const SAGA_DEBOUNCE = 1000 * 1;
 export const REQUEST_TIMEOUT = 1000 * 30;
 
 /**
- * @name PICTURE_PREVIEW_SIZE 分段上传文件分割大小
+ * @name UPLOAD_SLICE_SIZE 文件分割大小
  */
-export const PICTURE_PREVIEW_SIZE = 2 * 1024 * 1024;
+export const UPLOAD_SLICE_SIZE = 2 * 1024 * 1024;
+
+/**
+ * @name PICTURE_PREVIEW_SIZE 图片预览限制
+ * @description 图片太大会影响加载速度
+ */
+export const PICTURE_PREVIEW_SIZE = 5 * 1024 * 1024;
 
 /**
  * @name API_PROXY_AUTH_URL API 授权中心

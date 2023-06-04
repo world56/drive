@@ -3,13 +3,15 @@ import { useMemo } from "react";
 import { useDispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import { ActionsUser } from "@/store/user";
+import { ActionsConfig } from "@/store/config";
 import { ActionsResource } from "@/store/resource";
 import * as ActionsSagas from "@/store/saga/actions";
 
 const ACTIONS = {
   ...ActionsUser,
   ...ActionsSagas,
-  ...ActionsResource
+  ...ActionsConfig,
+  ...ActionsResource,
 };
 
 export default function useActions() {

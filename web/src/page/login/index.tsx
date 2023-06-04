@@ -13,7 +13,7 @@ import type { TypeUser } from "@/interface/user";
 
 const Login = () => {
   const actions = useActions();
-  const user = useStore('user');
+  const user = useStore("user");
 
   const navigate = useNavigate();
 
