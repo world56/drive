@@ -7,6 +7,7 @@ import {
 } from "@ant-design/icons";
 import Navigation from "./Navigation";
 import styles from "./index.module.sass";
+import { createUpload } from "@/utils/file";
 import { isEmpty, stopPropagation } from "@/utils";
 import { Dropdown, Empty, Button, Spin } from "antd";
 
@@ -105,7 +106,11 @@ const Container: React.FC<TypeFilesContainerProps> = ({
     <div className={styles.files}>
       <div className={styles.nav}>
         <Navigation />
-        <Button icon={<CloudUploadOutlined />} size="small">
+        <Button
+          size="small"
+          onClick={createUpload}
+          icon={<CloudUploadOutlined />}
+        >
           上传
         </Button>
       </div>

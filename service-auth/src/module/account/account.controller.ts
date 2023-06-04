@@ -35,7 +35,7 @@ export class AccountController {
   @ApiOperation({ summary: '注册超级管理员' })
   @Post('register')
   @UsePipes(DecryptContextPipe, new ValidationDTOPipe(RegisterSuperAdminDTO))
-  register(@Body() body: RegisterSuperAdminDTO) {
+  register<T extends RegisterSuperAdminDTO>(@Body() body: T) {
     return this.AccountService.register(body);
   }
 
@@ -60,9 +60,9 @@ export class AccountController {
 
   @ApiOperation({ summary: '登陆' })
   @Post('login')
-  login(
+  login<T extends InstanceType<typeof UserLoginDTO>>(
     @Body(DecryptContextPipe, new ValidationDTOPipe(UserLoginDTO))
-    body: UserLoginDTO,
+    body: T,
   ) {
     return this.AccountService.login(body);
   }

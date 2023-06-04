@@ -1,7 +1,7 @@
 import { useState } from "react";
+import { useStore } from "@/hooks";
 import styles from "./index.module.sass";
 import { SyncOutlined, CloseOutlined, PauseOutlined } from "@ant-design/icons";
-import { useStore } from "@/hooks";
 
 interface TypeUploadContainerProps {
   children?: React.ReactNode;

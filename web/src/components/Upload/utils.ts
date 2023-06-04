@@ -3,7 +3,7 @@ import { nanoid } from "nanoid";
 import { filesize } from "filesize";
 
 import { ENUM_RESOURCE } from "@/enum/resource";
-import { UPLOAD_SLICE_SIZE } from "@/config/request";
+import { UPLOAD_SLICE_SIZE } from "@/config/file";
 
 import type { TypeResource } from "@/interface/resource";
 

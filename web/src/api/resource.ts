@@ -61,3 +61,15 @@ export function updateFolder(data: TypeResource.DTO) {
     data,
   });
 }
+
+/**
+ * @name uploadFile 上传资源
+ */
+export function uploadFile(data: TypeResource.DTO, control: AbortController) {
+  return request<TypeResource.DTO | false>("explorer/upload", {
+    data,
+    signal: control.signal,
+    method: ENUM_HTTP.REQUEST_MODE.POST,
+    headers: { contentType: ENUM_HTTP.CONTENT_TYPE.MULTIPART },
+  });
+}

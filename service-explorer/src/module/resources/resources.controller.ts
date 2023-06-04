@@ -1,11 +1,15 @@
 import { ResourcesService } from './resources.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UserID } from 'src/decorator/user-id.decorator';
-import { Body, Get, Post, Query, Controller } from '@nestjs/common';
+import { UploadFileGuard } from 'src/guard/upload-file.guard';
+import { GetUploadFile } from 'src/decorator/get-upload-file.decorator';
+import { Body, Get, Post, Query, Controller, UseGuards } from '@nestjs/common';
 
 import { ResourceDTO } from 'src/dto/resource.dto';
 import { DeleteResourcesDTO } from './dto/delete-resources.dto';
 import { FindResourcesListDTO } from './dto/find-resources-list.dto';
+
+import type { MultipartFile } from '@fastify/multipart';
 
 @ApiTags('资源管理')
 @Controller('resource')
@@ -51,5 +55,18 @@ export class ResourcesController {
   @Post('delete')
   delete(@Body() body: DeleteResourcesDTO) {
     return this.ResourcesService.delete(body);
+  }
+
+  @ApiOperation({
+    summary: '上传资源',
+  })
+  @UseGuards(new UploadFileGuard())
+  @Post('upload')
+  upload(
+    @GetUploadFile({ limits: { fileSize: 1024 * 1024 * 10 } })
+    file: MultipartFile,
+  ) {
+    console.log(file);
+    return true;
   }
 }
