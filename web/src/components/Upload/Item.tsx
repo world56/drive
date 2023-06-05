@@ -3,6 +3,8 @@ import styles from "./index.module.sass";
 import { getFileIcon } from "@/utils/file";
 import { ReloadOutlined, FolderOutlined } from "@ant-design/icons";
 
+import { CONSTANT_RESOURCE } from "@/constant/resource";
+
 import type { TypeUploadStatus } from "./utils";
 import type { ListChildComponentProps } from "react-window";
 
@@ -16,18 +18,19 @@ const Item: React.FC<ListChildComponentProps<TypeItemProps>> = ({
   index,
   style,
 }) => {
-
   const target = data[index];
+
+  const status = CONSTANT_RESOURCE.STATUS.OBJ[target.status];
 
   return (
     <div className={styles.item} style={style}>
       <img src={getFileIcon(target.suffix)} alt="#" />
       <div>
         <p>{target?.name}</p>
-        <p>
-          <span>上传中</span>
+        <p style={{ color: status.color }}>
+          <span>{status.name}</span>
           &nbsp;
-          <span>98%</span>
+          <span>{target.progress}%</span>
         </p>
       </div>
       <div className={styles.btn}>

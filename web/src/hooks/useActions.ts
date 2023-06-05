@@ -14,6 +14,10 @@ const ACTIONS = {
   ...ActionsResource,
 };
 
+/**
+ * @name useActions Redux发起一个Action
+ * @description 统一处理了，省的麻烦
+ */
 export default function useActions() {
   const dispatch = useDispatch<typeof store.dispatch>();
   return useMemo(() => bindActionCreators(ACTIONS, dispatch), [dispatch]);

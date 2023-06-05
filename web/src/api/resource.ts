@@ -63,12 +63,13 @@ export function updateFolder(data: TypeResource.DTO) {
 }
 
 /**
- * @name uploadFile 上传资源
+ * @name uploadChunk 上传资源
  */
-export function uploadFile(data: TypeResource.DTO, control: AbortController) {
-  return request<TypeResource.DTO | false>("explorer/upload", {
+export function uploadChunk(data: FormData, control: AbortController) {
+  return request<TypeResource.DTO | false>("resource/upload", {
     data,
     signal: control.signal,
+    proxy: ENUM_HTTP.PROXY.EXPLORER,
     method: ENUM_HTTP.REQUEST_MODE.POST,
     headers: { contentType: ENUM_HTTP.CONTENT_TYPE.MULTIPART },
   });

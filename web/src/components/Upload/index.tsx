@@ -2,9 +2,11 @@ import Item from "./Item";
 import Container from "./Container";
 import { filesFormat } from "./utils";
 import { useRef, useState } from "react";
+import { uploadChunk } from "@/api/resource";
 import { FixedSizeList } from "react-window";
 import { useEventListener, useStore } from "@/hooks";
 
+import { ENUM_RESOURCE } from "@/enum/resource";
 import { UPLOAD_FILE_MAX_COUNT } from "@/config/file";
 
 import type { TypeUploadProgress, TypeUploadStatus } from "./utils";
@@ -28,22 +30,63 @@ const Upload = () => {
 
   const [status, setStatus] = useState<TypeUploadStatus>({});
 
-  function checkTasks() {
+  function scheduler() {
     const { RUN, WAIT } = queue.current;
     const index = UPLOAD_FILE_MAX_COUNT - RUN.length;
     const insert = WAIT.splice(0, index);
+    RUN.push(...insert);
+    insert.forEach(task);
+  }
+
+  async function task(id: string) {
+    const file = ref.current[id];
+    const { RUN, DONE, ERROR } = queue.current;
+    try {
+      let i = file.index;
+      const length = file?.chunks?.length!;
+      while (i < length) {
+        file.control = new AbortController();
+        const res = await uploadChunk(file.chunks![i], file.control);
+        file.index = ++i;
+        setStatus((s) => {
+          const target = s[id];
+          target.progress = Math.floor((i / length) * 100);
+          if (res) {
+            file.chunks = null;
+            target.paths = res.paths;
+            target.status = ENUM_RESOURCE.STATUS.DONE;
+          }
+          return { ...s };
+        });
+      }
+      DONE.unshift(id);
+    } catch (e) {
+      console.log("@-error", e);
+      if (!file.run) return;
+      ERROR.unshift(id);
+      setStatus((s) => {
+        s[id].status = ENUM_RESOURCE.STATUS.ERROR;
+        return { ...s };
+      });
+    } finally {
+      RUN.splice(RUN.indexOf(id), 1);
+      scheduler();
+    }
   }
 
   useEventListener<FileList>(Upload.name, (e) => {
     const files = e.detail;
     const folderId = path.at(-1);
     const { status, progress } = filesFormat(files, folderId);
+    queue.current.WAIT.push(...Object.keys(progress));
     ref.current = { ...ref.current, ...progress };
     setStatus((s) => ({ ...s, ...status }));
-    checkTasks();
+    scheduler();
   });
 
   const list = Object.values(status);
+
+  console.log(list);
 
   return (
     <Container>

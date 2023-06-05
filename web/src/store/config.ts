@@ -1,7 +1,7 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 const DEFAULT_CONFIG = {
-  UPLOAD: false,
+  UPLOAD: true,
 };
 
 const configSlice = createSlice({

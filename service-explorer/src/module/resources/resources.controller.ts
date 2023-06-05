@@ -64,9 +64,11 @@ export class ResourcesController {
   @Post('upload')
   upload(
     @GetUploadFile({ limits: { fileSize: 1024 * 1024 * 10 } })
-    file: MultipartFile,
+    file: MultipartFile|any,
   ) {
-    console.log(file);
-    return true;
+    const index = file.fields.index.value;
+    const total = file.fields.total.value;
+
+    return index === total;
   }
 }

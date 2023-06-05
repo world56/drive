@@ -21,7 +21,6 @@ export interface ServiceResponse<T> {
 }
 
 async function errorHandler(res: ResponseError) {
-  console.log(res);
   return Promise.reject(res.response);
 }
 
@@ -76,6 +75,7 @@ request.interceptors.response.use(
       }
     } catch (e) {
       if (e === "DOMException: The user aborted a request.") return;
+      console.log(e);
       message.error(String(e));
       return Promise.reject(e);
     }
