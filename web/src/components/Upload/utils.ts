@@ -1,4 +1,3 @@
-import store from "@/store";
 import { nanoid } from "nanoid";
 import { filesize } from "filesize";
 
@@ -26,7 +25,7 @@ export type TypeUploadStatus = Record<
     /** @param progress 进度百分比 */
     progress: number;
     /** @param 上传成功后的路径 */
-    paths?: TypeResource.DTO['paths'];
+    paths?: TypeResource.DTO["paths"];
   }
 >;
 
@@ -59,24 +58,22 @@ export function splitFiles(
     "id" | "parentId" | "name"
   >,
 ) {
-  const chunkList: FormData[] = [];
+  const chunks: FormData[] = [];
   const length = parseInt(`${file.size / UPLOAD_SLICE_SIZE + 1}`);
-  const creatorId = store.getState().user.id!;
   for (let i = 0; i < length; i++) {
     const start = i * UPLOAD_SLICE_SIZE;
     const data = new FormData();
     data.append("id", params.id);
     data.append("name", params.name);
-    data.append("creatorId", creatorId);
     data.append("total", length.toString());
     data.append("index", (i + 1).toString());
     data.append("size", file.size.toString());
     data.append("segment", start.toString());
     params.parentId && data.append("parentId", params.parentId);
     data.append("chunk", file.slice(start, start + UPLOAD_SLICE_SIZE));
-    chunkList.push(data);
+    chunks.push(data);
   }
-  return chunkList;
+  return chunks;
 }
 
 /**

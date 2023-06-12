@@ -1,7 +1,7 @@
 import { toCategory } from "@/utils/format";
 
-import { ENUM_RESOURCE } from "@/enum/resource";
 import { ENUM_COMMON } from "@/enum/common";
+import { ENUM_RESOURCE } from "@/enum/resource";
 
 export namespace CONSTANT_RESOURCE {
   export const TYPE = toCategory([

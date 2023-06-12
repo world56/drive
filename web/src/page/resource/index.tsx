@@ -24,7 +24,6 @@ const Resource = () => {
     open: false,
   });
 
-  // 资源列表
   const { data, loading, run } = useRequest(
     () => getResources({ id: resource.path?.at(-1) }),
     { refreshDeps: [resource.path] },

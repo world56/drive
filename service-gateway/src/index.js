@@ -1,18 +1,20 @@
 const proxy = require("./proxy");
 const fastify = require("fastify");
+const cors = require("@fastify/cors");
 const redis = require("@fastify/redis");
 
 const app = fastify({
-  // logger: {
-  //   transport: {
-  //     target: "@fastify/one-line-logger",
-  //   },
-  // },
+  logger: {
+    transport: {
+      target: "@fastify/one-line-logger",
+    },
+  },
 });
 
 const start = async () => {
   try {
     proxy(app);
+    app.register(cors);
     app.register(redis, { url: "redis://:slash@127.0.0.1:6379" });
     await app.listen({ port: 2000 });
   } catch (err) {

@@ -10,6 +10,7 @@ lerna-debug.log*
 
 dist/
 node_modules/
+/service-explorer/resource
 
 # IDE - VSCode
 .vscode/*

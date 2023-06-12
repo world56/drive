@@ -18,13 +18,13 @@ async function bootstrap() {
     AppModule,
     new FastifyAdapter(),
   );
+  app.register(multipart);
+  app.enableCors();
   app.useStaticAssets({
     prefix: '/resource/',
     root: app.get(ConfigService).get('STORAGE_PATH'),
   });
-  app.register(multipart);
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
-  app.listen(process.env.PORT);
   const config = new DocumentBuilder()
     .setTitle('Explorer 资源管理服务')
     .setDescription('包涵文件、文件夹、统计、收藏等服务。')
@@ -32,6 +32,7 @@ async function bootstrap() {
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
+  await app.listen(process.env.PORT);
 }
 
 bootstrap();

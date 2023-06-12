@@ -1,11 +1,11 @@
 import { ResourcesService } from './resources.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { UserID } from 'src/decorator/user-id.decorator';
-import { UploadFileGuard } from 'src/guard/upload-file.guard';
-import { GetUploadFile } from 'src/decorator/get-upload-file.decorator';
+import { UserID } from '@/decorator/user-id.decorator';
+import { UploadFileGuard } from '@/guard/upload-file.guard';
+import { GetUploadFile } from '@/decorator/get-upload-file.decorator';
 import { Body, Get, Post, Query, Controller, UseGuards } from '@nestjs/common';
 
-import { ResourceDTO } from 'src/dto/resource.dto';
+import { ResourceDTO } from '@/dto/resource.dto';
 import { DeleteResourcesDTO } from './dto/delete-resources.dto';
 import { FindResourcesListDTO } from './dto/find-resources-list.dto';
 
@@ -59,16 +59,22 @@ export class ResourcesController {
 
   @ApiOperation({
     summary: '上传资源',
+    description: '分段式上传',
   })
-  @UseGuards(new UploadFileGuard())
   @Post('upload')
-  upload(
-    @GetUploadFile({ limits: { fileSize: 1024 * 1024 * 10 } })
-    file: MultipartFile|any,
-  ) {
-    const index = file.fields.index.value;
-    const total = file.fields.total.value;
-
-    return index === total;
+  @UseGuards(new UploadFileGuard())
+  upload(@GetUploadFile() file: MultipartFile, @UserID() id: string) {
+    const fields = file.fields as Record<string, { value: string }>;
+    return this.ResourcesService.upload({
+      creatorId: id,
+      file: file.file,
+      id: fields.id.value,
+      name: fields.name.value,
+      index: fields.index.value,
+      total: fields.total.value,
+      segment: fields.segment.value,
+      parentId: fields.parentId.value,
+      size: Number(fields.size.value),
+    });
   }
 }

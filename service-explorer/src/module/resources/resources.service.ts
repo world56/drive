@@ -1,14 +1,25 @@
+import { FileService } from '@/common/file/file.service';
 import { Injectable, ConflictException } from '@nestjs/common';
 import { PrismaService } from 'src/common/prisma/prisma.service';
 
-import { ResourceDTO } from 'src/dto/resource.dto';
+import { ResourceDTO } from '@/dto/resource.dto';
 import { DeleteResourcesDTO } from './dto/delete-resources.dto';
 
-import { ENUM_EXPLORER } from 'src/enum/explorer';
+import { ENUM_EXPLORER } from '@/enum/explorer';
+
+import type { Resource } from '@prisma/client';
+import type { TypeFileWriteParam } from '@/common/file/file.service';
+
+export interface TypeUploadChunkInfo extends TypeFileWriteParam {
+  creatorId: Resource['creatorId'];
+}
 
 @Injectable()
 export class ResourcesService {
-  public constructor(private readonly PrismaService: PrismaService) {}
+  public constructor(
+    private readonly FileService: FileService,
+    private readonly PrismaService: PrismaService,
+  ) {}
 
   findList(id: string) {
     return this.PrismaService.resource.findMany({
@@ -46,6 +57,11 @@ export class ResourcesService {
       where: { id },
       data: { ...data, fullName: `${data.name}.${target.suffix}` },
     });
+  }
+
+  async upload({ creatorId, ...data }: TypeUploadChunkInfo) {
+    const { name } = data;
+    return await this.FileService.write(data);
   }
 
   async delete({ ids }: DeleteResourcesDTO) {

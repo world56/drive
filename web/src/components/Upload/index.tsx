@@ -50,7 +50,7 @@ const Upload = () => {
         file.index = ++i;
         setStatus((s) => {
           const target = s[id];
-          target.progress = Math.floor((i / length) * 100);
+          target.progress = Math.floor(i / length) * 100;
           if (res) {
             file.chunks = null;
             target.paths = res.paths;
@@ -61,7 +61,6 @@ const Upload = () => {
       }
       DONE.unshift(id);
     } catch (e) {
-      console.log("@-error", e);
       if (!file.run) return;
       ERROR.unshift(id);
       setStatus((s) => {
