@@ -43,8 +43,8 @@ const items: MenuProps["items"] = [
     key: 5,
   },
   {
-    icon: <DeleteOutlined className="danger" />,
-    label: <span className="danger">删除</span>,
+    icon: <DeleteOutlined className="red" />,
+    label: <span className="red">删除</span>,
     key: 6,
   },
 ];

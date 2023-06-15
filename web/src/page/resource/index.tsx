@@ -30,14 +30,14 @@ const Resource = () => {
   );
 
   const onMenu: TypeFilesProps["onMenu"] = (e) => {
-    const { key } = e;
-    switch (key) {
+    switch (e.key) {
       case ENUM_MENU_TYPE.MKDIR:
         const parentId = resource.path?.at(-1);
         return setEdit({ open: true, parentId });
       case ENUM_MENU_TYPE.REFRESH:
         return run();
-      case ENUM_MENU_TYPE.UPLOAD:
+      case ENUM_MENU_TYPE.UPLOAD_FILE:
+      case ENUM_MENU_TYPE.UPLOAD_FOLDER:
         return createUpload();
       default:
         return;

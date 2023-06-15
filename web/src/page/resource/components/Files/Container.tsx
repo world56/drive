@@ -1,6 +1,8 @@
 import {
   SyncOutlined,
   TableOutlined,
+  FolderOutlined,
+  FileAddOutlined,
   FolderAddOutlined,
   CloudUploadOutlined,
   SortDescendingOutlined,
@@ -18,8 +20,10 @@ import type { MenuProps, SpinProps } from "antd";
 import type { TypeResource } from "@/interface/resource";
 
 export enum ENUM_MENU_TYPE {
-  /** @param UPLOAD 上传资源 */
-  UPLOAD = "UPLOAD",
+  /** @param UPLOAD_FILE 上传文件 */
+  UPLOAD_FILE = "UPLOAD_FILE",
+  /** @param UPLOAD_FOLDER 上传文件夹 */
+  UPLOAD_FOLDER = "UPLOAD_FOLDER",
   /** @param MKDIR 创建文件夹 */
   MKDIR = "MKDIR",
   /** @param REFRESH 刷新当前文件夹 */
@@ -41,12 +45,18 @@ export interface TypeFilesContainerProps extends TypeFilesProps {
 
 const items: MenuProps["items"] = [
   {
-    icon: <CloudUploadOutlined />,
-    label: "上传资源",
-    key: ENUM_MENU_TYPE.UPLOAD,
+    icon: <FileAddOutlined />,
+    label: "上传文件",
+    key: ENUM_MENU_TYPE.UPLOAD_FILE,
   },
   {
     icon: <FolderAddOutlined />,
+    label: "上传文件夹",
+    key: ENUM_MENU_TYPE.UPLOAD_FOLDER,
+  },
+  { type: "divider" },
+  {
+    icon: <FolderOutlined />,
     label: "新建文件夹",
     key: ENUM_MENU_TYPE.MKDIR,
   },

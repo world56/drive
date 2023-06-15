@@ -3,12 +3,12 @@ import { useCallback, useEffect } from "react";
 
 /**
  * @name useEventListener 监听自定义事件
- * @param type 自定义事件的name
+ * @param eventName 自定义事件的name
  * @param callBack 监听回调
  * @description 支持事件自动卸载
  */
 export default function useEventListener<T = undefined>(
-  type: string,
+  eventName: string,
   callBack: (e: CustomEvent<T>) => void,
 ) {
   const ref = useRef<typeof callBack>();
@@ -23,9 +23,9 @@ export default function useEventListener<T = undefined>(
   );
 
   useEffect(() => {
-    document.addEventListener(type, bindCallBack as EventListener);
+    document.addEventListener(eventName, bindCallBack as EventListener);
     return () => {
-      document.removeEventListener(type, bindCallBack as EventListener);
+      document.removeEventListener(eventName, bindCallBack as EventListener);
     };
   }, [bindCallBack]);
 }

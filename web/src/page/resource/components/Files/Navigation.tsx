@@ -17,11 +17,7 @@ const Navigation = () => {
   const route = useMemo(
     () => [
       {
-        title: (
-          <>
-            <HomeOutlined /> 主目录
-          </>
-        ),
+        title: <HomeOutlined />,
         key: "resource",
         onClick: () => toFolder(),
       },

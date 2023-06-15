@@ -30,7 +30,13 @@ export interface TypeFileWriteParam
 
 @Injectable()
 export class FileService {
-  constructor(
+  private RESOURCE_PATH: string;
+
+  private readonly open = promisify(open);
+  private readonly pump = promisify(pipeline);
+  private readonly ftruncate = promisify(ftruncate);
+
+  public constructor(
     private readonly ConfigService: ConfigService<
       ReturnType<typeof CONFIG_FILE_TYPE> & Record<string, string>
     >,
@@ -38,20 +44,13 @@ export class FileService {
     this.RESOURCE_PATH = this.ConfigService.get<string>('STORAGE_PATH');
   }
 
-  private RESOURCE_PATH: string;
-
-  private readonly open = promisify(open);
-  private readonly pump = promisify(pipeline);
-  private readonly ftruncate = promisify(ftruncate);
-
-  private getFilePath(id: string, name: string) {
+  private getPath(id: string, name: string) {
     const storageName = `${id}${name.length}${extname(name)}`;
     return { path: `/${storageName}`, url: `/resource/${storageName}` };
   }
 
-  private getFileType(suffix: string) {
-    const type =
-      this.ConfigService.get<ENUM_EXPLORER.TYPE>('FILE_TYPE')[suffix];
+  private getType(suffix: string) {
+    const type = this.ConfigService.get('FILE_TYPE')[suffix];
     return type !== undefined ? type : ENUM_EXPLORER.TYPE.OTHER;
   }
 
@@ -59,7 +58,7 @@ export class FileService {
     const { id, name, file, size, index, total, segment, parentId } = body;
     let target: number, write: WriteStream;
     try {
-      const { path, url } = this.getFilePath(id, name);
+      const { path, url } = this.getPath(id, name);
       const storage = `${this.RESOURCE_PATH}${path}`;
       target = await this.open(storage, 'a');
       await this.ftruncate(target, Number(segment));
@@ -74,7 +73,7 @@ export class FileService {
           path,
           suffix,
           parentId,
-          type: this.getFileType(suffix),
+          type: this.getType(suffix),
           name: name.slice(0, name.indexOf(suffixName)),
         };
       }

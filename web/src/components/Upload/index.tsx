@@ -11,14 +11,19 @@ import { UPLOAD_FILE_MAX_COUNT } from "@/config/file";
 
 import type { TypeUploadProgress, TypeUploadStatus } from "./utils";
 
-type TypeQueue = Record<"RUN" | "WAIT" | "PAUSE" | "ERROR" | "DONE", string[]>;
+export type TypeQueue = Record<
+  "RUN" | "WAIT" | "PAUSE" | "ERROR" | "DONE",
+  string[]
+>;
 
 /**
  * @name Upload 上传资源
  */
 const Upload = () => {
   const { path } = useStore("resource");
+  const [status, setStatus] = useState<TypeUploadStatus>({});
 
+  const ref = useRef<TypeUploadProgress>({});
   const queue = useRef<TypeQueue>({
     RUN: [],
     WAIT: [],
@@ -26,9 +31,6 @@ const Upload = () => {
     ERROR: [],
     DONE: [],
   });
-  const ref = useRef<TypeUploadProgress>({});
-
-  const [status, setStatus] = useState<TypeUploadStatus>({});
 
   function scheduler() {
     const { RUN, WAIT } = queue.current;
@@ -50,7 +52,7 @@ const Upload = () => {
         file.index = ++i;
         setStatus((s) => {
           const target = s[id];
-          target.progress = Math.floor(i / length) * 100;
+          target.progress = Math.floor((i / length) * 100);
           if (res) {
             file.chunks = null;
             target.paths = res.paths;
@@ -83,12 +85,12 @@ const Upload = () => {
     scheduler();
   });
 
-  const list = Object.values(status);
-
-  console.log(list);
+  const list = Object.values(queue.current)
+    .flat()
+    .map((id) => status[id]);
 
   return (
-    <Container>
+    <Container total={list.length} queue={queue.current}>
       <FixedSizeList
         width={352}
         height={447}

@@ -73,7 +73,7 @@ export class ResourcesController {
       index: fields.index.value,
       total: fields.total.value,
       segment: fields.segment.value,
-      parentId: fields.parentId.value,
+      parentId: fields.parentId?.value,
       size: Number(fields.size.value),
     });
   }

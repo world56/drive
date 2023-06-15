@@ -35,11 +35,6 @@
       border-radius: 8px 8px 0 0
       background: rgba(0, 0, 0, .05)
 
-    .icon
-      margin-right: 12px
-      svg
-        font-size: 18px
-
     .status
       display: flex
       align-items: center
@@ -56,11 +51,16 @@
       & > span:nth-child(4)
         font-weight: 300
 
+      :global(.anticon)
+        margin-right: 12px
+        svg
+          font-size: 18px
+
   .btn
     width: 58px
     display: flex
     align-items: center
-    justify-content: space-between
+    justify-content: right
     :global(.anticon)
       width: 24px
       height: 24px
@@ -76,6 +76,8 @@
         &:hover
           svg
             fill: black
+    :global(.anticon):nth-last-child(1)
+      margin-left: 8px
 
   .item
     width: 320px !important
@@ -96,7 +98,7 @@
       margin: 0
       width: 201px
       font-size: 14px
-      padding-right: 16.5px
+      padding-right: 14px
 
       p
         overflow: hidden
@@ -109,5 +111,5 @@
       p:nth-child(2)
         user-select: none
         font-size: 12px
-        font-weight: 300
+        // font-weight: 300
         color: #878D96
