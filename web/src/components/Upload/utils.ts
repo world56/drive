@@ -45,7 +45,7 @@ export type TypeUploadProgress = Record<
     control?: AbortController;
     /** @param chunks 分割 */
     chunks: FormData[] | null;
-  }
+  } | null
 >;
 
 /**

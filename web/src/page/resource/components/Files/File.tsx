@@ -11,6 +11,8 @@ import { Dropdown } from "antd";
 import styles from "./index.module.sass";
 import { stopPropagation } from "@/utils";
 
+import ICON_FOLDER from "@/assets/folder.svg";
+
 import type { MenuProps } from "antd";
 import type { TypeResource } from "@/interface/resource";
 
@@ -62,10 +64,7 @@ const File: React.FC<TypeResource.DTO> = (props) => {
         onContextMenu={stopPropagation}
       >
         <span>
-          <img
-            src="https://img.pconline.com.cn/images/upload/upc/tx/photoblog/1411/24/c6/41272187_41272187_1416843675065.jpg"
-            alt="#"
-          />
+          <img src={ICON_FOLDER} alt="#" />
         </span>
         <p>{props.name}</p>
         <p>

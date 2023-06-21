@@ -14,6 +14,7 @@ import { CONSTANT_RESOURCE } from "@/constant/resource";
 
 import type { TypeUploadStatus } from "./utils";
 import type { ListChildComponentProps } from "react-window";
+import { ENUM_UPLOAD_EVENT } from "./Container";
 
 type TypeItemProps<T = TypeUploadStatus> = Array<T[keyof T]>;
 
@@ -25,19 +26,29 @@ const Item: React.FC<ListChildComponentProps<TypeItemProps>> = ({
   index,
   style,
 }) => {
-  const { status, suffix, name, progress } = data[index];
+  const { id, status, suffix, name, progress } = data[index];
 
   const STATUS = CONSTANT_RESOURCE.STATUS.OBJ[status];
 
+  const dataset = { ["data-id"]: id };
+
   const BTN = {
     // 完成
-    [ENUM_RESOURCE.STATUS.DONE]: <FolderOutlined />,
+    [ENUM_RESOURCE.STATUS.DONE]: (
+      <FolderOutlined {...dataset} data-type={ENUM_UPLOAD_EVENT.CD} />
+    ),
     // 上传中
-    [ENUM_RESOURCE.STATUS.UPLOADING]: <PauseOutlined />,
+    [ENUM_RESOURCE.STATUS.UPLOADING]: (
+      <PauseOutlined {...dataset} data-type={ENUM_UPLOAD_EVENT.PAUSE} />
+    ),
     // 暂停
-    [ENUM_RESOURCE.STATUS.PAUSE]: <CaretRightOutlined />,
+    [ENUM_RESOURCE.STATUS.PAUSE]: (
+      <CaretRightOutlined {...dataset} data-type={ENUM_UPLOAD_EVENT.START} />
+    ),
     // 失败
-    [ENUM_RESOURCE.STATUS.ERROR]: <ReloadOutlined />,
+    [ENUM_RESOURCE.STATUS.ERROR]: (
+      <ReloadOutlined {...dataset} data-type={ENUM_UPLOAD_EVENT.START} />
+    ),
   };
 
   return (
@@ -52,10 +63,12 @@ const Item: React.FC<ListChildComponentProps<TypeItemProps>> = ({
         </p>
       </div>
       <div className={styles.btn}>
-        {BTN[status]}
         <DeleteOutlined
+          {...dataset}
+          data-type={ENUM_UPLOAD_EVENT.EMPTY}
           className={status !== ENUM_RESOURCE.STATUS.UPLOADING ? "" : "none"}
         />
+        {BTN[status]}
       </div>
     </div>
   );

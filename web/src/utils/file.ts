@@ -13,16 +13,39 @@ import ICON_ZIP from "@/assets/file_zip.svg";
 import ICON_MUSIC from "@/assets/file_music.svg";
 import ICON_OTHER from "@/assets/file_other.svg";
 import ICON_VIDEO from "@/assets/file_video.svg";
+import ICON_PACKAGE from "@/assets/file_package.svg";
 
 function convertMatch(key: string[], value: string) {
   return Object.fromEntries(key.map((k) => [k, value]));
 }
 
 const ICON = {
+  // 安装包
+  ...convertMatch(
+    [
+      "ext",
+      "msi",
+      "deb",
+      "rpm",
+      "pkg",
+      "dmg",
+      "exe",
+      "ipa",
+      "pxl",
+      "sis",
+      "sisx",
+      "jar",
+      "xap",
+      "apk",
+      "bin",
+      "dpkg",
+    ],
+    ICON_PACKAGE,
+  ),
   // PDF
   ...convertMatch(["pdf"], ICON_PDF),
   // 文本
-  ...convertMatch(["text"], ICON_TXT),
+  ...convertMatch(["txt", "md", "markdown"], ICON_TXT),
   // 压缩文件
   ...convertMatch(["7z", "rar", "zip", "tar", "gzip", "iso"], ICON_ZIP),
   // 视频
@@ -86,7 +109,6 @@ const ICON = {
       "wps",
       "xml",
       "csv",
-      "pdf",
       "xps",
       "bmp",
       "mobi",

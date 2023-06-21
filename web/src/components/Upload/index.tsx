@@ -7,6 +7,7 @@ import { FixedSizeList } from "react-window";
 import { useEventListener, useStore } from "@/hooks";
 
 import { ENUM_RESOURCE } from "@/enum/resource";
+import { ENUM_UPLOAD_EVENT } from "./Container";
 import { UPLOAD_FILE_MAX_COUNT } from "@/config/file";
 
 import type { TypeUploadProgress, TypeUploadStatus } from "./utils";
@@ -34,6 +35,7 @@ const Upload = () => {
 
   function scheduler() {
     const { RUN, WAIT } = queue.current;
+    if (!RUN.length && !WAIT.length) return;
     const index = UPLOAD_FILE_MAX_COUNT - RUN.length;
     const insert = WAIT.splice(0, index);
     RUN.push(...insert);
@@ -42,11 +44,13 @@ const Upload = () => {
 
   async function task(id: string) {
     const file = ref.current[id];
+    if (!file) return;
     const { RUN, DONE, ERROR } = queue.current;
     try {
       let i = file.index;
       const length = file?.chunks?.length!;
       while (i < length) {
+        if (!file?.run) return;
         file.control = new AbortController();
         const res = await uploadChunk(file.chunks![i], file.control);
         file.index = ++i;
@@ -75,6 +79,81 @@ const Upload = () => {
     }
   }
 
+  function onStart(id?: string) {
+    const { WAIT, ERROR, PAUSE } = queue.current;
+    const ids = id ? [id] : [...PAUSE, ...ERROR];
+    if (id) {
+      const isPause = status[id].status === ENUM_RESOURCE.STATUS.PAUSE;
+      const ids = isPause ? PAUSE : ERROR;
+      ids.splice(ids.indexOf(id), 1);
+    } else {
+      if (!ids.length) return;
+      PAUSE.length = 0;
+      ERROR.length = 0;
+    }
+    ids.forEach((id) => (ref.current[id]!.run = true));
+    WAIT.push(...ids);
+    setStatus((s) => {
+      ids.forEach((id) => (s[id].status = ENUM_RESOURCE.STATUS.UPLOADING));
+      return { ...s };
+    });
+    scheduler();
+  }
+
+  function onPause(id?: string) {
+    const { RUN, WAIT, PAUSE } = queue.current;
+    const ids = id ? [id] : [...RUN, ...WAIT];
+    if (id) {
+      RUN.splice(RUN.indexOf(id), 1);
+    } else {
+      if (!ids.length) return;
+      RUN.length = 0;
+      WAIT.length = 0;
+    }
+    PAUSE.push(...ids);
+    ids.forEach((id) => {
+      ref.current[id]!.run = false;
+      ref.current[id]!.control?.abort();
+    });
+    setStatus((s) => {
+      ids.forEach((id) => (s[id].status = ENUM_RESOURCE.STATUS.PAUSE));
+      return { ...s };
+    });
+  }
+
+  function onDelete(id?: string) {
+    if (id) {
+      const { PAUSE, ERROR, DONE } = queue.current;
+      [PAUSE, ERROR, DONE].forEach((arr) => {
+        const i = arr.indexOf(id);
+        ~i && arr.splice(arr.indexOf(id), 1);
+      });
+      setStatus((s) => {
+        ref.current[id] = null;
+        return Object.fromEntries(
+          Object.entries(s).filter(([id]) => ref.current[id]),
+        );
+      });
+    } else {
+      queue.current = { RUN: [], WAIT: [], PAUSE: [], ERROR: [], DONE: [] };
+      ref.current = {};
+      setStatus({});
+    }
+  }
+
+  function onEventDispatch(type: ENUM_UPLOAD_EVENT, id?: string) {
+    switch (type) {
+      case ENUM_UPLOAD_EVENT.START:
+        return onStart(id);
+      case ENUM_UPLOAD_EVENT.PAUSE:
+        return onPause(id);
+      case ENUM_UPLOAD_EVENT.EMPTY:
+        return onDelete(id);
+      default:
+        return;
+    }
+  }
+
   useEventListener<FileList>(Upload.name, (e) => {
     const files = e.detail;
     const folderId = path.at(-1);
@@ -90,7 +169,11 @@ const Upload = () => {
     .map((id) => status[id]);
 
   return (
-    <Container total={list.length} queue={queue.current}>
+    <Container
+      total={list.length}
+      queue={queue.current}
+      onClick={onEventDispatch}
+    >
       <FixedSizeList
         width={352}
         height={447}

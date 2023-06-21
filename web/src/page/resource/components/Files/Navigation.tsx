@@ -15,18 +15,21 @@ const Navigation = () => {
   const { path, foldersObj } = resource;
 
   const route = useMemo(
-    () => [
-      {
-        title: <HomeOutlined />,
-        key: "resource",
-        onClick: () => toFolder(),
-      },
-      ...path.map((id) => ({
-        key: id,
-        title: <>{foldersObj?.[id]?.name}</>,
-        onClick: () => toFolder(id),
-      })),
-    ],
+    () =>
+      path.length
+        ? [
+            {
+              title: <HomeOutlined />,
+              key: "resource",
+              onClick: () => toFolder(),
+            },
+            ...path.map((id) => ({
+              key: id,
+              title: foldersObj?.[id]?.name,
+              onClick: () => toFolder(id),
+            })),
+          ]
+        : [],
     [path, foldersObj, toFolder],
   );
 

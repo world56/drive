@@ -40,6 +40,7 @@ export async function encryption(text: string | object) {
 /**
  * @name stopPropagation 阻止事件冒泡
  */
-export function stopPropagation(e: React.MouseEvent<HTMLDivElement>) {
-  e.stopPropagation();
+export function stopPropagation(e?: React.MouseEvent<HTMLElement>) {
+    e?.nativeEvent.stopImmediatePropagation();
+    e?.stopPropagation();
 }

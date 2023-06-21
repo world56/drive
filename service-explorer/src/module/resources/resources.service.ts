@@ -3,6 +3,7 @@ import { Injectable, ConflictException } from '@nestjs/common';
 import { PrismaService } from 'src/common/prisma/prisma.service';
 
 import { ResourceDTO } from '@/dto/resource.dto';
+import { InsertResourceDTO } from './dto/inset-resource.dto';
 import { DeleteResourcesDTO } from './dto/delete-resources.dto';
 
 import { ENUM_EXPLORER } from '@/enum/explorer';
@@ -34,7 +35,7 @@ export class ResourcesService {
     });
   }
 
-  createFolder(body: ResourceDTO, creatorId: string) {
+  createFolder(body: InsertResourceDTO, creatorId: string) {
     return this.PrismaService.resource.create({
       data: {
         ...body,

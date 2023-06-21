@@ -6,6 +6,7 @@ import { GetUploadFile } from '@/decorator/get-upload-file.decorator';
 import { Body, Get, Post, Query, Controller, UseGuards } from '@nestjs/common';
 
 import { ResourceDTO } from '@/dto/resource.dto';
+import { InsertResourceDTO } from './dto/inset-resource.dto';
 import { DeleteResourcesDTO } from './dto/delete-resources.dto';
 import { FindResourcesListDTO } from './dto/find-resources-list.dto';
 
@@ -36,7 +37,7 @@ export class ResourcesController {
     summary: '创建文件夹',
   })
   @Post('create')
-  create(@Body() body: ResourceDTO, @UserID() id: string) {
+  create(@Body() body: InsertResourceDTO, @UserID() id: string) {
     return this.ResourcesService.createFolder(body, id);
   }
 

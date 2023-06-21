@@ -1,7 +1,8 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 const DEFAULT_CONFIG = {
-  UPLOAD: true,
+  /** @param UPLOAD 上传组件显示状态 */
+  UPLOAD: false,
 };
 
 const configSlice = createSlice({

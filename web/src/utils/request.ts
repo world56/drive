@@ -20,6 +20,11 @@ export interface ServiceResponse<T> {
   readonly code: ENUM_HTTP.HTTP_CODE;
 }
 
+const MSG_WHITELIST = [
+  "AbortError: The user aborted a request.",
+  "DOMException: The user aborted a request.",
+];
+
 async function errorHandler(res: ResponseError) {
   return Promise.reject(res.response);
 }
@@ -42,11 +47,11 @@ request.interceptors.request.use(
     switch (options.proxy) {
       case ENUM_HTTP.PROXY.AUTH:
         config.url = API_PROXY_AUTH_URL + url;
-        config.url = `http://127.0.0.1:2000${config.url}`
+        config.url = `http://127.0.0.1:2000${config.url}`;
         break;
       case ENUM_HTTP.PROXY.EXPLORER:
         config.url = API_PROXY_EXPLORER_URL + url;
-        config.url = `http://127.0.0.1:2000${config.url}`
+        config.url = `http://127.0.0.1:2000${config.url}`;
         break;
       default:
         break;
@@ -76,9 +81,9 @@ request.interceptors.response.use(
           return Promise.reject(data);
       }
     } catch (e) {
-      if (e === "DOMException: The user aborted a request.") return;
-      console.log(e);
-      message.error(String(e));
+      const error = String(e);
+      if (MSG_WHITELIST.includes(error)) return;
+      message.error(error);
       return Promise.reject(e);
     }
   },

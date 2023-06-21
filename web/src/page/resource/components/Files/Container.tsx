@@ -1,17 +1,16 @@
 import {
   SyncOutlined,
   TableOutlined,
+  SearchOutlined,
   FolderOutlined,
   FileAddOutlined,
   FolderAddOutlined,
-  CloudUploadOutlined,
   SortDescendingOutlined,
 } from "@ant-design/icons";
 import Navigation from "./Navigation";
 import styles from "./index.module.sass";
-import { createUpload } from "@/utils/file";
+import { Dropdown, Empty, Spin, Tooltip } from "antd";
 import { isEmpty, stopPropagation } from "@/utils";
-import { Dropdown, Empty, Button, Spin } from "antd";
 
 import { ENUM_RESOURCE } from "@/enum/resource";
 
@@ -116,13 +115,9 @@ const Container: React.FC<TypeFilesContainerProps> = ({
     <div className={styles.files}>
       <div className={styles.nav}>
         <Navigation />
-        <Button
-          size="small"
-          onClick={createUpload}
-          icon={<CloudUploadOutlined />}
-        >
-          上传
-        </Button>
+        <Tooltip title="查询" placement="left">
+          <SearchOutlined />
+        </Tooltip>
       </div>
       {loading ? <Spin spinning={loading} tip="正在加载资源目录" /> : null}
       <Dropdown trigger={["contextMenu"]} menu={{ items, onClick: onMenu }}>
