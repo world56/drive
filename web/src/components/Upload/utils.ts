@@ -14,8 +14,8 @@ export type TypeUploadStatus = Record<
   Pick<TypeResource.DTO, "id" | "name" | "parentId"> & {
     /** @param 文件大小 */
     size: string;
-    // /** @param index 位置 */
-    // index: number;
+    /** @param index 位置 */
+    index: number;
     /** @param length 总长度 */
     length: number;
     /** @param 文件格式（后缀） */
@@ -94,6 +94,7 @@ export function filesFormat(
     status[id] = {
       ...param,
       suffix,
+      index: 0,
       progress: 0,
       length: chunks.length,
       size: filesize(file.size).toString(),

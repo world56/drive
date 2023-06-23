@@ -91,13 +91,15 @@
       border-radius: 50%
       align-content: center
       justify-content: center
-      background: rgb(245, 245, 246)
+      background: rgb(0,0,0,0.05)
       svg
         font-size: 17px
         fill: rgb(98,99,102)
-        &:hover
-          svg
-            fill: black
+      &:hover
+        background: rgb(0,0,0,0.08)
+        svg
+          fill: black
+
     :global(.anticon):nth-last-child(1)
       margin-left: 8px
 
@@ -127,11 +129,23 @@
         white-space: nowrap
         text-overflow: ellipsis
 
-      p:nth-child(1)
-        color: rgba(0, 0, 0, 0.7)
+        &:nth-child(1)
+          color: rgba(0, 0, 0, 0.7)
 
-      p:nth-child(2)
-        user-select: none
-        font-size: 12px
-        // font-weight: 300
-        color: #878D96
+        &:nth-child(2)
+          font-size: 12px
+          color: #878D96
+
+        span:nth-child(2)
+          margin-left: 5px
+        span:nth-last-child(1)
+          color: rgba(0, 0, 0, 0.7)
+          display: none
+
+      &:hover
+        p:nth-child(2)
+        span:nth-child(1),
+        span:nth-child(2)
+          display: none
+        span:nth-last-child(1)
+          display: inline-block

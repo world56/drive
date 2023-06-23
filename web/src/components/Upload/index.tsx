@@ -1,5 +1,5 @@
 import Item from "./Item";
-import Container from "./Container";
+import Container from "./Container/index";
 import { filesFormat } from "./utils";
 import { useRef, useState } from "react";
 import { uploadChunk } from "@/api/resource";
@@ -7,7 +7,6 @@ import { FixedSizeList } from "react-window";
 import { useEventListener, useStore } from "@/hooks";
 
 import { ENUM_RESOURCE } from "@/enum/resource";
-import { ENUM_UPLOAD_EVENT } from "./Container";
 import { UPLOAD_FILE_MAX_COUNT } from "@/config/file";
 
 import type { TypeUploadProgress, TypeUploadStatus } from "./utils";
@@ -16,6 +15,20 @@ export type TypeQueue = Record<
   "RUN" | "WAIT" | "PAUSE" | "ERROR" | "DONE",
   string[]
 >;
+
+/**
+ * @name ENUM_UPLOAD_EVENT Upload组件事件类型
+ */
+export enum ENUM_UPLOAD_EVENT {
+  /** @param START 开始任务 */
+  START,
+  /** @param PAUSE 暂停任务 */
+  PAUSE,
+  /** @param DELETE 删除任务 */
+  DELETE,
+  /** @param CD 跳转至文件所在目录 */
+  CD,
+}
 
 /**
  * @name Upload 上传资源
@@ -56,6 +69,7 @@ const Upload = () => {
         file.index = ++i;
         setStatus((s) => {
           const target = s[id];
+          target.index = file.index;
           target.progress = Math.floor((i / length) * 100);
           if (res) {
             file.chunks = null;
@@ -141,13 +155,13 @@ const Upload = () => {
     }
   }
 
-  function onEventDispatch(type: ENUM_UPLOAD_EVENT, id?: string) {
+  function onEvent(type: ENUM_UPLOAD_EVENT, id?: string) {
     switch (type) {
       case ENUM_UPLOAD_EVENT.START:
         return onStart(id);
       case ENUM_UPLOAD_EVENT.PAUSE:
         return onPause(id);
-      case ENUM_UPLOAD_EVENT.EMPTY:
+      case ENUM_UPLOAD_EVENT.DELETE:
         return onDelete(id);
       default:
         return;
@@ -169,11 +183,7 @@ const Upload = () => {
     .map((id) => status[id]);
 
   return (
-    <Container
-      total={list.length}
-      queue={queue.current}
-      onClick={onEventDispatch}
-    >
+    <Container onEvent={onEvent} list={list} queue={queue.current}>
       <FixedSizeList
         width={352}
         height={447}

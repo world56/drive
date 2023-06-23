@@ -16,9 +16,7 @@ export default function useEventListener<T = undefined>(
   ref.current = callBack;
 
   const bindCallBack = useCallback(
-    (e: CustomEvent<T>) => {
-      ref.current?.(e);
-    },
+    (e: CustomEvent<T>) => ref.current?.(e),
     [ref],
   );
 
