@@ -18,7 +18,7 @@ const privateRoutes = [
   {
     title: '资源',
     icon: <FolderOutlined />,
-    path: '/resource/:id?/*',
+    path: '/resource',
     element: lazy(() => import("@/page/resource"))
   },
   {

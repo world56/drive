@@ -19,7 +19,8 @@ const DEFAULT_RESOURCE: TypeResourceReducersProps = {
   folders: [],
   folderTree: [],
   foldersObj: {},
-  path: window.location.pathname.split("/").filter((_v, i) => i > 1),
+  path:
+    new URLSearchParams(window.location.search).get("path")?.split("/") || [],
 };
 
 const resourceSlice = createSlice({

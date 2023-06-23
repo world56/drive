@@ -1,7 +1,7 @@
 import Item from "./Item";
-import Container from "./Container/index";
 import { filesFormat } from "./utils";
 import { useRef, useState } from "react";
+import Container from "./Container/index";
 import { uploadChunk } from "@/api/resource";
 import { FixedSizeList } from "react-window";
 import { useEventListener, useStore } from "@/hooks";
@@ -17,7 +17,7 @@ export type TypeQueue = Record<
 >;
 
 /**
- * @name ENUM_UPLOAD_EVENT Upload组件事件类型
+ * @name ENUM_UPLOAD_EVENT Upload组件 全部事件类型
  */
 export enum ENUM_UPLOAD_EVENT {
   /** @param START 开始任务 */
