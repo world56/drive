@@ -1,6 +1,6 @@
 import { ResourcesService } from './resources.service';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UserID } from '@/decorator/user-id.decorator';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UploadFileGuard } from '@/guard/upload-file.guard';
 import { GetUploadFile } from '@/decorator/get-upload-file.decorator';
 import { Body, Get, Post, Query, Controller, UseGuards } from '@nestjs/common';
@@ -66,16 +66,20 @@ export class ResourcesController {
   @UseGuards(new UploadFileGuard())
   upload(@GetUploadFile() file: MultipartFile, @UserID() id: string) {
     const fields = file.fields as Record<string, { value: string }>;
-    return this.ResourcesService.upload({
-      creatorId: id,
-      file: file.file,
-      id: fields.id.value,
-      name: fields.name.value,
-      index: fields.index.value,
-      total: fields.total.value,
-      segment: fields.segment.value,
-      parentId: fields.parentId?.value,
-      size: Number(fields.size.value),
-    });
+    return this.ResourcesService.upload(
+      {
+        creatorId: id,
+        file: file.file,
+        id: fields.id.value,
+        name: fields.name.value,
+        path: fields.path?.value,
+        index: fields.index.value,
+        total: fields.total.value,
+        segment: fields.segment.value,
+        size: Number(fields.size.value),
+        parentId: fields.parentId?.value,
+      },
+      id,
+    );
   }
 }

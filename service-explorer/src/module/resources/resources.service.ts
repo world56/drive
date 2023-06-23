@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client';
 import { FileService } from '@/common/file/file.service';
 import { Injectable, ConflictException } from '@nestjs/common';
 import { PrismaService } from 'src/common/prisma/prisma.service';
@@ -13,6 +14,10 @@ import type { TypeFileWriteParam } from '@/common/file/file.service';
 
 export interface TypeUploadChunkInfo extends TypeFileWriteParam {
   creatorId: Resource['creatorId'];
+}
+
+export interface TypeFindPaths extends Resource {
+  paths: Pick<Resource, 'id' | 'name'>[];
 }
 
 @Injectable()
@@ -60,9 +65,18 @@ export class ResourcesService {
     });
   }
 
-  async upload({ creatorId, ...data }: TypeUploadChunkInfo) {
+  async upload(data: TypeUploadChunkInfo, creatorId: string) {
     const { name } = data;
-    return await this.FileService.write(data);
+    const file = await this.FileService.write(data);
+    if (file) {
+      const res = await this.PrismaService.resource.create({
+        data: { ...file, fullName: name, creatorId },
+      });
+      const paths = await this.findPaths(res);
+      return { ...res, paths };
+    } else {
+      return false;
+    }
   }
 
   async delete({ ids }: DeleteResourcesDTO) {
@@ -89,6 +103,24 @@ export class ResourcesService {
       await this.PrismaService.resource.delete({ where: { id } });
       return true;
       // return await this.FileService.delete([target.path]);
+    }
+  }
+
+  private async findPaths(resource: Resource) {
+    try {
+      const list = await this.PrismaService.$queryRaw<TypeFindPaths['paths']>(
+        Prisma.sql`
+          WITH RECURSIVE ids AS (
+            SELECT id, name, parent_id FROM resource WHERE id = ${resource.id}
+            UNION ALL
+            SELECT e.id, e.name, e.parent_id FROM resource as e JOIN ids AS s WHERE s.parent_id = e.id
+          )
+          SELECT id, name FROM ids;
+        `,
+      );
+      return list.splice(1).reverse();
+    } catch (error) {
+      return [];
     }
   }
 }

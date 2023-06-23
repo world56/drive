@@ -22,7 +22,10 @@ import type { Resource } from '@prisma/client';
 import type { MultipartFile } from '@fastify/multipart';
 
 export interface TypeFileWriteParam
-  extends Record<'id' | 'name' | 'index' | 'total' | 'segment', string> {
+  extends Record<
+    'id' | 'name' | 'index' | 'total' | 'segment' | 'path',
+    string
+  > {
   size: number;
   parentId?: Resource['id'];
   file: MultipartFile['file'];
