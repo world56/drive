@@ -7,10 +7,10 @@ import {
   IsOptional,
 } from 'class-validator';
 import { Type } from 'class-transformer';
+import { ApiProperty } from '@nestjs/swagger';
 import { PrimaryKeyStringDTO } from './common.dto';
 
-import { ENUM_EXPLORER } from 'src/enum/explorer';
-import { ApiProperty } from '@nestjs/swagger';
+import { ENUM_RESOURCE } from '@/enum/explorer';
 
 export class ResourceDTO extends PrimaryKeyStringDTO {
   @ApiProperty({
@@ -26,7 +26,7 @@ export class ResourceDTO extends PrimaryKeyStringDTO {
   name: string;
 
   @ApiProperty({
-    description: '父ID',
+    description: '资源归属ID',
   })
   @IsOptional()
   @IsString()
@@ -41,10 +41,10 @@ export class ResourceDTO extends PrimaryKeyStringDTO {
   size: number;
 
   @IsOptional()
-  @IsEnum(ENUM_EXPLORER.TYPE)
+  @IsEnum(ENUM_RESOURCE.TYPE)
   @Type(() => Number)
   @IsInt()
-  type: ENUM_EXPLORER.TYPE;
+  type: ENUM_RESOURCE.TYPE;
 
   @IsString()
   @IsOptional()

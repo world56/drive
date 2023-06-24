@@ -36,22 +36,13 @@ const request = extend({
 
 request.interceptors.request.use(
   (url, options) => {
-    const Authorization = Cookies.get(TOKEN_KEY);
-    const config = {
-      url,
-      options: {
-        ...options,
-        headers: Authorization ? { Authorization } : undefined,
-      },
-    };
+    const config = { url, options };
     switch (options.proxy) {
       case ENUM_HTTP.PROXY.AUTH:
         config.url = API_PROXY_AUTH_URL + url;
-        config.url = `http://127.0.0.1:2000${config.url}`;
         break;
       case ENUM_HTTP.PROXY.EXPLORER:
         config.url = API_PROXY_EXPLORER_URL + url;
-        config.url = `http://127.0.0.1:2000${config.url}`;
         break;
       default:
         break;

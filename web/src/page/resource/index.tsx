@@ -1,15 +1,21 @@
+import { message } from "antd";
 import { useRequest } from "ahooks";
 import Edit from "./components/Edit";
+import Move from "./components/Move";
 import Files from "./components/Files";
 import Folder from "./components/Folder";
 import styles from "./index.module.sass";
-import { createUpload } from "@/utils/file";
 import { useEffect, useState } from "react";
-import { getResources } from "@/api/resource";
-import { useStore, useActions } from "@/hooks";
+import { useStore, useActions, useToFolder } from "@/hooks";
+import { createUpload, downloadFile } from "@/utils/resource";
+import { deleteResources, getResources } from "@/api/resource";
 
-import { ENUM_MENU_TYPE } from "./components/Files";
+import {
+  ENUM_RESOURCE_MENU_TYPE,
+  ENUM_CONTAINER_MENU_TYPE,
+} from "./components/Files";
 
+import type { TypeMoveProps } from "./components/Move";
 import type { TypeFilesProps } from "./components/Files";
 import type { TypeEditResourceProps } from "./components/Edit";
 
@@ -17,9 +23,12 @@ import type { TypeEditResourceProps } from "./components/Edit";
  * @name Resource 资源管理页面
  */
 const Resource = () => {
+  const toFolder = useToFolder();
+
   const actions = useActions();
   const resource = useStore("resource");
 
+  const [move, setMove] = useState<TypeMoveProps["ids"]>([]);
   const [edit, setEdit] = useState<Omit<TypeEditResourceProps, "onClose">>({
     open: false,
   });
@@ -29,25 +38,49 @@ const Resource = () => {
     { refreshDeps: [resource.path] },
   );
 
-  const onMenu: TypeFilesProps["onMenu"] = (e) => {
-    switch (e.key) {
-      case ENUM_MENU_TYPE.MKDIR:
-        const parentId = resource.path?.at(-1);
-        return setEdit({ open: true, parentId });
-      case ENUM_MENU_TYPE.REFRESH:
+  const onMenu: TypeFilesProps["onMenu"] = (type, id) => {
+    switch (type) {
+      case ENUM_CONTAINER_MENU_TYPE.MKDIR:
+        return setEdit({ open: true, parentId: id });
+      case ENUM_CONTAINER_MENU_TYPE.REFRESH:
         return run();
-      case ENUM_MENU_TYPE.UPLOAD_FILE:
-      case ENUM_MENU_TYPE.UPLOAD_FOLDER:
+      case ENUM_CONTAINER_MENU_TYPE.UPLOAD_FILE:
+      case ENUM_CONTAINER_MENU_TYPE.UPLOAD_FOLDER:
         return createUpload();
       default:
         return;
     }
   };
 
-  function onClose() {
-    setEdit({ open: false });
-    actions.getFolders();
+  const onItemMenu: TypeFilesProps["onItemMenu"] = async (type, id) => {
+    switch (type) {
+      case ENUM_RESOURCE_MENU_TYPE.OPEN:
+        return resource.foldersObj[id] && toFolder(id);
+      case ENUM_RESOURCE_MENU_TYPE.DELETE:
+        await deleteResources({ ids: [id] });
+        run();
+        return message.success("删除成功");
+      case ENUM_RESOURCE_MENU_TYPE.EDIT:
+        return setEdit({ open: true, id });
+      case ENUM_RESOURCE_MENU_TYPE.MOVE:
+        return setMove([id]);
+      case ENUM_RESOURCE_MENU_TYPE.DOWNLOAD:
+        return downloadFile(id);
+      default:
+        return;
+    }
+  };
+
+  function onCloseEdit() {
     run();
+    actions.getFolders();
+    setEdit({ open: false });
+  }
+
+  function onCloseMove() {
+    run();
+    actions.getFolders();
+    setMove([]);
   }
 
   useEffect(() => {
@@ -57,8 +90,14 @@ const Resource = () => {
   return (
     <div className={styles.layout}>
       <Folder />
-      <Files onMenu={onMenu} list={data} loading={loading} />
-      <Edit {...edit} onClose={onClose} />
+      <Files
+        data={data}
+        onMenu={onMenu}
+        loading={loading}
+        onItemMenu={onItemMenu}
+      />
+      <Move ids={move} onClose={onCloseMove} />
+      <Edit {...edit} onClose={onCloseEdit} />
     </div>
   );
 };

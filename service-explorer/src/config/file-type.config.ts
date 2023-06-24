@@ -1,4 +1,4 @@
-import { ENUM_EXPLORER } from 'src/enum/explorer';
+import { ENUM_RESOURCE } from '@/enum/explorer';
 
 /**
  * @name VIDEO 视频
@@ -80,16 +80,16 @@ export const DOC = [
   'azw3',
 ];
 
-function toObj(list: string[], type: ENUM_EXPLORER.TYPE) {
+function toObj(list: string[], type: ENUM_RESOURCE.TYPE) {
   return Object.fromEntries(list.map((k) => [k, type]));
 }
 
 export default () => ({
   FILE_TYPE: {
-    ...toObj(VIDEO, ENUM_EXPLORER.TYPE.VIDEO),
-    ...toObj(IMAGE, ENUM_EXPLORER.TYPE.IMAGE),
-    ...toObj(AUDIO, ENUM_EXPLORER.TYPE.AUDIO),
-    ...toObj(COMPRESS, ENUM_EXPLORER.TYPE.COMPRESSED),
-    ...toObj(DOC, ENUM_EXPLORER.TYPE.DOCUMENT),
+    ...toObj(VIDEO, ENUM_RESOURCE.TYPE.VIDEO),
+    ...toObj(IMAGE, ENUM_RESOURCE.TYPE.IMAGE),
+    ...toObj(AUDIO, ENUM_RESOURCE.TYPE.AUDIO),
+    ...toObj(COMPRESS, ENUM_RESOURCE.TYPE.COMPRESSED),
+    ...toObj(DOC, ENUM_RESOURCE.TYPE.DOCUMENT),
   },
 });

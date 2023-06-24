@@ -1,15 +1,27 @@
+import {
+  Get,
+  Post,
+  Body,
+  Query,
+  Header,
+  UseGuards,
+  Controller,
+  ParseUUIDPipe,
+  Res,
+} from '@nestjs/common';
 import { ResourcesService } from './resources.service';
 import { UserID } from '@/decorator/user-id.decorator';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UploadFileGuard } from '@/guard/upload-file.guard';
 import { GetUploadFile } from '@/decorator/get-upload-file.decorator';
-import { Body, Get, Post, Query, Controller, UseGuards } from '@nestjs/common';
 
 import { ResourceDTO } from '@/dto/resource.dto';
+import { MoveResourcesDTO } from './dto/move-resources.dto';
 import { InsertResourceDTO } from './dto/inset-resource.dto';
 import { DeleteResourcesDTO } from './dto/delete-resources.dto';
 import { FindResourcesListDTO } from './dto/find-resources-list.dto';
 
+import type { FastifyReply } from 'fastify';
 import type { MultipartFile } from '@fastify/multipart';
 
 @ApiTags('资源管理')
@@ -33,6 +45,11 @@ export class ResourcesController {
     return this.ResourcesService.findList(query.id);
   }
 
+  @Get('details')
+  details(@Query('id', new ParseUUIDPipe()) id: string) {
+    return this.ResourcesService.getDetails(id);
+  }
+
   @ApiOperation({
     summary: '创建文件夹',
   })
@@ -47,6 +64,11 @@ export class ResourcesController {
   @Post('update')
   update(@Body() body: ResourceDTO) {
     return this.ResourcesService.update(body);
+  }
+
+  @Post('move')
+  move(@Body() body: MoveResourcesDTO) {
+    return this.ResourcesService.move(body);
   }
 
   @ApiOperation({
@@ -81,5 +103,15 @@ export class ResourcesController {
       },
       id,
     );
+  }
+
+  @Get('download')
+  @Header('Content-Disposition', 'attachment')
+  async download(
+    @Query('id') id: string,
+    @Res() res: FastifyReply & { download: Function },
+  ) {
+    const { path, name } = await this.ResourcesService.download(id);
+    res.download(path, name, { cacheControl: false });
   }
 }

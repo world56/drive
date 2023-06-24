@@ -7,7 +7,7 @@ import { FixedSizeList } from "react-window";
 import { useEventListener, useStore } from "@/hooks";
 
 import { ENUM_RESOURCE } from "@/enum/resource";
-import { UPLOAD_FILE_MAX_COUNT } from "@/config/file";
+import { UPLOAD_FILE_MAX_COUNT } from "@/config/resource";
 
 import type { TypeUploadProgress, TypeUploadStatus } from "./utils";
 

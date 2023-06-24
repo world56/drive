@@ -2,7 +2,7 @@ import { nanoid } from "nanoid";
 import { filesize } from "filesize";
 
 import { ENUM_RESOURCE } from "@/enum/resource";
-import { UPLOAD_SLICE_SIZE } from "@/config/file";
+import { UPLOAD_SLICE_SIZE } from "@/config/resource";
 
 import type { TypeResource } from "@/interface/resource";
 
@@ -70,6 +70,7 @@ export function splitFiles(
     data.append("size", file.size.toString());
     data.append("segment", start.toString());
     params.parentId && data.append("parentId", params.parentId);
+    file.webkitRelativePath && data.append("path", file.webkitRelativePath);
     data.append("chunk", file.slice(start, start + UPLOAD_SLICE_SIZE));
     chunks.push(data);
   }

@@ -7,7 +7,7 @@ import {
 } from "@ant-design/icons";
 import { memo } from "react";
 import styles from "./index.module.sass";
-import { getFileIcon } from "@/utils/file";
+import { getFileSuffixIcon } from "@/utils/resource";
 
 import { ENUM_UPLOAD_EVENT } from ".";
 import { ENUM_RESOURCE } from "@/enum/resource";
@@ -51,7 +51,7 @@ const Item: React.FC<ListChildComponentProps<TypeItemProps>> = ({
 
   return (
     <div className={styles.item} style={style}>
-      <img src={getFileIcon(suffix)} alt="#" />
+      <img src={getFileSuffixIcon(suffix)} alt="#" />
       <div>
         <p>{name}</p>
         <p style={{ color: STATUS.color }}>

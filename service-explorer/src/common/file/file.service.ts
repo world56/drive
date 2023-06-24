@@ -15,7 +15,7 @@ import { ConfigService } from '@nestjs/config';
 
 import CONFIG_FILE_TYPE from '@/config/file-type.config';
 
-import { ENUM_EXPLORER } from '@/enum/explorer';
+import { ENUM_RESOURCE } from '@/enum/explorer';
 
 import type { WriteStream } from 'fs';
 import type { Resource } from '@prisma/client';
@@ -54,7 +54,7 @@ export class FileService {
 
   private getType(suffix: string) {
     const type = this.ConfigService.get('FILE_TYPE')[suffix];
-    return type !== undefined ? type : ENUM_EXPLORER.TYPE.OTHER;
+    return type !== undefined ? type : ENUM_RESOURCE.TYPE.OTHER;
   }
 
   async write(body: TypeFileWriteParam) {

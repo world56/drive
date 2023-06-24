@@ -9,10 +9,10 @@ import { AccountService } from './account.service';
 import { ValidationDTOPipe } from '@/pipe/validation-dto.pipe';
 import { DecryptContextPipe } from '@/pipe/decrypt-context.pipe';
 import { Get, Post, Body, UsePipes, Controller } from '@nestjs/common';
-import { GetClientToken } from '@/decorator/get-client-token.decorator';
 
 import { UserLoginDTO } from './dto/user-login.dto';
 import { RegisterSuperAdminDTO } from './dto/register-super-admin.dto';
+import { UserAuthorization } from '@/decorator/user-authorization.decorator';
 
 @ApiTags('身份验证')
 @Controller('account')
@@ -54,7 +54,7 @@ export class AccountController {
     description: 'token',
   })
   @Post('user')
-  getUserInfo(@GetClientToken() token: string) {
+  getUserInfo(@UserAuthorization() token: string) {
     return this.AccountService.getUserInfo(token);
   }
 
@@ -69,7 +69,7 @@ export class AccountController {
 
   @ApiOperation({ summary: '退出登陆' })
   @Post('logout')
-  logout(@GetClientToken() token: string) {
+  logout(@UserAuthorization() token: string) {
     return this.AccountService.logout(token);
   }
 }

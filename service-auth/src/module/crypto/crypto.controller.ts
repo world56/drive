@@ -1,4 +1,3 @@
-import { GetClientToken } from '@/decorator/get-client-token.decorator';
 import { CryptoService } from './crypto.service';
 import { Controller, Get } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
@@ -15,7 +14,7 @@ export class CryptoController {
     type: String,
   })
   @Get()
-  getSecret( @GetClientToken() asd) {
+  getSecret() {
     return this.CryptoService.get('public');
   }
 }

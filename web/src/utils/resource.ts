@@ -3,6 +3,10 @@ import { message } from "antd";
 import Upload from "@/components/Upload";
 import { ActionsConfig } from "@/store/config";
 
+import { ENUM_RESOURCE } from "@/enum/resource";
+import { API_DOWNLOAD_FILE_URL } from "@/api/resource";
+import { ICON_THRESHOLD, RESOURCE_PREVIEW_PREFIX } from "@/config/resource";
+
 import ICON_DOC from "@/assets/file_doc.svg";
 import ICON_IMG from "@/assets/file_img.svg";
 import ICON_PDF from "@/assets/file_pdf.svg";
@@ -10,10 +14,18 @@ import ICON_PPT from "@/assets/file_ppt.svg";
 import ICON_TXT from "@/assets/file_txt.svg";
 import ICON_XLS from "@/assets/file_xls.svg";
 import ICON_ZIP from "@/assets/file_zip.svg";
+import ICON_FOLDER from "@/assets/folder.svg";
 import ICON_MUSIC from "@/assets/file_music.svg";
 import ICON_OTHER from "@/assets/file_other.svg";
 import ICON_VIDEO from "@/assets/file_video.svg";
 import ICON_PACKAGE from "@/assets/file_package.svg";
+
+import type { TypeResource } from "@/interface/resource";
+
+type TypeGetFileIcon = Pick<
+  TypeResource.DTO,
+  "size" | "type" | "suffix" | "path"
+>;
 
 function convertMatch(key: string[], value: string) {
   return Object.fromEntries(key.map((k) => [k, value]));
@@ -120,14 +132,32 @@ const ICON = {
 };
 
 /**
- * @name getFileIcon 获取文件图标
+ * @name getFileSuffixIcon 获取文件类型图标
  */
-export function getFileIcon(type?: string) {
+export function getFileSuffixIcon(type?: string) {
   if (type) {
     const suffix = ICON[type.toLocaleLowerCase()];
     return suffix ? suffix : ICON_OTHER;
   } else {
     return ICON_OTHER;
+  }
+}
+
+/**
+ * @name getResourceIcon 获取文件图标
+ */
+export function getResourceIcon<T extends TypeGetFileIcon = TypeGetFileIcon>({
+  path,
+  type,
+  size,
+  suffix,
+}: T) {
+  if (type === ENUM_RESOURCE.TYPE.FOLDER) {
+    return ICON_FOLDER;
+  } else if (type === ENUM_RESOURCE.TYPE.IMAGE && size! < ICON_THRESHOLD) {
+    return `${RESOURCE_PREVIEW_PREFIX}${path}`;
+  } else {
+    return getFileSuffixIcon(suffix);
   }
 }
 
@@ -162,4 +192,19 @@ export function createUpload() {
       }
     };
   });
+}
+
+/**
+ * @name downloadFile 下载文件
+ */
+export function downloadFile(id?: string) {
+  try {
+    let ele = document.createElement("iframe");
+    ele.setAttribute("class", "none");
+    ele.src = `${API_DOWNLOAD_FILE_URL}?id=${id}`;
+    document.body.appendChild(ele);
+    setTimeout(() => document.body.removeChild(ele), 2000);
+  } catch (e) {
+    message.error(`下载失败${e}`);
+  }
 }

@@ -1,15 +1,21 @@
 import request from "@/utils/request";
 
 import { ENUM_HTTP } from "@/enum/http";
+import { API_PROXY_EXPLORER_URL } from "@/config/request";
 
 import type { TypeResource } from "@/interface/resource";
+
+/**
+ * @name API_DOWNLOAD_FILE_URL 下载文件URL
+ */
+export const API_DOWNLOAD_FILE_URL = `${API_PROXY_EXPLORER_URL}resource/download`;
 
 /**
  * @name getResources 获取资源列表
  * @param params 通过文件夹ID查询旗下的资源列表
  */
-export function getResources(params: TypeResource.QueryResources) {
-  return request<TypeResource.DTO[]>("resource/list", {
+export function getResources(params: TypeResource.ReqResources) {
+  return request<TypeResource.ResResourceList>("resource/list", {
     method: ENUM_HTTP.REQUEST_MODE.GET,
     proxy: ENUM_HTTP.PROXY.EXPLORER,
     params,
@@ -17,7 +23,7 @@ export function getResources(params: TypeResource.QueryResources) {
 }
 
 /**
- * @name getFolders 获取全部文件夹
+ * @name getFolders 获取全部文件夹列表
  * @description 资源页面 左侧的文件夹目录树
  */
 export function getFolders() {
@@ -31,7 +37,7 @@ export function getFolders() {
  * @name getResourceDetails 获取资源详情
  */
 export function getResourceDetails(
-  params: Required<TypeResource.QueryResources>,
+  params: Required<TypeResource.ReqResources>,
 ) {
   return request<TypeResource.DTO>("resource/details", {
     method: ENUM_HTTP.REQUEST_MODE.GET,
@@ -52,10 +58,32 @@ export function createFolder(data: TypeResource.DTO) {
 }
 
 /**
- * @name updateFolder 编辑文件夹、资源信息
+ * @name updateResource 编辑文件夹、资源信息
  */
-export function updateFolder(data: TypeResource.DTO) {
+export function updateResource(data: TypeResource.DTO) {
   return request("resource/update", {
+    method: ENUM_HTTP.REQUEST_MODE.POST,
+    proxy: ENUM_HTTP.PROXY.EXPLORER,
+    data,
+  });
+}
+
+/**
+ * @name deleteResources 删除资源（文件、文件夹）
+ */
+export function deleteResources(data: TypeResource.ReqDeleteResources) {
+  return request("resource/delete", {
+    method: ENUM_HTTP.REQUEST_MODE.POST,
+    proxy: ENUM_HTTP.PROXY.EXPLORER,
+    data,
+  });
+}
+
+/**
+ * @name moveResources 批量移动资源
+ */
+export function moveResources(data: TypeResource.ReqMoveResources) {
+  return request("resource/move", {
     method: ENUM_HTTP.REQUEST_MODE.POST,
     proxy: ENUM_HTTP.PROXY.EXPLORER,
     data,

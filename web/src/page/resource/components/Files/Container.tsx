@@ -1,4 +1,5 @@
 import {
+  HomeOutlined,
   SyncOutlined,
   TableOutlined,
   SearchOutlined,
@@ -7,57 +8,61 @@ import {
   FolderAddOutlined,
   SortDescendingOutlined,
 } from "@ant-design/icons";
-import Navigation from "./Navigation";
+import { useMemo } from "react";
 import styles from "./index.module.sass";
-import { Dropdown, Empty, Spin, Tooltip } from "antd";
+import { useStore, useToFolder } from "@/hooks";
 import { isEmpty, stopPropagation } from "@/utils";
+import { Dropdown, Empty, Spin, Breadcrumb } from "antd";
 
-import { ENUM_RESOURCE } from "@/enum/resource";
-
-import type { TypeFilesProps } from ".";
 import type { MenuProps, SpinProps } from "antd";
-import type { TypeResource } from "@/interface/resource";
 
-export enum ENUM_MENU_TYPE {
+/**
+ * @name ENUM_CONTAINER_MENU_TYPE 容器选项菜单
+ */
+export enum ENUM_CONTAINER_MENU_TYPE {
   /** @param UPLOAD_FILE 上传文件 */
   UPLOAD_FILE = "UPLOAD_FILE",
   /** @param UPLOAD_FOLDER 上传文件夹 */
   UPLOAD_FOLDER = "UPLOAD_FOLDER",
   /** @param MKDIR 创建文件夹 */
   MKDIR = "MKDIR",
-  /** @param REFRESH 刷新当前文件夹 */
+  /** @param REFRESH 刷新当前资源列表 */
   REFRESH = "REFRESH",
+  /** @param SEARCH 搜索 */
+  SEARCH = "SEARCH",
+  /** @param LAYOUT_LIST 布局-列表 */
+  LAYOUT_LIST = "LAYOUT_LIST",
+  /** @param LAYOUT_THUMBNAIL 布局-缩略图 */
+  LAYOUT_THUMBNAIL = "LAYOUT_THUMBNAIL",
 }
 
-export interface TypeFilesContainerProps extends TypeFilesProps {
+export interface TypeFilesContainerProps {
   children?: React.ReactNode;
   /** @param loading 加载效果 */
   loading: SpinProps["spinning"];
-  /** @param onMenu 鼠标右键菜单操作 */
-  onMenu: MenuProps["onClick"];
   /**
-   * @name onPreview 双击 预览、打开文件夹
-   * @description 这里只负责出参，不符合要求的双击事件，不会触发调用
+   * @name onMenu 资源列表容器菜单事件
+   * @description 鼠标右键点击文件列表容器菜单
    */
-  onPreview(type: ENUM_RESOURCE.TYPE, id: TypeResource.DTO["id"]): void;
+  onMenu(type: ENUM_CONTAINER_MENU_TYPE, id?: string): void;
 }
 
 const items: MenuProps["items"] = [
   {
     icon: <FileAddOutlined />,
     label: "上传文件",
-    key: ENUM_MENU_TYPE.UPLOAD_FILE,
+    key: ENUM_CONTAINER_MENU_TYPE.UPLOAD_FILE,
   },
   {
     icon: <FolderAddOutlined />,
     label: "上传文件夹",
-    key: ENUM_MENU_TYPE.UPLOAD_FOLDER,
+    key: ENUM_CONTAINER_MENU_TYPE.UPLOAD_FOLDER,
   },
   { type: "divider" },
   {
     icon: <FolderOutlined />,
     label: "新建文件夹",
-    key: ENUM_MENU_TYPE.MKDIR,
+    key: ENUM_CONTAINER_MENU_TYPE.MKDIR,
   },
   { type: "divider" },
   {
@@ -78,15 +83,20 @@ const items: MenuProps["items"] = [
     label: "显示",
     key: "11",
     children: [
-      { label: "小图标", key: "12" },
-      { label: "大图标", key: "14" },
+      { label: "缩略图", key: "12" },
+      { label: "列表", key: "14" },
     ],
   },
   { type: "divider" },
   {
+    icon: <SearchOutlined />,
+    label: "搜索",
+    key: 13,
+  },
+  {
     icon: <SyncOutlined />,
     label: "刷新",
-    key: ENUM_MENU_TYPE.REFRESH,
+    key: ENUM_CONTAINER_MENU_TYPE.REFRESH,
   },
 ];
 
@@ -98,34 +108,47 @@ const Container: React.FC<TypeFilesContainerProps> = ({
   onMenu,
   loading,
   children,
-  onPreview,
 }) => {
-  /**
-   * @name onDoubleClick 双击目标元素
-   */
-  function onDoubleClick(e: React.MouseEvent<HTMLDivElement>) {
-    const targetElement = e.target as HTMLElement;
-    const ele = targetElement.closest("div");
-    const { type, id } = ele!.dataset;
-    if (!type || !id) return;
-    onPreview(Number(type), id);
-  }
+  const resource = useStore("resource");
+
+  const toFolder = useToFolder();
+
+  const { path, foldersObj } = resource;
+
+  const route = useMemo(
+    () => [
+      {
+        title: (
+          <>
+            <HomeOutlined />
+            {path.length ? null : <span>主目录</span>}
+          </>
+        ),
+        key: "resource",
+        onClick: () => toFolder(),
+      },
+      ...path.map((id) => ({
+        key: id,
+        title: foldersObj?.[id]?.name,
+        onClick: () => toFolder(id),
+      })),
+    ],
+    [path, foldersObj, toFolder],
+  );
+
+  const onMenuClick: MenuProps["onClick"] = (e) => {
+    onMenu(e.key as ENUM_CONTAINER_MENU_TYPE, resource.path.at(-1));
+  };
 
   return (
     <div className={styles.files}>
-      <div className={styles.nav}>
-        <Navigation />
-        <Tooltip title="查询" placement="left">
-          <SearchOutlined />
-        </Tooltip>
-      </div>
+      <Breadcrumb items={route} className={styles.nav} />
       {loading ? <Spin spinning={loading} tip="正在加载资源目录" /> : null}
-      <Dropdown trigger={["contextMenu"]} menu={{ items, onClick: onMenu }}>
-        <div
-          className={styles.layout}
-          onDoubleClick={onDoubleClick}
-          onContextMenu={stopPropagation}
-        >
+      <Dropdown
+        trigger={["contextMenu"]}
+        menu={{ items, onClick: onMenuClick }}
+      >
+        <div className={styles.layout} onContextMenu={stopPropagation}>
           {isEmpty(children) ? (
             <Empty
               description="资源列表为空"

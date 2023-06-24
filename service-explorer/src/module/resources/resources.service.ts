@@ -4,10 +4,11 @@ import { Injectable, ConflictException } from '@nestjs/common';
 import { PrismaService } from 'src/common/prisma/prisma.service';
 
 import { ResourceDTO } from '@/dto/resource.dto';
+import { MoveResourcesDTO } from './dto/move-resources.dto';
 import { InsertResourceDTO } from './dto/inset-resource.dto';
 import { DeleteResourcesDTO } from './dto/delete-resources.dto';
 
-import { ENUM_EXPLORER } from '@/enum/explorer';
+import { ENUM_RESOURCE } from '@/enum/explorer';
 
 import type { Resource } from '@prisma/client';
 import type { TypeFileWriteParam } from '@/common/file/file.service';
@@ -27,16 +28,50 @@ export class ResourcesService {
     private readonly PrismaService: PrismaService,
   ) {}
 
-  findList(id: string) {
-    return this.PrismaService.resource.findMany({
-      where: id ? { parentId: id } : { parentId: { equals: null } },
-    });
+  async findList(id: string) {
+    const where = id ? { parentId: id } : { parentId: { equals: null } };
+    const [folders, files] = await Promise.all([
+      this.PrismaService.resource.findMany({
+        where: { ...where, type: ENUM_RESOURCE.TYPE.FOLDER },
+        orderBy: { createTime: 'desc' },
+        include: { _count: { select: { children: true } } },
+      }),
+      this.PrismaService.resource.findMany({
+        where: {
+          ...where,
+          type: {
+            not: ENUM_RESOURCE.TYPE.FOLDER,
+          },
+        },
+        orderBy: { createTime: 'desc' },
+      }),
+    ]);
+    return {
+      folders: folders.map(({ _count, ...v }) => ({
+        ...v,
+        size: _count.children,
+      })),
+      files,
+    };
   }
 
   findFolders() {
     return this.PrismaService.resource.findMany({
-      where: { type: ENUM_EXPLORER.TYPE.FOLDER },
+      where: { type: ENUM_RESOURCE.TYPE.FOLDER },
       orderBy: { createTime: 'asc' },
+    });
+  }
+
+  getDetails(id: string) {
+    return this.PrismaService.resource.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        type: true,
+        name: true,
+        remark: true,
+        parentId: true,
+      },
     });
   }
 
@@ -46,9 +81,22 @@ export class ResourcesService {
         ...body,
         creatorId,
         fullName: body.name,
-        type: ENUM_EXPLORER.TYPE.FOLDER,
+        type: ENUM_RESOURCE.TYPE.FOLDER,
       },
     });
+  }
+
+  move(body: MoveResourcesDTO) {
+    const parentId = body.parentId ? body.parentId : null;
+    const ids = body.ids.filter((id) => id !== body.parentId);
+    return Promise.all(
+      ids.map((id) =>
+        this.PrismaService.resource.update({
+          where: { id },
+          data: { parentId },
+        }),
+      ),
+    );
   }
 
   async update(body: ResourceDTO) {
@@ -89,8 +137,7 @@ export class ResourcesService {
       await this.PrismaService.resource.deleteMany({
         where: { id: { in: delExplorers.map((v) => v.id) } },
       });
-      return true;
-      // return await this.FileService.delete(delExplorers.map((v) => v.path));
+      return await this.FileService.delete(delExplorers.map((v) => v.path));
     } else {
       const [id] = ids;
       const target = await this.PrismaService.resource.findUnique({
@@ -101,9 +148,16 @@ export class ResourcesService {
         throw new ConflictException('该文件夹下存在资源，无法删除');
       }
       await this.PrismaService.resource.delete({ where: { id } });
-      return true;
-      // return await this.FileService.delete([target.path]);
+      return await this.FileService.delete([target.path]);
     }
+  }
+
+  async download(id: string) {
+    const { name, url, suffix } = await this.PrismaService.resource.findUnique({
+      where: { id },
+      select: { name: true, url: true, suffix: true },
+    });
+    return { path: url.split('/').at(-1), name: `${name}.${suffix}` };
   }
 
   private async findPaths(resource: Resource) {

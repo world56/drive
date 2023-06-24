@@ -10,6 +10,7 @@ module.exports = function (app) {
       prefix: v.prefix,
       upstream: v.upstream,
       async preHandler(req, reply) {
+        req.headers["authorization"] = req.cookies.Authorization;
         if (v.auth && !filterWhitelist(req, v.whitelist)) {
           return await auth(app, req, reply);
         } else {

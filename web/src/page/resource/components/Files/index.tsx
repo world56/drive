@@ -1,27 +1,51 @@
-import File from "./File";
 import Container from "./Container";
+import Thumbnail from "./Thumbnail";
 import { useToFolder } from "@/hooks";
+import { getResources } from "@/api/resource";
 
 import { ENUM_RESOURCE } from "@/enum/resource";
 
-import type { TypeResource } from "@/interface/resource";
+import type { TypeThumbnailProps } from "./Thumbnail";
 import type { TypeFilesContainerProps } from "./Container";
 
 export interface TypeFilesProps
-  extends Pick<TypeFilesContainerProps, "onMenu" | "loading"> {
+  extends Pick<TypeFilesContainerProps, "onMenu" | "loading">,
+    Pick<TypeThumbnailProps, "onItemMenu"> {
   /** @param list 资源列表 */
-  list?: TypeResource.DTO[];
+  data?: Awaited<ReturnType<typeof getResources>>;
+}
+
+/**
+ * @name ENUM_RESOURCE_MENU_TYPE 资源选项菜单
+ */
+export enum ENUM_RESOURCE_MENU_TYPE {
+  /** @param OPEN 打开、预览 文件、文件夹 */
+  OPEN = "OPEN",
+  /** @param COLLECT 收藏 */
+  COLLECT = "COLLECT",
+  /** @param EDIT 编辑 */
+  EDIT = "EDIT",
+  /** @param MOVE 移动 */
+  MOVE = "MOVE",
+  /** @param DOWNLOAD 下载 */
+  DOWNLOAD = "DOWNLOAD",
+  /** @param DELETE 删除 */
+  DELETE = "DELETE",
 }
 
 /**
  * @name Files 文件列表
  */
-const Files: React.FC<TypeFilesProps> = ({ list, onMenu, loading }) => {
-
+const Files: React.FC<TypeFilesProps> = ({
+  data,
+  onMenu,
+  loading,
+  onItemMenu,
+}) => {
   const toFolder = useToFolder();
 
   // 预览、打开
-  const onPreview: TypeFilesContainerProps["onPreview"] = (type, id) => {
+  const onPreview: TypeThumbnailProps["onPreview"] = (type, id) => {
     switch (type) {
       case ENUM_RESOURCE.TYPE.FOLDER:
         return toFolder(id);
@@ -31,13 +55,11 @@ const Files: React.FC<TypeFilesProps> = ({ list, onMenu, loading }) => {
   };
 
   return (
-    <Container loading={loading} onMenu={onMenu} onPreview={onPreview}>
-      {list?.map((v) => (
-        <File key={v.id} {...v} />
-      ))}
+    <Container loading={loading} onMenu={onMenu}>
+      <Thumbnail data={data} onPreview={onPreview} onItemMenu={onItemMenu} />
     </Container>
   );
 };
 
 export default Files;
-export { ENUM_MENU_TYPE } from "./Container";
+export { ENUM_CONTAINER_MENU_TYPE } from "./Container";

@@ -14,9 +14,9 @@ export namespace TypeResource {
     extends Pick<TypeCommon.DTO, "id" | "name">,
       Partial<Pick<TypeCommon.DTO, "parentId">> {
     /** @param size 资源大小 */
-    size: string;
-    /** @param url 预览路径  */
-    url?: string;
+    size?: number;
+    /** @param path 预览路径  */
+    path?: string;
     /** @param suffix 格式 */
     suffix: string;
     /** @param createTime 初始化创建、上传时间 */
@@ -34,14 +34,19 @@ export namespace TypeResource {
   }
 
   /**
-   * @name QueryResources 查询资源列表
+   * @name ReqResources 查询资源列表
    */
-  export interface QueryResources extends Partial<Pick<DTO, "id">> {}
+  export interface ReqResources extends Partial<Pick<DTO, "id">> {}
 
   /**
-   * @name MoveExplorer 移动资源
+   * @name ResResourceList 资源列表
    */
-  export interface MoveExplorer extends Pick<DTO, "parentId"> {
+  export interface ResResourceList extends Record<"folders" | "files", DTO[]> {}
+
+  /**
+   * @name ReqMoveResources 移动资源
+   */
+  export interface ReqMoveResources extends Pick<DTO, "parentId"> {
     /**
      * @param ids 资源的ID
      * @description 传递的是数组ID ['1', '2', '3']
@@ -50,14 +55,14 @@ export namespace TypeResource {
   }
 
   /**
-   * @name DeleteExplorer 删除资源
+   * @name ReqDeleteResources 删除资源
    * @description 删除相对谨慎，如果是文件夹并存在子级，则不能删除
    */
-  export interface DeleteExplorer extends Pick<MoveExplorer, "ids"> {}
+  export interface ReqDeleteResources extends Pick<ReqMoveResources, "ids"> {}
 
   /**
-   * @name QueryGlobalExplorer 模糊查询所有资源
+   * @name ReqGlobalExplorer 模糊查询所有资源
    */
-  export interface QueryGlobalExplorer
+  export interface ReqGlobalResources
     extends Partial<Pick<DTO, "name" | "type">> {}
 }

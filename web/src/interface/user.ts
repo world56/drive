@@ -1,4 +1,4 @@
-import { ENUM_COMMON } from "@/enum/common";
+import { ENUM_USER } from "@/enum/user";
 
 import type { TypeCommon } from "./common";
 
@@ -8,8 +8,8 @@ export namespace TypeUser {
     name: string;
     account: string;
     password: string;
-    status: ENUM_COMMON.STATUS;
-    isSuper: ENUM_COMMON.SUPER_ADMIN;
+    role: ENUM_USER.ROLE;
+    status: ENUM_USER.STATUS;
   }
 
   export interface Login extends Pick<DTO, "account" | "password"> {
