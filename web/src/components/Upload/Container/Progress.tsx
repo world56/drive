@@ -1,7 +1,9 @@
+import { useActions } from "@/hooks";
 import { useRef, useState } from "react";
 import { useThrottleEffect } from "ahooks";
 
 import type { TypeUploadContainerProps } from ".";
+import { ENUM_COMMON } from "@/enum/common";
 
 interface TypeUploadProgressProps
   extends Pick<TypeUploadContainerProps, "list"> {}
@@ -11,6 +13,8 @@ interface TypeUploadProgressProps
  * @description 根据上传任务的index、length联合计算
  */
 const Progress: React.FC<TypeUploadProgressProps> = ({ list }) => {
+  const actions = useActions();
+
   const [progress, setProgress] = useState(0);
   const mark = useRef<Record<string, boolean>>({});
 
@@ -28,6 +32,10 @@ const Progress: React.FC<TypeUploadProgressProps> = ({ list }) => {
     size = Math.round((progress / total) * 100) || 0;
     if (size === 100) {
       mark.current = Object.fromEntries(list.map((v) => [v.id, true]));
+      actions.getFolders();
+      document.dispatchEvent(
+        new CustomEvent(ENUM_COMMON.CUSTOM_EVENTS.REFRESH_RESOURCES),
+      );
     }
     setProgress(size);
   }, [list, mark]);

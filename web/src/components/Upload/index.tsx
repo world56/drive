@@ -6,6 +6,7 @@ import { uploadChunk } from "@/api/resource";
 import { FixedSizeList } from "react-window";
 import { useEventListener, useStore } from "@/hooks";
 
+import { ENUM_COMMON } from "@/enum/common";
 import { ENUM_RESOURCE } from "@/enum/resource";
 import { UPLOAD_FILE_MAX_COUNT } from "@/config/resource";
 
@@ -168,7 +169,7 @@ const Upload = () => {
     }
   }
 
-  useEventListener<FileList>(Upload.name, (e) => {
+  useEventListener<FileList>(ENUM_COMMON.CUSTOM_EVENTS.UPLOAD, (e) => {
     const files = e.detail;
     const folderId = path.at(-1);
     const { status, progress } = filesFormat(files, folderId);

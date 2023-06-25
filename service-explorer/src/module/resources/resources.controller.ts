@@ -88,21 +88,18 @@ export class ResourcesController {
   @UseGuards(new UploadFileGuard())
   upload(@GetUploadFile() file: MultipartFile, @UserID() id: string) {
     const fields = file.fields as Record<string, { value: string }>;
-    return this.ResourcesService.upload(
-      {
-        creatorId: id,
-        file: file.file,
-        id: fields.id.value,
-        name: fields.name.value,
-        path: fields.path?.value,
-        index: fields.index.value,
-        total: fields.total.value,
-        segment: fields.segment.value,
-        size: Number(fields.size.value),
-        parentId: fields.parentId?.value,
-      },
-      id,
-    );
+    return this.ResourcesService.upload({
+      creatorId: id,
+      file: file.file,
+      id: fields.id.value,
+      name: fields.name.value,
+      path: fields.path?.value,
+      index: fields.index.value,
+      total: fields.total.value,
+      segment: fields.segment.value,
+      size: Number(fields.size.value),
+      parentId: fields.parentId?.value,
+    });
   }
 
   @Get('download')

@@ -1,8 +1,8 @@
 import store from "@/store";
 import { message } from "antd";
-import Upload from "@/components/Upload";
 import { ActionsConfig } from "@/store/config";
 
+import { ENUM_COMMON } from "@/enum/common";
 import { ENUM_RESOURCE } from "@/enum/resource";
 import { API_DOWNLOAD_FILE_URL } from "@/api/resource";
 import { ICON_THRESHOLD, RESOURCE_PREVIEW_PREFIX } from "@/config/resource";
@@ -164,19 +164,27 @@ export function getResourceIcon<T extends TypeGetFileIcon = TypeGetFileIcon>({
 /**
  * @name createUpload 创建上传任务
  */
-export function createUpload() {
+export function createUpload(isFolder?: boolean) {
   return new Promise<boolean>((resolve, reject) => {
     const ele = document.createElement("input");
     ele.setAttribute("type", "file");
     ele.setAttribute("multiple", "true");
     ele.setAttribute("class", "none");
+    isFolder && ele.setAttribute("directory", "true");
+    isFolder && ele.setAttribute("webkitdirectory", "true");
     document.body.append(ele);
     ele.click();
     ele.onchange = (e) => {
       try {
-        const { files: detail } = e.target as HTMLInputElement;
-        if (detail?.length) {
-          const signal = new CustomEvent(Upload.name, { detail });
+        const { files } = e.target as HTMLInputElement;
+        if (files?.length) {
+          const detail: File[] = Array.prototype.filter.call(
+            files!,
+            (v: File) => v.name !== ".DS_Store",
+          );
+          const signal = new CustomEvent(ENUM_COMMON.CUSTOM_EVENTS.UPLOAD, {
+            detail,
+          });
           document.dispatchEvent(signal);
           store.dispatch(ActionsConfig.setConfig({ UPLOAD: true }));
           resolve(true);
@@ -199,7 +207,7 @@ export function createUpload() {
  */
 export function downloadFile(id?: string) {
   try {
-    let ele = document.createElement("iframe");
+    const ele = document.createElement("iframe");
     ele.setAttribute("class", "none");
     ele.src = `${API_DOWNLOAD_FILE_URL}?id=${id}`;
     document.body.appendChild(ele);

@@ -6,14 +6,15 @@ import Files from "./components/Files";
 import Folder from "./components/Folder";
 import styles from "./index.module.sass";
 import { useEffect, useState } from "react";
-import { useStore, useActions, useToFolder } from "@/hooks";
 import { createUpload, downloadFile } from "@/utils/resource";
-import { deleteResources, getResources } from "@/api/resource";
+import { getResources, deleteResources } from "@/api/resource";
+import { useStore, useActions, useToFolder, useEventListener } from "@/hooks";
 
 import {
   ENUM_RESOURCE_MENU_TYPE,
   ENUM_CONTAINER_MENU_TYPE,
 } from "./components/Files";
+import { ENUM_COMMON } from "@/enum/common";
 
 import type { TypeMoveProps } from "./components/Move";
 import type { TypeFilesProps } from "./components/Files";
@@ -45,8 +46,9 @@ const Resource = () => {
       case ENUM_CONTAINER_MENU_TYPE.REFRESH:
         return run();
       case ENUM_CONTAINER_MENU_TYPE.UPLOAD_FILE:
-      case ENUM_CONTAINER_MENU_TYPE.UPLOAD_FOLDER:
         return createUpload();
+      case ENUM_CONTAINER_MENU_TYPE.UPLOAD_FOLDER:
+        return createUpload(true);
       default:
         return;
     }
@@ -82,6 +84,8 @@ const Resource = () => {
     actions.getFolders();
     setMove([]);
   }
+
+  useEventListener(ENUM_COMMON.CUSTOM_EVENTS.REFRESH_RESOURCES, run);
 
   useEffect(() => {
     actions.getFolders();

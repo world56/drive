@@ -18,7 +18,6 @@ import CONFIG_FILE_TYPE from '@/config/file-type.config';
 import { ENUM_RESOURCE } from '@/enum/explorer';
 
 import type { WriteStream } from 'fs';
-import type { Resource } from '@prisma/client';
 import type { MultipartFile } from '@fastify/multipart';
 
 export interface TypeFileWriteParam
@@ -27,7 +26,6 @@ export interface TypeFileWriteParam
     string
   > {
   size: number;
-  parentId?: Resource['id'];
   file: MultipartFile['file'];
 }
 
@@ -58,7 +56,7 @@ export class FileService {
   }
 
   async write(body: TypeFileWriteParam) {
-    const { id, name, file, size, index, total, segment, parentId } = body;
+    const { id, name, file, size, index, total, segment } = body;
     let target: number, write: WriteStream;
     try {
       const { path, url } = this.getPath(id, name);
@@ -75,9 +73,8 @@ export class FileService {
           size,
           path,
           suffix,
-          parentId,
           type: this.getType(suffix),
-          name: name.slice(0, name.indexOf(suffixName)),
+          name: name.slice(0, name.indexOf(suffixName)) || name,
         };
       }
       return false;

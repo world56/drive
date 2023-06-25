@@ -13,7 +13,8 @@ function toJSON(chunks = []) {
 }
 
 module.exports = function (request, reply, res) {
-  const [type] = reply.getHeader("content-type").split("; ");
+  const ContentType = reply.getHeader("content-type") || "";
+  const [type] = ContentType.split("; ");
   if (CONTENT_TYPE_WHITE_LIST.includes(type)) {
     const chunks = [];
     res.on("data", (chunk) => chunks.push(chunk));

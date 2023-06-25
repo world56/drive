@@ -1,4 +1,7 @@
 export namespace ENUM_COMMON {
+  /**
+   * @name COLOR 常用的颜色
+   */
   export enum COLOR {
     /** @param BLACK 黑 */
     BLACK = "#000000d9",
@@ -16,5 +19,19 @@ export namespace ENUM_COMMON {
     ORANGE = "#ff8c00",
     /** @param PURPLE 紫 */
     PURPLE = "#800080",
+  }
+
+  /**
+   * @name CUSTOM_EVENTS 自定义事件
+   * @description 本系统中会用到的自定义事件的eventName
+   */
+  export enum CUSTOM_EVENTS {
+    /** @param UPLOAD 初始化上传任务 */
+    UPLOAD = "UPLOAD",
+    /** 
+     * @param REFRESH_RESOURCES 刷新资源列表页面
+     * @description URL: /resource
+     */
+    REFRESH_RESOURCES = "REFRESH_RESOURCES",
   }
 }
