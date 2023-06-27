@@ -86,9 +86,7 @@ const File: React.FC<TypeResource.DTO> = (props) => {
             src={getResourceIcon(props)}
           />
         </span>
-        <div>
           <p>{props.name}</p>
-        </div>
         <p>
           <span>{IS_FOLDER ? `${size} 个` : filesize(size).toString()}</span>
           <span>{CONSTANT_RESOURCE.TYPE.OBJ[type].name}</span>
