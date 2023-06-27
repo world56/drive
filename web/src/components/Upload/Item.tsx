@@ -26,14 +26,14 @@ const Item: React.FC<ListChildComponentProps<TypeItemProps>> = ({
   index,
   style,
 }) => {
-  const { id, status, suffix, name, progress, size } = data[index];
+  const { id, status, suffix, name, progress, size, parentId } = data[index];
 
   const STATUS = CONSTANT_RESOURCE.STATUS.OBJ[status];
 
   const BTN = {
-    // 完成
+    // 完成 (parentId)
     [ENUM_RESOURCE.STATUS.DONE]: (
-      <FolderOutlined data-id={id} data-type={ENUM_UPLOAD_EVENT.CD} />
+      <FolderOutlined data-id={parentId} data-type={ENUM_UPLOAD_EVENT.CD} />
     ),
     // 上传中
     [ENUM_RESOURCE.STATUS.UPLOADING]: (

@@ -23,12 +23,14 @@ const Progress: React.FC<TypeUploadProgressProps> = ({ list }) => {
     let total = 0;
     let progress = 0;
     const length = list.length;
+    
     for (let i = 0; i < length; i++) {
       const item = list[i];
       if (mark.current[item.id]) continue;
       progress += item.index;
       total += item.length;
     }
+
     size = Math.round((progress / total) * 100) || 0;
     if (size === 100) {
       mark.current = Object.fromEntries(list.map((v) => [v.id, true]));
@@ -38,7 +40,7 @@ const Progress: React.FC<TypeUploadProgressProps> = ({ list }) => {
       );
     }
     setProgress(size);
-  }, [list, mark]);
+  }, [list]);
 
   return (
     <>

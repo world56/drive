@@ -1,10 +1,10 @@
 import Item from "./Item";
 import { filesFormat } from "./utils";
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import Container from "./Container/index";
 import { uploadChunk } from "@/api/resource";
 import { FixedSizeList } from "react-window";
-import { useEventListener, useStore } from "@/hooks";
+import { useEventListener, useStore, useToFolder } from "@/hooks";
 
 import { ENUM_COMMON } from "@/enum/common";
 import { ENUM_RESOURCE } from "@/enum/resource";
@@ -35,6 +35,8 @@ export enum ENUM_UPLOAD_EVENT {
  * @name Upload 上传资源
  */
 const Upload = () => {
+  const toFolder = useToFolder();
+
   const { path } = useStore("resource");
   const [status, setStatus] = useState<TypeUploadStatus>({});
 
@@ -164,6 +166,8 @@ const Upload = () => {
         return onPause(id);
       case ENUM_UPLOAD_EVENT.DELETE:
         return onDelete(id);
+      case ENUM_UPLOAD_EVENT.CD:
+        return id && toFolder(id);
       default:
         return;
     }
@@ -179,9 +183,13 @@ const Upload = () => {
     scheduler();
   });
 
-  const list = Object.values(queue.current)
-    .flat()
-    .map((id) => status[id]);
+  const list = useMemo(
+    () =>
+      Object.values(queue.current)
+        .flat()
+        .map((id) => status[id]),
+    [status],
+  );
 
   return (
     <Container onEvent={onEvent} list={list} queue={queue.current}>
