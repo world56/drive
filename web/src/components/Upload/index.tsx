@@ -167,7 +167,7 @@ const Upload = () => {
       case ENUM_UPLOAD_EVENT.DELETE:
         return onDelete(id);
       case ENUM_UPLOAD_EVENT.CD:
-        return id && toFolder(id);
+        return toFolder(id);
       default:
         return;
     }

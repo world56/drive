@@ -31,6 +31,8 @@ export enum ENUM_RESOURCE_MENU_TYPE {
   DOWNLOAD = "DOWNLOAD",
   /** @param DELETE 删除 */
   DELETE = "DELETE",
+  /** @param FAVORITE 收藏 */
+  FAVORITE = "FAVORITE",
 }
 
 /**
