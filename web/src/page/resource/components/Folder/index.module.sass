@@ -1,24 +1,33 @@
 @import '@/index.sass'
 
 .folder
-  min-width: 300px
-  height: 100%
   font-size: 15px
-  padding: 12px 8px
+  padding: 12px 0px
   background: #fff
+  position: relative
+  height: calc(100% - 90px)
+  user-select: none
   border-right: 1px solid #f1f2f4
   @extend .loading
 
   .darg
-    top: 68px
-    left: 395px
+    top: 0
+    right: 0
     width: 1px
+    position: absolute
     cursor: col-resize
-    position: fixed
+    height: 100%
     z-index: 10
-    height: calc(100% - 68px)
     &:hover
       border-right: 3px solid #f1f2f4
+
+  :global(.ant-tree)
+    height: 100%
+    background: none
+    position: relative
+    overflow-x: hidden
+    overflow-y: scroll
+    padding-left: 5px
 
   :global(.ant-tree-switcher)
     display: none

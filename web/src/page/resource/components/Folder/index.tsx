@@ -3,6 +3,7 @@ import styles from "./index.module.sass";
 import { useStore, useToFolder } from "@/hooks";
 import { useEffect, useRef, useState } from "react";
 
+import { FOLDER_WIDTH_KEY } from "@/config/system";
 import { CONFIG_ANTD_COMP_FIELD } from "@/config/antd";
 
 import type { TypeResource } from "@/interface/resource";
@@ -16,7 +17,9 @@ const Folder: React.FC = () => {
   const toFolder = useToFolder();
   const resource = useStore("resource");
 
-  const [minWidth, setWidth] = useState(300);
+  const [minWidth, setWidth] = useState(
+    () => Number(sessionStorage.getItem(FOLDER_WIDTH_KEY)) || 300,
+  );
 
   const [expandedKeys, setExpandedKeys] = useState<
     Array<TypeResource.DTO["id"]>
@@ -28,8 +31,9 @@ const Folder: React.FC = () => {
 
   function onDrag(e: MouseEvent) {
     if (e.clientX > 300 && e.clientX < 700) {
-      ref.current.style.cssText = `left:${e.clientX}px`;
-      setWidth(e.clientX - 95);
+      const width = e.clientX - 95;
+      setWidth(width);
+      sessionStorage.setItem(FOLDER_WIDTH_KEY, width.toString());
     }
   }
 
