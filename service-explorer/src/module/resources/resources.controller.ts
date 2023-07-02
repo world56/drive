@@ -1,4 +1,5 @@
 import {
+  Res,
   Get,
   Post,
   Body,
@@ -7,7 +8,6 @@ import {
   UseGuards,
   Controller,
   ParseUUIDPipe,
-  Res,
 } from '@nestjs/common';
 import { ResourcesService } from './resources.service';
 import { UserID } from '@/decorator/user-id.decorator';

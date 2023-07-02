@@ -2,8 +2,8 @@ import File from "./File";
 import styles from "./index.module.sass";
 
 import { ENUM_RESOURCE } from "@/enum/resource";
-
 import type { ENUM_RESOURCE_MENU_TYPE, TypeFilesProps } from "..";
+
 import type { TypeResource } from "@/interface/resource";
 
 export interface TypeThumbnailProps extends Pick<TypeFilesProps, "data"> {

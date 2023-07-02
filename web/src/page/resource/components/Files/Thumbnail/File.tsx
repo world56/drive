@@ -1,9 +1,11 @@
 import {
+  // HeartFilled,
   EyeOutlined,
   FormOutlined,
   DragOutlined,
   HeartOutlined,
   DeleteOutlined,
+  FileTextOutlined,
   FolderOpenOutlined,
   CloudDownloadOutlined,
 } from "@ant-design/icons";
@@ -44,7 +46,7 @@ const File: React.FC<TypeResource.DTO> = (props) => {
     { type: "divider" },
     {
       icon: <FormOutlined />,
-      label: "编辑",
+      label: "编辑信息",
       key: `^${ENUM_RESOURCE_MENU_TYPE.EDIT}^${id}`,
     },
     {
@@ -52,16 +54,21 @@ const File: React.FC<TypeResource.DTO> = (props) => {
       label: "移动至",
       key: `^${ENUM_RESOURCE_MENU_TYPE.MOVE}^${id}`,
     },
-    { type: "divider" },
     {
       icon: <CloudDownloadOutlined />,
-      label: "下载",
+      label: "下载文件",
       key: `^${ENUM_RESOURCE_MENU_TYPE.DOWNLOAD}^${id}`,
     },
+    { type: "divider" },
     {
       icon: <DeleteOutlined className="red" />,
       label: <span className="red">删除</span>,
       key: `^${ENUM_RESOURCE_MENU_TYPE.DELETE}^${id}`,
+    },
+    {
+      icon: <FileTextOutlined />,
+      label: "属性",
+      key: `^${ENUM_RESOURCE_MENU_TYPE.ATTRIBUTES}^${id}`,
     },
   ];
 
@@ -90,6 +97,10 @@ const File: React.FC<TypeResource.DTO> = (props) => {
         <p>
           <span>{IS_FOLDER ? `${size} 个` : filesize(size).toString()}</span>
           <span>{CONSTANT_RESOURCE.TYPE.OBJ[type].name}</span>
+          {/* <Tooltip title="收藏">
+            <HeartFilled />
+            <HeartOutlined />
+          </Tooltip> */}
         </p>
       </div>
     </Dropdown>

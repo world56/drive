@@ -66,17 +66,12 @@ export class ResourcesService {
     });
   }
 
-  getDetails(id: string) {
-    return this.PrismaService.resource.findUnique({
-      where: { id },
-      select: {
-        id: true,
-        type: true,
-        name: true,
-        remark: true,
-        parentId: true,
-      },
-    });
+  async getDetails(id: string) {
+    const [data, paths] = await Promise.all([
+      this.PrismaService.resource.findUnique({ where: { id } }),
+      this.findPaths({ id }),
+    ]);
+    return { ...data, paths };
   }
 
   createFolder(body: InsertResourceDTO, creatorId: string) {
@@ -207,7 +202,7 @@ export class ResourcesService {
     });
   }
 
-  private async findPaths(resource: Resource) {
+  private async findPaths(resource: Pick<Resource, 'id'>) {
     try {
       const list = await this.PrismaService.$queryRaw<TypeFindPaths['paths']>(
         Prisma.sql`

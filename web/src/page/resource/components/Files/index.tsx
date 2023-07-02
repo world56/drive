@@ -33,6 +33,11 @@ export enum ENUM_RESOURCE_MENU_TYPE {
   DELETE = "DELETE",
   /** @param FAVORITE 收藏 */
   FAVORITE = "FAVORITE",
+  /** 
+   * @param ATTRIBUTES 属性
+   * @description 逻辑跟Mac、Windows查看逻辑差不多
+   */
+  ATTRIBUTES = "ATTRIBUTES",
 }
 
 /**

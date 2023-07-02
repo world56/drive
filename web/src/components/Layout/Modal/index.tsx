@@ -1,19 +1,15 @@
-import styles from './index.module.sass';
-import { Modal as AntdModal, Spin } from 'antd';
+import styles from "./index.module.sass";
+import { Modal as AntdModal, Spin } from "antd";
 
-import type { ModalProps } from 'antd/lib/modal/Modal';
+import type { ModalProps, SpinProps } from "antd";
 
-interface TypeModal extends ModalProps {
-  /** 
-   * @param loading 加载动画 
-   */
-  loading?: boolean;
-  /** 
-   * @param spacing 间距 
+interface TypeModal extends ModalProps, Pick<SpinProps, "spinning" | "tip"> {
+  /**
+   * @param spacing 间距
    * @description 增加 antd5.x Modal-Header间距
    */
   spacing?: boolean;
-};
+}
 
 /**
  * @name Modal 弹窗
@@ -23,16 +19,15 @@ const Modal: React.FC<TypeModal> = ({
   children,
   className,
   spacing = true,
-  loading = false,
+  spinning = false,
   ...modalProps
 }) => (
   <AntdModal
-    confirmLoading={loading}
-    className={`${spacing ? styles.modal : ''} ${className}`}
-    {...modalProps}>
-    <Spin spinning={loading}>
-      {children}
-    </Spin>
+    confirmLoading={spinning}
+    className={`${spacing ? styles.modal : ""} ${className}`}
+    {...modalProps}
+  >
+    <Spin spinning={spinning}>{children}</Spin>
   </AntdModal>
 );
 

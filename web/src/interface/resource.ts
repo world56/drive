@@ -27,10 +27,12 @@ export namespace TypeResource {
     fullName: string;
     /** @param 备注 */
     remark?: string;
-    /** @param creatorId 创建、上传人 */
-    creatorId: TypeUser.DTO["id"];
     /** @param paths 资源目录路径ID */
     paths?: Array<Pick<DTO, "id" | "name">>;
+    /** @param creatorId 创建、上传人 */
+    creatorId: TypeUser.DTO["id"];
+    /** @param creator 创建、上传人详情 */
+    creator?: TypeUser.DTO;
   }
 
   /**

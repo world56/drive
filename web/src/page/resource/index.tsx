@@ -6,6 +6,7 @@ import Files from "./components/Files";
 import Folder from "./components/Folder";
 import styles from "./index.module.sass";
 import { useEffect, useState } from "react";
+import Attributes from "./components/Attributes";
 import { createUpload, downloadFile } from "@/utils/resource";
 import { getResources, deleteResources } from "@/api/resource";
 import { useStore, useActions, useToFolder, useEventListener } from "@/hooks";
@@ -19,6 +20,7 @@ import { ENUM_COMMON } from "@/enum/common";
 import type { TypeMoveProps } from "./components/Move";
 import type { TypeFilesProps } from "./components/Files";
 import type { TypeEditResourceProps } from "./components/Edit";
+import type { TypeAttributesProps } from "./components/Attributes";
 
 /**
  * @name Resource 资源管理页面
@@ -30,6 +32,7 @@ const Resource = () => {
   const resource = useStore("resource");
 
   const [move, setMove] = useState<TypeMoveProps["ids"]>([]);
+  const [detailsID, setDetailsID] = useState<TypeAttributesProps["id"]>();
   const [edit, setEdit] = useState<Omit<TypeEditResourceProps, "onClose">>({
     open: false,
   });
@@ -68,6 +71,8 @@ const Resource = () => {
         return setMove([id]);
       case ENUM_RESOURCE_MENU_TYPE.DOWNLOAD:
         return downloadFile(id);
+      case ENUM_RESOURCE_MENU_TYPE.ATTRIBUTES:
+        return setDetailsID(id);
       default:
         return;
     }
@@ -85,6 +90,10 @@ const Resource = () => {
     setMove([]);
   }
 
+  function onCloseDetails() {
+    setDetailsID(undefined);
+  }
+
   useEventListener(ENUM_COMMON.CUSTOM_EVENTS.REFRESH_RESOURCES, run);
 
   useEffect(() => {
@@ -100,6 +109,7 @@ const Resource = () => {
         loading={loading}
         onItemMenu={onItemMenu}
       />
+      <Attributes id={detailsID} onClose={onCloseDetails} />
       <Move ids={move} onClose={onCloseMove} />
       <Edit {...edit} onClose={onCloseEdit} />
     </div>
