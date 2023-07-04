@@ -30,7 +30,6 @@ const Attributes: React.FC<TypeAttributesProps> = ({ id, onClose }) => {
   }, [id]);
 
   const isFolder = value?.type === ENUM_RESOURCE.TYPE.FOLDER;
-  const name = isFolder ? "文件夹" : "文件";
 
   return (
     <Drawer
@@ -38,10 +37,11 @@ const Attributes: React.FC<TypeAttributesProps> = ({ id, onClose }) => {
       onClose={onClose}
       open={Boolean(id)}
       spinning={loading}
-      title={`${name}详情`}
+      bodyStyle={{ padding: 16 }}
+      title={`${isFolder ? "文件夹" : "文件"}详情`}
     >
       <Descriptions layout="vertical" size="middle">
-        <Item span={3} label={`${name}名称`}>
+        <Item span={3} label="名称">
           {value?.name}
         </Item>
 
@@ -73,7 +73,7 @@ const Attributes: React.FC<TypeAttributesProps> = ({ id, onClose }) => {
           </Item>
         )}
 
-        <Item span={3} label='路径'>
+        <Item span={3} label="路径">
           主目录{value?.paths?.length ? " / " : ""}
           {value?.paths?.map((v) => v.name).join(" / ")}
         </Item>

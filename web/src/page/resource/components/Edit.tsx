@@ -81,7 +81,7 @@ const Edit: React.FC<TypeEditResourceProps> = ({
   return (
     <Modal
       forceRender
-      loading={load}
+      spinning={load}
       onOk={onSubmit}
       onCancel={onCancel}
       open={Boolean(id || parentId || open)}

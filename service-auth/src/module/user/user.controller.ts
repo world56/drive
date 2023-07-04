@@ -33,7 +33,7 @@ export class UserController {
   @ApiOperation({ summary: '获取用户详情' })
   @Get('details')
   details(@Query('id', new ParseUUIDPipe()) id: string) {
-    return this.UserService.details(id);
+    return this.UserService.getUserInfo(id);
   }
 
   @ApiOperation({

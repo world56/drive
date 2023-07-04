@@ -1,9 +1,10 @@
 import File from "./File";
 import styles from "./index.module.sass";
 
+import { ENUM_RESOURCE_MENU_TYPE } from "..";
 import { ENUM_RESOURCE } from "@/enum/resource";
-import type { ENUM_RESOURCE_MENU_TYPE, TypeFilesProps } from "..";
 
+import type { TypeFilesProps } from "..";
 import type { TypeResource } from "@/interface/resource";
 
 export interface TypeThumbnailProps extends Pick<TypeFilesProps, "data"> {
@@ -12,7 +13,7 @@ export interface TypeThumbnailProps extends Pick<TypeFilesProps, "data"> {
    * @description 这里只负责出参，不符合要求的双击事件，不会触发调用
    */
   onPreview(type: ENUM_RESOURCE.TYPE, id: TypeResource.DTO["id"]): void;
-  /** 
+  /**
    * @name onItemMenu 文件、文件夹 菜单事件
    * @description 鼠标右键点击资源菜单
    */

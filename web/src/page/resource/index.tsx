@@ -94,11 +94,11 @@ const Resource = () => {
     setDetailsID(undefined);
   }
 
-  useEventListener(ENUM_COMMON.CUSTOM_EVENTS.REFRESH_RESOURCES, run);
-
   useEffect(() => {
     actions.getFolders();
   }, [actions]);
+
+  useEventListener(ENUM_COMMON.CUSTOM_EVENTS.REFRESH_RESOURCES, run);
 
   return (
     <div className={styles.layout}>
