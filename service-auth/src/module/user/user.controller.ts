@@ -36,6 +36,7 @@ export class UserController {
     return this.UserService.getUserInfo(id);
   }
 
+
   @ApiOperation({
     summary: '新增用户',
     description: '只有管理员可以新增用户',

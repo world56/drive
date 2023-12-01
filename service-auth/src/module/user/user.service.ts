@@ -1,4 +1,3 @@
-import { GrpcMethod } from '@nestjs/microservices';
 import { PrismaService } from '@/common/prisma/prisma.service';
 import { CryptoService } from '@/module/crypto/crypto.service';
 import { Injectable, PreconditionFailedException } from '@nestjs/common';
@@ -37,8 +36,6 @@ export class UserService {
     return { count, list };
   }
 
-
-  @GrpcMethod()
   getUserInfo(id: string) {
     return this.PrismaService.user.findUnique({
       where: { id },

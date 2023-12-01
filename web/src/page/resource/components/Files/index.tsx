@@ -21,6 +21,8 @@ export interface TypeFilesProps
 export enum ENUM_RESOURCE_MENU_TYPE {
   /** @param OPEN 打开、预览 文件、文件夹 */
   OPEN = "OPEN",
+  /** @param COPY_NAME 复制名称 */
+  COPY_NAME = "COPY_NAME",
   /** @param COLLECT 收藏 */
   COLLECT = "COLLECT",
   /** @param EDIT 编辑 */
@@ -33,7 +35,7 @@ export enum ENUM_RESOURCE_MENU_TYPE {
   DELETE = "DELETE",
   /** @param FAVORITE 收藏 */
   FAVORITE = "FAVORITE",
-  /** 
+  /**
    * @param ATTRIBUTES 属性
    * @description 逻辑跟Mac、Windows查看逻辑差不多
    */

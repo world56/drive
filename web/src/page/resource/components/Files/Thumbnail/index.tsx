@@ -15,9 +15,10 @@ export interface TypeThumbnailProps extends Pick<TypeFilesProps, "data"> {
   onPreview(type: ENUM_RESOURCE.TYPE, id: TypeResource.DTO["id"]): void;
   /**
    * @name onItemMenu 文件、文件夹 菜单事件
+   * @param param 除了 “复制名称” 都是文件id
    * @description 鼠标右键点击资源菜单
    */
-  onItemMenu(type: ENUM_RESOURCE_MENU_TYPE, id: string): void;
+  onItemMenu(type: ENUM_RESOURCE_MENU_TYPE, param: string): void;
 }
 
 /**
@@ -44,8 +45,8 @@ const Thumbnail: React.FC<TypeThumbnailProps> = ({
     const targetElement = e.target as HTMLElement;
     const ele = targetElement.closest("li");
     if (!ele?.dataset) return;
-    const [type, id] = ele.dataset.menuId?.split("^").splice(-2)!;
-    onItemMenu(type as ENUM_RESOURCE_MENU_TYPE, id);
+    const [type, param] = ele.dataset.menuId?.split("^").splice(-2)!;
+    onItemMenu(type as ENUM_RESOURCE_MENU_TYPE, param);
   }
 
   return (

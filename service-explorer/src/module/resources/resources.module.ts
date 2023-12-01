@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { GrpcModule } from '@/common/grpc/grpc.module';
 import { ResourcesService } from './resources.service';
 import { FileModule } from 'src/common/file/file.module';
 import { RedisModule } from 'src/common/redis/redis.module';
@@ -11,6 +12,7 @@ import CONFIG_RESOURCE_PATH from 'src/config/resource-path.config';
   providers: [ResourcesService],
   controllers: [ResourcesController],
   imports: [
+    GrpcModule,
     FileModule,
     RedisModule,
     PrismaModule,

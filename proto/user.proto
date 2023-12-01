@@ -9,7 +9,6 @@ service UserService {
 message User {
   string id = 1;
   string name = 2;
-  string account = 3;
 }
 
 message FindUserId {

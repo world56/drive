@@ -1,5 +1,6 @@
 import { Prisma } from '@prisma/client';
 import * as AsyncLock from 'async-lock';
+import { GrpcService } from '@/common/grpc/grpc.service';
 import { FileService } from '@/common/file/file.service';
 import { RedisService } from '@/common/redis/redis.service';
 import { Injectable, ConflictException } from '@nestjs/common';
@@ -27,6 +28,7 @@ export interface TypeFindPaths extends Resource {
 @Injectable()
 export class ResourcesService {
   public constructor(
+    private readonly GrpcService: GrpcService,
     private readonly FileService: FileService,
     private readonly RedisService: RedisService,
     private readonly PrismaService: PrismaService,
@@ -68,10 +70,21 @@ export class ResourcesService {
 
   async getDetails(id: string) {
     const [data, paths] = await Promise.all([
-      this.PrismaService.resource.findUnique({ where: { id } }),
+      this.PrismaService.resource.findUnique({
+        where: { id },
+        include: { _count: { select: { children: true } } },
+      }),
       this.findPaths({ id }),
     ]);
-    return { ...data, paths };
+    const creator = await this.GrpcService.getUserInfo(data.creatorId);
+    const { _count, ...info } = data;
+    const IS_FOLDER = data.type === ENUM_RESOURCE.TYPE.FOLDER;
+    return {
+      ...info,
+      paths,
+      creator,
+      size: IS_FOLDER ? _count.children : data.size,
+    };
   }
 
   createFolder(body: InsertResourceDTO, creatorId: string) {
