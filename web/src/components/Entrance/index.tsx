@@ -9,9 +9,11 @@ const Entrance = () => (
     <Header />
     <main className={styles.main}>
       <Navigation />
-      <Outlet />
-      <Upload />
+      <div className={styles.children}>
+        <Outlet />
+      </div>
     </main>
+    <Upload />
   </>
 );
 

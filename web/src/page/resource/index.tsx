@@ -57,22 +57,25 @@ const Resource = () => {
     }
   };
 
-  const onItemMenu: TypeFilesProps["onItemMenu"] = async (type, id) => {
+  const onItemMenu: TypeFilesProps["onItemMenu"] = async (type, param) => {
     switch (type) {
       case ENUM_RESOURCE_MENU_TYPE.OPEN:
-        return resource.foldersObj[id] && toFolder(id);
+        return resource.foldersObj[param] && toFolder(param);
+      case ENUM_RESOURCE_MENU_TYPE.COPY_NAME:
+        await navigator.clipboard.writeText(param);
+        return message.success('复制成功');
       case ENUM_RESOURCE_MENU_TYPE.DELETE:
-        await deleteResources({ ids: [id] });
+        await deleteResources({ ids: [param] });
         run();
         return message.success("删除成功");
       case ENUM_RESOURCE_MENU_TYPE.EDIT:
-        return setEdit({ open: true, id });
+        return setEdit({ open: true, id: param });
       case ENUM_RESOURCE_MENU_TYPE.MOVE:
-        return setMove([id]);
+        return setMove([param]);
       case ENUM_RESOURCE_MENU_TYPE.DOWNLOAD:
-        return downloadFile(id);
+        return downloadFile(param);
       case ENUM_RESOURCE_MENU_TYPE.ATTRIBUTES:
-        return setDetailsID(id);
+        return setDetailsID(param);
       default:
         return;
     }

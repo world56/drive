@@ -32,7 +32,9 @@ export namespace TypeResource {
     /** @param creatorId 创建、上传人 */
     creatorId: TypeUser.DTO["id"];
     /** @param creator 创建、上传人详情 */
-    creator?: TypeUser.DTO;
+    creator?: Pick<TypeUser.DTO, "id" | "name">;
+    /** @param count 下载次数 */
+    count: number;
   }
 
   /**

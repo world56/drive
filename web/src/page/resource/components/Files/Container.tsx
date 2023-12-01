@@ -143,7 +143,7 @@ const Container: React.FC<TypeFilesContainerProps> = ({
   return (
     <div className={styles.files}>
       <Breadcrumb items={route} className={styles.nav} />
-      {loading ? <Spin spinning={loading} tip="正在加载资源目录" /> : null}
+      {loading ? <Spin spinning={loading} /> : null}
       <Dropdown
         trigger={["contextMenu"]}
         menu={{ items, onClick: onMenuClick }}

@@ -25,11 +25,12 @@ const { Item } = Descriptions;
  * @description 包活“文件”、“文件夹”详情
  */
 const Attributes: React.FC<TypeAttributesProps> = ({ id, onClose }) => {
-  const { loading, value } = useReqDetails(async () => {
-    return getResourceDetails({ id: id! });
-  }, [id]);
+  const { loading, value } = useReqDetails(
+    () => getResourceDetails({ id: id! }),
+    [id],
+  );
 
-  const isFolder = value?.type === ENUM_RESOURCE.TYPE.FOLDER;
+  const IS_FOLDER = value?.type === ENUM_RESOURCE.TYPE.FOLDER;
 
   return (
     <Drawer
@@ -37,15 +38,15 @@ const Attributes: React.FC<TypeAttributesProps> = ({ id, onClose }) => {
       onClose={onClose}
       open={Boolean(id)}
       spinning={loading}
-      bodyStyle={{ padding: 16 }}
-      title={`${isFolder ? "文件夹" : "文件"}详情`}
+      styles={{ body: { padding: 16 } }}
+      title={`${IS_FOLDER ? "文件夹" : "文件"}详情`}
     >
       <Descriptions layout="vertical" size="middle">
         <Item span={3} label="名称">
           {value?.name}
         </Item>
 
-        {isFolder ? null : (
+        {IS_FOLDER ? null : (
           <Item span={3} label="后缀">
             {value?.suffix}
           </Item>
@@ -57,7 +58,7 @@ const Attributes: React.FC<TypeAttributesProps> = ({ id, onClose }) => {
             : CONSTANT_RESOURCE.TYPE.OBJ[value!.type]?.name}
         </Item>
 
-        {isFolder ? (
+        {IS_FOLDER ? (
           <Item span={3} label="资源数量">
             {value?.size || 0} 个
           </Item>
@@ -67,9 +68,9 @@ const Attributes: React.FC<TypeAttributesProps> = ({ id, onClose }) => {
           </Item>
         )}
 
-        {isFolder ? null : (
+        {IS_FOLDER ? null : (
           <Item span={3} label="下载次数">
-            125 次
+            {value?.count || 0} 次
           </Item>
         )}
 
@@ -78,12 +79,12 @@ const Attributes: React.FC<TypeAttributesProps> = ({ id, onClose }) => {
           {value?.paths?.map((v) => v.name).join(" / ")}
         </Item>
 
-        <Item span={3} label={isFolder ? "创建时间" : "上传时间"}>
+        <Item span={3} label={IS_FOLDER ? "创建时间" : "上传时间"}>
           {toTime(value?.createTime)}
         </Item>
 
-        <Item span={3} label={isFolder ? "创建人" : "上传人"}>
-          {value?.creatorId}
+        <Item span={3} label={IS_FOLDER ? "创建人" : "上传人"}>
+          {value?.creator?.name}
         </Item>
 
         <Item span={3} label="备注">

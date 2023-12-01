@@ -7,6 +7,8 @@ export namespace ENUM_HTTP {
   export const enum REQUEST_MODE {
     GET = "GET",
     POST = "POST",
+    PUT  = 'PUT',
+    DELETE='DELETE'
   }
 
   export const enum CONTENT_TYPE {

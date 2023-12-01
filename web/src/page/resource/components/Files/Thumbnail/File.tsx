@@ -1,6 +1,7 @@
 import {
   // HeartFilled,
   EyeOutlined,
+  CopyOutlined,
   FormOutlined,
   DragOutlined,
   HeartOutlined,
@@ -28,7 +29,7 @@ import type { TypeResource } from "@/interface/resource";
  * @name File 资源、文件图标
  */
 const File: React.FC<TypeResource.DTO> = (props) => {
-  const { id, type, size } = props;
+  const { id, type, size, fullName } = props;
 
   const IS_FOLDER = type === ENUM_RESOURCE.TYPE.FOLDER;
 
@@ -42,6 +43,11 @@ const File: React.FC<TypeResource.DTO> = (props) => {
       icon: <HeartOutlined />,
       label: "收藏",
       key: `^${ENUM_RESOURCE_MENU_TYPE.COLLECT}^${id}`,
+    },
+    {
+      icon: <CopyOutlined />,
+      label: "复制名称",
+      key: `^${ENUM_RESOURCE_MENU_TYPE.COPY_NAME}^${fullName}`,
     },
     { type: "divider" },
     {
@@ -95,7 +101,7 @@ const File: React.FC<TypeResource.DTO> = (props) => {
         </span>
         <p>{props.name}</p>
         <p>
-          <span>{IS_FOLDER ? `${size} 个` : filesize(size).toString()}</span>
+          <span>{IS_FOLDER ? `${size} 个` : filesize(size!).toString()}</span>
           <span>{CONSTANT_RESOURCE.TYPE.OBJ[type].name}</span>
           {/* <Tooltip title="收藏">
             <HeartFilled />
