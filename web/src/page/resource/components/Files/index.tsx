@@ -37,7 +37,7 @@ const Files: React.FC<TypeFilesProps> = ({
 
   return (
     <Container loading={loading} onMenu={onMenu} onItemMenu={onItemMenu}>
-      <Thumbnail data={data} onPreview={onPreview} />
+      <Thumbnail data={data} onPreview={onPreview} onMenu={onMenu} />
     </Container>
   );
 };

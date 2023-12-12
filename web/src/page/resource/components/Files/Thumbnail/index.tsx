@@ -1,13 +1,14 @@
 import File from "./File";
 import styles from "./index.module.sass";
+import EmptyPrompt from "../EmptyPrompt";
 
 import { ENUM_RESOURCE } from "@/enum/resource";
 
 import type { TypeFilesProps } from "..";
 import type { TypeResource } from "@/interface/resource";
-import { Empty } from "antd";
 
-export interface TypeThumbnailProps extends Pick<TypeFilesProps, "data"> {
+export interface TypeThumbnailProps
+  extends Pick<TypeFilesProps, "data" | "onMenu"> {
   /**
    * @name onPreview 双击 预览、打开文件夹
    * @description 这里只负责出参，不符合要求的双击事件，不会触发调用
@@ -18,7 +19,11 @@ export interface TypeThumbnailProps extends Pick<TypeFilesProps, "data"> {
 /**
  * @name Thumbnail 布局-缩略图
  */
-const Thumbnail: React.FC<TypeThumbnailProps> = ({ data, onPreview }) => {
+const Thumbnail: React.FC<TypeThumbnailProps> = ({
+  data,
+  onMenu,
+  onPreview,
+}) => {
   /**
    * @name onDoubleClick 双击目标元素
    */
@@ -47,7 +52,7 @@ const Thumbnail: React.FC<TypeThumbnailProps> = ({ data, onPreview }) => {
       </div>
     </div>
   ) : (
-    <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description='没有相关资源' />
+    <EmptyPrompt onMenu={onMenu} />
   );
 };
 

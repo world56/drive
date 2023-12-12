@@ -33,7 +33,7 @@ export interface TypeFilesContainerProps {
   loading: SpinProps["spinning"];
   /**
    * @name onMenu 容器-菜单事件
-   * @description 鼠标右键点击文件列表容器菜单
+   * @description 鼠标右键点击文件列表容器菜单，文件夹为空点击上传、创建按钮
    */
   onMenu(type: ENUM_RESOURCE.MENU_CONTAINER, id?: string): void;
   /**
