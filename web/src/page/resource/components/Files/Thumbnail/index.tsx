@@ -1,11 +1,11 @@
 import File from "./File";
 import styles from "./index.module.sass";
 
-import { ENUM_RESOURCE_MENU_TYPE } from "..";
 import { ENUM_RESOURCE } from "@/enum/resource";
 
 import type { TypeFilesProps } from "..";
 import type { TypeResource } from "@/interface/resource";
+import { Empty } from "antd";
 
 export interface TypeThumbnailProps extends Pick<TypeFilesProps, "data"> {
   /**
@@ -13,22 +13,12 @@ export interface TypeThumbnailProps extends Pick<TypeFilesProps, "data"> {
    * @description 这里只负责出参，不符合要求的双击事件，不会触发调用
    */
   onPreview(type: ENUM_RESOURCE.TYPE, id: TypeResource.DTO["id"]): void;
-  /**
-   * @name onItemMenu 文件、文件夹 菜单事件
-   * @param param 除了 “复制名称” 都是文件id
-   * @description 鼠标右键点击资源菜单
-   */
-  onItemMenu(type: ENUM_RESOURCE_MENU_TYPE, param: string): void;
 }
 
 /**
  * @name Thumbnail 布局-缩略图
  */
-const Thumbnail: React.FC<TypeThumbnailProps> = ({
-  data,
-  onPreview,
-  onItemMenu,
-}) => {
+const Thumbnail: React.FC<TypeThumbnailProps> = ({ data, onPreview }) => {
   /**
    * @name onDoubleClick 双击目标元素
    */
@@ -41,20 +31,10 @@ const Thumbnail: React.FC<TypeThumbnailProps> = ({
     onPreview(Number(type), id);
   }
 
-  function onClick(e: React.MouseEvent<HTMLDivElement>) {
-    const targetElement = e.target as HTMLElement;
-    const ele = targetElement.closest("li");
-    if (!ele?.dataset) return;
-    const [type, param] = ele.dataset.menuId?.split("^").splice(-2)!;
-    onItemMenu(type as ENUM_RESOURCE_MENU_TYPE, param);
-  }
+  const length = data?.files.length! + data?.folders.length!;
 
-  return (
-    <div
-      onClick={onClick}
-      className={styles.thumbnail}
-      onDoubleClick={onDoubleClick}
-    >
+  return length ? (
+    <div className={styles.thumbnail} onDoubleClick={onDoubleClick}>
       <div className={styles.list}>
         {data?.folders.map((v) => (
           <File key={v.id} {...v} />
@@ -66,6 +46,8 @@ const Thumbnail: React.FC<TypeThumbnailProps> = ({
         ))}
       </div>
     </div>
+  ) : (
+    <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description='没有相关资源' />
   );
 };
 

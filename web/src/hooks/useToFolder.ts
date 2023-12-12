@@ -18,7 +18,7 @@ export default function useToFolder<
   function getPath(id: React.Key) {
     const ids: React.Key[] = [id];
     while (true) {
-      const target = resource.foldersObj[id];
+      const target = resource.foldersObj[id as string];
       if (target.parentId) {
         id = target.parentId;
         ids.unshift(target.parentId);

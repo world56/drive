@@ -11,7 +11,7 @@ export interface TypeListToTree
  * @param list 一维数组
  * @param parentId 父ID 默认void
  * @param obj 会生成Key Value
- * @returns 
+ * @returns
  */
 export function listToTree<T extends TypeListToTree>(
   list: T[] = [],
@@ -47,4 +47,13 @@ export function toCategory<
  */
 export function toTime(timestamp?: number | Date | string): string {
   return timestamp ? dayjs(timestamp).format("YYYY-MM-DD HH:mm:ss") : "-";
+}
+
+/**
+ * @name toTimestamp 转换时间格式
+ * @param date 例：2023-07-15T06:27:34.715Z
+ * @returns 时间戳
+ */
+export function toTimestamp(date: string | Date) {
+  return new Date(date).valueOf();
 }

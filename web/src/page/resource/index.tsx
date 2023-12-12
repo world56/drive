@@ -11,11 +11,8 @@ import { createUpload, downloadFile } from "@/utils/resource";
 import { getResources, deleteResources } from "@/api/resource";
 import { useStore, useActions, useToFolder, useEventListener } from "@/hooks";
 
-import {
-  ENUM_RESOURCE_MENU_TYPE,
-  ENUM_CONTAINER_MENU_TYPE,
-} from "./components/Files";
 import { ENUM_COMMON } from "@/enum/common";
+import { ENUM_RESOURCE } from "@/enum/resource";
 
 import type { TypeMoveProps } from "./components/Move";
 import type { TypeFilesProps } from "./components/Files";
@@ -38,20 +35,30 @@ const Resource = () => {
   });
 
   const { data, loading, run } = useRequest(
-    () => getResources({ id: resource.path?.at(-1) }),
-    { refreshDeps: [resource.path] },
+    () => getResources({ id: resource.path?.at(-1), ...resource.sort }),
+    { refreshDeps: [resource.path, resource.sort] },
   );
 
-  const onMenu: TypeFilesProps["onMenu"] = (type, id) => {
-    switch (type) {
-      case ENUM_CONTAINER_MENU_TYPE.MKDIR:
+  const onMenu: TypeFilesProps["onMenu"] = (param, id) => {
+    switch (param) {
+      case ENUM_RESOURCE.MENU_CONTAINER.MKDIR:
         return setEdit({ open: true, parentId: id });
-      case ENUM_CONTAINER_MENU_TYPE.REFRESH:
+      case ENUM_RESOURCE.MENU_CONTAINER.REFRESH:
         return run();
-      case ENUM_CONTAINER_MENU_TYPE.UPLOAD_FILE:
+      case ENUM_RESOURCE.MENU_CONTAINER.UPLOAD_FILE:
         return createUpload();
-      case ENUM_CONTAINER_MENU_TYPE.UPLOAD_FOLDER:
+      case ENUM_RESOURCE.MENU_CONTAINER.UPLOAD_FOLDER:
         return createUpload(true);
+      case ENUM_RESOURCE.MENU_CONTAINER.SORT_NAME:
+      case ENUM_RESOURCE.MENU_CONTAINER.SORT_SIZE:
+      case ENUM_RESOURCE.MENU_CONTAINER.SORT_TYPE:
+      case ENUM_RESOURCE.MENU_CONTAINER.SORT_SUFFIX:
+      case ENUM_RESOURCE.MENU_CONTAINER.SORT_CREATOR_ID:
+      case ENUM_RESOURCE.MENU_CONTAINER.SORT_CREATE_TIME:
+        return actions.setSort({ ...resource.sort, type: param });
+      case ENUM_RESOURCE.MENU_CONTAINER.SORT_ASC:
+      case ENUM_RESOURCE.MENU_CONTAINER.SORT_DESC:
+        return actions.setSort({ ...resource.sort, order: param });
       default:
         return;
     }
@@ -59,23 +66,23 @@ const Resource = () => {
 
   const onItemMenu: TypeFilesProps["onItemMenu"] = async (type, param) => {
     switch (type) {
-      case ENUM_RESOURCE_MENU_TYPE.OPEN:
-        return resource.foldersObj[param] && toFolder(param);
-      case ENUM_RESOURCE_MENU_TYPE.COPY_NAME:
-        await navigator.clipboard.writeText(param);
-        return message.success('复制成功');
-      case ENUM_RESOURCE_MENU_TYPE.DELETE:
-        await deleteResources({ ids: [param] });
+      case ENUM_RESOURCE.MENU_RESOURCE.OPEN:
+        return resource.foldersObj[param.id] && toFolder(param.id);
+      case ENUM_RESOURCE.MENU_RESOURCE.COPY_NAME:
+        await navigator.clipboard.writeText(param.fullName);
+        return message.success("复制成功");
+      case ENUM_RESOURCE.MENU_RESOURCE.DELETE:
+        await deleteResources({ ids: [param.id] });
         run();
         return message.success("删除成功");
-      case ENUM_RESOURCE_MENU_TYPE.EDIT:
-        return setEdit({ open: true, id: param });
-      case ENUM_RESOURCE_MENU_TYPE.MOVE:
-        return setMove([param]);
-      case ENUM_RESOURCE_MENU_TYPE.DOWNLOAD:
-        return downloadFile(param);
-      case ENUM_RESOURCE_MENU_TYPE.ATTRIBUTES:
-        return setDetailsID(param);
+      case ENUM_RESOURCE.MENU_RESOURCE.EDIT:
+        return setEdit({ open: true, id: param.id });
+      case ENUM_RESOURCE.MENU_RESOURCE.MOVE:
+        return setMove([param.id]);
+      case ENUM_RESOURCE.MENU_RESOURCE.DOWNLOAD:
+        return downloadFile(param.id);
+      case ENUM_RESOURCE.MENU_RESOURCE.ATTRIBUTES:
+        return setDetailsID(param.id);
       default:
         return;
     }

@@ -14,7 +14,7 @@ export namespace TypeResource {
     extends Pick<TypeCommon.DTO, "id" | "name">,
       Partial<Pick<TypeCommon.DTO, "parentId">> {
     /** @param size 资源大小 */
-    size?: number;
+    size: number;
     /** @param path 预览路径  */
     path?: string;
     /** @param suffix 格式 */
@@ -39,8 +39,12 @@ export namespace TypeResource {
 
   /**
    * @name ReqResources 查询资源列表
+   * @param type 排序类型
+   * @param order 排序方式
    */
-  export interface ReqResources extends Partial<Pick<DTO, "id">> {}
+  export interface ReqResources
+    extends Partial<Pick<DTO, "id">>,
+      Record<"order" | "type", string> {}
 
   /**
    * @name ResResourceList 资源列表

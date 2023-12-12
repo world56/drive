@@ -57,11 +57,12 @@
       user-select: none
       color: rgb(135,141 ,150)
       justify-content: space-between
+      span:nth-child(2)
+        display: none
 
     :global(.anticon-heart)
       top: 12px
       right: 12px
-      // display: none
       font-size: 17px
       position: absolute
 
@@ -69,3 +70,9 @@
       box-shadow: 0 2px 12px 0 rgba(0,0,0,.1)
       :global(.anticon-heart)
         display: block
+      
+      p:nth-last-child(1)
+        span:nth-child(2)
+          display: inline-block
+        span:nth-child(3)
+          display: none

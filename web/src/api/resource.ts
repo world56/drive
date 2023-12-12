@@ -37,7 +37,7 @@ export function getFolders() {
  * @name getResourceDetails 获取资源详情
  */
 export function getResourceDetails(
-  params: Required<TypeResource.ReqResources>,
+  params: Required<Pick<TypeResource.ReqResources, "id">>,
 ) {
   return request<TypeResource.DTO>("resource/details", {
     method: ENUM_HTTP.REQUEST_MODE.GET,
