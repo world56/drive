@@ -9,6 +9,7 @@ import {
   Controller,
   ParseUUIDPipe,
 } from '@nestjs/common';
+import { QueryListPipe } from './pipe/query-list.pipe';
 import { ResourcesService } from './resources.service';
 import { UserID } from '@/decorator/user-id.decorator';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
@@ -41,8 +42,8 @@ export class ResourcesController {
     summary: '获取文件夹下资源列表',
   })
   @Get('list')
-  findList(@Query() query: FindResourcesListDTO) {
-    return this.ResourcesService.findList(query.id);
+  findList(@Query(new QueryListPipe()) query: FindResourcesListDTO) {
+    return this.ResourcesService.findList(query);
   }
 
   @Get('details')

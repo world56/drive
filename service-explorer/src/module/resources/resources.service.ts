@@ -10,6 +10,7 @@ import { ResourceDTO } from '@/dto/resource.dto';
 import { MoveResourcesDTO } from './dto/move-resources.dto';
 import { InsertResourceDTO } from './dto/inset-resource.dto';
 import { DeleteResourcesDTO } from './dto/delete-resources.dto';
+import { FindResourcesListDTO } from './dto/find-resources-list.dto';
 
 import { ENUM_RESOURCE } from '@/enum/explorer';
 
@@ -36,20 +37,17 @@ export class ResourcesService {
 
   private readonly lock = new AsyncLock();
 
-  async findList(id: string) {
+  async findList({ id, order, type }: FindResourcesListDTO) {
     const where = id ? { parentId: id } : { parentId: { equals: null } };
     const [folders, files] = await Promise.all([
       this.PrismaService.resource.findMany({
-        orderBy: { createTime: 'desc' },
+        orderBy: { [type]: order },
         include: { _count: { select: { children: true } } },
         where: { ...where, type: ENUM_RESOURCE.TYPE.FOLDER },
       }),
       this.PrismaService.resource.findMany({
-        orderBy: { createTime: 'desc' },
-        where: {
-          ...where,
-          type: { not: ENUM_RESOURCE.TYPE.FOLDER },
-        },
+        orderBy: { [type]: order },
+        where: { ...where, type: { not: ENUM_RESOURCE.TYPE.FOLDER } },
       }),
     ]);
     return {
