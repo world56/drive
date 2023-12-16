@@ -1,4 +1,3 @@
-import styles from "./index.module.sass";
 import { CheckOutlined } from "@ant-design/icons";
 
 interface TypeChooseProps {
@@ -13,11 +12,11 @@ interface TypeChooseProps {
  */
 const Choose: React.FC<TypeChooseProps> = ({ name, selected }) => {
   return (
-    <div className={styles.choose}>
+    <div>
       {selected ? (
         <CheckOutlined style={{ marginRight: 10 }} />
       ) : (
-        <span style={{ marginRight: 25 }} />
+        <span style={{ marginRight: 23 }} />
       )}
       <span>{name}</span>
     </div>

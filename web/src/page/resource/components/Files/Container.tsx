@@ -20,7 +20,7 @@ import styles from "./index.module.sass";
 import Choose from "@/components/Choose";
 import { useStore, useToFolder } from "@/hooks";
 import { useMemo, useRef, useState } from "react";
-import { Dropdown, Spin, Breadcrumb } from "antd";
+import { Dropdown, Spin, Breadcrumb, message } from "antd";
 
 import { ENUM_RESOURCE } from "@/enum/resource";
 
@@ -32,70 +32,64 @@ export interface TypeFilesContainerProps {
   /** @param loading 加载效果 */
   loading: SpinProps["spinning"];
   /**
-   * @name onMenu 容器-菜单事件
-   * @description 鼠标右键点击文件列表容器菜单，文件夹为空点击上传、创建按钮
+   * @name onMenu 菜单事件
+   * @description 鼠标右键触发的选项菜单
    */
-  onMenu(type: ENUM_RESOURCE.MENU_CONTAINER, id?: string): void;
-  /**
-   * @name onItemMenu 资源列表-菜单事件
-   * @description 鼠标右键点击资源菜单
-   */
-  onItemMenu(
-    type: ENUM_RESOURCE.MENU_RESOURCE,
-    param: TypeSelectResource,
-  ): void;
+  onMenu(type: ENUM_RESOURCE.MENU, id?: string): void;
 }
 
 const MENU_PREVIEW_RESOURCE = {
   icon: <EyeOutlined />,
   label: "预览",
-  key: ENUM_RESOURCE.MENU_RESOURCE.OPEN,
+  key: ENUM_RESOURCE.MENU.OPEN,
 };
 
 const MENU_PREVIEW_FOLDER = {
   icon: <FolderOpenOutlined />,
   label: "打开",
-  key: ENUM_RESOURCE.MENU_RESOURCE.OPEN,
+  key: ENUM_RESOURCE.MENU.OPEN,
+};
+
+const MENU_PREVIEW_ATTRIBUTE = {
+  icon: <FileTextOutlined />,
+  label: "属性",
+  key: ENUM_RESOURCE.MENU.ATTRIBUTES,
 };
 
 const MENU_FILE: MenuProps["items"] = [
   {
     icon: <HeartOutlined />,
     label: "收藏",
-    key: ENUM_RESOURCE.MENU_RESOURCE.COLLECT,
+    key: ENUM_RESOURCE.MENU.FAVORITE,
   },
   {
     icon: <CopyOutlined />,
     label: "复制名称",
-    key: ENUM_RESOURCE.MENU_RESOURCE.COPY_NAME,
+    key: ENUM_RESOURCE.MENU.COPY_NAME,
   },
   { type: "divider" },
   {
     icon: <FormOutlined />,
     label: "编辑信息",
-    key: ENUM_RESOURCE.MENU_RESOURCE.EDIT,
+    key: ENUM_RESOURCE.MENU.EDIT,
   },
   {
     icon: <DragOutlined />,
     label: "移动至",
-    key: ENUM_RESOURCE.MENU_RESOURCE.MOVE,
+    key: ENUM_RESOURCE.MENU.MOVE,
   },
   {
     icon: <CloudDownloadOutlined />,
     label: "下载文件",
-    key: ENUM_RESOURCE.MENU_RESOURCE.DOWNLOAD,
+    key: ENUM_RESOURCE.MENU.DOWNLOAD,
   },
   { type: "divider" },
   {
     icon: <DeleteOutlined className="red" />,
     label: <span className="red">删除</span>,
-    key: ENUM_RESOURCE.MENU_RESOURCE.DELETE,
+    key: ENUM_RESOURCE.MENU.DELETE,
   },
-  {
-    icon: <FileTextOutlined />,
-    label: "属性",
-    key: ENUM_RESOURCE.MENU_RESOURCE.ATTRIBUTES,
-  },
+  MENU_PREVIEW_ATTRIBUTE,
 ];
 
 type TypeSelectResource = Required<Pick<TypeResource.DTO, "id" | "fullName">>;
@@ -108,7 +102,6 @@ const Container: React.FC<TypeFilesContainerProps> = ({
   onMenu,
   loading,
   children,
-  onItemMenu,
 }) => {
   const toFolder = useToFolder();
   const resource = useStore("resource");
@@ -118,23 +111,24 @@ const Container: React.FC<TypeFilesContainerProps> = ({
   const [items, setMenus] = useState<MenuProps["items"]>([]);
 
   const { path, sort, foldersObj } = resource;
+  const folderId = resource.path.at(-1);
 
   const MENU_CONTAINER: MenuProps["items"] = [
     {
       icon: <FileAddOutlined />,
       label: "上传文件",
-      key: ENUM_RESOURCE.MENU_CONTAINER.UPLOAD_FILE,
+      key: ENUM_RESOURCE.MENU.UPLOAD_FILE,
     },
     {
       icon: <FolderAddOutlined />,
       label: "上传文件夹",
-      key: ENUM_RESOURCE.MENU_CONTAINER.UPLOAD_FOLDER,
+      key: ENUM_RESOURCE.MENU.UPLOAD_FOLDER,
     },
     { type: "divider" },
     {
       icon: <FolderOutlined />,
       label: "新建文件夹",
-      key: ENUM_RESOURCE.MENU_CONTAINER.MKDIR,
+      key: ENUM_RESOURCE.MENU.MKDIR,
     },
     { type: "divider" },
     {
@@ -147,80 +141,76 @@ const Container: React.FC<TypeFilesContainerProps> = ({
             <Choose
               name="时间"
               key={sort.type}
-              selected={
-                sort.type === ENUM_RESOURCE.MENU_CONTAINER.SORT_CREATE_TIME
-              }
+              selected={sort.type === ENUM_RESOURCE.MENU.SORT_CREATE_TIME}
             />
           ),
-          key: ENUM_RESOURCE.MENU_CONTAINER.SORT_CREATE_TIME,
+          key: ENUM_RESOURCE.MENU.SORT_CREATE_TIME,
         },
         {
           label: (
             <Choose
               name="名称"
               key={sort.type}
-              selected={sort.type === ENUM_RESOURCE.MENU_CONTAINER.SORT_NAME}
+              selected={sort.type === ENUM_RESOURCE.MENU.SORT_NAME}
             />
           ),
-          key: ENUM_RESOURCE.MENU_CONTAINER.SORT_NAME,
+          key: ENUM_RESOURCE.MENU.SORT_NAME,
         },
         {
           label: (
             <Choose
               name="大小"
               key={sort.type}
-              selected={sort.type === ENUM_RESOURCE.MENU_CONTAINER.SORT_SIZE}
+              selected={sort.type === ENUM_RESOURCE.MENU.SORT_SIZE}
             />
           ),
-          key: ENUM_RESOURCE.MENU_CONTAINER.SORT_SIZE,
+          key: ENUM_RESOURCE.MENU.SORT_SIZE,
         },
         {
           label: (
             <Choose
               name="格式"
-              selected={sort.type === ENUM_RESOURCE.MENU_CONTAINER.SORT_SUFFIX}
+              selected={sort.type === ENUM_RESOURCE.MENU.SORT_SUFFIX}
             />
           ),
-          key: ENUM_RESOURCE.MENU_CONTAINER.SORT_SUFFIX,
+          key: ENUM_RESOURCE.MENU.SORT_SUFFIX,
         },
         {
           label: (
             <Choose
               name="类型"
-              selected={sort.type === ENUM_RESOURCE.MENU_CONTAINER.SORT_TYPE}
+              selected={sort.type === ENUM_RESOURCE.MENU.SORT_TYPE}
             />
           ),
-          key: ENUM_RESOURCE.MENU_CONTAINER.SORT_TYPE,
+          key: ENUM_RESOURCE.MENU.SORT_TYPE,
         },
         {
           label: (
             <Choose
               name="创建人"
-              selected={
-                sort.type === ENUM_RESOURCE.MENU_CONTAINER.SORT_CREATOR_ID
-              }
+              selected={sort.type === ENUM_RESOURCE.MENU.SORT_CREATOR_ID}
             />
           ),
-          key: ENUM_RESOURCE.MENU_CONTAINER.SORT_CREATOR_ID,
+          key: ENUM_RESOURCE.MENU.SORT_CREATOR_ID,
         },
         { type: "divider" },
         {
           label: (
             <Choose
               name="降序"
-              selected={sort.order === ENUM_RESOURCE.MENU_CONTAINER.SORT_DESC}
+              selected={sort.order === ENUM_RESOURCE.MENU.SORT_DESC}
             />
           ),
-          key: ENUM_RESOURCE.MENU_CONTAINER.SORT_DESC,
+          key: ENUM_RESOURCE.MENU.SORT_DESC,
         },
         {
           label: (
             <Choose
               name="升序"
-              selected={sort.order === ENUM_RESOURCE.MENU_CONTAINER.SORT_ASC}
+              selected={sort.order === ENUM_RESOURCE.MENU.SORT_ASC}
             />
           ),
-          key: ENUM_RESOURCE.MENU_CONTAINER.SORT_ASC,
+          key: ENUM_RESOURCE.MENU.SORT_ASC,
         },
       ],
     },
@@ -228,13 +218,15 @@ const Container: React.FC<TypeFilesContainerProps> = ({
     {
       icon: <SearchOutlined />,
       label: "搜索",
-      key: ENUM_RESOURCE.MENU_CONTAINER.SEARCH,
+      key: ENUM_RESOURCE.MENU.SEARCH,
     },
     {
       icon: <SyncOutlined />,
       label: "刷新",
-      key: ENUM_RESOURCE.MENU_CONTAINER.REFRESH,
+      key: ENUM_RESOURCE.MENU.REFRESH,
     },
+    { type: "divider" },
+    MENU_PREVIEW_ATTRIBUTE,
   ];
 
   const route = useMemo(
@@ -259,10 +251,11 @@ const Container: React.FC<TypeFilesContainerProps> = ({
   );
 
   const onClick: MenuProps["onClick"] = (e) => {
-    if (item.current?.id) {
-      onItemMenu(e.key as ENUM_RESOURCE.MENU_RESOURCE, item.current);
+    if (e.key === ENUM_RESOURCE.MENU.COPY_NAME) {
+      navigator.clipboard.writeText(item.current?.fullName);
+      message.success("复制成功");
     } else {
-      onMenu(e.key as ENUM_RESOURCE.MENU_CONTAINER, resource.path.at(-1));
+      onMenu(e.key as ENUM_RESOURCE.MENU, item.current?.id || folderId);
     }
   };
 
@@ -272,13 +265,16 @@ const Container: React.FC<TypeFilesContainerProps> = ({
     if (ele?.dataset?.id) {
       const { id, fullName } = ele.dataset as TypeSelectResource;
       const IS_FOLDER = Number(ele.dataset.type) === ENUM_RESOURCE.TYPE.FOLDER;
-      setMenus([
+      const items = [
         IS_FOLDER ? MENU_PREVIEW_FOLDER : MENU_PREVIEW_RESOURCE,
         ...MENU_FILE!,
-      ]);
+      ];
+      IS_FOLDER && items.splice(6, 1);
+      setMenus(items);
       item.current = { id, fullName };
     } else {
       item.current = null!;
+      folderId || MENU_CONTAINER!.splice(-2);
       setMenus(MENU_CONTAINER);
     }
   }

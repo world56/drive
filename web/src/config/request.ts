@@ -24,3 +24,8 @@ export const API_PROXY_AUTH_URL = `/api/auth/`;
  * @name API_PROXY_EXPLORER_URL API 资源管理
  */
 export const API_PROXY_EXPLORER_URL = `/api/explorer/`;
+
+/**
+ * @name API_PROXY_FAVORITE_URL API 资源收藏管理
+ */
+export const API_PROXY_FAVORITE_URL = `/api/favorite/`;

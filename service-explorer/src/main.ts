@@ -27,7 +27,7 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
   const config = new DocumentBuilder()
     .setTitle('Explorer 资源管理服务')
-    .setDescription('包涵文件、文件夹、统计、收藏等服务。')
+    .setDescription('包涵资源管理、资源收藏等服务。')
     .setVersion(require('../package.json').version)
     .build();
   const document = SwaggerModule.createDocument(app, config);

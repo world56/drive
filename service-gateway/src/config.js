@@ -15,6 +15,13 @@ const config = [
     rateLimit: {},
     whitelist: [],
   },
+  {
+    prefix: `${BASE_URL}/favorite`,
+    upstream: "http://127.0.0.1:2002",
+    auth: true,
+    rateLimit: {},
+    whitelist: [],
+  },
 ];
 
 module.exports = config;

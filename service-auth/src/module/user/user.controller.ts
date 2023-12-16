@@ -1,5 +1,6 @@
 import {
   Get,
+  Put,
   Post,
   Body,
   Query,
@@ -36,7 +37,6 @@ export class UserController {
     return this.UserService.getUserInfo(id);
   }
 
-
   @ApiOperation({
     summary: '新增用户',
     description: '只有管理员可以新增用户',
@@ -48,7 +48,7 @@ export class UserController {
   }
 
   @ApiOperation({ summary: '编辑用户' })
-  @Post('update')
+  @Put('update')
   @UsePipes(DecryptContextPipe, new ValidationDTOPipe(UserUpdateDTO))
   update(@Body() body: UserUpdateDTO) {
     return this.UserService.update(body);
@@ -60,13 +60,13 @@ export class UserController {
   })
   @ApiOkResponse({ type: Boolean })
   @ApiBody({ type: PrimaryKeyStringDTO })
-  @Post('status')
+  @Put('status')
   changeUserStatus(@Body('id', new ParseUUIDPipe()) id: string) {
     return this.UserService.changeUserStatus(id);
   }
 
   @ApiOperation({ summary: '修改用户密码' })
-  @Post('pwd')
+  @Put('pwd')
   @UsePipes(DecryptContextPipe, new ValidationDTOPipe(UserPwdChangeDTO))
   changePassword(@Body() body: UserPwdChangeDTO) {
     return this.UserService.changePassword(body);

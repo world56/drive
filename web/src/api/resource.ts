@@ -53,6 +53,7 @@ export function createFolder(data: TypeResource.DTO) {
   return request("resource/create", {
     method: ENUM_HTTP.REQUEST_MODE.POST,
     proxy: ENUM_HTTP.PROXY.EXPLORER,
+    message: "创建成功",
     data,
   });
 }
@@ -62,8 +63,9 @@ export function createFolder(data: TypeResource.DTO) {
  */
 export function updateResource(data: TypeResource.DTO) {
   return request("resource/update", {
-    method: ENUM_HTTP.REQUEST_MODE.POST,
+    method: ENUM_HTTP.REQUEST_MODE.PUT,
     proxy: ENUM_HTTP.PROXY.EXPLORER,
+    message: "编辑成功",
     data,
   });
 }
@@ -73,8 +75,9 @@ export function updateResource(data: TypeResource.DTO) {
  */
 export function deleteResources(data: TypeResource.ReqDeleteResources) {
   return request("resource/delete", {
-    method: ENUM_HTTP.REQUEST_MODE.POST,
+    method: ENUM_HTTP.REQUEST_MODE.DELETE,
     proxy: ENUM_HTTP.PROXY.EXPLORER,
+    message: "删除成功",
     data,
   });
 }
@@ -84,8 +87,9 @@ export function deleteResources(data: TypeResource.ReqDeleteResources) {
  */
 export function moveResources(data: TypeResource.ReqMoveResources) {
   return request("resource/move", {
-    method: ENUM_HTTP.REQUEST_MODE.POST,
+    method: ENUM_HTTP.REQUEST_MODE.PUT,
     proxy: ENUM_HTTP.PROXY.EXPLORER,
+    message: "移动资源成功",
     data,
   });
 }

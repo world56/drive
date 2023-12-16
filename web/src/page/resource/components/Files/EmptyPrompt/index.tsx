@@ -23,7 +23,7 @@ const EmptyPrompt: React.FC<TypeEmptyPromptProps> = ({ onMenu }) => {
           <p>没有相关资源，请点击</p>
           <span
             className={styles.btn}
-            onClick={() => onMenu(ENUM_RESOURCE.MENU_CONTAINER.UPLOAD_FILE, id)}
+            onClick={() => onMenu(ENUM_RESOURCE.MENU.UPLOAD_FILE, id)}
           >
             上传文件
           </span>
@@ -31,7 +31,7 @@ const EmptyPrompt: React.FC<TypeEmptyPromptProps> = ({ onMenu }) => {
           <span
             className={styles.btn}
             onClick={() =>
-              onMenu(ENUM_RESOURCE.MENU_CONTAINER.UPLOAD_FOLDER, id)
+              onMenu(ENUM_RESOURCE.MENU.UPLOAD_FOLDER, id)
             }
           >
             上传文件夹
@@ -39,7 +39,7 @@ const EmptyPrompt: React.FC<TypeEmptyPromptProps> = ({ onMenu }) => {
           <span>、</span>
           <span
             className={styles.btn}
-            onClick={() => onMenu(ENUM_RESOURCE.MENU_CONTAINER.MKDIR, id)}
+            onClick={() => onMenu(ENUM_RESOURCE.MENU.MKDIR, id)}
           >
             创建文件夹
           </span>

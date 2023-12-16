@@ -28,6 +28,6 @@ export namespace TypeCommon {
     readonly count: number;
   }
 
-  export type GenericObject<T = React.Key> = Record<React.Key, T>;
+  export type GenericObject<T = React.Key> = Record<string | number, T>;
 
 }

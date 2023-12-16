@@ -26,7 +26,6 @@ const Move: React.FC<TypeMoveProps> = ({ ids, onClose }) => {
     const values = await form.validateFields();
     values.ids = ids;
     await moveResources(values);
-    message.success("移动成功");
     onCancel();
   }
 

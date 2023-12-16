@@ -37,7 +37,7 @@ export class ResourcesService {
 
   private readonly lock = new AsyncLock();
 
-  async findList({ id, order, type }: FindResourcesListDTO) {
+  async findList({ id, type, order }: FindResourcesListDTO) {
     const where = id ? { parentId: id } : { parentId: { equals: null } };
     const [folders, files] = await Promise.all([
       this.PrismaService.resource.findMany({
@@ -47,7 +47,10 @@ export class ResourcesService {
       }),
       this.PrismaService.resource.findMany({
         orderBy: { [type]: order },
-        where: { ...where, type: { not: ENUM_RESOURCE.TYPE.FOLDER } },
+        where: {
+          ...where,
+          type: { not: ENUM_RESOURCE.TYPE.FOLDER },
+        },
       }),
     ]);
     return {
@@ -168,10 +171,16 @@ export class ResourcesService {
   }
 
   async download(id: string) {
-    const { name, url, suffix } = await this.PrismaService.resource.findUnique({
-      where: { id },
-      select: { name: true, url: true, suffix: true },
-    });
+    const [{ name, url, suffix }] = await Promise.all([
+      this.PrismaService.resource.findUnique({
+        where: { id },
+        select: { name: true, url: true, suffix: true },
+      }),
+      this.PrismaService.resource.update({
+        where: { id },
+        data: { count: { increment: 1 } },
+      }),
+    ]);
     return { path: url.split('/').at(-1), name: `${name}.${suffix}` };
   }
 

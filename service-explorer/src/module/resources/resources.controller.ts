@@ -1,9 +1,11 @@
 import {
   Res,
   Get,
+  Put,
   Post,
   Body,
   Query,
+  Delete,
   Header,
   UseGuards,
   Controller,
@@ -46,6 +48,9 @@ export class ResourcesController {
     return this.ResourcesService.findList(query);
   }
 
+  @ApiOperation({
+    summary: '获取资源详情',
+  })
   @Get('details')
   details(@Query('id', new ParseUUIDPipe()) id: string) {
     return this.ResourcesService.getDetails(id);
@@ -62,12 +67,15 @@ export class ResourcesController {
   @ApiOperation({
     summary: '编辑资源信息',
   })
-  @Post('update')
+  @Put('update')
   update(@Body() body: ResourceDTO) {
     return this.ResourcesService.update(body);
   }
 
-  @Post('move')
+  @ApiOperation({
+    summary: '移动资源位置',
+  })
+  @Put('move')
   move(@Body() body: MoveResourcesDTO) {
     return this.ResourcesService.move(body);
   }
@@ -76,7 +84,7 @@ export class ResourcesController {
     summary: '删除资源',
     description: '若文件夹下有资源，则不能删除',
   })
-  @Post('delete')
+  @Delete('delete')
   delete(@Body() body: DeleteResourcesDTO) {
     return this.ResourcesService.delete(body);
   }
@@ -103,6 +111,9 @@ export class ResourcesController {
     });
   }
 
+  @ApiOperation({
+    summary: '下载资源文件',
+  })
   @Get('download')
   @Header('Content-Disposition', 'attachment')
   async download(

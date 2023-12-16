@@ -37,33 +37,9 @@ export namespace ENUM_RESOURCE {
   }
 
   /**
-   * @name SORT 排序方式
+   * @name MENU 鼠标右键-菜单选项
    */
-  export enum SORT {
-    /** @param  NAME 名称 */
-    NAME,
-    /** @param SIZE 大小 */
-    SIZE,
-    /**
-     * @param 类型
-     * @description 例如：音频、视频、图片
-     */
-    TYPE,
-    /**
-     * @param SUFFIX 后缀
-     * @description 例如：txt、mp3、mp4
-     */
-    SUFFIX,
-    /** @param CREATOR 创建人 */
-    CREATOR,
-    /** @param CREATION_TIME 创建时间 */
-    CREATION_TIME,
-  }
-
-  /**
-   * @name MENU_CONTAINER 选项-容器
-   */
-  export enum MENU_CONTAINER {
+  export enum MENU {
     /** @param UPLOAD_FILE 上传文件 */
     UPLOAD_FILE = "UPLOAD_FILE",
     /** @param UPLOAD_FOLDER 上传文件夹 */
@@ -94,18 +70,10 @@ export namespace ENUM_RESOURCE {
     SORT_ASC = "SORT_ASC",
     /** @param SORT_ASC 排序方式-降序 */
     SORT_DESC = "SORT_DESC",
-  }
-
-  /**
-   * @name MENU_RESOURCE 菜单-资源
-   */
-  export enum MENU_RESOURCE {
     /** @param OPEN 打开、预览 文件、文件夹 */
     OPEN = "OPEN",
     /** @param COPY_NAME 复制名称 */
     COPY_NAME = "COPY_NAME",
-    /** @param COLLECT 收藏 */
-    COLLECT = "COLLECT",
     /** @param EDIT 编辑 */
     EDIT = "EDIT",
     /** @param MOVE 移动 */

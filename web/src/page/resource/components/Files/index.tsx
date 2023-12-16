@@ -9,7 +9,7 @@ import type { TypeThumbnailProps } from "./Thumbnail";
 import type { TypeFilesContainerProps } from "./Container";
 
 export interface TypeFilesProps
-  extends Pick<TypeFilesContainerProps, "onMenu" | "onItemMenu" | "loading"> {
+  extends Pick<TypeFilesContainerProps, "onMenu" | "loading"> {
   /** @param list 资源列表 */
   data?: Awaited<ReturnType<typeof getResources>>;
 }
@@ -17,12 +17,7 @@ export interface TypeFilesProps
 /**
  * @name Files 文件列表
  */
-const Files: React.FC<TypeFilesProps> = ({
-  data,
-  onMenu,
-  loading,
-  onItemMenu,
-}) => {
+const Files: React.FC<TypeFilesProps> = ({ data, onMenu, loading }) => {
   const toFolder = useToFolder();
 
   // 预览、打开
@@ -36,7 +31,7 @@ const Files: React.FC<TypeFilesProps> = ({
   };
 
   return (
-    <Container loading={loading} onMenu={onMenu} onItemMenu={onItemMenu}>
+    <Container loading={loading} onMenu={onMenu}>
       <Thumbnail data={data} onPreview={onPreview} onMenu={onMenu} />
     </Container>
   );

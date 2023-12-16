@@ -24,6 +24,7 @@ model Resource {
   suffix     String?    @db.VarChar(10)
   parentId   String?    @map("parent_id")
   remark     String?
+  count      Int        @default(0)
   createTime DateTime   @default(now()) @map("create_time")
   creatorId  String     @map("creator_id")
   children   Resource[] @relation("rel_resource")
@@ -35,4 +36,15 @@ model Resource {
   @@index([parentId])
   @@index([createTime])
   @@map("resource")
+}
+
+model Favorite {
+  id         String     @id @default(uuid())
+  userId     String     @map("user_id")
+  resourceId String     @map("resource_id")
+
+  @@unique([userId, resourceId])
+  @@index(resourceId)
+  @@index([userId, resourceId])
+  @@map("favorites")
 }

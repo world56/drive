@@ -30,8 +30,8 @@ const DEFAULT_RESOURCE: TypeResourceReducersProps = {
   folderTree: [],
   foldersObj: {},
   sort: {
-    order: ENUM_RESOURCE.MENU_CONTAINER.SORT_DESC,
-    type: ENUM_RESOURCE.MENU_CONTAINER.SORT_CREATE_TIME,
+    order: ENUM_RESOURCE.MENU.SORT_DESC,
+    type: ENUM_RESOURCE.MENU.SORT_CREATE_TIME,
   },
   path:
     new URLSearchParams(window.location.search).get("path")?.split("/") || [],

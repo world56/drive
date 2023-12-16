@@ -2,13 +2,14 @@ export namespace ENUM_HTTP {
   export const enum PROXY {
     AUTH = "auth",
     EXPLORER = "explorer",
+    FAVORITE = "favorite",
   }
 
   export const enum REQUEST_MODE {
     GET = "GET",
     POST = "POST",
-    PUT  = 'PUT',
-    DELETE='DELETE'
+    PUT = "PUT",
+    DELETE = "DELETE",
   }
 
   export const enum CONTENT_TYPE {

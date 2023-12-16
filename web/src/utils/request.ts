@@ -44,6 +44,9 @@ request.interceptors.request.use(
       case ENUM_HTTP.PROXY.EXPLORER:
         config.url = API_PROXY_EXPLORER_URL + url;
         break;
+      case ENUM_HTTP.PROXY.FAVORITE:
+        config.url = API_PROXY_EXPLORER_URL + url;
+        break;
       default:
         break;
     }
@@ -55,11 +58,13 @@ request.interceptors.request.use(
 );
 
 request.interceptors.response.use(
-  async (res) => {
+  async (res, req) => {
     try {
       const data = await res.clone().json();
       switch (data.code) {
         case ENUM_HTTP.HTTP_CODE.OK:
+          req.message &&
+            message.success(req.message === true ? "操作成功" : req.message);
           return Promise.resolve(data.content);
         case ENUM_HTTP.HTTP_CODE.UNAUTHORIZED:
           Cookies.remove(TOKEN_KEY);

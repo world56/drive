@@ -43,7 +43,6 @@ const Edit: React.FC<TypeEditResourceProps> = ({
     const values = await form.validateFields();
     if (id) await updateResource(values);
     else await createFolder(values);
-    message.success("操作成功");
     onCancel();
   }
 

@@ -1,6 +1,8 @@
 import { memo } from "react";
+import { Tooltip } from "antd";
 import { filesize } from "filesize";
 import styles from "./index.module.sass";
+import { HeartFilled } from "@ant-design/icons";
 import { getResourceIcon } from "@/utils/resource";
 
 import { ENUM_RESOURCE } from "@/enum/resource";
@@ -39,11 +41,10 @@ const File: React.FC<TypeResource.DTO> = (props) => {
       <p>
         <span>{IS_FOLDER ? `${size} 个` : filesize(size!).toString()}</span>
         <span>{CONSTANT_RESOURCE.TYPE.OBJ[type].name}</span>
-        <span>{IS_FOLDER ? '文件夹': suffix}</span>
-        {/* <Tooltip title="收藏">
-            <HeartFilled />
-            <HeartOutlined />
-          </Tooltip> */}
+        <span>{IS_FOLDER ? "文件夹" : suffix}</span>
+        <Tooltip title="收藏" mouseEnterDelay={1}>
+          <HeartFilled />
+        </Tooltip>
       </p>
     </div>
   );

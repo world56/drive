@@ -18,5 +18,6 @@ import CONFIG_RESOURCE_PATH from 'src/config/resource-path.config';
     PrismaModule,
     ConfigModule.forFeature(CONFIG_RESOURCE_PATH),
   ],
+  exports: [ResourcesService],
 })
 export class ResourcesModule {}
