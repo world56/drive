@@ -1,5 +1,6 @@
 import {
   EyeOutlined,
+  HeartTwoTone,
   CopyOutlined,
   FormOutlined,
   DragOutlined,
@@ -56,12 +57,19 @@ const MENU_PREVIEW_ATTRIBUTE = {
   key: ENUM_RESOURCE.MENU.ATTRIBUTES,
 };
 
+const MENU_FAVORITE_DISABLE = {
+  icon: <HeartOutlined />,
+  label: "取消收藏",
+  key: ENUM_RESOURCE.MENU.FAVORITE_DISABLE,
+};
+
+const MENU_FAVORITE_ENABLE = {
+  icon: <HeartTwoTone twoToneColor="#FF0000" />,
+  label: "收藏",
+  key: ENUM_RESOURCE.MENU.FAVORITE_ENABLE,
+};
+
 const MENU_FILE: MenuProps["items"] = [
-  {
-    icon: <HeartOutlined />,
-    label: "收藏",
-    key: ENUM_RESOURCE.MENU.FAVORITE,
-  },
   {
     icon: <CopyOutlined />,
     label: "复制名称",
@@ -92,7 +100,11 @@ const MENU_FILE: MenuProps["items"] = [
   MENU_PREVIEW_ATTRIBUTE,
 ];
 
-type TypeSelectResource = Required<Pick<TypeResource.DTO, "id" | "fullName">>;
+type TypeSelectResource = Required<
+  Pick<TypeResource.DTO, "id" | "fullName"> & {
+    favorite: "0" | "1";
+  }
+>;
 
 /**
  * @name Container 文件列表容器
@@ -263,15 +275,17 @@ const Container: React.FC<TypeFilesContainerProps> = ({
     const targetElement = e.target as HTMLElement;
     const ele = targetElement.closest("div");
     if (ele?.dataset?.id) {
-      const { id, fullName } = ele.dataset as TypeSelectResource;
+      const { id, fullName, favorite } = ele.dataset as TypeSelectResource;
       const IS_FOLDER = Number(ele.dataset.type) === ENUM_RESOURCE.TYPE.FOLDER;
+      const IS_FAVORITE = Number(favorite) === ENUM_RESOURCE.FAVORITE.ENABLE;
       const items = [
         IS_FOLDER ? MENU_PREVIEW_FOLDER : MENU_PREVIEW_RESOURCE,
+        IS_FAVORITE ? MENU_FAVORITE_DISABLE : MENU_FAVORITE_ENABLE,
         ...MENU_FILE!,
       ];
       IS_FOLDER && items.splice(6, 1);
+      item.current = { id, fullName, favorite };
       setMenus(items);
-      item.current = { id, fullName };
     } else {
       item.current = null!;
       folderId || MENU_CONTAINER!.splice(-2);

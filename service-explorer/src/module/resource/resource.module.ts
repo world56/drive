@@ -1,16 +1,17 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { ResourceService } from './resource.service';
 import { GrpcModule } from '@/common/grpc/grpc.module';
-import { ResourcesService } from './resources.service';
 import { FileModule } from 'src/common/file/file.module';
+import { ResourceController } from './resource.controller';
 import { RedisModule } from 'src/common/redis/redis.module';
-import { ResourcesController } from './resources.controller';
 import { PrismaModule } from 'src/common/prisma/prisma.module';
+
 import CONFIG_RESOURCE_PATH from 'src/config/resource-path.config';
 
 @Module({
-  providers: [ResourcesService],
-  controllers: [ResourcesController],
+  providers: [ResourceService],
+  controllers: [ResourceController],
   imports: [
     GrpcModule,
     FileModule,
@@ -18,6 +19,6 @@ import CONFIG_RESOURCE_PATH from 'src/config/resource-path.config';
     PrismaModule,
     ConfigModule.forFeature(CONFIG_RESOURCE_PATH),
   ],
-  exports: [ResourcesService],
+  exports: [ResourceService],
 })
-export class ResourcesModule {}
+export class ResourceModule {}

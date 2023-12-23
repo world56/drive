@@ -37,6 +37,22 @@ export namespace ENUM_RESOURCE {
   }
 
   /**
+   * @name FAVORITE 喜欢、收藏
+   */
+  export enum FAVORITE {
+    /**
+     * @param DISABLE 禁用
+     * @description 未收藏
+     */
+    DISABLE,
+    /**
+     * @param ENABLE 启用
+     * @description 已收藏
+     */
+    ENABLE,
+  }
+
+  /**
    * @name MENU 鼠标右键-菜单选项
    */
   export enum MENU {
@@ -65,7 +81,7 @@ export namespace ENUM_RESOURCE {
     /** @param SORT_CREATOR_ID 排序-创建、上传人 */
     SORT_CREATOR_ID = "SORT_CREATOR_ID",
     /** @param SORT_CREATE_TIME 排序-上传时间 */
-    SORT_CREATE_TIME = 'SORT_CREATE_TIME',
+    SORT_CREATE_TIME = "SORT_CREATE_TIME",
     /** @param SORT_ASC 排序方式-升序 */
     SORT_ASC = "SORT_ASC",
     /** @param SORT_ASC 排序方式-降序 */
@@ -82,8 +98,11 @@ export namespace ENUM_RESOURCE {
     DOWNLOAD = "DOWNLOAD",
     /** @param DELETE 删除 */
     DELETE = "DELETE",
-    /** @param FAVORITE 收藏 */
-    FAVORITE = "FAVORITE",
+    /** @param FAVORITE 收藏资源 */
+    FAVORITE_ENABLE = "FAVORITE_ENABLE",
+    /** @param FAVORITE 取消收藏资源 */
+    FAVORITE_DISABLE = "FAVORITE_DISABLE",
+
     /**
      * @param ATTRIBUTES 属性
      * @description 逻辑跟Mac、Windows查看逻辑差不多

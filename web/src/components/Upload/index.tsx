@@ -77,6 +77,7 @@ const Upload = () => {
           if (res) {
             file.chunks = null;
             target.paths = res.paths;
+            target.parentId = res.parentId;
             target.status = ENUM_RESOURCE.STATUS.DONE;
           }
           return { ...s };

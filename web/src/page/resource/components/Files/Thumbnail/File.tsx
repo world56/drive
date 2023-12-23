@@ -3,10 +3,9 @@ import { Tooltip } from "antd";
 import { filesize } from "filesize";
 import styles from "./index.module.sass";
 import { HeartFilled } from "@ant-design/icons";
-import { getResourceIcon } from "@/utils/resource";
+import ResourceIcon from "@/components/ResourceIcon";
 
 import { ENUM_RESOURCE } from "@/enum/resource";
-import { ICON_THRESHOLD } from "@/config/resource";
 import { CONSTANT_RESOURCE } from "@/constant/resource";
 
 import type { TypeResource } from "@/interface/resource";
@@ -15,27 +14,19 @@ import type { TypeResource } from "@/interface/resource";
  * @name File 资源、文件图标
  */
 const File: React.FC<TypeResource.DTO> = (props) => {
-  const { id, type, size, fullName, suffix } = props;
+  const { id, type, size, fullName, suffix, favorite, path } = props;
   const IS_FOLDER = type === ENUM_RESOURCE.TYPE.FOLDER;
+  const IS_FAVORITE = favorite === ENUM_RESOURCE.FAVORITE.ENABLE;
   return (
     <div
       data-id={id}
       data-type={type}
       className={styles.file}
+      data-favorite={favorite}
       data-full-name={fullName}
     >
       <span>
-        <img
-          alt="#"
-          className={
-            IS_FOLDER
-              ? styles.folder
-              : type === ENUM_RESOURCE.TYPE.IMAGE && size! < ICON_THRESHOLD
-              ? styles.img
-              : styles.icon
-          }
-          src={getResourceIcon(props)}
-        />
+        <ResourceIcon size={size} type={type} suffix={suffix} path={path} />
       </span>
       <p>{props.name}</p>
       <p>
@@ -43,7 +34,9 @@ const File: React.FC<TypeResource.DTO> = (props) => {
         <span>{CONSTANT_RESOURCE.TYPE.OBJ[type].name}</span>
         <span>{IS_FOLDER ? "文件夹" : suffix}</span>
         <Tooltip title="收藏" mouseEnterDelay={1}>
-          <HeartFilled />
+          <HeartFilled
+            style={IS_FAVORITE ? { color: "red" } : { display: "none" }}
+          />
         </Tooltip>
       </p>
     </div>

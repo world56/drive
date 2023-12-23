@@ -17,7 +17,7 @@ export class ResourceDTO extends PrimaryKeyStringDTO {
     required: true,
     minLength: 30,
     type: String,
-    description: '登陆账号',
+    description: '资源名称',
   })
   @MaxLength(30, {
     message: '名称最多不超过30个字符',
@@ -32,24 +32,39 @@ export class ResourceDTO extends PrimaryKeyStringDTO {
   @IsString()
   parentId?: string;
 
+  @ApiProperty({
+    description: '资源路径',
+  })
   @IsOptional()
   @IsString()
   path: string;
 
+  @ApiProperty({
+    description: '资源大小、数量',
+  })
   @IsOptional()
   @IsNumber()
   size: number;
 
+  @ApiProperty({
+    description: '资源类型',
+  })
   @IsOptional()
   @IsEnum(ENUM_RESOURCE.TYPE)
   @Type(() => Number)
   @IsInt()
   type: ENUM_RESOURCE.TYPE;
 
+  @ApiProperty({
+    description: '资源后缀',
+  })
   @IsString()
   @IsOptional()
   suffix: string;
 
+  @ApiProperty({
+    description: '资源备注',
+  })
   @IsOptional()
   @IsString()
   @MaxLength(100)

@@ -27,7 +27,7 @@ export interface TypeFindPaths extends Resource {
 }
 
 @Injectable()
-export class ResourcesService {
+export class ResourceService {
   public constructor(
     private readonly GrpcService: GrpcService,
     private readonly FileService: FileService,
@@ -37,36 +37,44 @@ export class ResourcesService {
 
   private readonly lock = new AsyncLock();
 
-  async findList({ id, type, order }: FindResourcesListDTO) {
-    const where = id ? { parentId: id } : { parentId: { equals: null } };
-    const [folders, files] = await Promise.all([
-      this.PrismaService.resource.findMany({
-        orderBy: { [type]: order },
-        include: { _count: { select: { children: true } } },
-        where: { ...where, type: ENUM_RESOURCE.TYPE.FOLDER },
-      }),
-      this.PrismaService.resource.findMany({
-        orderBy: { [type]: order },
-        where: {
-          ...where,
-          type: { not: ENUM_RESOURCE.TYPE.FOLDER },
-        },
-      }),
-    ]);
-    return {
-      folders: folders.map(({ _count, ...v }) => ({
-        ...v,
-        size: _count.children,
-      })),
-      files,
-    };
-  }
-
   findFolders() {
     return this.PrismaService.resource.findMany({
       where: { type: ENUM_RESOURCE.TYPE.FOLDER },
       orderBy: { createTime: 'asc' },
     });
+  }
+
+  findList({ id, type, order }: FindResourcesListDTO, userId: string) {
+    return this.PrismaService.$queryRaw`
+      SELECT 
+        r.id, 
+        r.url,
+        r.name, 
+        r.path,
+        r.type,
+        r.suffix,
+        r.remark,
+        r.full_name AS fullName,
+        r.parent_id AS parentId,
+        r.creator_id AS creatorId,
+        r.create_time AS createTime,
+        CASE WHEN f.\`user_id\` IS NOT NULL THEN true ELSE false END AS favorite,
+        CASE WHEN 
+          r.type = ${ENUM_RESOURCE.TYPE.FOLDER} 
+        THEN 
+          (SELECT COUNT(c.id) FROM resource AS c WHERE c.parent_id = r.id) 
+        ELSE 
+          r.size 
+        END AS size
+      FROM 
+        resource AS r
+      LEFT OUTER JOIN 
+        favorite AS f ON f.\`user_id\` = ${userId} AND f.resource_id = r.id
+      WHERE
+        ${Prisma.raw(id ? `parent_id = "${id}"` : `parent_id IS NULL`)}
+      ORDER BY 
+        ${Prisma.raw(`CASE WHEN r.type = 0 THEN 0 ELSE 1 END, ${type} ${order}`)};
+    `;
   }
 
   async getDetails(id: string) {

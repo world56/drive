@@ -28,10 +28,20 @@ export namespace ENUM_COMMON {
   export enum CUSTOM_EVENTS {
     /** @param UPLOAD 初始化上传任务 */
     UPLOAD = "UPLOAD",
-    /** 
+    /**
      * @param REFRESH_RESOURCES 刷新资源列表页面
      * @description URL: /resource
      */
     REFRESH_RESOURCES = "REFRESH_RESOURCES",
+  }
+
+  /**
+   * @name SORT 排序方式
+   */
+  export enum SORT {
+    /** @param DESC 降序 */
+    DESC = "DESC",
+    /** @param ASC 升序 */
+    ASC = "ASC",
   }
 }

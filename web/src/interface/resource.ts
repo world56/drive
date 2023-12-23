@@ -35,6 +35,8 @@ export namespace TypeResource {
     creator?: Pick<TypeUser.DTO, "id" | "name">;
     /** @param count 下载次数 */
     count: number;
+    /** @param favorite 收藏 */
+    favorite: ENUM_RESOURCE.FAVORITE;
   }
 
   /**
@@ -45,11 +47,6 @@ export namespace TypeResource {
   export interface ReqResources
     extends Partial<Pick<DTO, "id">>,
       Record<"order" | "type", string> {}
-
-  /**
-   * @name ResResourceList 资源列表
-   */
-  export interface ResResourceList extends Record<"folders" | "files", DTO[]> {}
 
   /**
    * @name ReqMoveResources 移动资源

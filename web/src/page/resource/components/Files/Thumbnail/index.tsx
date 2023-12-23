@@ -36,17 +36,12 @@ const Thumbnail: React.FC<TypeThumbnailProps> = ({
     onPreview(Number(type), id);
   }
 
-  const length = data?.files.length! + data?.folders.length!;
+  const length = data?.length;
 
   return length ? (
     <div className={styles.thumbnail} onDoubleClick={onDoubleClick}>
       <div className={styles.list}>
-        {data?.folders.map((v) => (
-          <File key={v.id} {...v} />
-        ))}
-      </div>
-      <div className={styles.list}>
-        {data?.files.map((v) => (
+        {data?.map((v) => (
           <File key={v.id} {...v} />
         ))}
       </div>

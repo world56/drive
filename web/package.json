@@ -13,7 +13,7 @@
     "@ant-design/icons": "^5.2.6",
     "@reduxjs/toolkit": "^1.9.7",
     "ahooks": "^3.7.8",
-    "antd": "^5.12.2",
+    "antd": "^5.12.4",
     "filesize": "^10.1.0",
     "js-cookie": "^3.0.5",
     "jsencrypt": "^3.3.2",
@@ -29,8 +29,8 @@
   },
   "devDependencies": {
     "@types/node": "18.15",
-    "@types/react": "^18.2.45",
-    "@types/react-dom": "^18.2.17",
+    "@types/react": "^18.2.23",
+    "@types/react-dom": "^18.2.18",
     "@types/react-window": "^1.8.8",
     "@typescript-eslint/eslint-plugin": "^5.57.1",
     "@typescript-eslint/parser": "^5.57.1",
@@ -40,7 +40,7 @@
     "eslint-plugin-react-refresh": "^0.3.4",
     "sass": "^1.69.5",
     "typescript": "^5.3.3",
-    "vite": "^5.0.8",
+    "vite": "^5.0.10",
     "vite-plugin-proxy": "^0.5.0"
   }
 }

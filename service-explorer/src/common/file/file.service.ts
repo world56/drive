@@ -81,8 +81,10 @@ export class FileService {
     } catch (error) {
       return Promise.reject(error);
     } finally {
-      write.close();
-      close(target);
+      if (write) {
+        write.close();
+        close(target);
+      }
     }
   }
 

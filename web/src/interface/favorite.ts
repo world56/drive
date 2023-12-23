@@ -1,4 +1,7 @@
-import { TypeResource } from "./resource";
+import { ENUM_COMMON } from "@/enum/common";
+import type { TypeResource } from "./resource";
+
+import { ENUM_RESOURCE } from "@/enum/resource";
 
 /**
  * @name TypeFavorite 收藏
@@ -9,14 +12,20 @@ export namespace TypeFavorite {
   /**
    * @name ReqFavorites 查询收藏类表
    */
-  export interface ReqFavorites {}
+  export interface ReqFavorites
+    extends Partial<Pick<TypeFavorite.DTO, "name">> {
+    /** @param 资源类型 */
+    type: ENUM_RESOURCE.TYPE[];
+    /** @param createTime 收藏时间排序方式 */
+    createTime: ENUM_COMMON.TIME_SORT;
+  }
 
   /**
    * @name Insert 收藏文件
    */
   export interface Insert {
-    /** @param resourceId 资源ID */
-    resourceId: TypeResource.DTO["id"];
+    /** @param ids 资源ID */
+    ids: Array<TypeResource.DTO["id"]>;
   }
 
   /**

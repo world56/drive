@@ -8,10 +8,11 @@ interface TypeQueryResources
 @Injectable()
 export class QueryListPipe implements PipeTransform {
   private getParam(param: string) {
-    return param
-      .substring(5, param.length)
-      .toLowerCase()
-      .replace(/_./g, (match) => match.charAt(1).toUpperCase());
+    return param.substring(5, param.length).toLowerCase();
+    // return param
+    //   .substring(5, param.length)
+    //   .toLowerCase()
+    //   .replace(/_./g, (match) => match.charAt(1).toUpperCase());
   }
 
   transform(value: TypeQueryResources, metadata: ArgumentMetadata) {

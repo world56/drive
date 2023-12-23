@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { useStore } from "@/hooks";
+import { Form, Modal } from "antd";
 import FolderSelect from "./FolderSelect";
-import { Form, message, Modal } from "antd";
 import { moveResources } from "@/api/resource";
 
 import { ENUM_RESOURCE } from "@/enum/resource";

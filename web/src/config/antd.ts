@@ -35,7 +35,6 @@ export const CONFIG_ANTD: ConfigProviderProps = {
   },
 };
 
-
 /**
  * @name CONFIG_ANTD_COMP_FIELD antd默认匹配字段
  */

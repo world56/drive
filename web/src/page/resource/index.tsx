@@ -5,7 +5,7 @@ import Files from "./components/Files";
 import Folder from "./components/Folder";
 import styles from "./index.module.sass";
 import { useEffect, useState } from "react";
-import { updateFavorite } from "@/api/favorite";
+import { removeFavorite, updateFavorite } from "@/api/favorite";
 import Attributes from "./components/Attributes";
 import { createUpload, downloadFile } from "@/utils/resource";
 import { getResources, deleteResources } from "@/api/resource";
@@ -72,8 +72,11 @@ const Resource = () => {
         return downloadFile(id);
       case ENUM_RESOURCE.MENU.ATTRIBUTES:
         return setDetailsID(id);
-      case ENUM_RESOURCE.MENU.FAVORITE:
-        await updateFavorite({ resourceId: id! });
+      case ENUM_RESOURCE.MENU.FAVORITE_ENABLE:
+        await updateFavorite({ ids: [id!] });
+        return run();
+      case ENUM_RESOURCE.MENU.FAVORITE_DISABLE:
+        await removeFavorite({ ids: [id!] });
         return run();
       default:
         return;

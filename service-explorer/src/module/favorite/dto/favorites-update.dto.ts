@@ -1,7 +1,7 @@
 import { IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class FavoritesRemoveDTO {
+export class FavoritesUpdateDTO {
   @ApiProperty({
     required: true,
     type: [String],

@@ -15,7 +15,7 @@ export const API_DOWNLOAD_FILE_URL = `${API_PROXY_EXPLORER_URL}resource/download
  * @param params 通过文件夹ID查询旗下的资源列表
  */
 export function getResources(params: TypeResource.ReqResources) {
-  return request<TypeResource.ResResourceList>("resource/list", {
+  return request<TypeResource.DTO[]>("resource/list", {
     method: ENUM_HTTP.REQUEST_MODE.GET,
     proxy: ENUM_HTTP.PROXY.EXPLORER,
     params,

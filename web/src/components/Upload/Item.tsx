@@ -7,7 +7,7 @@ import {
 } from "@ant-design/icons";
 import { memo } from "react";
 import styles from "./index.module.sass";
-import { getFileSuffixIcon } from "@/utils/resource";
+import { getFileSuffixIcon } from "@/components/ResourceIcon";
 
 import { ENUM_UPLOAD_EVENT } from ".";
 import { ENUM_RESOURCE } from "@/enum/resource";

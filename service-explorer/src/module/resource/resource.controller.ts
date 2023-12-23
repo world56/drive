@@ -12,7 +12,7 @@ import {
   ParseUUIDPipe,
 } from '@nestjs/common';
 import { QueryListPipe } from './pipe/query-list.pipe';
-import { ResourcesService } from './resources.service';
+import { ResourceService } from './resource.service';
 import { UserID } from '@/decorator/user-id.decorator';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UploadFileGuard } from '@/guard/upload-file.guard';
@@ -29,23 +29,26 @@ import type { MultipartFile } from '@fastify/multipart';
 
 @ApiTags('资源管理')
 @Controller('resource')
-export class ResourcesController {
-  public constructor(private readonly ResourcesService: ResourcesService) {}
+export class ResourceController {
+  public constructor(private readonly ResourceService: ResourceService) {}
 
   @ApiOperation({
     summary: '获取全部文件夹',
   })
   @Get('folders')
   getList() {
-    return this.ResourcesService.findFolders();
+    return this.ResourceService.findFolders();
   }
 
   @ApiOperation({
     summary: '获取文件夹下资源列表',
   })
   @Get('list')
-  findList(@Query(new QueryListPipe()) query: FindResourcesListDTO) {
-    return this.ResourcesService.findList(query);
+  findList(
+    @Query(new QueryListPipe()) query: FindResourcesListDTO,
+    @UserID() userId: string,
+  ) {
+    return this.ResourceService.findList(query, userId);
   }
 
   @ApiOperation({
@@ -53,7 +56,7 @@ export class ResourcesController {
   })
   @Get('details')
   details(@Query('id', new ParseUUIDPipe()) id: string) {
-    return this.ResourcesService.getDetails(id);
+    return this.ResourceService.getDetails(id);
   }
 
   @ApiOperation({
@@ -61,7 +64,7 @@ export class ResourcesController {
   })
   @Post('create')
   create(@Body() body: InsertResourceDTO, @UserID() id: string) {
-    return this.ResourcesService.createFolder(body, id);
+    return this.ResourceService.createFolder(body, id);
   }
 
   @ApiOperation({
@@ -69,7 +72,7 @@ export class ResourcesController {
   })
   @Put('update')
   update(@Body() body: ResourceDTO) {
-    return this.ResourcesService.update(body);
+    return this.ResourceService.update(body);
   }
 
   @ApiOperation({
@@ -77,7 +80,7 @@ export class ResourcesController {
   })
   @Put('move')
   move(@Body() body: MoveResourcesDTO) {
-    return this.ResourcesService.move(body);
+    return this.ResourceService.move(body);
   }
 
   @ApiOperation({
@@ -86,7 +89,7 @@ export class ResourcesController {
   })
   @Delete('delete')
   delete(@Body() body: DeleteResourcesDTO) {
-    return this.ResourcesService.delete(body);
+    return this.ResourceService.delete(body);
   }
 
   @ApiOperation({
@@ -97,7 +100,7 @@ export class ResourcesController {
   @UseGuards(new UploadFileGuard())
   upload(@GetUploadFile() file: MultipartFile, @UserID() id: string) {
     const fields = file.fields as Record<string, { value: string }>;
-    return this.ResourcesService.upload({
+    return this.ResourceService.upload({
       creatorId: id,
       file: file.file,
       id: fields.id.value,
@@ -120,7 +123,7 @@ export class ResourcesController {
     @Query('id') id: string,
     @Res() res: FastifyReply & { download: Function },
   ) {
-    const { path, name } = await this.ResourcesService.download(id);
+    const { path, name } = await this.ResourceService.download(id);
     res.download(path, name, { cacheControl: false });
   }
 }
