@@ -133,9 +133,10 @@ export function getFileSuffixIcon(type?: string) {
 }
 
 interface TypeResourceIconProps
-  extends Pick<TypeResource.DTO, "size" | "type" | "suffix" | "path"> {
-  /** @param mini 小图标模式 */
-  mini?: boolean;
+  extends Pick<TypeResource.DTO, "size" | "type" | "suffix" | "path">,
+    Partial<Record<"width" | "height", number | string>> {
+  style?: React.CSSProperties;
+  className?: string;
 }
 
 /**
@@ -156,23 +157,19 @@ function getResourceIcon<
 /**
  * @name ResourceIcon 资源图标
  */
-const ResourceIcon: React.FC<TypeResourceIconProps> = (props) => {
-  return (
-    <img
-      alt="#"
-      style={{
-        width:
-        props.mini ? 30:
-          props.type === ENUM_RESOURCE.TYPE.FOLDER
-            ? 60
-            : props.type === ENUM_RESOURCE.TYPE.IMAGE &&
-              props.size! < ICON_THRESHOLD
-            ? "100%"
-            : 52
-      }}
-      src={getResourceIcon(props)}
-    />
-  );
-};
+const ResourceIcon: React.FC<TypeResourceIconProps> = ({
+  height,
+  className,
+  style = {},
+  width = "100%",
+  ...props
+}) => (
+  <img
+    alt="#"
+    className={className}
+    src={getResourceIcon(props)}
+    style={{ width, height, ...style }}
+  />
+);
 
 export default ResourceIcon;

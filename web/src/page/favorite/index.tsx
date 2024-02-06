@@ -51,7 +51,7 @@ const Favorite = () => {
       key: DB_PRIMARY_KEY,
       render: (row: TypeResource.DTO) => (
         <div className={styles.icon}>
-          <ResourceIcon mini {...row} />
+          <ResourceIcon width={30} {...row} />
           <span>{row.name}</span>
         </div>
       ),

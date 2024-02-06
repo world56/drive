@@ -37,6 +37,10 @@ export class ResourceService {
 
   private readonly lock = new AsyncLock();
 
+  findGlobal() {
+    return this.PrismaService.resource.findMany();
+  }
+
   findFolders() {
     return this.PrismaService.resource.findMany({
       where: { type: ENUM_RESOURCE.TYPE.FOLDER },
@@ -73,7 +77,9 @@ export class ResourceService {
       WHERE
         ${Prisma.raw(id ? `parent_id = "${id}"` : `parent_id IS NULL`)}
       ORDER BY 
-        ${Prisma.raw(`CASE WHEN r.type = 0 THEN 0 ELSE 1 END, ${type} ${order}`)};
+        ${Prisma.raw(
+          `CASE WHEN r.type = 0 THEN 0 ELSE 1 END, ${type} ${order}`,
+        )};
     `;
   }
 

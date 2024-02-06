@@ -11,6 +11,16 @@ import type { TypeResource } from "@/interface/resource";
 export const API_DOWNLOAD_FILE_URL = `${API_PROXY_EXPLORER_URL}resource/download`;
 
 /**
+ * @name getGlobalResources 查询全局资源
+ */
+export function getGlobalResources() {
+  return request<TypeResource.DTO[]>("resource", {
+    method: ENUM_HTTP.REQUEST_MODE.GET,
+    proxy: ENUM_HTTP.PROXY.EXPLORER,
+  });
+}
+
+/**
  * @name getResources 获取资源列表
  * @param params 通过文件夹ID查询旗下的资源列表
  */

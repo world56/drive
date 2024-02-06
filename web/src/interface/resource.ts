@@ -1,3 +1,4 @@
+import { ENUM_COMMON } from "@/enum/common";
 import { ENUM_RESOURCE } from "@/enum/resource";
 
 import type { TypeUser } from "./user";
@@ -68,6 +69,14 @@ export namespace TypeResource {
   /**
    * @name ReqGlobalExplorer 模糊查询所有资源
    */
-  export interface ReqGlobalResources
-    extends Partial<Pick<DTO, "name" | "type">> {}
+  export interface ReqGlobalResources extends Partial<Pick<DTO, "name">> {
+    /** @param startTime 开始时间 */
+    startTime?: number;
+    /** @param endTime 结束时间 */
+    endTime?: number;
+    /** @param type 资源类型 */
+    type: Array<TypeResource.DTO["type"]>;
+    /** @param desc 排序方式 */
+    desc: ENUM_COMMON.SORT;
+  }
 }

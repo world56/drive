@@ -7,10 +7,10 @@ import { useCallback, useEffect } from "react";
  * @param callBack 监听回调
  * @description 支持事件自动卸载
  */
-export default function useEventListener<T = undefined>(
-  eventName: string,
-  callBack: (e: CustomEvent<T>) => void,
-) {
+export default function useEventListener<
+  T = undefined,
+  R extends EventListener = EventListener,
+>(eventName: string, callBack: (e: CustomEvent<T>) => void) {
   const ref = useRef<typeof callBack>();
 
   ref.current = callBack;
@@ -21,9 +21,9 @@ export default function useEventListener<T = undefined>(
   );
 
   useEffect(() => {
-    document.addEventListener(eventName, bindCallBack as EventListener);
+    document.addEventListener(eventName, bindCallBack as R);
     return () => {
-      document.removeEventListener(eventName, bindCallBack as EventListener);
+      document.removeEventListener(eventName, bindCallBack as R);
     };
   }, [bindCallBack]);
 }

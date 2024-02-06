@@ -1,7 +1,7 @@
 import { Spin, Tree } from "antd";
 import styles from "./index.module.sass";
 import { useStore, useToFolder } from "@/hooks";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 
 import { FOLDER_WIDTH_KEY } from "@/config/system";
 import { CONFIG_ANTD_COMP_FIELD } from "@/config/antd";
@@ -31,7 +31,7 @@ const Folder: React.FC = () => {
 
   function onDrag(e: MouseEvent) {
     if (e.clientX > 300 && e.clientX < 700) {
-      const width = e.clientX - 95;
+      const width = e.clientX - 80;
       setWidth(width);
       sessionStorage.setItem(FOLDER_WIDTH_KEY, width.toString());
     }

@@ -15,8 +15,10 @@ import type { TypeResource } from "@/interface/resource";
  */
 const File: React.FC<TypeResource.DTO> = (props) => {
   const { id, type, size, fullName, suffix, favorite, path } = props;
+  const IS_IMAGE = type === ENUM_RESOURCE.TYPE.IMAGE;
   const IS_FOLDER = type === ENUM_RESOURCE.TYPE.FOLDER;
   const IS_FAVORITE = favorite === ENUM_RESOURCE.FAVORITE.ENABLE;
+
   return (
     <div
       data-id={id}
@@ -26,7 +28,13 @@ const File: React.FC<TypeResource.DTO> = (props) => {
       data-full-name={fullName}
     >
       <span>
-        <ResourceIcon size={size} type={type} suffix={suffix} path={path} />
+        <ResourceIcon
+          size={size}
+          type={type}
+          path={path}
+          suffix={suffix}
+          width={IS_FOLDER ? 60 : IS_IMAGE ? "100%" : 52}
+        />
       </span>
       <p>{props.name}</p>
       <p>

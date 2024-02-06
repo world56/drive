@@ -10,7 +10,7 @@ import { PoweroffOutlined, LockOutlined } from "@ant-design/icons";
 
 import type { MenuInfo } from "rc-menu/lib/interface";
 import type { ItemType } from "antd/es/menu/hooks/useItems";
-// import Search from "@/components/Search";
+import Search from "@/components/Search";
 
 const Header = () => {
   const actions = useActions();
@@ -50,8 +50,7 @@ const Header = () => {
         <span>Cloud</span>
       </h1>
 
-      {/* <Search /> */}
-
+      <Search />
       <Dropdown arrow menu={{ items, onClick }}>
         <div className={styles.user}>
           <Avatar isGradient />

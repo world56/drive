@@ -2,8 +2,9 @@ import { useActions } from "@/hooks";
 import { useRef, useState } from "react";
 import { useThrottleEffect } from "ahooks";
 
-import type { TypeUploadContainerProps } from ".";
 import { ENUM_COMMON } from "@/enum/common";
+
+import type { TypeUploadContainerProps } from ".";
 
 interface TypeUploadProgressProps
   extends Pick<TypeUploadContainerProps, "list"> {}

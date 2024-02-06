@@ -19,8 +19,8 @@ export class ResourceDTO extends PrimaryKeyStringDTO {
     type: String,
     description: '资源名称',
   })
-  @MaxLength(30, {
-    message: '名称最多不超过30个字符',
+  @MaxLength(60, {
+    message: '名称最多不超过60个字符',
   })
   @IsString()
   name: string;

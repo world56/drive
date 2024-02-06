@@ -3,6 +3,8 @@ import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 const DEFAULT_CONFIG = {
   /** @param UPLOAD 上传组件显示状态 */
   UPLOAD: false,
+  /** @param SEARCH 文件查询显示状态 */
+  SEARCH: false,
 };
 
 const configSlice = createSlice({

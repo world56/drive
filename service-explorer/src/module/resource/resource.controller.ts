@@ -11,9 +11,9 @@ import {
   Controller,
   ParseUUIDPipe,
 } from '@nestjs/common';
-import { QueryListPipe } from './pipe/query-list.pipe';
 import { ResourceService } from './resource.service';
 import { UserID } from '@/decorator/user-id.decorator';
+import { QueryListPipe } from './pipe/query-list.pipe';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UploadFileGuard } from '@/guard/upload-file.guard';
 import { GetUploadFile } from '@/decorator/get-upload-file.decorator';
@@ -31,6 +31,14 @@ import type { MultipartFile } from '@fastify/multipart';
 @Controller('resource')
 export class ResourceController {
   public constructor(private readonly ResourceService: ResourceService) {}
+
+  @ApiOperation({
+    summary: '全局资源搜索',
+  })
+  @Get('')
+  global() {
+    return this.ResourceService.findGlobal();
+  }
 
   @ApiOperation({
     summary: '获取全部文件夹',

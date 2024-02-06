@@ -5,10 +5,10 @@ import Files from "./components/Files";
 import Folder from "./components/Folder";
 import styles from "./index.module.sass";
 import { useEffect, useState } from "react";
-import { removeFavorite, updateFavorite } from "@/api/favorite";
 import Attributes from "./components/Attributes";
 import { createUpload, downloadFile } from "@/utils/resource";
 import { getResources, deleteResources } from "@/api/resource";
+import { removeFavorite, updateFavorite } from "@/api/favorite";
 import { useStore, useActions, useToFolder, useEventListener } from "@/hooks";
 
 import { ENUM_COMMON } from "@/enum/common";

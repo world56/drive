@@ -1,9 +1,67 @@
-.search
-  width: 760px
-  height: 580px
-  background: #fff
+.layout
+  width: 100%
+  height: 100%
   position: fixed
-  top: calc(50% - 400px)
-  left: calc(50% - 380px)
-  border-radius: 15px
-  box-shadow: rgba(15, 15, 15, 0.05) 0px 0px 0px 1px, rgba(15, 15, 15, 0.1) 0px 5px 10px, rgba(15, 15, 15, 0.2) 0px 15px 40px
+  background: rgba(0, 0, 0, 0.3)
+  
+  .search
+    width: 760px
+    height: 700px
+    position: fixed
+    z-index: 99
+    background: #fff
+    top: calc(50% - 320px)
+    left: calc(50% - 380px)
+    border-radius: 15px
+    box-shadow: rgba(15, 15, 15, 0.05) 0px 0px 0px 1px, rgba(15, 15, 15, 0.1) 0px 5px 10px, rgba(15, 15, 15, 0.2) 0px 15px 40px
+    .ctx
+      .item
+        cursor: pointer
+        width: calc(100% - 20px) !important
+        height: 59.5px
+        padding: 0 0 0 15px
+        display: flex
+        align-items: center
+        border-bottom: 1px solid rgb(234, 234, 234)
+        &:hover
+          background: rgba(0, 0, 0, 0.08)
+        .detail
+          width: 640px
+          overflow: hidden
+          margin-left: 15px
+          p
+            margin: 0
+            padding: 0
+            overflow: hidden
+            white-space: nowrap
+            text-overflow: ellipsis
+          .name
+            color: #37352F
+            font-size: 18px
+            margin-bottom: 1px
+          .path,.time
+            font-size: 13px
+            color: rgba(0, 0, 0, 0.5)
+          .path
+            display: inline
+          .time
+            display: none
+        .tools
+          width: 45px
+          height: 100%
+          display: flex
+          display: none
+          font-size: 18px
+          align-items: center
+          justify-content: center
+          color: rgb(145, 145, 142)
+        &:hover
+          .time
+            display: inline
+          .path
+            display: none
+          .tools
+            display: flex
+  
+      .item:nth-last-child(1)
+        border-bottom: none
