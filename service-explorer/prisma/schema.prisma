@@ -14,7 +14,7 @@ generator js {
 }
 
 model Resource {
-  id         String     @id @default(uuid())
+  id         String     @id @default(cuid())
   name       String
   path       String?
   url        String?
@@ -40,7 +40,7 @@ model Resource {
 }
 
 model Favorite {
-  id         String @id @default(uuid())
+  id         String @id @default(cuid())
   userId     String @map("user_id")
   resourceId String @map("resource_id")
   favoriteTime DateTime   @default(now()) @map("favorite_time")

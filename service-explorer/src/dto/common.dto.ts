@@ -1,7 +1,6 @@
 import { Type } from 'class-transformer';
-import { ApiProperty } from '@nestjs/swagger';
-import { PartialType } from '@nestjs/swagger';
 import { Min, IsInt, IsString } from 'class-validator';
+import { ApiProperty, PartialType } from '@nestjs/swagger';
 
 export class PrimaryKeyStringDTO {
   @ApiProperty({ description: '主键ID' })

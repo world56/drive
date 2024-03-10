@@ -9,11 +9,13 @@ import {
   Header,
   UseGuards,
   Controller,
-  ParseUUIDPipe,
 } from '@nestjs/common';
-import { QueryListPipe } from './pipe/query-list.pipe';
 import { ResourceService } from './resource.service';
 import { UserID } from '@/decorator/user-id.decorator';
+import { ParseCUIDPipe } from '@/pipe/parse-cuid.pipe';
+import { ParseDatePipe } from '@/pipe/parse-date.pipe';
+import { QueryListPipe } from './pipe/query-list.pipe';
+import { ParseSortPipe } from '@/pipe/parse-sort.pipe';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UploadFileGuard } from '@/guard/upload-file.guard';
 import { GetUploadFile } from '@/decorator/get-upload-file.decorator';
@@ -22,6 +24,7 @@ import { ResourceDTO } from '@/dto/resource.dto';
 import { MoveResourcesDTO } from './dto/move-resources.dto';
 import { InsertResourceDTO } from './dto/inset-resource.dto';
 import { DeleteResourcesDTO } from './dto/delete-resources.dto';
+import { FindResourcesAllDTO } from './dto/find-resources-all.dto';
 import { FindResourcesListDTO } from './dto/find-resources-list.dto';
 
 import type { FastifyReply } from 'fastify';
@@ -31,6 +34,17 @@ import type { MultipartFile } from '@fastify/multipart';
 @Controller('resource')
 export class ResourceController {
   public constructor(private readonly ResourceService: ResourceService) {}
+
+  @ApiOperation({
+    summary: '全局资源搜索',
+  })
+  @Get()
+  global(
+    @Query(new ParseSortPipe(), new ParseDatePipe(['startTime', 'endTime']))
+    query: FindResourcesAllDTO,
+  ) {
+    return query?.name ? this.ResourceService.findGlobal(query) : [];
+  }
 
   @ApiOperation({
     summary: '获取全部文件夹',
@@ -55,7 +69,7 @@ export class ResourceController {
     summary: '获取资源详情',
   })
   @Get('details')
-  details(@Query('id', new ParseUUIDPipe()) id: string) {
+  details(@Query('id', new ParseCUIDPipe()) id: string) {
     return this.ResourceService.getDetails(id);
   }
 

@@ -10,6 +10,7 @@ import { ResourceDTO } from '@/dto/resource.dto';
 import { MoveResourcesDTO } from './dto/move-resources.dto';
 import { InsertResourceDTO } from './dto/inset-resource.dto';
 import { DeleteResourcesDTO } from './dto/delete-resources.dto';
+import { FindResourcesAllDTO } from './dto/find-resources-all.dto';
 import { FindResourcesListDTO } from './dto/find-resources-list.dto';
 
 import { ENUM_RESOURCE } from '@/enum/explorer';
@@ -36,6 +37,33 @@ export class ResourceService {
   ) {}
 
   private readonly lock = new AsyncLock();
+
+  async findGlobal(query: FindResourcesAllDTO) {
+    const list = await this.PrismaService.resource.findMany({
+      select: {
+        id: true,
+        path: true,
+        type: true,
+        suffix: true,
+        parentId: true,
+        fullName: true,
+        createTime: true,
+      },
+      where: {
+        type: { in: query.type },
+        creatorId: { in: query.creators },
+        fullName: { contains: query.name },
+        createTime: { gte: query.startTime, lt: query.endTime },
+      },
+      orderBy: { createTime: query?.sort },
+    });
+    return Promise.all(
+      list.map(async (v) => ({
+        ...v,
+        paths: await this.findPaths(v),
+      })),
+    );
+  }
 
   findFolders() {
     return this.PrismaService.resource.findMany({
@@ -73,7 +101,9 @@ export class ResourceService {
       WHERE
         ${Prisma.raw(id ? `parent_id = "${id}"` : `parent_id IS NULL`)}
       ORDER BY 
-        ${Prisma.raw(`CASE WHEN r.type = 0 THEN 0 ELSE 1 END, ${type} ${order}`)};
+        ${Prisma.raw(
+          `CASE WHEN r.type = 0 THEN 0 ELSE 1 END, ${type} ${order}`,
+        )};
     `;
   }
 

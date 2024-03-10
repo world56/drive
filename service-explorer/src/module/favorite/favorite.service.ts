@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client';
 import { Injectable } from '@nestjs/common';
 import { UtilsService } from '@/common/utils/utils.service';
 import { PrismaService } from '@/common/prisma/prisma.service';
@@ -6,7 +7,6 @@ import { FavoritesUpdateDTO } from './dto/favorites-update.dto';
 import { FavoriteFindListDTO } from './dto/favorite-find-list.dto';
 
 import { ENUM_RESOURCE } from '@/enum/explorer';
-import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class FavoriteService {

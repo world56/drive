@@ -1,8 +1,10 @@
-import { ENUM_RESOURCE } from '@/enum/explorer';
 import { ApiProperty, PartialType } from '@nestjs/swagger';
 import { IsEnum, IsOptional, IsString } from 'class-validator';
 
 import { PrimaryKeyStringDTO } from 'src/dto/common.dto';
+
+import { ENUM_RESOURCE } from '@/enum/explorer';
+
 
 export class FindResourcesListDTO extends PartialType(PrimaryKeyStringDTO) {
   @ApiProperty({
