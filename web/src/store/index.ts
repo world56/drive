@@ -3,7 +3,7 @@ import userReducer from "./user";
 import configReducer from "./config";
 import resourceReducer from "./resource";
 import createSagaMiddleware from "redux-saga";
-import { configureStore, MiddlewareArray } from "@reduxjs/toolkit";
+import { configureStore, Tuple } from "@reduxjs/toolkit";
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -13,7 +13,7 @@ const store = configureStore({
     config: configReducer,
     resource: resourceReducer,
   },
-  middleware: new MiddlewareArray().concat(sagaMiddleware),
+  middleware: () => new Tuple(sagaMiddleware),
 });
 
 sagaMiddleware.run(middleware);

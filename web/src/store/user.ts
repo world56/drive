@@ -4,7 +4,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import { TOKEN_KEY } from "@/config/request";
 
 import type { TypeUser } from "@/interface/user";
-import type { PayloadAction } from "@reduxjs/toolkit/dist";
+import type { PayloadAction } from "@reduxjs/toolkit";
 
 export const DEFAULT_USER: Partial<TypeUser.DTO> = {};
 
