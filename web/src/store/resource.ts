@@ -43,7 +43,10 @@ const resourceSlice = createSlice({
   reducers: {
     setFolder(
       state,
-      action: PayloadAction<Omit<TypeResourceReducersProps, "path">, string>,
+      action: PayloadAction<
+        Omit<TypeResourceReducersProps, "path" | "sort">,
+        string
+      >,
     ) {
       return { ...state, ...action.payload };
     },

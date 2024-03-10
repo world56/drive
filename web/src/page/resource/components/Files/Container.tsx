@@ -19,9 +19,9 @@ import {
 } from "@ant-design/icons";
 import styles from "./index.module.sass";
 import Choose from "@/components/Choose";
-import { useStore, useToFolder } from "@/hooks";
 import { useMemo, useRef, useState } from "react";
 import { Dropdown, Spin, Breadcrumb, message } from "antd";
+import { useActions, useStore, useToFolder } from "@/hooks";
 
 import { ENUM_RESOURCE } from "@/enum/resource";
 
@@ -115,8 +115,10 @@ const Container: React.FC<TypeFilesContainerProps> = ({
   loading,
   children,
 }) => {
-  const toFolder = useToFolder();
+  const actions = useActions();
   const resource = useStore("resource");
+
+  const toFolder = useToFolder();
 
   const item = useRef<TypeSelectResource>(null!);
 
@@ -227,11 +229,11 @@ const Container: React.FC<TypeFilesContainerProps> = ({
       ],
     },
     { type: "divider" },
-    {
-      icon: <SearchOutlined />,
-      label: "搜索",
-      key: ENUM_RESOURCE.MENU.SEARCH,
-    },
+    // {
+    //   icon: <SearchOutlined />,
+    //   label: "检索文件夹",
+    //   key: ENUM_RESOURCE.MENU.SEARCH,
+    // },
     {
       icon: <SyncOutlined />,
       label: "刷新",
@@ -261,6 +263,10 @@ const Container: React.FC<TypeFilesContainerProps> = ({
     ],
     [path, foldersObj, toFolder],
   );
+
+  function onSearch() {
+    actions.setConfig({ SEARCH: true });
+  }
 
   const onClick: MenuProps["onClick"] = (e) => {
     if (e.key === ENUM_RESOURCE.MENU.COPY_NAME) {
@@ -295,7 +301,12 @@ const Container: React.FC<TypeFilesContainerProps> = ({
 
   return (
     <div className={styles.files} onContextMenu={onMenuOpen}>
-      <Breadcrumb items={route} className={styles.nav} />
+      <div className={styles.nav}>
+        <Breadcrumb items={route} />
+        <div>
+          <SearchOutlined onClick={onSearch} />
+        </div>
+      </div>
       {loading ? <Spin spinning={loading} /> : null}
       <Dropdown trigger={["contextMenu"]} menu={{ onClick, items }}>
         <div className={styles.layout}>{children}</div>

@@ -1,7 +1,7 @@
 import { ENUM_COMMON } from "@/enum/common";
-import type { TypeResource } from "./resource";
-
 import { ENUM_RESOURCE } from "@/enum/resource";
+
+import type { TypeResource } from "./resource";
 
 /**
  * @name TypeFavorite 收藏
@@ -17,7 +17,7 @@ export namespace TypeFavorite {
     /** @param 资源类型 */
     type: ENUM_RESOURCE.TYPE[];
     /** @param createTime 收藏时间排序方式 */
-    createTime: ENUM_COMMON.TIME_SORT;
+    createTime: ENUM_COMMON.SORT;
   }
 
   /**

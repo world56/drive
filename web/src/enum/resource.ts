@@ -32,7 +32,7 @@ export namespace ENUM_RESOURCE {
     AUDIO,
     /** @param DOCUMENT 文档 */
     DOCUMENT,
-    /** @param COMPRESSED 压缩文件 */
+    /** @param COMPRESSED 压缩包 */
     COMPRESSED,
   }
 

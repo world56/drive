@@ -1,9 +1,9 @@
 import Item from "./Item";
 import { filesFormat } from "./utils";
-import { useMemo, useRef, useState } from "react";
 import Container from "./Container/index";
 import { uploadChunk } from "@/api/resource";
 import { FixedSizeList } from "react-window";
+import { useMemo, useRef, useState } from "react";
 import { useEventListener, useStore, useToFolder } from "@/hooks";
 
 import { ENUM_COMMON } from "@/enum/common";

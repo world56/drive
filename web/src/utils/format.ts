@@ -50,6 +50,42 @@ export function toTime(timestamp?: number | Date | string): string {
 }
 
 /**
+ * @name relativeTime 获取发生时间的最近时间段
+ * @param timestamp 时间戳
+ */
+export function relativeTime(timestamp: Date | number) {
+  const currentTime = Date.now();
+  const elapsedTime = currentTime - new Date(timestamp).valueOf();
+  const minute = 60 * 1000;
+  const hour = minute * 60;
+  const day = hour * 24;
+  const week = day * 7;
+  const month = day * 30;
+  const year = day * 365;
+  if (elapsedTime < minute) {
+    return "刚刚";
+  } else if (elapsedTime < hour) {
+    const minutesAgo = Math.floor(elapsedTime / minute);
+    return minutesAgo + "分钟前";
+  } else if (elapsedTime < day) {
+    const hoursAgo = Math.floor(elapsedTime / hour);
+    return hoursAgo + "小时前";
+  } else if (elapsedTime < week) {
+    const daysAgo = Math.floor(elapsedTime / day);
+    return daysAgo + "天前";
+  } else if (elapsedTime < month) {
+    const weeksAgo = Math.floor(elapsedTime / week);
+    return weeksAgo + "周前";
+  } else if (elapsedTime < year) {
+    const monthsAgo = Math.floor(elapsedTime / month);
+    return monthsAgo + "个月前";
+  } else {
+    const yearsAgo = Math.floor(elapsedTime / year);
+    return yearsAgo + "年前";
+  }
+}
+
+/**
  * @name toTimestamp 转换时间格式
  * @param date 例：2023-07-15T06:27:34.715Z
  * @returns 时间戳

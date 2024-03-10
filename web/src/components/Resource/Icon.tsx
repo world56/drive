@@ -12,7 +12,7 @@ import ICON_VIDEO from "@/assets/file_video.svg";
 import ICON_PACKAGE from "@/assets/file_package.svg";
 
 import { ENUM_RESOURCE } from "@/enum/resource";
-import { ICON_THRESHOLD, RESOURCE_PREVIEW_PREFIX } from "@/config/resource";
+import { RESOURCE_PREVIEW_PREFIX } from "@/config/resource";
 
 import type { TypeResource } from "@/interface/resource";
 
@@ -47,7 +47,7 @@ const ICON = {
   ...convertMatch(["pdf"], ICON_PDF),
   // 文本
   ...convertMatch(["txt", "md", "markdown"], ICON_TXT),
-  // 压缩文件
+  // 压缩包
   ...convertMatch(["7z", "rar", "zip", "tar", "gzip", "iso"], ICON_ZIP),
   // 视频
   ...convertMatch(
@@ -133,9 +133,10 @@ export function getFileSuffixIcon(type?: string) {
 }
 
 interface TypeResourceIconProps
-  extends Pick<TypeResource.DTO, "size" | "type" | "suffix" | "path"> {
-  /** @param mini 小图标模式 */
-  mini?: boolean;
+  extends Pick<TypeResource.DTO, "type" | "suffix" | "path">,
+    Partial<Record<"width" | "height", number | string>> {
+  style?: React.CSSProperties;
+  className?: string;
 }
 
 /**
@@ -143,10 +144,10 @@ interface TypeResourceIconProps
  */
 function getResourceIcon<
   T extends TypeResourceIconProps = TypeResourceIconProps,
->({ path, type, size, suffix }: T) {
+>({ path, type, suffix }: T) {
   if (type === ENUM_RESOURCE.TYPE.FOLDER) {
     return ICON_FOLDER;
-  } else if (type === ENUM_RESOURCE.TYPE.IMAGE && size! < ICON_THRESHOLD) {
+  } else if (type === ENUM_RESOURCE.TYPE.IMAGE) {
     return `${RESOURCE_PREVIEW_PREFIX}${path}`;
   } else {
     return getFileSuffixIcon(suffix);
@@ -156,23 +157,19 @@ function getResourceIcon<
 /**
  * @name ResourceIcon 资源图标
  */
-const ResourceIcon: React.FC<TypeResourceIconProps> = (props) => {
-  return (
-    <img
-      alt="#"
-      style={{
-        width:
-        props.mini ? 30:
-          props.type === ENUM_RESOURCE.TYPE.FOLDER
-            ? 60
-            : props.type === ENUM_RESOURCE.TYPE.IMAGE &&
-              props.size! < ICON_THRESHOLD
-            ? "100%"
-            : 52
-      }}
-      src={getResourceIcon(props)}
-    />
-  );
-};
+const ResourceIcon: React.FC<TypeResourceIconProps> = ({
+  height,
+  className,
+  style = {},
+  width = "100%",
+  ...props
+}) => (
+  <img
+    alt="#"
+    className={className}
+    src={getResourceIcon(props)}
+    style={{ width, height, ...style }}
+  />
+);
 
 export default ResourceIcon;

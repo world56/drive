@@ -4,9 +4,10 @@ import { useRequest } from "ahooks";
 import { toTime } from "@/utils/format";
 import { useWindowSize } from "@/hooks";
 import styles from "./index.module.sass";
+import { Button, Input, Radio, Table } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
-import ResourceIcon from "@/components/ResourceIcon";
-import { Button, Checkbox, Input, Radio, Table } from "antd";
+import ResourceIcon from "@/components/Resource/Icon";
+import ResourcesSelect from "@/components/Resource/Select";
 import { getFavorites, removeFavorite } from "@/api/favorite";
 
 import { ENUM_COMMON } from "@/enum/common";
@@ -17,11 +18,6 @@ import { CONSTANT_RESOURCE } from "@/constant/resource";
 
 import type { TypeResource } from "@/interface/resource";
 import type { TypeFavorite } from "@/interface/favorite";
-
-const SEARCH_OPTIONS = CONSTANT_RESOURCE.TYPE.LIST.map((v) => ({
-  label: v.name,
-  value: v.id,
-}));
 
 /**
  * @name Favorite 收藏列表
@@ -51,7 +47,7 @@ const Favorite = () => {
       key: DB_PRIMARY_KEY,
       render: (row: TypeResource.DTO) => (
         <div className={styles.icon}>
-          <ResourceIcon mini {...row} />
+          <ResourceIcon width={30} {...row} />
           <span>{row.name}</span>
         </div>
       ),
@@ -71,10 +67,8 @@ const Favorite = () => {
       width: 200,
       dataIndex: "type",
       filterDropdown: () => (
-        <Checkbox.Group
-          options={SEARCH_OPTIONS}
-          className={styles.selectType}
-          onChange={(e) => setSearch((v) => ({ ...v, type: e as [] }))}
+        <ResourcesSelect
+          onChange={(type) => setSearch((v) => ({ ...v, type }))}
         />
       ),
       render: (type: TypeResource.DTO["type"]) =>

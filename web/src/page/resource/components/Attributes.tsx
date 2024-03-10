@@ -54,7 +54,7 @@ const Attributes: React.FC<TypeAttributesProps> = ({ id, onClose }) => {
 
         <Item span={3} label="类型">
           {isEmpty(value?.type)
-            ? "-"
+            ? "未知"
             : CONSTANT_RESOURCE.TYPE.OBJ[value!.type]?.name}
         </Item>
 
