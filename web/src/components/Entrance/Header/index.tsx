@@ -4,13 +4,14 @@ import { Dropdown } from "antd";
 import { logout } from "@/api/auth";
 import Avatar from "react-nice-avatar";
 import styles from "./index.module.sass";
-import ICON_LOGO from "@/assets/logo.svg";
+import Search from "@/components/Search";
 import { useActions, useStore } from "@/hooks";
 import { PoweroffOutlined, LockOutlined } from "@ant-design/icons";
 
+import ICON_LOGO from "@/assets/logo.svg";
+
 import type { MenuInfo } from "rc-menu/lib/interface";
 import type { ItemType } from "antd/es/menu/hooks/useItems";
-import Search from "@/components/Search";
 
 const Header = () => {
   const actions = useActions();
