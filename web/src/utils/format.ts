@@ -93,3 +93,13 @@ export function relativeTime(timestamp: Date | number) {
 export function toTimestamp(date: string | Date) {
   return new Date(date).valueOf();
 }
+
+/**
+ * @name toFixed 保留数字后两位小数
+ * @param number 原数据
+ * @param fixed 位数
+ * @description 不会四舍五入
+ */
+export function toFixed(number: number, fixed: number) {
+  return ~~(Math.pow(10, fixed) * number) / Math.pow(10, fixed);
+}

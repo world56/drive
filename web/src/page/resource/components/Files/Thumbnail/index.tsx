@@ -1,6 +1,9 @@
 import File from "./File";
+import { useMemo } from "react";
+import { useWindowSize } from "@/hooks";
 import styles from "./index.module.sass";
 import EmptyPrompt from "../EmptyPrompt";
+import { FixedSizeGrid } from "react-window";
 
 import { ENUM_RESOURCE } from "@/enum/resource";
 
@@ -24,6 +27,8 @@ const Thumbnail: React.FC<TypeThumbnailProps> = ({
   onMenu,
   onPreview,
 }) => {
+  const style = useWindowSize();
+
   /**
    * @name onDoubleClick 双击目标元素
    */
@@ -38,13 +43,28 @@ const Thumbnail: React.FC<TypeThumbnailProps> = ({
 
   const length = data?.length;
 
+  const params = useMemo(() => {
+    const length = data?.length || 0;
+    const width = style.width - 395;
+    const columnCount = Math.floor((width - 8) / 185);
+    const itemData: TypeResource.DTO[][] = [];
+    for (let i = 0; i < length; i += columnCount) {
+      itemData.push((data || []).slice(i, i + columnCount));
+    }
+    return {
+      width,
+      itemData,
+      columnCount,
+      rowHeight: 170,
+      columnWidth: 185,
+      rowCount: itemData.length,
+      height: style.height - 118,
+    };
+  }, [style, data]);
+
   return length ? (
     <div className={styles.thumbnail} onDoubleClick={onDoubleClick}>
-      <div className={styles.list}>
-        {data?.map((v) => (
-          <File key={v.id} {...v} />
-        ))}
-      </div>
+      <FixedSizeGrid children={File} {...params} />
     </div>
   ) : (
     <EmptyPrompt onMenu={onMenu} />
