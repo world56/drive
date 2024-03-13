@@ -1,9 +1,10 @@
 import File from "./File";
 import { useMemo } from "react";
-import { useWindowSize } from "@/hooks";
+import { useDebounce } from "ahooks";
 import styles from "./index.module.sass";
 import EmptyPrompt from "../EmptyPrompt";
 import { FixedSizeGrid } from "react-window";
+import { useStore, useWindowSize } from "@/hooks";
 
 import { ENUM_RESOURCE } from "@/enum/resource";
 
@@ -29,6 +30,9 @@ const Thumbnail: React.FC<TypeThumbnailProps> = ({
 }) => {
   const style = useWindowSize();
 
+  const { FOLDER_TREE_WIDTH } = useStore("config");
+  const folderWidth = useDebounce(FOLDER_TREE_WIDTH, { wait: 800 });
+
   /**
    * @name onDoubleClick 双击目标元素
    */
@@ -45,7 +49,7 @@ const Thumbnail: React.FC<TypeThumbnailProps> = ({
 
   const params = useMemo(() => {
     const length = data?.length || 0;
-    const width = style.width - 395;
+    const width = style.width - folderWidth - 95;
     const columnCount = Math.floor((width - 8) / 185);
     const itemData: TypeResource.DTO[][] = [];
     for (let i = 0; i < length; i += columnCount) {
@@ -60,7 +64,7 @@ const Thumbnail: React.FC<TypeThumbnailProps> = ({
       rowCount: itemData.length,
       height: style.height - 118,
     };
-  }, [style, data]);
+  }, [style, folderWidth, data]);
 
   return length ? (
     <div className={styles.thumbnail} onDoubleClick={onDoubleClick}>
