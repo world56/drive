@@ -49,7 +49,7 @@ const Thumbnail: React.FC<TypeThumbnailProps> = ({
 
   const params = useMemo(() => {
     const length = data?.length || 0;
-    const width = style.width - folderWidth - 95;
+    const width = style.width - folderWidth - 93;
     const columnCount = Math.floor((width - 8) / 185);
     const itemData: TypeResource.DTO[][] = [];
     for (let i = 0; i < length; i += columnCount) {
