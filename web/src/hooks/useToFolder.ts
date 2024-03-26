@@ -1,5 +1,5 @@
 import { useActions, useStore } from "@/hooks";
-import { useSearchParams } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import type { TypeResource } from "@/interface/resource";
 
@@ -13,7 +13,8 @@ export default function useToFolder<
   const actions = useActions();
   const resource = useStore("resource");
 
-  const [, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
 
   function getPath(id: React.Key) {
     const ids: React.Key[] = [id];
@@ -36,10 +37,9 @@ export default function useToFolder<
     if (id) {
       const path = getPath(id);
       actions.setPath(path);
-      setSearchParams({ path: path.join("/") }, { replace: true });
+      pathname !== "/resource" && navigate("/resource");
     } else {
       actions.setPath([]);
-      setSearchParams({}, { replace: true });
     }
   }
 

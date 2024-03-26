@@ -11,13 +11,13 @@ import {
   Controller,
 } from '@nestjs/common';
 import { ResourceService } from './resource.service';
-import { UserID } from '@/decorator/user-id.decorator';
 import { ParseCUIDPipe } from '@/pipe/parse-cuid.pipe';
 import { ParseDatePipe } from '@/pipe/parse-date.pipe';
 import { QueryListPipe } from './pipe/query-list.pipe';
 import { ParseSortPipe } from '@/pipe/parse-sort.pipe';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UploadFileGuard } from '@/guard/upload-file.guard';
+import { CurrentUser } from '@/decorator/current-user-user.decorator';
 import { GetUploadFile } from '@/decorator/get-upload-file.decorator';
 
 import { ResourceDTO } from '@/dto/resource.dto';
@@ -59,8 +59,8 @@ export class ResourceController {
   })
   @Get('list')
   findList(
+    @CurrentUser('id') userId: string,
     @Query(new QueryListPipe()) query: FindResourcesListDTO,
-    @UserID() userId: string,
   ) {
     return this.ResourceService.findList(query, userId);
   }
@@ -77,7 +77,7 @@ export class ResourceController {
     summary: '创建文件夹',
   })
   @Post('create')
-  create(@Body() body: InsertResourceDTO, @UserID() id: string) {
+  create(@Body() body: InsertResourceDTO, @CurrentUser('id') id: string) {
     return this.ResourceService.createFolder(body, id);
   }
 
@@ -112,7 +112,7 @@ export class ResourceController {
   })
   @Post('upload')
   @UseGuards(new UploadFileGuard())
-  upload(@GetUploadFile() file: MultipartFile, @UserID() id: string) {
+  upload(@GetUploadFile() file: MultipartFile, @CurrentUser('id') id: string) {
     const fields = file.fields as Record<string, { value: string }>;
     return this.ResourceService.upload({
       creatorId: id,

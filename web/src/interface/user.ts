@@ -1,4 +1,5 @@
 import { ENUM_USER } from "@/enum/user";
+import { ENUM_COMMON } from "@/enum/common";
 
 import type { TypeCommon } from "./common";
 
@@ -14,7 +15,11 @@ export namespace TypeUser {
     /** @param role 角色 */
     role: ENUM_USER.ROLE;
     /** @param status 用户状态 */
-    status: ENUM_USER.STATUS;
+    status: ENUM_COMMON.STATUS;
+    /** @param remark 账号备注 */
+    remark?: string;
+    /** @param contact 联系方式 */
+    contact?: string;
   }
 
   /**
@@ -30,7 +35,7 @@ export namespace TypeUser {
    */
   export interface ChangePWD extends Pick<DTO, "id" | "password"> {
     /** @param newPWD 新密码  */
-    newPWD: string;
+    pwd: string;
   }
 
   /**

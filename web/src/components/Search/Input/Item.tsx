@@ -12,6 +12,7 @@ interface TypeItemProps {
  */
 const Item: React.FC<TypeItemProps> = ({ icon, name, children }) => (
   <Dropdown
+    overlayStyle={{ minWidth: "max-content" }}
     dropdownRender={() => <div className={styles.background}>{children}</div>}
   >
     <span className={styles.item}>

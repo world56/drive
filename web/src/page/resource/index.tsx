@@ -9,7 +9,7 @@ import Attributes from "./components/Attributes";
 import { createUpload, downloadFile } from "@/utils/resource";
 import { getResources, deleteResources } from "@/api/resource";
 import { removeFavorite, updateFavorite } from "@/api/favorite";
-import { useStore, useActions, useToFolder, useEventListener } from "@/hooks";
+import { useStore, useActions, useEventListener, useToFolder } from "@/hooks";
 
 import { ENUM_COMMON } from "@/enum/common";
 import { ENUM_RESOURCE } from "@/enum/resource";
@@ -38,6 +38,8 @@ const Resource = () => {
     () => getResources({ id: resource.path?.at(-1), ...resource.sort }),
     { refreshDeps: [resource.path, resource.sort] },
   );
+
+  useEventListener(ENUM_COMMON.CUSTOM_EVENTS.REFRESH_RESOURCES, run);
 
   const onMenu: TypeFilesProps["onMenu"] = async (type, id) => {
     switch (type) {
@@ -102,8 +104,6 @@ const Resource = () => {
   useEffect(() => {
     actions.getFolders();
   }, [actions]);
-
-  useEventListener(ENUM_COMMON.CUSTOM_EVENTS.REFRESH_RESOURCES, run);
 
   return (
     <div className={styles.layout}>

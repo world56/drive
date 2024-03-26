@@ -14,16 +14,18 @@ generator js {
 }
 
 model User {
-  id         String     @id @default(cuid())
-  name       String?
-  account    String     @unique
+  id         String   @id @default(cuid())
+  name       String   @db.VarChar(15)
+  account    String   @unique @db.VarChar(20)
   password   String
-  status     Int        @default(1)
-  isSuper    Int        @default(0) @map("is_super") @db.Int()
-  createTime DateTime   @default(now()) @map("create_time")
+  status     Int      @default(1)
+  role       Int      @default(1) @db.Int()
+  createTime DateTime @default(now()) @map("create_time")
+  remark     String?  @db.VarChar(255)
+  contact    String?  @db.VarChar(100)
 
   @@unique([account, password])
   @@index([account])
-  @@index([isSuper])
+  @@index([role])
   @@map("user")
 }

@@ -42,9 +42,9 @@ const Login = () => {
         </Form.Item>
         <Form.Item name="password" rules={FORM_PASSWORD_RULES}>
           <Input.Password
-            onPressEnter={onSubmit}
-            placeholder="Password"
             allowClear
+            placeholder="Password"
+            onPressEnter={onSubmit}
           />
         </Form.Item>
         <Form.Item valuePropName="checked" name="expire">

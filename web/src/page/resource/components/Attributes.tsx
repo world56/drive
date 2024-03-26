@@ -84,7 +84,7 @@ const Attributes: React.FC<TypeAttributesProps> = ({ id, onClose }) => {
         </Item>
 
         <Item span={3} label={IS_FOLDER ? "创建人" : "上传人"}>
-          {value?.creator?.name}
+          {value?.creator?.name || "-"}
         </Item>
 
         <Item span={3} label="备注">

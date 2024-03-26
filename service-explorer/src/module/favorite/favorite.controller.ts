@@ -1,6 +1,6 @@
 import { FavoriteService } from './favorite.service';
-import { UserID } from '@/decorator/user-id.decorator';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { CurrentUser } from '@/decorator/current-user-user.decorator';
 import { Get, Post, Body, Delete, Controller, Query } from '@nestjs/common';
 
 import { FavoritesUpdateDTO } from './dto/favorites-update.dto';
@@ -15,7 +15,7 @@ export class FavoriteController {
     summary: '用户收藏列表',
   })
   @Get('list')
-  list(@Query() query: FavoriteFindListDTO, @UserID() userId: string) {
+  list(@Query() query: FavoriteFindListDTO, @CurrentUser('id') userId: string) {
     return this.FavoriteService.findList(query, userId);
   }
 
@@ -24,7 +24,7 @@ export class FavoriteController {
     description: '单个收藏',
   })
   @Post('insert')
-  insert(@Body() data: FavoritesUpdateDTO, @UserID() userId: string) {
+  insert(@Body() data: FavoritesUpdateDTO, @CurrentUser('id') userId: string) {
     return this.FavoriteService.insert(data, userId);
   }
 

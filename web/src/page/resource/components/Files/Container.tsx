@@ -21,7 +21,7 @@ import styles from "./index.module.sass";
 import Choose from "@/components/Choose";
 import { useMemo, useRef, useState } from "react";
 import { Dropdown, Spin, Breadcrumb, message } from "antd";
-import { useActions, useStore, useToFolder } from "@/hooks";
+import { useStore, useToFolder, useActions } from "@/hooks";
 
 import { ENUM_RESOURCE } from "@/enum/resource";
 
@@ -307,7 +307,7 @@ const Container: React.FC<TypeFilesContainerProps> = ({
           <SearchOutlined onClick={onSearch} />
         </div>
       </div>
-      {loading ? <Spin spinning={loading} /> : null}
+      {loading ? <Spin spinning={loading} tip /> : null}
       <Dropdown trigger={["contextMenu"]} menu={{ onClick, items }}>
         <div className={styles.layout}>{children}</div>
       </Dropdown>

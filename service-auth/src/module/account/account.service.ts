@@ -37,7 +37,7 @@ export class AccountService {
 
   async getSuperAdmin() {
     const admin = await this.PrismaService.user.findFirst({
-      where: { isSuper: ENUM_COMMON.SUPER_ADMIN.SUPER },
+      where: { role: ENUM_COMMON.ROLE.SA },
     });
     return Boolean(admin);
   }
@@ -46,8 +46,8 @@ export class AccountService {
     const key = `drive:user:${token}`;
     const user = await this.RedisService.hgetall(key);
     if (user?.id) {
-      const { id, name, isSuper } = user;
-      return { id, name, isSuper: parseInt(isSuper) };
+      const { id, name, role } = user;
+      return { id, name, role: parseInt(role) };
     } else {
       await this.RedisService.del(key);
       throw new UnauthorizedException('登录超时');
@@ -66,7 +66,7 @@ export class AccountService {
     await this.UserService.insert({
       ...body,
       name: '管理员',
-      isSuper: ENUM_COMMON.SUPER_ADMIN.SUPER,
+      role: ENUM_COMMON.ROLE.SA,
     });
     return true;
   }
@@ -76,11 +76,11 @@ export class AccountService {
     where.password = this.CryptoService.md5(where.password);
     const user = await this.PrismaService.user.findUnique({
       where: { account_password: where },
-      select: { id: true, name: true, isSuper: true, status: true },
+      select: { id: true, name: true, role: true, status: true },
     });
     if (user) {
       if (user.status === ENUM_COMMON.STATUS.FREEZE) {
-        throw new ForbiddenException('账号被冻结，请联系系统管理员');
+        throw new ForbiddenException('账号被冻结，请联系管理员');
       }
       const token = nanoid();
       const key = `drive:user:${token}`;

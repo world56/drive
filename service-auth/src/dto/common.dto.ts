@@ -1,12 +1,20 @@
 import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 import { PartialType } from '@nestjs/swagger';
-import { Min, IsInt, IsString } from 'class-validator';
+import { Min, IsInt, IsString, Max, IsOptional, MaxLength } from 'class-validator';
 
 export class PrimaryKeyStringDTO {
   @ApiProperty({ description: '主键ID' })
   @IsString()
   id: string;
+}
+
+export class RemarkDTO {
+  @ApiProperty({ description: '备注' })
+  @IsOptional()
+  @MaxLength(255)
+  @IsString()
+  remark?: string;
 }
 
 export class PaginationDTO extends PartialType(PrimaryKeyStringDTO) {

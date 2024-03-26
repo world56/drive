@@ -5,9 +5,10 @@ module.exports = async function (app, request, reply) {
   try {
     const { Authorization } = request.cookies;
     if (Authorization) {
-      const id = await app.redis.hget(`drive:user:${Authorization}`, "id");
-      if (id) {
-        request.headers["user-id"] = id;
+      const user = await app.redis.hgetall(`drive:user:${Authorization}`);
+      if (user.id) {
+        request.headers["user-id"] = user.id;
+        request.headers["user-role"] = user.role;
         return true;
       }
       return reply.send(UNAUTHORIZED);

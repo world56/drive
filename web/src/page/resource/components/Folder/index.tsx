@@ -1,7 +1,8 @@
 import { Spin, Tree } from "antd";
 import styles from "./index.module.sass";
+import { useSearchParams } from "react-router-dom";
 import { useRef, useState, useEffect } from "react";
-import { useStore, useActions, useToFolder } from "@/hooks";
+import { useStore, useToFolder, useActions } from "@/hooks";
 
 import { FOLDER_WIDTH_KEY } from "@/config/system";
 import { CONFIG_ANTD_COMP_FIELD } from "@/config/antd";
@@ -15,6 +16,7 @@ const Folder: React.FC = () => {
   const ref = useRef<HTMLDivElement>(null!);
 
   const toFolder = useToFolder();
+  const [, setSearchParams] = useSearchParams();
 
   const actions = useActions();
   const resource = useStore("resource");
@@ -53,6 +55,11 @@ const Folder: React.FC = () => {
       const newIds = Array.from(new Set([...ids, ...resource.path]));
       return ~index ? newIds.filter((v) => v !== target) : newIds;
     });
+  }, [resource.path]);
+
+  useEffect(() => {
+    const path = resource.path.join("/");
+    setSearchParams(path ? { path } : {}, { replace: true });
   }, [resource.path]);
 
   return (

@@ -1,5 +1,15 @@
 export namespace ENUM_COMMON {
   /**
+   * @name STATUS 状态
+   */
+  export enum STATUS {
+    /** @param FREEZE 冻结 */
+    FREEZE,
+    /** @param ACTIVATE 激活 */
+    ACTIVATE,
+  }
+
+  /**
    * @name COLOR 常用的颜色
    */
   export enum COLOR {

@@ -9,6 +9,8 @@ const DEFAULT_CONFIG = {
   SEARCH: false,
   /** @param FOLDER_TREE_WIDTH 文件夹目录树宽度 */
   FOLDER_TREE_WIDTH: Number(sessionStorage.getItem(FOLDER_WIDTH_KEY)) || 300,
+  /** @param KEY 密钥 */
+  KEY: "",
 };
 
 const configSlice = createSlice({

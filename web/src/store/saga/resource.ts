@@ -11,8 +11,8 @@ function* getGlobalFolders() {
     yield put(
       ActionsResource.setFolder({
         folders: res,
-        folderTree: list,
         foldersObj: obj,
+        folderTree: list,
       }),
     );
   } catch {}
