@@ -39,9 +39,9 @@ export namespace TypeUser {
   }
 
   /**
-   * @name Finds 查询用户列表
+   * @name ReqUsers 查询用户列表
    */
-  export interface Finds
-    extends Partial<Pick<DTO, "name">>,
+  export interface ReqUsers
+    extends Partial<Pick<DTO, "name" | "account" | "status">>,
       TypeCommon.PageTurning {}
 }

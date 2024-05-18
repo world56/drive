@@ -15,8 +15,6 @@ import { UserPwdChangeDTO } from './dto/user-pwd-change.dto';
 
 import { ENUM_COMMON } from '@/enum/common';
 
-import type { TypeCurrentUserDecorator } from '@/decorator/current-user-user.decorator';
-
 @Injectable()
 export class UserService {
   public constructor(

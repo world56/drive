@@ -85,8 +85,8 @@ export class ResourceController {
     summary: '编辑资源信息',
   })
   @Put('update')
-  update(@Body() body: ResourceDTO) {
-    return this.ResourceService.update(body);
+  update(@Body() body: ResourceDTO, @CurrentUser('id') id: string) {
+    return this.ResourceService.update(body, id);
   }
 
   @ApiOperation({

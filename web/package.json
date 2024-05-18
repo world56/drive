@@ -12,7 +12,6 @@
   "dependencies": {
     "@ant-design/icons": "^5.3.1",
     "@reduxjs/toolkit": "^2.2.1",
-    "@types/md5": "^2.3.5",
     "ahooks": "^3.7.10",
     "antd": "^5.15.1",
     "filesize": "^10.1.0",
@@ -30,6 +29,7 @@
     "umi-request": "^1.4.0"
   },
   "devDependencies": {
+    "@types/md5": "^2.3.5",
     "@types/js-cookie": "^3.0.6",
     "@types/node": "18.15",
     "@types/react": "^18.2.64",

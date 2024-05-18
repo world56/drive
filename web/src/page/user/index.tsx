@@ -2,16 +2,16 @@ import Edit from "./Edit";
 import { useState } from "react";
 import { useRequest } from "ahooks";
 import { toTime } from "@/utils/format";
-import styles from "./index.module.sass";
 import Password from "@/components/Password";
-import { Button, Card, Input, Table } from "antd";
-import { useInput, usePageTurning } from "@/hooks";
+import PagedQuery from "@/components/PagedQuery";
+import { Button, Input, Select, Table } from "antd";
 import { changeUserStatus, getUsers } from "@/api/user";
 import { StatusBtn, StatusText } from "@/components/Status";
-import { UserOutlined, SearchOutlined } from "@ant-design/icons";
+import { useInput, usePageTurning, useWindowSize } from "@/hooks";
 
 import { DB_PRIMARY_KEY } from "@/config/db";
 import { CONSTANT_USER } from "@/constant/user";
+import { CONSTANT_COMMON } from "@/constant/common";
 
 import type { TypeEditUserProps } from "./Edit";
 import type { TypeUser } from "@/interface/user";
@@ -22,21 +22,31 @@ import type { TypeResetPasswordProps } from "@/components/Password";
  * @name User 用户管理
  */
 const User = () => {
-  const name = useInput();
+  const name = useInput<string>();
+  const account = useInput<string>();
+  const status = useInput<TypeUser.DTO["status"]>();
 
   const [editUserPwdId, setUserPwdId] =
     useState<TypeResetPasswordProps["id"]>();
   const [editId, setEditId] = useState<TypeEditUserProps["id"]>();
 
+  const { height } = useWindowSize();
+
   const pagination = usePageTurning();
   const { currentPage, pageSize } = pagination;
 
   const { data, loading, run } = useRequest(() =>
-    getUsers({ pageSize, currentPage, name: name.value }),
+    getUsers({
+      pageSize,
+      currentPage,
+      name: name.value,
+      status: status.value,
+      account: account.value,
+    }),
   );
 
   const columns: ColumnsType<TypeUser.DTO> = [
-    { title: "名称", dataIndex: "name" },
+    { title: "用户名称", dataIndex: "name" },
     { title: "登陆账号", dataIndex: "account" },
     {
       title: "角色类型",
@@ -87,29 +97,38 @@ const User = () => {
 
   return (
     <>
-      <Card title="用户列表" className={styles.layout}>
-        <div className={styles.search}>
-          <Input
-            {...name}
-            allowClear
-            prefix={<UserOutlined />}
-            placeholder="输入用户名称查询"
-          />
-          <Button onClick={run} icon={<SearchOutlined />}>
-            查询
-          </Button>
-          <Edit id={editId} onClose={onEdit} />
-        </div>
+      <PagedQuery
+        onClick={run}
+        head={
+          <>
+            <span>用户名称：</span>
+            <Input {...name} allowClear placeholder="输入用户名称查询" />
 
+            <span>登录账号：</span>
+            <Input {...account} allowClear placeholder="输入用户名称查询" />
+
+            <span>状态：</span>
+            <Select
+              allowClear
+              {...status}
+              placeholder="请选择状态状态"
+              options={CONSTANT_COMMON.STATUS.LIST}
+              fieldNames={{ value: "id", label: "name" }}
+            />
+          </>
+        }
+        button={<Edit id={editId} onClose={onEdit} />}
+      >
         <Table
           columns={columns}
           loading={loading}
           pagination={pagination}
           dataSource={data?.list}
           rowKey={DB_PRIMARY_KEY}
+          scroll={{ y: height - 285 }}
         />
         <Password id={editUserPwdId} onClose={onResetPWD} />
-      </Card>
+      </PagedQuery>
     </>
   );
 };

@@ -17,6 +17,7 @@ import { ENUM_RESOURCE } from '@/enum/explorer';
 
 import type { Resource } from '@prisma/client';
 import type { TypeFileWriteParam } from '@/common/file/file.service';
+import { ENUM_LOG } from '@/enum/log';
 
 export interface TypeUploadChunkInfo extends TypeFileWriteParam {
   creatorId: Resource['creatorId'];
@@ -150,18 +151,32 @@ export class ResourceService {
     );
   }
 
-  async update(body: ResourceDTO) {
+  async update(body: ResourceDTO, operatorId: string) {
     const { id, ...data } = body;
     const target = await this.PrismaService.resource.findUnique({
       where: { id },
-      select: { suffix: true },
+      select: {
+        id: true,
+        suffix: true,
+        parentId: true,
+        fullName: true,
+      },
     });
     data.remark = data.remark ? data.remark : null;
     data.parentId = data.parentId ? data.parentId : null;
-    return await this.PrismaService.resource.update({
+    await this.PrismaService.resource.update({
       where: { id },
+      select: { id: true },
       data: { ...data, fullName: `${data.name}.${target.suffix}` },
     });
+    console.log('@-data',target);
+    
+    this.GrpcService.writeLog({
+      operatorId,
+      desc: JSON.stringify(target),
+      event: ENUM_LOG.EVENT.RESOURCE_UPDATE,
+    });
+    return true;
   }
 
   async upload(data: TypeUploadChunkInfo) {

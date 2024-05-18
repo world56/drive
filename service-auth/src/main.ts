@@ -13,14 +13,16 @@ import type { NestFastifyApplication } from '@nestjs/platform-fastify';
 async function bootstrap() {
   const [app, grpc] = await Promise.all([
     NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter()),
+
     NestFactory.createMicroservice<MicroserviceOptions>(GrpcModule, {
       transport: Transport.GRPC,
       options: {
-        package: 'user',
-        protoPath: join(__dirname, '../../proto/user.proto'),
+        package: 'auth',
+        protoPath: join(__dirname, '../../proto/auth.proto'),
       },
     }),
   ]);
+  
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
   grpc.listen();
   app.listen(process.env.PORT);

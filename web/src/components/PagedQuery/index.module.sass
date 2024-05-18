@@ -1,0 +1,17 @@
+.layout
+  margin: 10px
+  :global(.ant-card):nth-child(1)
+    margin-bottom: 10px
+    :global(.ant-input-affix-wrapper),:global(.ant-input),:global(.ant-select)
+      width: 190px
+      margin-right: 15px
+    :global(.ant-btn)
+      margin-right: 10px
+    :global(.ant-btn):nth-last-child(1)
+      margin-right: 0
+  :global(.ant-table)
+    overflow: hidden
+    border-radius: 8px
+    border: 1px solid #f0f0f0
+    tbody tr:nth-last-child(1) > td
+      border-bottom: none !important

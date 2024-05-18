@@ -23,9 +23,24 @@ model User {
   createTime DateTime @default(now()) @map("create_time")
   remark     String?  @db.VarChar(255)
   contact    String?  @db.VarChar(100)
+  logs       Log[]
 
   @@unique([account, password])
-  @@index([account])
-  @@index([role])
+  @@index(account)
+  @@index(role)
   @@map("user")
+}
+
+model Log {
+  id         Int      @id @default(autoincrement())
+  event      String
+  desc       String?  @db.VarChar(50)
+  operatorId String   @map("operator_id")
+  createTime DateTime @default(now()) @map("create_time")
+  operator   User     @relation(fields: [operatorId], references: [id])
+
+  @@index([event, operatorId])
+  @@index(event)
+  @@index(operatorId)
+  @@map("log")
 }

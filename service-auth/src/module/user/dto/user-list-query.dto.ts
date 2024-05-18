@@ -10,12 +10,23 @@ import { IsOptional, IsString } from 'class-validator';
 
 export class UserListQueryDTO extends IntersectionType(
   PaginationDTO,
-  PartialType(PickType(UserDTO, ['account', 'status'] as const)),
+  PartialType(PickType(UserDTO, ['status'] as const)),
 ) {
-  @ApiProperty({description: '用户名称'})
+  @ApiProperty({
+    type: String,
+    description: '用户名称',
+  })
   @IsOptional()
   @IsString()
   name?: string;
+
+  @ApiProperty({
+    type: String,
+    description: '登陆账号',
+  })
+  @IsOptional()
+  @IsString()
+  account?: string;
 
   take: number;
   skip: number;

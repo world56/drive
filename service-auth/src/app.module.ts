@@ -1,14 +1,16 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { LogModule } from './module/log/log.module';
 import { UserModule } from './module/user/user.module';
 import { CryptoModule } from './module/crypto/crypto.module';
 import { AccountModule } from './module/account/account.module';
 
 @Module({
   imports: [
+    LogModule,
+    UserModule,
     CryptoModule,
     AccountModule,
-    UserModule,
     ConfigModule.forRoot({ envFilePath: `.env` }),
   ],
 })

@@ -4,13 +4,13 @@ import Cookies from "js-cookie";
 import { extend } from "umi-request";
 import { ActionsUser } from "@/store/user";
 
-import { ENUM_HTTP } from "@/enum/http";
 import {
   TOKEN_KEY,
   REQUEST_TIMEOUT,
   API_PROXY_AUTH_URL,
   API_PROXY_EXPLORER_URL,
 } from "@/config/request";
+import { ENUM_HTTP } from "@/enum/http";
 
 import type { ResponseError } from "umi-request";
 

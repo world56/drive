@@ -1,15 +1,13 @@
 import { encryption } from "@/utils";
 import { useReqDetails } from "@/hooks";
 import styles from "./index.module.sass";
+import { Button, Form, Input } from "antd";
 import { Modal } from "@/components/Layout";
 import { useEffect, useState } from "react";
 import { FormHideKey } from "@/components/Form";
-import { Button, Form, Input, Switch } from "antd";
 import { UserAddOutlined } from "@ant-design/icons";
 import PwdForm from "@/components/Password/PwdForm";
 import { getUser, insertUser, updateUser } from "@/api/user";
-
-import { ENUM_COMMON } from "@/enum/common";
 
 import type { TypeUser } from "@/interface/user";
 
@@ -73,8 +71,8 @@ const Edit: React.FC<TypeEditUserProps> = ({ id, onClose }) => {
 
   return (
     <>
-      <Button onClick={onOpen} icon={<UserAddOutlined />} type="primary">
-        新增用户
+      <Button onClick={onOpen} icon={<UserAddOutlined />}>
+        创建用户
       </Button>
       <Modal
         open={open}
@@ -122,15 +120,6 @@ const Edit: React.FC<TypeEditUserProps> = ({ id, onClose }) => {
             rules={[{ max: 100, message: "最多不超过100位字符" }]}
           >
             <Input placeholder="请输入用户联系方式（邮箱、电话）" allowClear />
-          </Form.Item>
-
-          <Form.Item
-            name="status"
-            label="账号状态"
-            valuePropName="checked"
-            initialValue={ENUM_COMMON.STATUS.ACTIVATE}
-          >
-            <Switch />
           </Form.Item>
 
           <Form.Item label="备注" name="remark">

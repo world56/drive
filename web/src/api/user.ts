@@ -8,7 +8,7 @@ import type { TypeCommon } from "@/interface/common";
 /**
  * @name getUsers 查询-用户列表
  */
-export function getUsers(params: TypeUser.Finds) {
+export function getUsers(params: TypeUser.ReqUsers) {
   return request<TypeCommon.Response<TypeUser.DTO>>("user/list", {
     method: ENUM_HTTP.REQUEST_MODE.GET,
     proxy: ENUM_HTTP.PROXY.AUTH,

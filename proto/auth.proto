@@ -1,9 +1,19 @@
 syntax = "proto3";
 
-package user;
+package auth;
 
 service UserService {
   rpc GetUserInfo (FindUserId) returns (User) {}
+}
+
+service LogService {
+  rpc WriteLog(Log) returns (Log) {}
+}
+
+message Log {
+  string event = 1;
+  string operatorId = 2;
+  string desc = 3;
 }
 
 message User {
