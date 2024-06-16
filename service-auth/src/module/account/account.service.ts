@@ -6,6 +6,7 @@ import {
   PreconditionFailedException,
 } from '@nestjs/common';
 import { nanoid } from 'nanoid';
+import { LogService } from '../log/log.service';
 import { UserService } from '@/module/user/user.service';
 import { RedisService } from '@/common/redis/redis.service';
 import { PrismaService } from '@/common/prisma/prisma.service';
@@ -14,11 +15,13 @@ import { CryptoService } from '@/module/crypto/crypto.service';
 import { UserLoginDTO } from './dto/user-login.dto';
 import { RegisterSuperAdminDTO } from './dto/register-super-admin.dto';
 
+import { ENUM_LOG } from '@/enum/log';
 import { ENUM_COMMON } from '@/enum/common';
 
 @Injectable()
 export class AccountService {
   public constructor(
+    private readonly LogService: LogService,
     private readonly UserService: UserService,
     private readonly RedisService: RedisService,
     private readonly PrismaService: PrismaService,
@@ -89,6 +92,11 @@ export class AccountService {
         key,
         expire ? this.ONE_DAY * 7 : this.ONE_DAY,
       );
+      this.LogService.write({
+        desc: user,
+        operatorId: user.id,
+        event: ENUM_LOG.EVENT.LOGIN,
+      });
       return token;
     } else {
       throw new PreconditionFailedException('账户或密码错误，请重试');
@@ -98,6 +106,13 @@ export class AccountService {
   async logout(token: string) {
     const key = `drive:user:${token}`;
     if (await this.RedisService.exists(key)) {
+      const id = await this.RedisService.hget(key, 'id');
+      const desc = await this.UserService.getUserInfo(id);
+      this.LogService.write({
+        desc,
+        operatorId: id,
+        event: ENUM_LOG.EVENT.LOG_OUT,
+      });
       await this.RedisService.del(key);
       return true;
     }

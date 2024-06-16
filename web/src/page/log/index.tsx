@@ -1,3 +1,4 @@
+import Expand from "./Expand";
 import { useRequest } from "ahooks";
 import { getLogs } from "@/api/log";
 import { Select, Table } from "antd";
@@ -32,7 +33,7 @@ const Log = () => {
       render: (key: TypeLog.DTO["event"]) => CONSTANT_LOG.EVENT.OBJ[key]?.name,
     },
     { title: "操作人", dataIndex: ["operator", "name"] },
-    { title: "描述", dataIndex: "desc", ellipsis: true },
+    { title: "快照", dataIndex: "desc", ellipsis: true },
     { title: "操作时间", dataIndex: "createTime", render: toTime },
   ];
 
@@ -63,7 +64,7 @@ const Log = () => {
           rowKey={DB_PRIMARY_KEY}
           scroll={{ y: height - 285 }}
           expandable={{
-            expandedRowRender: (row) => row.desc,
+            expandedRowRender: (row) => <Expand>{row.desc}</Expand>,
           }}
         />
       </PagedQuery>

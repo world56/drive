@@ -47,7 +47,7 @@ const Favorite = () => {
       key: DB_PRIMARY_KEY,
       render: (row: TypeResource.DTO) => (
         <div className={styles.icon}>
-          <ResourceIcon width={30} {...row} />
+          <ResourceIcon width={30} height={30} {...row} />
           <span>{row.name}</span>
         </div>
       ),
@@ -121,6 +121,7 @@ const Favorite = () => {
 
   return (
     <Table
+      virtual
       loading={loading}
       columns={columns}
       pagination={false}

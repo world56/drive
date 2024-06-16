@@ -34,7 +34,7 @@ model User {
 model Log {
   id         Int      @id @default(autoincrement())
   event      String
-  desc       String?  @db.VarChar(50)
+  desc       String?  @db.Text
   operatorId String   @map("operator_id")
   createTime DateTime @default(now()) @map("create_time")
   operator   User     @relation(fields: [operatorId], references: [id])

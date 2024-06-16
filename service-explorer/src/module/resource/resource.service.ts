@@ -13,11 +13,11 @@ import { DeleteResourcesDTO } from './dto/delete-resources.dto';
 import { FindResourcesAllDTO } from './dto/find-resources-all.dto';
 import { FindResourcesListDTO } from './dto/find-resources-list.dto';
 
+import { ENUM_LOG } from '@/enum/log';
 import { ENUM_RESOURCE } from '@/enum/explorer';
 
 import type { Resource } from '@prisma/client';
 import type { TypeFileWriteParam } from '@/common/file/file.service';
-import { ENUM_LOG } from '@/enum/log';
 
 export interface TypeUploadChunkInfo extends TypeFileWriteParam {
   creatorId: Resource['creatorId'];
@@ -127,8 +127,8 @@ export class ResourceService {
     };
   }
 
-  createFolder(body: InsertResourceDTO, creatorId: string) {
-    return this.PrismaService.resource.create({
+  async createFolder(body: InsertResourceDTO, creatorId: string) {
+    const res = await this.PrismaService.resource.create({
       data: {
         ...body,
         creatorId,
@@ -136,19 +136,41 @@ export class ResourceService {
         type: ENUM_RESOURCE.TYPE.FOLDER,
       },
     });
+    this.GrpcService.writeLog({
+      desc: res,
+      operatorId: res.creatorId,
+      event: ENUM_LOG.EVENT.RESOURCE_MKDIR_FOLDER,
+    });
+    return res;
   }
 
-  move(body: MoveResourcesDTO) {
+  async move(body: MoveResourcesDTO, operatorId: string) {
     const parentId = body.parentId ? body.parentId : null;
     const ids = body.ids.filter((id) => id !== body.parentId);
-    return Promise.all(
+    const desc = await Promise.all(
       ids.map((id) =>
         this.PrismaService.resource.update({
           where: { id },
           data: { parentId },
+          select: {
+            id: true,
+            path: true,
+            name: true,
+            type: true,
+            suffix: true,
+            parentId: true,
+            creatorId: true,
+            fullName: true,
+          },
         }),
       ),
     );
+    this.GrpcService.writeLog({
+      desc,
+      operatorId,
+      event: ENUM_LOG.EVENT.RESOURCE_UPDATE,
+    });
+    return true;
   }
 
   async update(body: ResourceDTO, operatorId: string) {
@@ -164,16 +186,13 @@ export class ResourceService {
     });
     data.remark = data.remark ? data.remark : null;
     data.parentId = data.parentId ? data.parentId : null;
-    await this.PrismaService.resource.update({
+    const desc = await this.PrismaService.resource.update({
       where: { id },
-      select: { id: true },
       data: { ...data, fullName: `${data.name}.${target.suffix}` },
     });
-    console.log('@-data',target);
-    
     this.GrpcService.writeLog({
+      desc,
       operatorId,
-      desc: JSON.stringify(target),
       event: ENUM_LOG.EVENT.RESOURCE_UPDATE,
     });
     return true;
@@ -192,13 +211,18 @@ export class ResourceService {
         data: { ...file, fullName: name, creatorId, parentId },
       });
       const paths = await this.findPaths(res);
+      this.GrpcService.writeLog({
+        operatorId: res.creatorId,
+        desc: res,
+        event: ENUM_LOG.EVENT.RESOURCE_UPLOAD,
+      });
       return { ...res, paths };
     } else {
       return false;
     }
   }
 
-  async delete({ ids }: DeleteResourcesDTO) {
+  async delete({ ids }: DeleteResourcesDTO, operatorId: string) {
     if (ids.length > 1) {
       const explorers = await this.PrismaService.resource.findMany({
         where: { id: { in: ids } },
@@ -208,7 +232,13 @@ export class ResourceService {
       await this.PrismaService.resource.deleteMany({
         where: { id: { in: delExplorers.map((v) => v.id) } },
       });
-      return await this.FileService.delete(delExplorers.map((v) => v.path));
+      await this.FileService.delete(delExplorers.map((v) => v.path));
+      this.GrpcService.writeLog({
+        desc: delExplorers.map(({ children, ...v }) => v),
+        operatorId,
+        event: ENUM_LOG.EVENT.RESOURCE_DELETE,
+      });
+      return true;
     } else {
       const [id] = ids;
       const target = await this.PrismaService.resource.findUnique({
@@ -218,13 +248,19 @@ export class ResourceService {
       if (target.children.length) {
         throw new ConflictException('该文件夹下存在资源，无法删除');
       }
-      await this.PrismaService.resource.delete({ where: { id } });
-      return await this.FileService.delete([target.path]);
+      const desc = await this.PrismaService.resource.delete({ where: { id } });
+      await this.FileService.delete([target.path]);
+      this.GrpcService.writeLog({
+        desc,
+        operatorId,
+        event: ENUM_LOG.EVENT.RESOURCE_DELETE,
+      });
+      return true;
     }
   }
 
-  async download(id: string) {
-    const [{ name, url, suffix }] = await Promise.all([
+  async download(id: string, operatorId: string) {
+    const [{ name, url, suffix }, desc] = await Promise.all([
       this.PrismaService.resource.findUnique({
         where: { id },
         select: { name: true, url: true, suffix: true },
@@ -234,6 +270,11 @@ export class ResourceService {
         data: { count: { increment: 1 } },
       }),
     ]);
+    this.GrpcService.writeLog({
+      desc,
+      operatorId,
+      event: ENUM_LOG.EVENT.RESOURCE_DOWNLOAD,
+    });
     return { path: url.split('/').at(-1), name: `${name}.${suffix}` };
   }
 
@@ -256,15 +297,10 @@ export class ResourceService {
           if (target?.id) {
             id = target.id;
           } else {
-            const now = await this.PrismaService.resource.create({
-              data: {
-                name,
-                creatorId,
-                parentId: id,
-                fullName: name,
-                type: ENUM_RESOURCE.TYPE.FOLDER,
-              },
-            });
+            const now = await this.createFolder(
+              { name, parentId: id },
+              creatorId,
+            );
             id = now.id;
           }
         }

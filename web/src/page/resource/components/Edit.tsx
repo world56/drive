@@ -98,7 +98,12 @@ const Edit: React.FC<TypeEditResourceProps> = ({
         </Form.Item>
 
         <Form.Item name="remark" label="备注">
-          <Input.TextArea placeholder="请输入备注" rows={3} allowClear />
+          <Input.TextArea
+            placeholder="请输入备注"
+            rows={3}
+            allowClear
+            maxLength={100}
+          />
         </Form.Item>
       </Form>
     </Modal>

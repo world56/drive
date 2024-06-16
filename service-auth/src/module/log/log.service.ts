@@ -17,13 +17,15 @@ export class LogService {
         take,
         skip,
         where,
+        orderBy: { createTime: 'desc' },
         include: { operator: { select: { id: true, name: true } } },
       }),
     ]);
     return { count, list };
   }
 
-  async write(data: Pick<Log, 'desc' | 'event' | 'operatorId'>) {
+  async write(data: Pick<Log, 'event' | 'operatorId'> & { desc: any }) {
+    data.desc = JSON.stringify(data.desc);
     return await this.PrismaService.log.create({ data });
   }
 }

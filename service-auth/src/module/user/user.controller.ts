@@ -50,14 +50,20 @@ export class UserController {
     description: '只有管理员可以新增用户',
   })
   @Post('insert')
-  insert(@Body(DecryptPasswordPipe) body: UserInsertDTO) {
-    return this.UserService.insert(body);
+  insert(
+    @CurrentUser('id') currentUserId: string,
+    @Body(DecryptPasswordPipe) body: UserInsertDTO,
+  ) {
+    return this.UserService.insert(body, currentUserId);
   }
 
   @ApiOperation({ summary: '编辑用户' })
   @Put('update')
-  update(@Body() body: UserUpdateDTO) {
-    return this.UserService.update(body);
+  update(
+    @CurrentUser('id') currentUserId: string,
+    @Body() body: UserUpdateDTO,
+  ) {
+    return this.UserService.update(body, currentUserId);
   }
 
   @ApiOperation({
@@ -67,8 +73,11 @@ export class UserController {
   @ApiOkResponse({ type: Boolean })
   @ApiBody({ type: PrimaryKeyStringDTO })
   @Put('status')
-  changeUserStatus(@Body('id') id: string) {
-    return this.UserService.changeUserStatus(id);
+  changeUserStatus(
+    @CurrentUser('id') currentUserId: string,
+    @Body('id') id: string,
+  ) {
+    return this.UserService.changeUserStatus(id, currentUserId);
   }
 
   @ApiOperation({ summary: '修改用户密码' })

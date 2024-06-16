@@ -93,8 +93,8 @@ export class ResourceController {
     summary: '移动资源位置',
   })
   @Put('move')
-  move(@Body() body: MoveResourcesDTO) {
-    return this.ResourceService.move(body);
+  move(@Body() body: MoveResourcesDTO, @CurrentUser('id') id: string) {
+    return this.ResourceService.move(body,id);
   }
 
   @ApiOperation({
@@ -102,8 +102,8 @@ export class ResourceController {
     description: '若文件夹下有资源，则不能删除',
   })
   @Delete('delete')
-  delete(@Body() body: DeleteResourcesDTO) {
-    return this.ResourceService.delete(body);
+  delete(@Body() body: DeleteResourcesDTO, @CurrentUser('id') id: string) {
+    return this.ResourceService.delete(body, id);
   }
 
   @ApiOperation({
@@ -135,9 +135,10 @@ export class ResourceController {
   @Header('Content-Disposition', 'attachment')
   async download(
     @Query('id') id: string,
+    @CurrentUser('id') operatorId: string,
     @Res() res: FastifyReply & { download: Function },
   ) {
-    const { path, name } = await this.ResourceService.download(id);
+    const { path, name } = await this.ResourceService.download(id, operatorId);
     res.download(path, name, { cacheControl: false });
   }
 }

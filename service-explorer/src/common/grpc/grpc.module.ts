@@ -11,6 +11,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
         transport: Transport.GRPC,
         options: {
           package: 'auth',
+          maxMetadataSize: 10240,
           protoPath: join(__dirname, '../../../../proto/auth.proto'),
         },
       },
@@ -20,4 +21,3 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
   exports: [GrpcService],
 })
 export class GrpcModule {}
-

@@ -20,21 +20,13 @@ export namespace ENUM_LOG {
      */
     USER_UPDATE = "USER_UPDATE",
     /**
-     * @param USER_FREEZE 冻结用户
+     * @param USER_STATUS 冻结用户
      */
-    USER_FREEZE = "USER_FREEZE",
-    /**
-     * @param USER_ACTIVATE 激活用户
-     */
-    USER_ACTIVATE = "USER_ACTIVATE",
+    USER_STATUS = "USER_STATUS",
     /**
      * @param USER_ACTIVATE 用户修改自己密码
      */
     USER_PWD_UPDATE = "USER_PWD_UPDATE",
-    /**
-     * @param ADMIN_UPDATE_USER_PWD 管理员修改用户密码
-     */
-    ADMIN_UPDATE_USER_PWD = "ADMIN_UPDATE_USER_PWD",
     /**
      * @param RESOURCE_UPLOAD 上传资源
      */
@@ -49,11 +41,11 @@ export namespace ENUM_LOG {
     RESOURCE_MKDIR_FOLDER = "RESOURCE_MKDIR_FOLDER",
     /**
      * @param RESOURCE_DELETE 删除资源
-     * @description 文件、问佳佳
+     * @description 文件、文件夹
      */
     RESOURCE_DELETE = "RESOURCE_DELETE",
     /**
-     * @param RESOURCE_UPDATE 编辑资源信息
+     * @param RESOURCE_UPDATE 编辑资源
      */
     RESOURCE_UPDATE = "RESOURCE_UPDATE",
   }

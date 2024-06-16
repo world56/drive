@@ -14,7 +14,7 @@ namespace TypeGRPC {
   export interface Log {
     writeLog(data: {
       event: string;
-      desc: string;
+      desc: any;
       operatorId: string;
     }): Observable<void>;
   }
@@ -39,6 +39,7 @@ export class GrpcService implements OnModuleInit {
   }
 
   writeLog(data: Parameters<TypeGRPC.Log['writeLog']>[0]) {
+    data.desc = JSON.stringify(data.desc);
     return firstValueFrom(this.AuthLogRPC.writeLog(data));
   }
 }

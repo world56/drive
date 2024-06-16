@@ -9,6 +9,7 @@ yarn-error.log*
 lerna-debug.log*
 
 dist/
+.vscode/
 node_modules/
 /service-explorer/resource
 
