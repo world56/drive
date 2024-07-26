@@ -29,3 +29,8 @@ export const API_PROXY_EXPLORER_URL = `/api/explorer/`;
  * @name API_PROXY_FAVORITE_URL API 资源收藏管理
  */
 export const API_PROXY_FAVORITE_URL = `/api/favorite/`;
+
+/**
+ * @name API_PROXY_RECYCLE_URL API 回收站
+ */
+export const API_PROXY_RECYCLE_URL = `/api/recovery/`;

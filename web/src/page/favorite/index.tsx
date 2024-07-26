@@ -6,7 +6,7 @@ import { useWindowSize } from "@/hooks";
 import styles from "./index.module.sass";
 import { Button, Input, Radio, Table } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
-import ResourceIcon from "@/components/Resource/Icon";
+import ResourceName from "@/components/Resource/Name";
 import ResourcesSelect from "@/components/Resource/Select";
 import { getFavorites, removeFavorite } from "@/api/favorite";
 
@@ -45,12 +45,7 @@ const Favorite = () => {
     {
       title: "资源名称",
       key: DB_PRIMARY_KEY,
-      render: (row: TypeResource.DTO) => (
-        <div className={styles.icon}>
-          <ResourceIcon width={30} height={30} {...row} />
-          <span>{row.name}</span>
-        </div>
-      ),
+      render: (row: TypeResource.DTO) => <ResourceName {...row} />,
       filterIcon: () => <SearchOutlined />,
       filterDropdown: () => (
         <Input
@@ -75,6 +70,15 @@ const Favorite = () => {
         CONSTANT_RESOURCE.TYPE.OBJ[type].name,
     },
     {
+      title: "大小（数量）",
+      id: DB_PRIMARY_KEY,
+      width: 200,
+      render: ({ type, size }: TypeResource.DTO) =>
+        type === ENUM_RESOURCE.TYPE.FOLDER
+          ? `${size} 个`
+          : filesize(size).toString(),
+    },
+    {
       title: "收藏时间",
       width: 200,
       dataIndex: "createTime",
@@ -92,15 +96,6 @@ const Favorite = () => {
           ))}
         </Radio.Group>
       ),
-    },
-    {
-      title: "大小（数量）",
-      id: DB_PRIMARY_KEY,
-      width: 200,
-      render: ({ type, size }: TypeResource.DTO) =>
-        type === ENUM_RESOURCE.TYPE.FOLDER
-          ? `${size} 个`
-          : filesize(size).toString(),
     },
     {
       title: "操作",

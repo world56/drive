@@ -35,14 +35,16 @@ const User = () => {
   const pagination = usePageTurning();
   const { currentPage, pageSize } = pagination;
 
-  const { data, loading, run } = useRequest(() =>
-    getUsers({
-      pageSize,
-      currentPage,
-      name: name.value,
-      status: status.value,
-      account: account.value,
-    }),
+  const { data, loading, run } = useRequest(
+    () =>
+      getUsers({
+        pageSize,
+        currentPage,
+        name: name.value,
+        status: status.value,
+        account: account.value,
+      }),
+    { refreshDeps: [pageSize, currentPage] },
   );
 
   const columns: ColumnsType<TypeUser.DTO> = [

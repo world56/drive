@@ -65,6 +65,7 @@ const Resource = () => {
         return resource.foldersObj[id!] && toFolder(id);
       case ENUM_RESOURCE.MENU.DELETE:
         await deleteResources({ ids: [id!] });
+        actions.getFolders();
         return run();
       case ENUM_RESOURCE.MENU.EDIT:
         return setEdit({ open: true, id });

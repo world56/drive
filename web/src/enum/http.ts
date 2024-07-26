@@ -3,6 +3,7 @@ export namespace ENUM_HTTP {
     AUTH = "auth",
     EXPLORER = "explorer",
     FAVORITE = "favorite",
+    RECOVERY = "recovery",
   }
 
   export const enum REQUEST_MODE {

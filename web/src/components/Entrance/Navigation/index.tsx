@@ -27,7 +27,7 @@ const Navigation = () => {
           key={v.title}
           className={pathname === v.path ? styles.select : ""}
         >
-          {v.icon}
+          <v.icon />
           <p>{v.title}</p>
         </Link>
       ))}

@@ -3,6 +3,7 @@ import zhCN from "antd/locale/zh_CN";
 import { DB_PRIMARY_KEY } from "./db";
 
 import type { ConfigProviderProps } from "antd/es/config-provider";
+import React from "react";
 
 /**
  * @name CONFIG_ANTD antd 默认配置

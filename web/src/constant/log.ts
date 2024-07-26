@@ -12,8 +12,10 @@ export namespace CONSTANT_LOG {
     { id: ENUM_LOG.EVENT.USER_PWD_UPDATE, name: "修改登录密码" },
     { id: ENUM_LOG.EVENT.RESOURCE_UPLOAD, name: "上传资源" },
     { id: ENUM_LOG.EVENT.RESOURCE_DOWNLOAD, name: "下载资源" },
-    { id: ENUM_LOG.EVENT.RESOURCE_MKDIR_FOLDER, name: "创建文件夹" },
-    { id: ENUM_LOG.EVENT.RESOURCE_DELETE, name: "删除资源" },
     { id: ENUM_LOG.EVENT.RESOURCE_UPDATE, name: "编辑资源信息" },
+    { id: ENUM_LOG.EVENT.RESOURCE_MKDIR_FOLDER, name: "创建文件夹" },
+    { id: ENUM_LOG.EVENT.RESOURCE_TO_RECYCLE, name: "资源放入回收站" },
+    { id: ENUM_LOG.EVENT.RECYCLE_BIN_RECOVERY, name: "恢复回收站资源" },
+    { id: ENUM_LOG.EVENT.RECYCLE_BIN_DELETE, name: "删除回收站资源" },
   ]);
 }

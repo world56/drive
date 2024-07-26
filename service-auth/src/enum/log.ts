@@ -40,13 +40,21 @@ export namespace ENUM_LOG {
      */
     RESOURCE_MKDIR_FOLDER = "RESOURCE_MKDIR_FOLDER",
     /**
-     * @param RESOURCE_DELETE 删除资源
+     * @param RESOURCE_DELETE 将资源移动至“回收站”
      * @description 文件、文件夹
      */
-    RESOURCE_DELETE = "RESOURCE_DELETE",
+    RESOURCE_TO_RECYCLE = "RESOURCE_TO_RECYCLE",
     /**
      * @param RESOURCE_UPDATE 编辑资源
      */
     RESOURCE_UPDATE = "RESOURCE_UPDATE",
+    /**
+     * @param RECYCLE_BIN_DELETE 删除回收站资源
+     */
+    RECYCLE_BIN_DELETE = "RECYCLE_BIN_DELETE",
+    /**
+     * @param RECYCLE_BIN_RECOVERY 恢复回收站资源
+     */
+    RECYCLE_BIN_RECOVERY = "RECYCLE_BIN_RECOVERY",
   }
 }

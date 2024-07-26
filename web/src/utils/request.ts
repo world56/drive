@@ -8,7 +8,9 @@ import {
   TOKEN_KEY,
   REQUEST_TIMEOUT,
   API_PROXY_AUTH_URL,
+  API_PROXY_RECYCLE_URL,
   API_PROXY_EXPLORER_URL,
+  API_PROXY_FAVORITE_URL,
 } from "@/config/request";
 import { ENUM_HTTP } from "@/enum/http";
 
@@ -45,7 +47,10 @@ request.interceptors.request.use(
         config.url = API_PROXY_EXPLORER_URL + url;
         break;
       case ENUM_HTTP.PROXY.FAVORITE:
-        config.url = API_PROXY_EXPLORER_URL + url;
+        config.url = API_PROXY_FAVORITE_URL + url;
+        break;
+      case ENUM_HTTP.PROXY.RECOVERY:
+        config.url = API_PROXY_RECYCLE_URL + url;
         break;
       default:
         break;
