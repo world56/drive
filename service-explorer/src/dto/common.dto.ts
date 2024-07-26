@@ -8,6 +8,13 @@ export class PrimaryKeyStringDTO {
   id: string;
 }
 
+export class PrimaryKeyIntDTO {
+  @ApiProperty({ description: '主键ID' })
+  @Type(() => Number)
+  @IsInt()
+  id: number;
+}
+
 export class PaginationDTO extends PartialType(PrimaryKeyStringDTO) {
   @ApiProperty({
     default: 1,

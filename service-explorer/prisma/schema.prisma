@@ -25,28 +25,47 @@ model Resource {
   parentId   String?    @map("parent_id")
   remark     String?
   count      Int        @default(0)
+  relationId Int?       @map("relation_id")
   createTime DateTime   @default(now()) @map("create_time")
   creatorId  String     @map("creator_id")
+  remove     Boolean    @default(false)
   children   Resource[] @relation("rel_resource")
   parent     Resource?  @relation("rel_resource", fields: [parentId], references: [id])
+  recycle    Recycle?   @relation(name: "rel_recycle")
+  relation   Recycle?   @relation(name: "rel_relations", fields: [relationId], references: [id])
 
   @@index(path)
   @@index(size)
   @@index(type)
   @@index(parentId)
-  @@index([id, parentId])
   @@index(createTime)
+  @@index(relationId)
+  @@index([id, parentId])
   @@map("resource")
 }
 
 model Favorite {
-  id         String @id @default(cuid())
-  userId     String @map("user_id")
-  resourceId String @map("resource_id")
-  favoriteTime DateTime   @default(now()) @map("favorite_time")
+  id           String   @id @default(cuid())
+  userId       String   @map("user_id")
+  resourceId   String   @map("resource_id")
+  favoriteTime DateTime @default(now()) @map("favorite_time")
 
   @@unique([userId, resourceId])
   @@index(resourceId)
   @@index([userId, resourceId])
   @@map("favorite")
+}
+
+model Recycle {
+  id         Int        @id() @default(autoincrement())
+  operatorId String     @map("creator_id")
+  createTime DateTime   @default(now()) @map("create_time")
+  resourceId String     @unique @map("resource_id")
+  resource   Resource?  @relation(name: "rel_recycle", fields: [resourceId], references: [id])
+  relations  Resource[] @relation(name: "rel_relations")
+
+  @@index(operatorId)
+  @@index(resourceId)
+  @@index([resourceId, operatorId])
+  @@map("recycle")
 }

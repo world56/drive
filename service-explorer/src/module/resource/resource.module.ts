@@ -4,6 +4,7 @@ import { ResourceService } from './resource.service';
 import { GrpcModule } from '@/common/grpc/grpc.module';
 import { FileModule } from 'src/common/file/file.module';
 import { ResourceController } from './resource.controller';
+import { RecoveryModule } from '../recycle/recycle.module';
 import { RedisModule } from 'src/common/redis/redis.module';
 import { PrismaModule } from 'src/common/prisma/prisma.module';
 
@@ -17,6 +18,7 @@ import CONFIG_RESOURCE_PATH from 'src/config/resource-path.config';
     FileModule,
     RedisModule,
     PrismaModule,
+    RecoveryModule,
     ConfigModule.forFeature(CONFIG_RESOURCE_PATH),
   ],
   exports: [ResourceService],

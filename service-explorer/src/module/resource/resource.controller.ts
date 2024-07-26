@@ -94,12 +94,11 @@ export class ResourceController {
   })
   @Put('move')
   move(@Body() body: MoveResourcesDTO, @CurrentUser('id') id: string) {
-    return this.ResourceService.move(body,id);
+    return this.ResourceService.move(body, id);
   }
 
   @ApiOperation({
-    summary: '删除资源',
-    description: '若文件夹下有资源，则不能删除',
+    summary: '将资源放入回收站',
   })
   @Delete('delete')
   delete(@Body() body: DeleteResourcesDTO, @CurrentUser('id') id: string) {

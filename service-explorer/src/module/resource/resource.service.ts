@@ -2,6 +2,7 @@ import { Prisma } from '@prisma/client';
 import * as AsyncLock from 'async-lock';
 import { GrpcService } from '@/common/grpc/grpc.service';
 import { FileService } from '@/common/file/file.service';
+import { RecycleService } from '../recycle/recycle.service';
 import { RedisService } from '@/common/redis/redis.service';
 import { Injectable, ConflictException } from '@nestjs/common';
 import { PrismaService } from 'src/common/prisma/prisma.service';
@@ -35,6 +36,7 @@ export class ResourceService {
     private readonly FileService: FileService,
     private readonly RedisService: RedisService,
     private readonly PrismaService: PrismaService,
+    private readonly RecycleService: RecycleService,
   ) {}
 
   private readonly lock = new AsyncLock();
@@ -51,6 +53,7 @@ export class ResourceService {
         createTime: true,
       },
       where: {
+        remove: { not: true },
         type: { in: query.type },
         creatorId: { in: query.creators },
         fullName: { contains: query.name },
@@ -68,8 +71,8 @@ export class ResourceService {
 
   findFolders() {
     return this.PrismaService.resource.findMany({
-      where: { type: ENUM_RESOURCE.TYPE.FOLDER },
       orderBy: { createTime: 'asc' },
+      where: { remove: { not: true }, type: ENUM_RESOURCE.TYPE.FOLDER },
     });
   }
 
@@ -100,6 +103,8 @@ export class ResourceService {
       LEFT OUTER JOIN 
         favorite AS f ON f.\`user_id\` = ${userId} AND f.resource_id = r.id
       WHERE
+        r.remove IS FALSE
+        AND
         ${Prisma.raw(id ? `parent_id = "${id}"` : `parent_id IS NULL`)}
       ORDER BY 
         ${Prisma.raw(
@@ -212,8 +217,8 @@ export class ResourceService {
       });
       const paths = await this.findPaths(res);
       this.GrpcService.writeLog({
-        operatorId: res.creatorId,
         desc: res,
+        operatorId: res.creatorId,
         event: ENUM_LOG.EVENT.RESOURCE_UPLOAD,
       });
       return { ...res, paths };
@@ -223,40 +228,70 @@ export class ResourceService {
   }
 
   async delete({ ids }: DeleteResourcesDTO, operatorId: string) {
-    if (ids.length > 1) {
-      const explorers = await this.PrismaService.resource.findMany({
-        where: { id: { in: ids } },
-        include: { children: true },
-      });
-      const delExplorers = explorers.filter((v) => !v.children?.length);
-      await this.PrismaService.resource.deleteMany({
-        where: { id: { in: delExplorers.map((v) => v.id) } },
-      });
-      await this.FileService.delete(delExplorers.map((v) => v.path));
-      this.GrpcService.writeLog({
-        desc: delExplorers.map(({ children, ...v }) => v),
-        operatorId,
-        event: ENUM_LOG.EVENT.RESOURCE_DELETE,
-      });
-      return true;
-    } else {
-      const [id] = ids;
-      const target = await this.PrismaService.resource.findUnique({
-        where: { id },
-        include: { children: true },
-      });
-      if (target.children.length) {
-        throw new ConflictException('该文件夹下存在资源，无法删除');
-      }
-      const desc = await this.PrismaService.resource.delete({ where: { id } });
-      await this.FileService.delete([target.path]);
+    return await this.PrismaService.$transaction(async (prisma) => {
+      const results: Record<string, string[]> = Object.fromEntries(
+        await Promise.all(
+          ids.map(async (id) => [
+            id,
+            (await prisma.$queryRaw<{ id: string }[]>`
+            WITH RECURSIVE tables AS (
+              SELECT
+                id, parent_id, type, remove
+              FROM
+                resource
+              WHERE
+                id = ${id} AND remove = 0
+              UNION ALL
+              SELECT
+                r.id, r.parent_id, r.type, r.remove
+              FROM
+                resource AS r
+              INNER JOIN
+                tables AS t ON r.parent_id = t.id
+              WHERE
+                r.remove = 0
+                AND 
+                t.type = ${ENUM_RESOURCE.TYPE.FOLDER} 
+            )
+            SELECT id FROM tables;`
+            ).map((v) => v.id),
+          ]),
+        ),
+      );
+      const [desc] = await Promise.all([
+        prisma.resource.findMany({
+          where: { id: { in: ids } },
+          select: {
+            id: true,
+            type: true,
+            size: true,
+            path: true,
+            fullName: true,
+            parentId: true,
+            creatorId: true,
+          },
+        }),
+        prisma.resource.updateMany({
+          data: { remove: true },
+          where: { id: { in: Object.values(results).flat() } },
+        }),
+        ...ids.map((resourceId) =>
+          prisma.recycle.create({
+            data: {
+              resourceId,
+              operatorId,
+              relations: { connect: results[resourceId].map((id) => ({ id })) },
+            },
+          }),
+        ),
+      ]);
       this.GrpcService.writeLog({
         desc,
         operatorId,
-        event: ENUM_LOG.EVENT.RESOURCE_DELETE,
+        event: ENUM_LOG.EVENT.RESOURCE_TO_RECYCLE,
       });
       return true;
-    }
+    });
   }
 
   async download(id: string, operatorId: string) {

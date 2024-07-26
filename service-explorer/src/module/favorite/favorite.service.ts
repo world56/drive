@@ -25,7 +25,7 @@ export class FavoriteService {
         r.type,
         r.suffix,
         f.id AS favoriteId, 
-        r.full_name AS name,
+        r.full_name AS fullName,
         f.favorite_time AS createTime,
         CASE WHEN
           r.type = ${ENUM_RESOURCE.TYPE.FOLDER}

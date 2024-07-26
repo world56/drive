@@ -91,8 +91,10 @@ export class FileService {
   async delete(paths: string[]) {
     try {
       paths?.forEach((p) => {
-        const path = `${this.RESOURCE_PATH}/${p}`;
-        stat(path, (e, s) => s?.isFile() && unlink(path, () => {}));
+        if (p) {
+          const path = `${this.RESOURCE_PATH}/${p}`;
+          stat(path, (e, s) => s?.isFile() && unlink(path, () => {}));
+        }
       });
       return true;
     } catch (error) {
