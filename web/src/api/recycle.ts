@@ -34,7 +34,7 @@ export function recoverRecycles(data: TypeRecycle.ReqRecover) {
     method: ENUM_HTTP.REQUEST_MODE.POST,
     proxy: ENUM_HTTP.PROXY.RECOVERY,
     data,
-    message: "操作成功，若资源归属文件夹被删除，则恢复至根目录",
+    message: "操作成功，若资源归属文件夹被删除，则恢复至主目录",
   });
 }
 

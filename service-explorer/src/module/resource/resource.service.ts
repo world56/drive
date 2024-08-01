@@ -1,10 +1,10 @@
 import { Prisma } from '@prisma/client';
 import * as AsyncLock from 'async-lock';
+import { Injectable } from '@nestjs/common';
 import { GrpcService } from '@/common/grpc/grpc.service';
 import { FileService } from '@/common/file/file.service';
 import { RecycleService } from '../recycle/recycle.service';
 import { RedisService } from '@/common/redis/redis.service';
-import { Injectable, ConflictException } from '@nestjs/common';
 import { PrismaService } from 'src/common/prisma/prisma.service';
 
 import { ResourceDTO } from '@/dto/resource.dto';
@@ -173,7 +173,7 @@ export class ResourceService {
     this.GrpcService.writeLog({
       desc,
       operatorId,
-      event: ENUM_LOG.EVENT.RESOURCE_UPDATE,
+      event: ENUM_LOG.EVENT.RESOURCE_MOVE,
     });
     return true;
   }
@@ -233,7 +233,8 @@ export class ResourceService {
         await Promise.all(
           ids.map(async (id) => [
             id,
-            (await prisma.$queryRaw<{ id: string }[]>`
+            (
+              await prisma.$queryRaw<{ id: string }[]>`
             WITH RECURSIVE tables AS (
               SELECT
                 id, parent_id, type, remove

@@ -48,7 +48,7 @@ const FolderSelect: React.FC<TypeFolderTreeProps> = ({
       treeLine
       allowClear
       treeDefaultExpandAll
-      placeholder="请选择所属模块（为空则展示在根目录）"
+      placeholder="请选择所属模块（为空则展示在主目录）"
       {...treeSelectProps}
     >
       {formatFolderTree(resource.folderTree)}

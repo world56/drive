@@ -6,6 +6,7 @@ import Folder from "./components/Folder";
 import styles from "./index.module.sass";
 import { useEffect, useState } from "react";
 import Attributes from "./components/Attributes";
+import MultipleChoices from "./components/MultipleChoices";
 import { createUpload, downloadFile } from "@/utils/resource";
 import { getResources, deleteResources } from "@/api/resource";
 import { removeFavorite, updateFavorite } from "@/api/favorite";
@@ -39,12 +40,9 @@ const Resource = () => {
     { refreshDeps: [resource.path, resource.sort] },
   );
 
-  useEventListener(ENUM_COMMON.CUSTOM_EVENTS.REFRESH_RESOURCES, run);
-
-  const onMenu: TypeFilesProps["onMenu"] = async (type, id) => {
+  const onMenu: TypeFilesProps["onMenu"] = async (type, ids = []) => {
+    const [id] = ids;
     switch (type) {
-      case ENUM_RESOURCE.MENU.MKDIR:
-        return setEdit({ open: true, parentId: id });
       case ENUM_RESOURCE.MENU.REFRESH:
         return run();
       case ENUM_RESOURCE.MENU.UPLOAD_FILE:
@@ -61,25 +59,30 @@ const Resource = () => {
       case ENUM_RESOURCE.MENU.SORT_ASC:
       case ENUM_RESOURCE.MENU.SORT_DESC:
         return actions.setSort({ ...resource.sort, order: type });
+      case ENUM_RESOURCE.MENU.MKDIR:
+        return setEdit({ open: true, parentId: id });
       case ENUM_RESOURCE.MENU.OPEN:
         return resource.foldersObj[id!] && toFolder(id);
       case ENUM_RESOURCE.MENU.DELETE:
-        await deleteResources({ ids: [id!] });
+        await deleteResources({ ids });
         actions.getFolders();
+        actions.setSelect({});
         return run();
       case ENUM_RESOURCE.MENU.EDIT:
         return setEdit({ open: true, id });
       case ENUM_RESOURCE.MENU.MOVE:
-        return setMove([id!]);
+        setMove(ids);
+        return actions.setSelect({});
       case ENUM_RESOURCE.MENU.DOWNLOAD:
-        return downloadFile(id);
+        ids.forEach(downloadFile);
+        return actions.setSelect({});
       case ENUM_RESOURCE.MENU.ATTRIBUTES:
         return setDetailsID(id);
       case ENUM_RESOURCE.MENU.FAVORITE_ENABLE:
-        await updateFavorite({ ids: [id!] });
+        await updateFavorite({ ids });
         return run();
       case ENUM_RESOURCE.MENU.FAVORITE_DISABLE:
-        await removeFavorite({ ids: [id!] });
+        await removeFavorite({ ids });
         return run();
       default:
         return;
@@ -106,6 +109,8 @@ const Resource = () => {
     actions.getFolders();
   }, [actions]);
 
+  useEventListener(ENUM_COMMON.CUSTOM_EVENTS.REFRESH_RESOURCES, run);
+
   return (
     <div className={styles.layout}>
       <Folder />
@@ -113,6 +118,7 @@ const Resource = () => {
       <Attributes id={detailsID} onClose={onCloseDetails} />
       <Move ids={move} onClose={onCloseMove} />
       <Edit {...edit} onClose={onCloseEdit} />
+      <MultipleChoices data={data} onMenu={onMenu} />
     </div>
   );
 };

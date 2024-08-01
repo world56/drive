@@ -1,7 +1,7 @@
 import Container from "./Container";
 import Thumbnail from "./Thumbnail";
-import { useToFolder } from "@/hooks";
 import { getResources } from "@/api/resource";
+import { useStore, useToFolder } from "@/hooks";
 
 import { ENUM_RESOURCE } from "@/enum/resource";
 
@@ -18,10 +18,12 @@ export interface TypeFilesProps
  * @name Files 文件列表
  */
 const Files: React.FC<TypeFilesProps> = ({ data, onMenu, loading }) => {
+  const { selects } = useStore("resource");
   const toFolder = useToFolder();
 
   // 预览、打开
   const onPreview: TypeThumbnailProps["onPreview"] = (type, id) => {
+    if (Object.keys(selects).length) return;
     switch (type) {
       case ENUM_RESOURCE.TYPE.FOLDER:
         return toFolder(id);

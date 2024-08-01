@@ -23,12 +23,15 @@ interface TypeResourceReducersProps {
    * @param order 排序方式
    */
   sort: Pick<TypeResource.ReqResources, "order" | "type">;
+  /** @param selects 多选选择的key */
+  selects: Record<TypeResource.DTO["id"], boolean>;
 }
 
 const DEFAULT_RESOURCE: TypeResourceReducersProps = {
   folders: [],
   folderTree: [],
   foldersObj: {},
+  selects: {},
   sort: {
     order: ENUM_RESOURCE.MENU.SORT_DESC,
     type: ENUM_RESOURCE.MENU.SORT_CREATE_TIME,
@@ -61,6 +64,12 @@ const resourceSlice = createSlice({
       action: PayloadAction<TypeResourceReducersProps["sort"], string>,
     ) {
       return { ...state, sort: action.payload };
+    },
+    setSelect(
+      state,
+      action: PayloadAction<TypeResourceReducersProps["selects"], string>,
+    ) {
+      return { ...state, selects: action.payload };
     },
   },
 });

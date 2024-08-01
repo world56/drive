@@ -102,7 +102,8 @@ export namespace ENUM_RESOURCE {
     FAVORITE_ENABLE = "FAVORITE_ENABLE",
     /** @param FAVORITE 取消收藏资源 */
     FAVORITE_DISABLE = "FAVORITE_DISABLE",
-
+    /** @param MULTIPLE_CHOICES 资源多选 */
+    MULTIPLE_CHOICES = "MULTIPLE_CHOICES",
     /**
      * @param ATTRIBUTES 属性
      * @description 逻辑跟Mac、Windows查看逻辑差不多

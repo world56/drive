@@ -13,7 +13,12 @@ interface TypeEmptyPromptProps extends Pick<TypeThumbnailProps, "onMenu"> {}
  */
 const EmptyPrompt: React.FC<TypeEmptyPromptProps> = ({ onMenu }) => {
   const resource = useStore("resource");
-  const id = resource.path.at(-1);
+
+  function onOperate(type: Parameters<typeof onMenu>[0]) {
+    const id = resource.path.at(-1);
+    const ids = id ? [id] : [];
+    onMenu(type, ids);
+  }
 
   return (
     <Empty
@@ -23,23 +28,21 @@ const EmptyPrompt: React.FC<TypeEmptyPromptProps> = ({ onMenu }) => {
           <p>没有相关资源，请点击</p>
           <span
             className={styles.btn}
-            onClick={() => onMenu(ENUM_RESOURCE.MENU.UPLOAD_FILE, id)}
+            onClick={() => onOperate(ENUM_RESOURCE.MENU.UPLOAD_FILE)}
           >
             上传文件
           </span>
           <span>、</span>
           <span
             className={styles.btn}
-            onClick={() =>
-              onMenu(ENUM_RESOURCE.MENU.UPLOAD_FOLDER, id)
-            }
+            onClick={() => onOperate(ENUM_RESOURCE.MENU.UPLOAD_FOLDER)}
           >
             上传文件夹
           </span>
           <span>、</span>
           <span
             className={styles.btn}
-            onClick={() => onMenu(ENUM_RESOURCE.MENU.MKDIR, id)}
+            onClick={() => onOperate(ENUM_RESOURCE.MENU.MKDIR)}
           >
             创建文件夹
           </span>

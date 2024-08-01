@@ -52,11 +52,11 @@ export class FavoriteService {
 
   async insert({ ids }: FavoritesUpdateDTO, userId: string) {
     const res = await this.PrismaService.favorite.findMany({
-      where: { resourceId: { in: ids } },
+      where: { userId, resourceId: { in: ids } },
     });
     const INSERT = this.UtilsService.filterInsert(
       ids,
-      res.map((v) => v.id),
+      res.map((v) => v.resourceId),
     );
     if (INSERT.length) {
       await this.PrismaService.favorite.createMany({

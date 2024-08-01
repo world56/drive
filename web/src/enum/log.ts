@@ -49,6 +49,10 @@ export namespace ENUM_LOG {
      */
     RESOURCE_UPDATE = "RESOURCE_UPDATE",
     /**
+     * @param RESOURCE_MOVE 移动资源路径
+     */
+    RESOURCE_MOVE = "RESOURCE_MOVE",
+    /**
      * @param RECYCLE_BIN_DELETE 删除回收站资源
      */
     RECYCLE_BIN_DELETE = "RECYCLE_BIN_DELETE",

@@ -1,0 +1,35 @@
+.selectMenu
+  height: 30px
+  display: flex
+  position: fixed
+  padding: 7px 8px
+  transition: 0.2s
+  align-items: center
+  border-radius: 10px
+  left: calc(50% + 96px)
+  background: rgba(49, 49, 54,0.8)
+  border: 1px solid rgba(132, 133, 141 ,0.2)
+  z-index: 999999
+  overflow: visible
+  user-select: none
+  -webkit-box-shadow: 0 0 1px 1px rgb(28 28 32 / 5%), 0 8px 24px rgb(28 28 32 / 12%)
+  box-shadow: 0 0 1px 1px rgb(0 0 0 / 5%), 0 2px 8px rgb(28 28 32 / 6%), 0 16px 48px rgb(28 28 32 / 20%)
+
+  img
+    width: 20px !important
+    height: 20px !important
+    display: block !important
+
+  span
+    color: #fff
+    margin: 0 5px
+    font-size: 12px
+    padding: 5px
+    cursor: pointer
+    border-radius: 8px
+    &:hover
+      background: rgba(255,255,255,.1)
+    svg
+      font-size: 18px
+  :global(.anticon-delete):hover
+    color: #f56c6c

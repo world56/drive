@@ -13,6 +13,7 @@ export namespace CONSTANT_LOG {
     { id: ENUM_LOG.EVENT.RESOURCE_UPLOAD, name: "上传资源" },
     { id: ENUM_LOG.EVENT.RESOURCE_DOWNLOAD, name: "下载资源" },
     { id: ENUM_LOG.EVENT.RESOURCE_UPDATE, name: "编辑资源信息" },
+    { id: ENUM_LOG.EVENT.RESOURCE_MOVE, name: "移动资源路径" },
     { id: ENUM_LOG.EVENT.RESOURCE_MKDIR_FOLDER, name: "创建文件夹" },
     { id: ENUM_LOG.EVENT.RESOURCE_TO_RECYCLE, name: "资源放入回收站" },
     { id: ENUM_LOG.EVENT.RECYCLE_BIN_RECOVERY, name: "恢复回收站资源" },
