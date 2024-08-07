@@ -47,7 +47,7 @@ const MultipleChoices: React.FC<TypeMultipleChoicesProps> = ({
     () =>
       selectKeys.length
         ? selectKeys.filter(
-            (id) => obj[id].favorite === ENUM_RESOURCE.FAVORITE.ENABLE,
+            (id) => obj[id]?.favorite === ENUM_RESOURCE.FAVORITE.ENABLE,
           ).length === selectKeys.length
         : false,
     [selectKeys, obj],

@@ -335,8 +335,10 @@ const Container: React.FC<TypeFilesContainerProps> = ({
   const selectsLength = Object.keys(selects).length;
 
   useEffect(() => {
-    actions.setSelect({});
-  }, [path, actions]);
+    return () => {
+      actions.setSelect({});
+    };
+  }, []);
 
   return (
     <div className={styles.files} onContextMenu={onMenuOpen}>

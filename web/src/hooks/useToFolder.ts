@@ -34,6 +34,7 @@ export default function useToFolder<
    * @param id 目标文件夹ID 为空则查看主目录
    */
   function toFolder(id?: TypeResource.DTO["id"]) {
+    actions.setSelect({});
     if (id) {
       const path = getPath(id);
       actions.setPath(path);
