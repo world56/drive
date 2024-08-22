@@ -1,3 +1,5 @@
+import { isEmpty } from "@/utils";
+
 import ICON_DOC from "@/assets/file_doc.svg";
 import ICON_IMG from "@/assets/file_img.svg";
 import ICON_PDF from "@/assets/file_pdf.svg";
@@ -12,7 +14,7 @@ import ICON_VIDEO from "@/assets/file_video.svg";
 import ICON_PACKAGE from "@/assets/file_package.svg";
 
 import { ENUM_RESOURCE } from "@/enum/resource";
-import { RESOURCE_PREVIEW_PREFIX } from "@/config/resource";
+import { ICON_THRESHOLD, RESOURCE_PREVIEW_PREFIX } from "@/config/resource";
 
 import type { TypeResource } from "@/interface/resource";
 
