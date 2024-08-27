@@ -15,6 +15,7 @@
     "ahooks": "^3.7.10",
     "antd": "^5.15.1",
     "echarts": "^5.5.1",
+    "echarts-wordcloud": "^2.1.0",
     "filesize": "^10.1.0",
     "js-cookie": "^3.0.5",
     "jsencrypt": "^3.3.2",

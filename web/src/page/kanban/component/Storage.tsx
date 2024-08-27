@@ -30,7 +30,7 @@ const Storage = () => {
           type: "pie",
           padAngle: 1,
           label: { show: false },
-          center: ["50%", "60%"],
+          center: ["50%", "63%"],
           radius: ["100%", "70%"],
           endAngle: 360,
           startAngle: 180,
@@ -44,7 +44,7 @@ const Storage = () => {
   }, [charts]);
 
   return (
-    <Container width="100%" height={260} title="存储空间">
+    <Container height={280} title="存储空间">
       <div ref={ref} style={{ width: "100%", height: 230 }} />
       <div className={styles.storage}>
         <div>

@@ -1,12 +1,12 @@
 import { useRequest } from "ahooks";
 import { toTime } from "@/utils/format";
-import { DB_PRIMARY_KEY } from "@/config/db";
 import { SyncOutlined } from "@ant-design/icons";
 import ResourceName from "@/components/Resource/Name";
 import { Space, Table, FloatButton, Typography, Popconfirm } from "antd";
 import { getRecycles, deleteRecycles, recoverRecycles } from "@/api/recycle";
 
 // import { ENUM_COMMON } from "@/enum/common";
+import { DB_PRIMARY_KEY } from "@/config/db";
 import { CONSTANT_RESOURCE } from "@/constant/resource";
 
 import type { TableProps } from "antd";

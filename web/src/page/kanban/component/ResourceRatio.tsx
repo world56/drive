@@ -36,7 +36,7 @@ const ResourceRatio = () => {
           radius: ["90%", "70%"],
           center: ["62.5%", "50%"],
           avoidLabelOverlap: false,
-          itemStyle: { borderRadius: 10 },
+          itemStyle: { borderRadius: 5 },
           label: {
             show: false,
             position: "center",
@@ -62,7 +62,7 @@ const ResourceRatio = () => {
   }, [charts]);
 
   return (
-    <Container width="100%" title="资源占比">
+    <Container title="资源占比">
       <div ref={ref} style={{ width: "100%", height: 300 }} />
       <ul className={styles.ratio}>
         {CONSTANT_RESOURCE.TYPE.LIST.map((v) => (

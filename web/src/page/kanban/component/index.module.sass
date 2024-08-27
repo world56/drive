@@ -59,3 +59,14 @@
       margin-top: 0
     li:nth-last-child(1)
       margin-bottom: 0 !important
+
+.recently
+  width: 100%
+  display: flex
+  & > div:nth-child(1)
+    margin-right: 10px
+  .container
+    width: calc(50% - 27px)
+  :global(.ant-empty)
+    min-height: 380px
+    padding-top: 150px
