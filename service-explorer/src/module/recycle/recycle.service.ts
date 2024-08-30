@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { GrpcService } from '@/common/grpc/grpc.service';
 import { FileService } from '@/common/file/file.service';
 import { PrismaService } from '@/common/prisma/prisma.service';
+import { GrpcClientService } from '@/common/grpc-client/grpc-client.service';
 
 import { RecycleUpdateDTO } from './dto/recycle-update.dto';
 import { ENUM_LOG } from '@/enum/log';
@@ -10,8 +10,8 @@ import { ENUM_LOG } from '@/enum/log';
 export class RecycleService {
   constructor(
     private readonly FileService: FileService,
-    private readonly GrpcService: GrpcService,
     private readonly PrismaService: PrismaService,
+    private readonly GrpcClientService: GrpcClientService,
   ) {}
 
   async getList() {
@@ -23,7 +23,7 @@ export class RecycleService {
     let returns: Array<(typeof list)[0] & Record<'operator', object>> = [];
     for await (const v of list) {
       if (!operatorMap[v.operatorId]) {
-        operatorMap[v.operatorId] = await this.GrpcService.getUserInfo(
+        operatorMap[v.operatorId] = await this.GrpcClientService.getUserInfo(
           v.operatorId,
         );
       }
@@ -47,7 +47,7 @@ export class RecycleService {
           },
         }),
       ]);
-      this.GrpcService.writeLog({
+      this.GrpcClientService.writeLog({
         desc,
         operatorId,
         event: ENUM_LOG.EVENT.RECYCLE_BIN_RECOVERY,
@@ -88,7 +88,7 @@ export class RecycleService {
         prisma.resource.deleteMany({ where: { id: { in: resourceIds } } }),
       ]);
       this.FileService.delete(paths);
-      this.GrpcService.writeLog({
+      this.GrpcClientService.writeLog({
         desc,
         operatorId,
         event: ENUM_LOG.EVENT.RECYCLE_BIN_DELETE,

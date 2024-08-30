@@ -1,8 +1,10 @@
+import { join } from 'path';
 import { AppModule } from './app.module';
 import { NestFactory } from '@nestjs/core';
 import multipart from '@fastify/multipart';
 import { ConfigService } from '@nestjs/config';
 import { ValidationPipe } from '@nestjs/common';
+import { Transport } from '@nestjs/microservices';
 import { FastifyAdapter } from '@nestjs/platform-fastify';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
@@ -18,7 +20,15 @@ async function bootstrap() {
     AppModule,
     new FastifyAdapter(),
   );
-  app.register(multipart);
+  app.connectMicroservice({
+    name: 'GRPC_EXPLORER',
+    transport: Transport.GRPC,
+    options: {
+      package: 'explorer',
+      url: '0.0.0.0:9001',
+      protoPath: join(__dirname, '../../proto/explorer.proto'),
+    },
+  });
   app.enableCors();
   app.useStaticAssets({
     prefix: '/resource/',
@@ -32,7 +42,9 @@ async function bootstrap() {
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
-  await app.listen(process.env.PORT);
+  app.register(multipart);
+  app.listen(process.env.PORT);
+  app.startAllMicroservices();
 }
 
 bootstrap();

@@ -1,11 +1,11 @@
 import { Prisma } from '@prisma/client';
 import * as AsyncLock from 'async-lock';
 import { Injectable } from '@nestjs/common';
-import { GrpcService } from '@/common/grpc/grpc.service';
 import { FileService } from '@/common/file/file.service';
 import { RecycleService } from '../recycle/recycle.service';
 import { RedisService } from '@/common/redis/redis.service';
 import { PrismaService } from 'src/common/prisma/prisma.service';
+import { GrpcClientService } from '@/common/grpc-client/grpc-client.service';
 
 import { ResourceDTO } from '@/dto/resource.dto';
 import { MoveResourcesDTO } from './dto/move-resources.dto';
@@ -32,11 +32,11 @@ export interface TypeFindPaths extends Resource {
 @Injectable()
 export class ResourceService {
   public constructor(
-    private readonly GrpcService: GrpcService,
     private readonly FileService: FileService,
     private readonly RedisService: RedisService,
     private readonly PrismaService: PrismaService,
     private readonly RecycleService: RecycleService,
+    private readonly GrpcClientService: GrpcClientService,
   ) {}
 
   private readonly lock = new AsyncLock();
@@ -77,6 +77,7 @@ export class ResourceService {
   }
 
   findList({ id, type, order }: FindResourcesListDTO, userId: string) {
+    this.getCount();
     return this.PrismaService.$queryRaw`
       SELECT 
         r.id, 
@@ -121,7 +122,7 @@ export class ResourceService {
       }),
       this.findPaths({ id }),
     ]);
-    const creator = await this.GrpcService.getUserInfo(data.creatorId);
+    const creator = await this.GrpcClientService.getUserInfo(data.creatorId);
     const { _count, ...info } = data;
     const IS_FOLDER = data.type === ENUM_RESOURCE.TYPE.FOLDER;
     return {
@@ -141,7 +142,7 @@ export class ResourceService {
         type: ENUM_RESOURCE.TYPE.FOLDER,
       },
     });
-    this.GrpcService.writeLog({
+    this.GrpcClientService.writeLog({
       desc: res,
       operatorId: res.creatorId,
       event: ENUM_LOG.EVENT.RESOURCE_MKDIR_FOLDER,
@@ -170,7 +171,7 @@ export class ResourceService {
         }),
       ),
     );
-    this.GrpcService.writeLog({
+    this.GrpcClientService.writeLog({
       desc,
       operatorId,
       event: ENUM_LOG.EVENT.RESOURCE_MOVE,
@@ -195,7 +196,7 @@ export class ResourceService {
       where: { id },
       data: { ...data, fullName: `${data.name}.${target.suffix}` },
     });
-    this.GrpcService.writeLog({
+    this.GrpcClientService.writeLog({
       desc,
       operatorId,
       event: ENUM_LOG.EVENT.RESOURCE_UPDATE,
@@ -216,7 +217,7 @@ export class ResourceService {
         data: { ...file, fullName: name, creatorId, parentId },
       });
       const paths = await this.findPaths(res);
-      this.GrpcService.writeLog({
+      this.GrpcClientService.writeLog({
         desc: res,
         operatorId: res.creatorId,
         event: ENUM_LOG.EVENT.RESOURCE_UPLOAD,
@@ -286,7 +287,7 @@ export class ResourceService {
           }),
         ),
       ]);
-      this.GrpcService.writeLog({
+      this.GrpcClientService.writeLog({
         desc,
         operatorId,
         event: ENUM_LOG.EVENT.RESOURCE_TO_RECYCLE,
@@ -306,7 +307,7 @@ export class ResourceService {
         data: { count: { increment: 1 } },
       }),
     ]);
-    this.GrpcService.writeLog({
+    this.GrpcClientService.writeLog({
       desc,
       operatorId,
       event: ENUM_LOG.EVENT.RESOURCE_DOWNLOAD,
@@ -345,6 +346,15 @@ export class ResourceService {
       await this.RedisService.expire(key, 60);
       return id;
     });
+  }
+
+  async getCount() {
+    const res = await this.PrismaService.resource.groupBy({
+      by: ['type'],
+      _count: true,
+      where: { remove: false },
+    });
+    return Object.fromEntries(res.map((v) => [v.type, v._count]));
   }
 
   private async findPaths(resource: Pick<Resource, 'id'>) {

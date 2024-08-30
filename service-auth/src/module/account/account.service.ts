@@ -11,6 +11,7 @@ import { UserService } from '@/module/user/user.service';
 import { RedisService } from '@/common/redis/redis.service';
 import { PrismaService } from '@/common/prisma/prisma.service';
 import { CryptoService } from '@/module/crypto/crypto.service';
+import { GrpcClientService } from '@/common/grpc-client/grpc-client.service';
 
 import { UserLoginDTO } from './dto/user-login.dto';
 import { RegisterSuperAdminDTO } from './dto/register-super-admin.dto';
@@ -26,6 +27,7 @@ export class AccountService {
     private readonly RedisService: RedisService,
     private readonly PrismaService: PrismaService,
     private readonly CryptoService: CryptoService,
+    private readonly GrpcClientService: GrpcClientService,
   ) {}
 
   private readonly ONE_DAY = 86400;
@@ -48,6 +50,7 @@ export class AccountService {
   async getUserInfo(token: string) {
     const key = `drive:user:${token}`;
     const user = await this.RedisService.hgetall(key);
+    this.GrpcClientService.access(user.id);
     if (user?.id) {
       const { id, name, role } = user;
       return { id, name, role: parseInt(role) };

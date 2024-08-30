@@ -21,7 +21,7 @@ namespace TypeGRPC {
 }
 
 @Injectable()
-export class GrpcService implements OnModuleInit {
+export class GrpcClientService implements OnModuleInit {
   private AuthLogRPC: TypeGRPC.Log;
   private AuthUserRPC: TypeGRPC.User;
 

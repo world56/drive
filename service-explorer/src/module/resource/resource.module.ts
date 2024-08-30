@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ResourceService } from './resource.service';
-import { GrpcModule } from '@/common/grpc/grpc.module';
 import { FileModule } from 'src/common/file/file.module';
 import { ResourceController } from './resource.controller';
 import { RecoveryModule } from '../recycle/recycle.module';
 import { RedisModule } from 'src/common/redis/redis.module';
 import { PrismaModule } from 'src/common/prisma/prisma.module';
+import { GrpcClientModule } from '@/common/grpc-client/grpc-client.module';
 
 import CONFIG_RESOURCE_PATH from 'src/config/resource-path.config';
 
@@ -14,11 +14,11 @@ import CONFIG_RESOURCE_PATH from 'src/config/resource-path.config';
   providers: [ResourceService],
   controllers: [ResourceController],
   imports: [
-    GrpcModule,
     FileModule,
     RedisModule,
     PrismaModule,
     RecoveryModule,
+    GrpcClientModule,
     ConfigModule.forFeature(CONFIG_RESOURCE_PATH),
   ],
   exports: [ResourceService],

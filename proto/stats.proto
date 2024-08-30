@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package stats;
+
+import "google/protobuf/empty.proto";
+
+service StatsService {
+  rpc Access (User) returns (google.protobuf.Empty) {}
+  rpc ResourceCount (Resource) returns (google.protobuf.Empty) {}
+}
+
+message User {
+  string id = 1;
+}
+
+message Resource {
+  int32 type = 1;
+}

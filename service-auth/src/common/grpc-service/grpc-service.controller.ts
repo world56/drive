@@ -1,13 +1,13 @@
 import { Controller } from '@nestjs/common';
 import { GrpcMethod } from '@nestjs/microservices';
-import { UserService } from '@/module/user/user.service';
 import { LogService } from '@/module/log/log.service';
+import { UserService } from '@/module/user/user.service';
 
 import type { Log } from '@prisma/client';
 import type { Metadata } from '@grpc/grpc-js';
 
 @Controller()
-export class GRPCController {
+export class GrpcServiceController {
   public constructor(
     private readonly LogService: LogService,
     private readonly UserService: UserService,

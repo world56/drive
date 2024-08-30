@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package explorer;
+
+import "google/protobuf/empty.proto";
+
+service ExplorerService {
+  rpc GetCount (google.protobuf.Empty) returns (Count) {};
+}
+
+message Count {
+  map<string, int32> count = 1;
+}

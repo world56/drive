@@ -34,3 +34,8 @@ export const API_PROXY_FAVORITE_URL = `/api/favorite/`;
  * @name API_PROXY_RECYCLE_URL API 回收站
  */
 export const API_PROXY_RECYCLE_URL = `/api/recovery/`;
+
+/**
+ * @name API_PROXY_STATS_URL API 统计
+ */
+export const API_PROXY_STATS_URL = `/api/stats/`;

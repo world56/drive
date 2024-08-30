@@ -1,6 +1,7 @@
 export namespace ENUM_HTTP {
   export const enum PROXY {
     AUTH = "auth",
+    STATS = "stats",
     EXPLORER = "explorer",
     FAVORITE = "favorite",
     RECOVERY = "recovery",

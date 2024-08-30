@@ -11,6 +11,7 @@ import {
   API_PROXY_RECYCLE_URL,
   API_PROXY_EXPLORER_URL,
   API_PROXY_FAVORITE_URL,
+  API_PROXY_STATS_URL,
 } from "@/config/request";
 import { ENUM_HTTP } from "@/enum/http";
 
@@ -51,6 +52,9 @@ request.interceptors.request.use(
         break;
       case ENUM_HTTP.PROXY.RECOVERY:
         config.url = API_PROXY_RECYCLE_URL + url;
+        break;
+      case ENUM_HTTP.PROXY.STATS:
+        config.url = API_PROXY_STATS_URL + url;
         break;
       default:
         break;

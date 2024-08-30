@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
-import { GRPCController } from './grpc.controller';
 import { LogModule } from '@/module/log/log.module';
 import { UserModule } from '@/module/user/user.module';
+import { GrpcServiceController } from './grpc-service.controller';
 
 @Module({
   imports: [UserModule, LogModule],
-  controllers: [GRPCController],
+  controllers: [GrpcServiceController],
 })
-export class GrpcModule {}
+export class GrpcServiceModule {}
