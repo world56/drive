@@ -1,9 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { FileService } from '@/common/file/file.service';
 import { PrismaService } from '@/common/prisma/prisma.service';
+import { ResourceService } from '../resource/resource.service';
 import { GrpcClientService } from '@/common/grpc-client/grpc-client.service';
 
 import { RecycleUpdateDTO } from './dto/recycle-update.dto';
+
 import { ENUM_LOG } from '@/enum/log';
 
 @Injectable()
@@ -11,6 +13,7 @@ export class RecycleService {
   constructor(
     private readonly FileService: FileService,
     private readonly PrismaService: PrismaService,
+    private readonly ResourceService: ResourceService,
     private readonly GrpcClientService: GrpcClientService,
   ) {}
 
@@ -36,7 +39,7 @@ export class RecycleService {
     return this.PrismaService.$transaction(async (prisma) => {
       const desc = await prisma.recycle.findMany({
         where: { id: { in: ids } },
-        select: { relations: { select: { id: true, path: true } } },
+        select: { relations: { select: { id: true, path: true, type: true } } },
       });
       await Promise.all([
         prisma.recycle.deleteMany({ where: { id: { in: ids } } }),
@@ -47,6 +50,10 @@ export class RecycleService {
           },
         }),
       ]);
+      this.ResourceService.syncCount(
+        desc.map((v) => v.relations).flat(),
+        'ADD',
+      );
       this.GrpcClientService.writeLog({
         desc,
         operatorId,

@@ -7,7 +7,7 @@ export namespace TypeStats {
   /**
    * @name Storage 系统存储占比
    */
-  export interface Storage {
+  export interface ResStorage {
     /** @param free 已使用 */
     used: number;
     /** @param free 剩余可用 */
@@ -21,11 +21,31 @@ export namespace TypeStats {
   /**
    * @name Access 访问趋势
    */
-  export interface Access
+  export interface ResAccess
     extends Array<{
       /** @param date 日期 */
       date: string;
       /** @param value 使用数量 */
       value: number;
     }> {}
+
+  /**
+   * @name Hot 热门查询
+   */
+  export interface ReqHot {
+    /** @param name 字眼 */
+    name: string;
+  }
+
+  /**
+   * @name ResHot 热门查询趋势
+   */
+  export interface ResHot
+    extends Array<{
+      /** @param name 字眼 */
+      name: string;
+      /** @param value 使用数量 */
+      value: number;
+    }> {}
+
 }

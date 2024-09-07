@@ -33,4 +33,39 @@ export default async function routes(app) {
       );
     },
   });
+
+  app.route({
+    method: "PUT",
+    url: "/hot",
+    schema: {
+      body: {
+        type: "object",
+        required: ["name"],
+        properties: {
+          name: {
+            type: "string",
+            minLength: 1,
+          },
+        },
+      },
+    },
+    async handler(req) {
+      await redis.zincrby(`drive:hot`, 1, req.body.name);
+      return true;
+    },
+  });
+
+  app.route({
+    method: "GET",
+    url: "/hot",
+    async handler() {
+      const res = await redis.zrevrange("drive:hot", 0, 9, "WITHSCORES");
+      const length = res.length;
+      const format = [];
+      for (let i = 0; i < length; i += 2) {
+        format.push({ name: res[i], value: Number(res[i + 1]) });
+      }
+      return format;
+    },
+  });
 }

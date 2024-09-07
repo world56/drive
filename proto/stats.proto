@@ -6,7 +6,7 @@ import "google/protobuf/empty.proto";
 
 service StatsService {
   rpc Access (User) returns (google.protobuf.Empty) {}
-  rpc ResourceCount (Resource) returns (google.protobuf.Empty) {}
+  rpc Count (Resource) returns (google.protobuf.Empty) {}
 }
 
 message User {
@@ -15,4 +15,5 @@ message User {
 
 message Resource {
   int32 type = 1;
+  int32 count = 2;
 }

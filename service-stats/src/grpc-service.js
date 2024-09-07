@@ -20,7 +20,11 @@ server.addService(RPC_STATS.stats.StatsService.service, {
     }
     callback();
   },
-  resourceCount: (call, callback) => {
+  count: async (call, callback) => {
+    const { type, count } = call.request;
+    const num = await redis.hget(`drive:storage`, type);
+    const result = Number(num) + count;
+    await redis.hset(`drive:storage`, type, result < 0 ? 0 : result);
     callback();
   },
 });

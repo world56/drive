@@ -2,7 +2,6 @@ import { Prisma } from '@prisma/client';
 import * as AsyncLock from 'async-lock';
 import { Injectable } from '@nestjs/common';
 import { FileService } from '@/common/file/file.service';
-import { RecycleService } from '../recycle/recycle.service';
 import { RedisService } from '@/common/redis/redis.service';
 import { PrismaService } from 'src/common/prisma/prisma.service';
 import { GrpcClientService } from '@/common/grpc-client/grpc-client.service';
@@ -35,7 +34,6 @@ export class ResourceService {
     private readonly FileService: FileService,
     private readonly RedisService: RedisService,
     private readonly PrismaService: PrismaService,
-    private readonly RecycleService: RecycleService,
     private readonly GrpcClientService: GrpcClientService,
   ) {}
 
@@ -142,6 +140,7 @@ export class ResourceService {
         type: ENUM_RESOURCE.TYPE.FOLDER,
       },
     });
+    this.GrpcClientService.resourceCount({ count: 1, type: res.type });
     this.GrpcClientService.writeLog({
       desc: res,
       operatorId: res.creatorId,
@@ -217,6 +216,7 @@ export class ResourceService {
         data: { ...file, fullName: name, creatorId, parentId },
       });
       const paths = await this.findPaths(res);
+      this.GrpcClientService.resourceCount({ count: 1, type: res.type });
       this.GrpcClientService.writeLog({
         desc: res,
         operatorId: res.creatorId,
@@ -287,6 +287,7 @@ export class ResourceService {
           }),
         ),
       ]);
+      this.syncCount(desc, 'REDUCE');
       this.GrpcClientService.writeLog({
         desc,
         operatorId,
@@ -313,6 +314,31 @@ export class ResourceService {
       event: ENUM_LOG.EVENT.RESOURCE_DOWNLOAD,
     });
     return { path: url.split('/').at(-1), name: `${name}.${suffix}` };
+  }
+
+  async getCount() {
+    const res = await this.PrismaService.resource.groupBy({
+      by: ['type'],
+      _count: true,
+      where: { remove: false },
+    });
+    return Object.fromEntries(res.map((v) => [v.type, v._count]));
+  }
+
+  async syncCount(resources: Pick<Resource, 'type'>[], type: 'ADD' | 'REDUCE') {
+    let count: Record<number, number> = {};
+    const length = resources.length;
+    for (let i = 0; i < length; i++) {
+      const type = resources[i].type;
+      count[type] = (count[type] || 0) + 1;
+    }
+    Object.keys(count).forEach((i) => {
+      const num = count[i];
+      this.GrpcClientService.resourceCount({
+        type: Number(i),
+        count: type === 'REDUCE' ? -num : num,
+      });
+    });
   }
 
   private async createFolders(
@@ -346,15 +372,6 @@ export class ResourceService {
       await this.RedisService.expire(key, 60);
       return id;
     });
-  }
-
-  async getCount() {
-    const res = await this.PrismaService.resource.groupBy({
-      by: ['type'],
-      _count: true,
-      where: { remove: false },
-    });
-    return Object.fromEntries(res.map((v) => [v.type, v._count]));
   }
 
   private async findPaths(resource: Pick<Resource, 'id'>) {

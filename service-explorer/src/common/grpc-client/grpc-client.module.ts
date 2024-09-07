@@ -16,6 +16,15 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
           protoPath: join(__dirname, '../../../../proto/auth.proto'),
         },
       },
+      {
+        name: 'GRPC_STATS',
+        transport: Transport.GRPC,
+        options: {
+          package: 'stats',
+          url: '0.0.0.0:9003',
+          protoPath: join(__dirname, '../../../../proto/stats.proto'),
+        },
+      },
     ]),
   ],
   controllers: [],

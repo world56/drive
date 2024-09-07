@@ -18,28 +18,38 @@ namespace TypeGRPC {
       operatorId: string;
     }): Observable<void>;
   }
+  export interface Stats {
+    count(params: Record<'type' | 'count', number>): Observable<void>;
+  }
 }
 
 @Injectable()
 export class GrpcClientService implements OnModuleInit {
-  private AuthLogRPC: TypeGRPC.Log;
-  private AuthUserRPC: TypeGRPC.User;
+  private RPCLog: TypeGRPC.Log;
+  private RPCUser: TypeGRPC.User;
+  private RPCStats: TypeGRPC.Stats;
 
   public constructor(
-    @Inject('GRPC_AUTH') private readonly client: ClientGrpc,
+    @Inject('GRPC_AUTH') private readonly ClientAuth: ClientGrpc,
+    @Inject('GRPC_STATS') private readonly ClientStats: ClientGrpc,
   ) {}
 
   onModuleInit() {
-    this.AuthLogRPC = this.client.getService<TypeGRPC.Log>('LogService');
-    this.AuthUserRPC = this.client.getService<TypeGRPC.User>('UserService');
+    this.RPCLog = this.ClientAuth.getService<TypeGRPC.Log>('LogService');
+    this.RPCUser = this.ClientAuth.getService<TypeGRPC.User>('UserService');
+    this.RPCStats = this.ClientStats.getService<TypeGRPC.Stats>('StatsService');
   }
 
   getUserInfo(id: string) {
-    return firstValueFrom(this.AuthUserRPC.getUserInfo({ id }));
+    return firstValueFrom(this.RPCUser.getUserInfo({ id }));
   }
 
   writeLog(data: Parameters<TypeGRPC.Log['writeLog']>[0]) {
     data.desc = JSON.stringify(data.desc);
-    return firstValueFrom(this.AuthLogRPC.writeLog(data));
+    return firstValueFrom(this.RPCLog.writeLog(data));
+  }
+
+  resourceCount(data: Parameters<TypeGRPC.Stats['count']>[0]) {
+    return this.RPCStats.count(data).subscribe();
   }
 }
