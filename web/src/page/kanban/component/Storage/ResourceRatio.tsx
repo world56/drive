@@ -18,20 +18,14 @@ const ResourceRatio: React.FC<TypeResourceRatioProps> = ({ loading, data }) => {
 
   useEffect(() => {
     charts.current?.setOption({
-      legend: { show: false, left: "center" },
-      tooltip: { show: false, trigger: "item" },
       title: {
         z: 0,
         text: 0,
-        zlevel: 0,
         y: "42%",
+        zlevel: 0,
         x: "center",
         subtext: "资源总数",
         subtextStyle: { color: "black", fontSize: 16 },
-      },
-      emphasis: {
-        scaleSize: 0,
-        label: { show: true, fontSize: 18, fontWeight: "bold" },
       },
       series: {
         type: "pie",
@@ -39,19 +33,27 @@ const ResourceRatio: React.FC<TypeResourceRatioProps> = ({ loading, data }) => {
         padAngle: 1,
         radius: ["90%", "70%"],
         center: ["62.5%", "50%"],
-        avoidLabelOverlap: false,
-        labelLine: { show: false },
-        itemStyle: { borderRadius: 5 },
+        itemStyle: { borderRadius: 10 },
         label: {
-          width: 125,
-          height: 125,
+          width: 170,
+          height: 170,
           show: false,
+          borderRadius: 70,
           position: "center",
           backgroundColor: "#fff",
-          formatter: ({ name, value }: { name: string; value: number }) => {
-            const size = (value / count.current) * 100;
-            return `${name} : ${Number(size.toFixed(2))}%`;
+        },
+        emphasis: {
+          scaleSize: 0,
+          label: {
+            show: true,
+            fontSize: 18,
+            fontWeight: "bold",
+            formatter: (params: { name: string; value: number }) => {
+              const size = (params.value / count.current) * 100;
+              return `${params.name}：${Number(size.toFixed(2))}%`;
+            },
           },
+          
         },
       },
     });
@@ -65,8 +67,8 @@ const ResourceRatio: React.FC<TypeResourceRatioProps> = ({ loading, data }) => {
       text += value;
       return { value, name: v.name, itemStyle: { color: v.color } };
     });
-    charts.current?.setOption({ title: { text }, series: { data: list } });
     count.current = text;
+    charts.current?.setOption({ title: { text }, series: { data: list } });
   }, [data, charts]);
 
   return (

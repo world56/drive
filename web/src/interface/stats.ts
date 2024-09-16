@@ -1,4 +1,5 @@
 import { ENUM_RESOURCE } from "@/enum/resource";
+import { TypeResource } from "./resource";
 
 /**
  * @name TypeStats 看板统计
@@ -48,4 +49,17 @@ export namespace TypeStats {
       value: number;
     }> {}
 
+  /**
+   * @name ResRecently 最近上传资源
+   */
+  export interface ResRecently
+    extends Pick<TypeResource.DTO, "id" | "fullName" | "type" | "path"> {}
+
+  /**
+   * @name ResFavorite 收藏数排行
+   */
+  export interface ResFavorite extends ResRecently {
+    /** @param count 总数 */
+    count: number;
+  }
 }

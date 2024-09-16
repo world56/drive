@@ -45,3 +45,23 @@ export function getHotSearch() {
     proxy: ENUM_HTTP.PROXY.STATS,
   });
 }
+
+/**
+ * @name getRecentResources 查询 “最近创建、上传资源”
+ */
+export function getRecentResources() {
+  return request<TypeStats.ResRecently[]>("recently", {
+    method: ENUM_HTTP.REQUEST_MODE.GET,
+    proxy: ENUM_HTTP.PROXY.STATS,
+  });
+}
+
+/**
+ * @name getFavoriteCount 查询 “收藏排行”
+ */
+export function getFavoriteCount() {
+  return request<TypeStats.ResFavorite[]>("favorite", {
+    method: ENUM_HTTP.REQUEST_MODE.GET,
+    proxy: ENUM_HTTP.PROXY.STATS,
+  });
+}

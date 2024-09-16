@@ -8,6 +8,8 @@ import { FavoriteFindListDTO } from './dto/favorite-find-list.dto';
 
 import { ENUM_RESOURCE } from '@/enum/explorer';
 
+import type { Resource } from '@prisma/client';
+
 @Injectable()
 export class FavoriteService {
   public constructor(
@@ -37,7 +39,7 @@ export class FavoriteService {
       FROM 
         favorite AS f 
       INNER JOIN
-        resource AS r ON f.resource_id = r.id AND f.user_id = ${userId}
+        resource AS r ON f.resource_id = r.id AND f.user_id = ${userId} AND r.remove = false
       WHERE
         ${Prisma.raw(
           name ? `r.full_name LIKE '%${name}%'` : 'r.full_name IS NOT NULL',
@@ -71,5 +73,27 @@ export class FavoriteService {
       where: { resourceId: { in: ids } },
     });
     return true;
+  }
+
+  async getRanking() {
+    const res = await this.PrismaService.$queryRaw<
+      Array<Pick<Resource, 'id' | 'fullName' | 'path'> & { count: number }>
+    >`
+      SELECT 
+        f.resource_id AS id,
+        r.path AS path,
+        r.type AS type,
+        r.full_name AS fullName,
+        COUNT(f.resource_id) AS count
+      FROM 
+        favorite AS f 
+        INNER JOIN resource AS r ON f.resource_id = r.id
+      GROUP BY
+        f.resource_id
+      ORDER BY
+        count DESC
+      LIMIT 10;
+    `;
+    return res.map((v) => ({ ...v, count: Number(v.count) }));
   }
 }

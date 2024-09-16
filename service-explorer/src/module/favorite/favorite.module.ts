@@ -9,5 +9,6 @@ import { ResourceModule } from '@/module/resource/resource.module';
   imports: [ResourceModule, PrismaModule, UtilsModule],
   controllers: [FavoriteController],
   providers: [FavoriteService],
+  exports: [FavoriteService],
 })
 export class FavoriteModule {}

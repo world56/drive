@@ -1,5 +1,6 @@
 import { useRequest } from "ahooks";
 import { toTime } from "@/utils/format";
+import { useWindowSize } from "@/hooks";
 import { SyncOutlined } from "@ant-design/icons";
 import ResourceName from "@/components/Resource/Name";
 import { Space, Table, FloatButton, Typography, Popconfirm } from "antd";
@@ -29,6 +30,8 @@ import type { TypeRecycle } from "@/interface/recycle";
  */
 const Recycle = () => {
   const { data, run, loading } = useRequest(getRecycles);
+
+  const { height } = useWindowSize();
 
   async function onDelete(row: TypeRecycle.DTO) {
     await deleteRecycles({ ids: [row.id] });
@@ -104,11 +107,13 @@ const Recycle = () => {
   return (
     <>
       <Table
+        virtual
         columns={columns}
         loading={loading}
         dataSource={data}
         pagination={false}
         rowKey={DB_PRIMARY_KEY}
+        scroll={{ y: height - 121 }}
       />
       <FloatButton
         type="primary"

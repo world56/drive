@@ -16,3 +16,21 @@ export function getCount() {
     });
   });
 }
+
+export function getExplorerRecently() {
+  return new Promise((resolve, reject) => {
+    ExplorerService.getRecently(null, (err, res) => {
+      if (err) reject(err);
+      else resolve(res.data);
+    });
+  });
+}
+
+export function getFavoriteRanking() {
+  return new Promise((resolve, reject) => {
+    ExplorerService.getFavorite(null, (err, res) => {
+      if (err) reject(err);
+      else resolve(res.data);
+    });
+  });
+}

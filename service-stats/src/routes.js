@@ -1,7 +1,12 @@
+import {
+  getCount,
+  getFavoriteRanking,
+  getExplorerRecently,
+} from "./grpc-client.js";
 import dayjs from "dayjs";
 import redis from "./redis.js";
 import { getStorage } from "./utils.js";
-import { getCount } from "./grpc-client.js";
+import { TIME_ONE_HOUR } from "./config.js";
 
 export default async function routes(app) {
   app.route({
@@ -66,6 +71,48 @@ export default async function routes(app) {
         format.push({ name: res[i], value: Number(res[i + 1]) });
       }
       return format;
+    },
+  });
+
+  app.route({
+    method: "GET",
+    url: "/recently",
+    async handler() {
+      const data = await redis.get(`drive:recently`);
+      if (data) {
+        return JSON.parse(data);
+      } else {
+        const data = await getExplorerRecently();
+        data?.length &&
+          redis.set(
+            `drive:recently`,
+            JSON.stringify(data),
+            "EX",
+            TIME_ONE_HOUR,
+          );
+        return data;
+      }
+    },
+  });
+
+  app.route({
+    method: "GET",
+    url: "/favorite",
+    async handler() {
+      const data = await redis.get(`drive:favorite`);
+      if (data) {
+        return JSON.parse(data);
+      } else {
+        const data = await getFavoriteRanking();
+        data?.length &&
+          redis.set(
+            `drive:favorite`,
+            JSON.stringify(data),
+            "EX",
+            TIME_ONE_HOUR,
+          );
+        return data;
+      }
     },
   });
 }

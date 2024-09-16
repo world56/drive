@@ -12,3 +12,6 @@ export const GRPC_DEFAULT_CONFIG = {
   objects: true,
   oneofs: true,
 };
+
+
+export const TIME_ONE_HOUR = 60 * 30

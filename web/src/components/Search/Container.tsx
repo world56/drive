@@ -1,6 +1,7 @@
 import { Spin } from "antd";
 import styles from "./index.module.sass";
 import { stopPropagation } from "@/utils";
+import { insertHotSearch } from "@/api/stats";
 import { useActions, useStore, useToFolder } from "@/hooks";
 
 interface TypeSearchContainerProps {
@@ -28,18 +29,17 @@ const Container: React.FC<TypeSearchContainerProps> = ({
   const toFolder = useToFolder();
   const { SEARCH } = useStore("config");
 
-  function onClick(e?: React.MouseEvent<HTMLDivElement>) {
+  async function onClick(e?: React.MouseEvent<HTMLDivElement>) {
     stopPropagation(e);
     const click = e?.target as HTMLElement;
-    const eleFolder = click.closest("[data-path]") as HTMLElement;
-    if (eleFolder) {
-      toFolder(eleFolder?.dataset?.path);
+    const target = click.closest("[data-id]") as HTMLElement;
+    const { name } = target?.dataset || {};
+    name && insertHotSearch({ name });
+    const path = click.closest("[data-path]") as HTMLElement;
+    if (path) {
+      toFolder(path?.dataset?.path);
       return actions.setConfig({ SEARCH: false });
     }
-    // const elePreview = click.closest("[data-id]");
-    // if (elePreview) {
-    // onSelect();
-    // }
   }
 
   function onCloseSearch() {

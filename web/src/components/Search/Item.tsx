@@ -14,15 +14,21 @@ interface TypeItemProps extends ListChildComponentProps<TypeResource.DTO[]> {}
 const Item: React.FC<TypeItemProps> = ({ index, style, data }) => {
   const row = data[index];
   return (
-    <div className={styles.item} style={style} data-id={row.id}>
+    <div
+      style={style}
+      data-id={row.id}
+      className={styles.item}
+      data-name={row.fullName}
+    >
       <ResourceIcon width={40} {...row} />
       <div className={styles.detail}>
         <p className={styles.name}>{row.fullName}</p>
         <p
           title="点击打开目录"
           className={styles.path}
-          data-path={row.parentId}
+          data-path={row.parentId || '/'}
         >
+          {row?.paths?.length ? "主目录/" : "主目录"}
           {row?.paths?.map((v) => v.name).join("/")}
         </p>
       </div>

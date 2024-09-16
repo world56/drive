@@ -75,7 +75,6 @@ export class ResourceService {
   }
 
   findList({ id, type, order }: FindResourcesListDTO, userId: string) {
-    this.getCount();
     return this.PrismaService.$queryRaw`
       SELECT 
         r.id, 
@@ -193,7 +192,10 @@ export class ResourceService {
     data.parentId = data.parentId ? data.parentId : null;
     const desc = await this.PrismaService.resource.update({
       where: { id },
-      data: { ...data, fullName: `${data.name}.${target.suffix}` },
+      data: {
+        ...data,
+        fullName: `${data.name}${target.suffix ? `.${target.suffix}` : ''}`,
+      },
     });
     this.GrpcClientService.writeLog({
       desc,
@@ -323,6 +325,15 @@ export class ResourceService {
       where: { remove: false },
     });
     return Object.fromEntries(res.map((v) => [v.type, v._count]));
+  }
+
+  async getRecently() {
+    return this.PrismaService.resource.findMany({
+      take: 10,
+      where: { remove: false },
+      orderBy: { createTime: 'desc' },
+      select: { id: true, fullName: true, type: true, path: true },
+    });
   }
 
   async syncCount(resources: Pick<Resource, 'type'>[], type: 'ADD' | 'REDUCE') {
