@@ -262,9 +262,10 @@ export class ResourceService {
           ]),
         ),
       );
+      const returnsIds = Object.values(results).flat();
       const [desc] = await Promise.all([
         prisma.resource.findMany({
-          where: { id: { in: ids } },
+          where: { id: { in: returnsIds } },
           select: {
             id: true,
             type: true,
@@ -277,7 +278,7 @@ export class ResourceService {
         }),
         prisma.resource.updateMany({
           data: { remove: true },
-          where: { id: { in: Object.values(results).flat() } },
+          where: { id: { in: returnsIds } },
         }),
         ...ids.map((resourceId) =>
           prisma.recycle.create({

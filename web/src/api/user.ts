@@ -17,6 +17,16 @@ export function getUsers(params: TypeUser.ReqUsers) {
 }
 
 /**
+ * @name getAllUsers 查询-所有用户
+ */
+export function getAllUsers() {
+  return request<TypeUser.DTO[]>("user", {
+    method: ENUM_HTTP.REQUEST_MODE.GET,
+    proxy: ENUM_HTTP.PROXY.AUTH,
+  });
+}
+
+/**
  * @name getUser 查询-用户详情
  */
 export function getUser(params: Pick<TypeUser.DTO, "id">) {

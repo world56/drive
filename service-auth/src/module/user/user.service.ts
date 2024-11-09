@@ -35,6 +35,12 @@ export class UserService {
     createTime: true,
   };
 
+  getAllUsers() {
+    return this.PrismaService.user.findMany({
+      select: { id: true, name: true },
+    });
+  }
+
   async getList({ take, skip, name, status, account }: UserListQueryDTO) {
     const where = {
       status,

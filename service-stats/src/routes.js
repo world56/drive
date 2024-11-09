@@ -18,7 +18,7 @@ export default async function routes(app) {
       const exists = await redis.exists(`drive:storage`);
       if (!exists) {
         const data = await getCount();
-        await redis.hset(`drive:storage`, data);
+        Object.keys(data).length && (await redis.hset(`drive:storage`, data));
       }
       const storage = await redis.hgetall(`drive:storage`);
       return { free, total, used, storage };

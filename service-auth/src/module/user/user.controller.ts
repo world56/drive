@@ -39,6 +39,12 @@ export class UserController {
     return this.UserService.getList(query);
   }
 
+  @ApiOperation({ summary: '用户列表' })
+  @Get()
+  getAllUsers() {
+    return this.UserService.getAllUsers();
+  }
+
   @ApiOperation({ summary: '获取用户详情' })
   @Get('detail')
   details(@Query('id') id: string) {
