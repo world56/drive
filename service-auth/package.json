@@ -16,8 +16,8 @@
   },
   "dependencies": {
     "@fastify/static": "^6.10.1",
-    "@grpc/grpc-js": "^1.8.14",
-    "@grpc/proto-loader": "^0.7.7",
+    "@grpc/grpc-js": "^1.12.4",
+    "@grpc/proto-loader": "^0.7.13",
     "@nestjs/common": "^9.0.0",
     "@nestjs/config": "^2.3.1",
     "@nestjs/core": "^9.0.0",
