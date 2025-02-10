@@ -8,10 +8,10 @@ import {
   TOKEN_KEY,
   REQUEST_TIMEOUT,
   API_PROXY_AUTH_URL,
+  API_PROXY_STATS_URL,
   API_PROXY_RECYCLE_URL,
   API_PROXY_EXPLORER_URL,
   API_PROXY_FAVORITE_URL,
-  API_PROXY_STATS_URL,
 } from "@/config/request";
 import { ENUM_HTTP } from "@/enum/http";
 

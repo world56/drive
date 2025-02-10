@@ -1,0 +1,122 @@
+.corner
+  z-index: 1
+  width: 10px
+  height: 10px
+  position: absolute
+
+.edge
+  z-index: 1
+  position: absolute
+
+.layout
+  top: 20%
+  left: 20%
+  width: 40%
+  height: 40%
+  z-index: 10
+  overflow: hidden
+  position: absolute
+  border-radius: 3px
+
+  &:hover
+    .title
+      display: flex
+
+  & > div:nth-child(2)
+    width: 100%
+    height: 100%
+
+  .title
+    position: absolute
+    user-select: none
+    top: 0
+    height: 38px
+    padding: 0 10px
+    z-index: 1
+    width: calc(100% - 20px)
+    backdrop-filter: blur(10px)
+    background: rgba(0, 0, 0, 0.3)
+    display: none
+    align-items: center
+
+    &:hover
+      display: flex
+
+    p
+      margin: 0
+      font-size: 14px
+      overflow: hidden
+      line-height: 20px
+      white-space: nowrap
+      padding-right: 10px
+      display: inline-block
+      text-overflow: ellipsis
+      color: rgba(255,255 ,255,0.8)
+
+    :global(.anticon)
+      position: absolute
+      width: 16px
+      color: #fff
+      cursor: pointer
+      top: 10
+
+    :global(.anticon):nth-last-child(1)
+      right: 12px
+      font-size: 20px
+
+    :global(.anticon):nth-last-child(2)
+      right: 40px
+      font-size: 25px
+
+  .bl
+    @extend .corner
+    left: 0
+    bottom: 0
+    cursor: nesw-resize
+
+  .br
+    @extend .corner
+    right: 0
+    bottom: 0
+    cursor: nwse-resize
+
+  .tl
+    @extend .corner
+    top: 0
+    left: 0
+    cursor: nwse-resize
+
+  .tr
+    @extend .corner
+    top: 0
+    right: 0
+    cursor: nesw-resize
+
+  .t
+    @extend .corner
+    top: 0
+    height: 3px
+    width: 100%
+    cursor: ns-resize
+
+  .b
+    @extend .corner
+    bottom: 0
+    height: 3px
+    width: 100%
+    cursor: ns-resize
+
+  .l
+    @extend .corner
+    top: 0
+    left: 0
+    width: 3px
+    height: 100%
+    cursor: ew-resize
+
+  .r
+    @extend .corner
+    top: 0
+    right: 0
+    height: 100%
+    cursor: ew-resize

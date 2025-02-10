@@ -2071,6 +2071,11 @@ md5@^2.3.0:
     crypt "0.0.2"
     is-buffer "~1.1.6"
 
+media-chrome@^4.3.0:
+  version "4.3.0"
+  resolved "https://registry.npmmirror.com/media-chrome/-/media-chrome-4.3.0.tgz#e18a7bb910f005746261ddbaa1a0a2624ed2c74e"
+  integrity sha512-Gr8Jd7eEjG53u8w0kJSWVUf1AbqUhRmMO9g2CvMDU4/V3ixy+FRKNRDNkPTQLHU6YN8PsCwfQVv619HL7lm8+Q==
+
 "memoize-one@>=3.1.1 <6":
   version "5.2.1"
   resolved "https://registry.npmmirror.com/memoize-one/-/memoize-one-5.2.1.tgz#8337aa3c4335581839ec01c3d594090cebe8f00e"
