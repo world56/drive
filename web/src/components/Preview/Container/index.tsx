@@ -9,8 +9,10 @@ import { useElementMove } from "@/hooks";
 
 interface TypeContainerProps {
   title: string;
-  children?: React.ReactNode;
+  hover?: boolean;
   className?: string;
+  backgroundColor?: string;
+  children?: React.ReactNode;
 }
 
 /**
@@ -20,6 +22,8 @@ const Container: React.FC<TypeContainerProps> = ({
   title,
   children,
   className,
+  hover = true,
+  backgroundColor = "rgba(0, 0, 0, 0.3)",
 }) => {
   const [full, setFull] = useState(false);
 
@@ -46,10 +50,11 @@ const Container: React.FC<TypeContainerProps> = ({
   }
 
   return (
-    <div className={styles.layout} ref={ref}>
+    <div ref={ref} className={`${styles.layout} ${hover ? styles.hover : ""}`}>
       <div
         className={styles.title}
         onMouseDown={onPosition}
+        style={{ backgroundColor }}
         onDoubleClick={onDoubleClick}
       >
         <p>{title}</p>

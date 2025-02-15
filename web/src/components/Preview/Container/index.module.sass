@@ -8,19 +8,21 @@
   z-index: 1
   position: absolute
 
+.hover
+  .title
+    display: none !important
+  &:hover
+    .title
+      display: flex !important
+
 .layout
   top: 20%
-  left: 20%
+  left: 30%
   width: 40%
-  height: 40%
   z-index: 10
   overflow: hidden
   position: absolute
   border-radius: 3px
-
-  &:hover
-    .title
-      display: flex
 
   & > div:nth-child(2)
     width: 100%
@@ -30,17 +32,14 @@
     position: absolute
     user-select: none
     top: 0
+    z-index: 1
     height: 38px
     padding: 0 10px
-    z-index: 1
     width: calc(100% - 20px)
-    backdrop-filter: blur(10px)
+    // backdrop-filter: blur(10px)
     background: rgba(0, 0, 0, 0.3)
-    display: none
+    display: flex
     align-items: center
-
-    &:hover
-      display: flex
 
     p
       margin: 0

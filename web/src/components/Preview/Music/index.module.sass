@@ -1,0 +1,67 @@
+.layout
+  width: 100%
+  height: 200px
+  overflow: hidden
+  padding-bottom: 20px
+  background: #181A1C
+  box-shadow: 0px 0px 12px rgba(0, 0, 0, .05)
+  .title
+    width: 100%
+    display: flex
+    padding: 25px 25px 10px 25px
+    img
+      width: 120px
+      height: 120px
+      border-radius: 10px
+      margin-right: 20px
+    div
+      padding-top: 5px
+      & > p
+        color: white
+      & > p:nth-child(1)
+        font-size: 20px
+
+  media-controller
+    width: 100%
+    padding: 0 25px
+    --media-background-color: transparent
+
+    media-control-bar
+      display: flex
+      align-items: center
+      flex-direction: column
+
+    .progress
+      width: 100%
+      display: flex
+      align-items: center
+
+      media-time-display
+        --media-font-size: 12px
+        --media-control-height: 7px
+        --media-control-padding: 1px
+        --media-control-background: transparent
+        --media-control-hover-background: transparent
+
+      media-time-range
+        width: 100%
+        margin-right: 20px
+        --media-range-thumb-width: 0px
+        --media-range-track-height: 5px
+        --media-control-height: 5px
+        --media-range-padding-left: 0
+        --media-range-padding-right: 0
+        --media-control-background: transparent
+        --media-control-hover-background: transparent
+        --media-range-track-border-radius: 3px
+        --media-range-thumb-opacity: .7
+        --media-preview-time-margin: 0 0 -15px
+
+    .tools
+      width: 100%
+      display: flex
+      justify-content: left
+
+      media-play-button
+        margin-left: -5px
+        --media-control-padding: 0px
