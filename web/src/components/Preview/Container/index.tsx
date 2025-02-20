@@ -3,12 +3,12 @@ import {
   FullscreenOutlined,
   FullscreenExitOutlined,
 } from "@ant-design/icons";
-import { useRef, useState } from "react";
-import styles from "./index.module.sass";
 import { useElementMove } from "@/hooks";
+import styles from "./index.module.sass";
+import { useEffect, useRef, useState } from "react";
 
 interface TypeContainerProps {
-  title: string;
+  title?: string;
   hover?: boolean;
   className?: string;
   backgroundColor?: string;
@@ -34,20 +34,34 @@ const Container: React.FC<TypeContainerProps> = ({
   function onWindowSize() {
     setFull((b) => !b);
     ref.current!.style.cssText = full
-      ? "top:20%;left:25%;width:50%;height:40%"
+      ? defaultLayout()
       : `top:0px;left:0px;width:100%;height:100%`;
   }
 
   function onDoubleClick() {
-    if (
-      ref.current?.style.cssText ===
-      "top: 0px; left: 0px; width: 100%; height: 100%;"
-    ) {
-      ref.current!.style.cssText = `top:20%; left:20%; width: 40%; height: 40%`;
+    setFull((b) => !b);
+    if (full) {
+      ref.current!.style.cssText = defaultLayout();
     } else {
       ref.current!.style.cssText = "top:0px;left:0px;width:100%;height:100%;";
     }
   }
+
+  function defaultLayout() {
+    const width = window.innerWidth / 2;
+    const height = window.innerHeight / 2;
+    return `
+      position: absolute;
+      width: ${width}px;
+      height: ${height}px;
+      top: ${window.innerHeight / 2 - height / 2}px;
+      left: ${window.innerWidth / 2 - width / 2}px;
+    `;
+  }
+
+  useEffect(() => {
+    ref.current!.style.cssText = defaultLayout();
+  }, [ref]);
 
   return (
     <div ref={ref} className={`${styles.layout} ${hover ? styles.hover : ""}`}>

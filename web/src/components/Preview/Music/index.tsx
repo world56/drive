@@ -7,8 +7,12 @@ import {
   MediaVolumeRange,
   MediaTimeDisplay,
 } from "media-chrome/react";
-import styles from "./index.module.sass";
+import Item from "./Item";
 import Container from "../Container";
+import styles from "./index.module.sass";
+
+import ICON_NEXT from "@/assets/next.svg";
+import ICON_PRE from "@/assets/previous.svg";
 
 const URL =
   "https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/high.mp4";
@@ -20,7 +24,7 @@ const IMG = `https://img1.baidu.com/it/u=2949796277,2040339066&fm=253&fmt=auto&a
  */
 const Music = () => {
   return (
-    <Container title="" hover={false} backgroundColor="transparent">
+    <Container hover={false} backgroundColor="transparent">
       <div className={styles.layout}>
         <div className={styles.title}>
           <img src={IMG} alt="" />
@@ -37,12 +41,18 @@ const Music = () => {
               <MediaTimeDisplay showDuration />
             </div>
             <div className={styles.tools}>
+              <img src={ICON_PRE} style={{ width: 19 }} />
               <MediaPlayButton />
+              <img src={ICON_NEXT} style={{ width: 18 }} />
               <MediaMuteButton />
               <MediaVolumeRange />
             </div>
           </MediaControlBar>
         </MediaController>
+        <Item />
+        <Item />
+        <Item />
+        <Item />
       </div>
     </Container>
   );

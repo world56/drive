@@ -1,0 +1,36 @@
+.layout
+  position: relative
+  width: 100%
+  height: 100%
+  overflow: hidden
+  user-select: none
+  background: black
+
+  & > img
+    position: absolute
+    display: block
+    -webkit-user-drag: none
+
+.tools
+  position: absolute
+  left: calc(50% - 141.5px)
+  bottom: 20px
+  padding: 8px
+  display: flex
+  align-items: center
+  border-radius: 20px
+  background: rgba(0,0,0,0.5)
+  img
+    width: 23px
+    height: 23px
+    margin: 0 10px
+    cursor: pointer
+  svg
+    color: #fff
+    width: 23px
+    height: 23px
+    margin: 0 10px
+    cursor: pointer
+
+  :global(.anticon-sync)
+    width: 40px

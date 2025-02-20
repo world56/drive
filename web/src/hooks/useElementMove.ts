@@ -82,7 +82,7 @@ export default function useElementMove(ref: React.RefObject<HTMLDivElement>) {
     const windowHeight = window.innerHeight;
     const minWidth = 200;
     const minHeight = 200;
-    let coordinates:DOMRect;
+    let coordinates: DOMRect;
 
     const deltaX = e.clientX - clientX;
     const deltaY = e.clientY - clientY;
