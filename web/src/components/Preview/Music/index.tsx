@@ -24,7 +24,7 @@ const IMG = `https://img1.baidu.com/it/u=2949796277,2040339066&fm=253&fmt=auto&a
  */
 const Music = () => {
   return (
-    <Container hover={false} backgroundColor="transparent">
+    <Container backgroundColor="transparent">
       <div className={styles.layout}>
         <div className={styles.title}>
           <img src={IMG} alt="" />

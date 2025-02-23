@@ -2,13 +2,12 @@ import Tools from "./Tools";
 import { useRef } from "react";
 import Container from "../Container";
 import styles from "./index.module.sass";
-
-const IMG = `https://img1.baidu.com/it/u=2949796277,2040339066&fm=253&fmt=auto&app=120&f=JPEG?w=500&h=502`;
+import { TypeResource } from "@/interface/resource";
 
 /**
  * @name Image 图片预览
  */
-const Image = () => {
+const Image: React.FC<{ data: TypeResource.DTO }> = ({ data }) => {
   const offset = useRef({ top: 0, left: 0, offsetX: 0, offsetY: 0 });
 
   const ref = useRef<HTMLImageElement>(null!);
@@ -80,13 +79,18 @@ const Image = () => {
   }
 
   return (
-    <Container title="周杰伦.jpg" hover={false}>
+    <Container data={data}>
       <div
         ref={container}
         className={styles.layout}
         onWheel={(e) => onSize(e.deltaY > 0 ? 1.05 : 0.95)}
       >
-        <img ref={ref} src={IMG} onLoad={onLoad} onMouseDown={onMouseDown} />
+        <img
+          ref={ref}
+          src={data.path}
+          onLoad={onLoad}
+          onMouseDown={onMouseDown}
+        />
         <Tools onRotate={onRotate} onSize={onSize} onReset={onReset} />
       </div>
     </Container>

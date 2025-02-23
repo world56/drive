@@ -3,14 +3,16 @@ import {
   FullscreenOutlined,
   FullscreenExitOutlined,
 } from "@ant-design/icons";
-import { useElementMove } from "@/hooks";
 import styles from "./index.module.sass";
 import { useEffect, useRef, useState } from "react";
+import { useActions, useElementMove } from "@/hooks";
+
+import type { TypeResource } from "@/interface/resource";
 
 interface TypeContainerProps {
-  title?: string;
   hover?: boolean;
   className?: string;
+  data?: TypeResource.DTO;
   backgroundColor?: string;
   children?: React.ReactNode;
 }
@@ -19,17 +21,18 @@ interface TypeContainerProps {
  * @name Container 预览容器
  */
 const Container: React.FC<TypeContainerProps> = ({
-  title,
+  data,
+  hover,
   children,
   className,
-  hover = true,
   backgroundColor = "rgba(0, 0, 0, 0.3)",
 }) => {
-  const [full, setFull] = useState(false);
-
   const ref = useRef<HTMLDivElement>(null);
 
+  const actions = useActions();
   const { onPosition, onDragSize } = useElementMove(ref);
+
+  const [full, setFull] = useState(false);
 
   function onWindowSize() {
     setFull((b) => !b);
@@ -59,6 +62,11 @@ const Container: React.FC<TypeContainerProps> = ({
     `;
   }
 
+  function onClose() {
+    if (!data?.id) return;
+    actions.delPreview({ key: "images", value: data.id });
+  }
+
   useEffect(() => {
     ref.current!.style.cssText = defaultLayout();
   }, [ref]);
@@ -71,13 +79,13 @@ const Container: React.FC<TypeContainerProps> = ({
         style={{ backgroundColor }}
         onDoubleClick={onDoubleClick}
       >
-        <p>{title}</p>
+        <p>{data?.fullName}</p>
         {full ? (
           <FullscreenExitOutlined onClick={onWindowSize} />
         ) : (
           <FullscreenOutlined onClick={onWindowSize} />
         )}
-        <CloseOutlined />
+        <CloseOutlined onClick={onClose} />
       </div>
       <div className={className}>{children}</div>
       <>

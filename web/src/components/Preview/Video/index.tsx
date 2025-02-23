@@ -19,7 +19,7 @@ const URL =
  */
 const Video = () => {
   return (
-    <Container title="不知名视频.mp4" className={styles.video}>
+    <Container hover className={styles.video}>
       <MediaController>
         <video muted slot="media" preload="auto" src={URL} />
         <MediaControlBar>

@@ -1,7 +1,8 @@
+import { useRef } from "react";
 import Container from "./Container";
 import Thumbnail from "./Thumbnail";
 import { getResources } from "@/api/resource";
-import { useStore, useToFolder } from "@/hooks";
+import { useActions, useStore, useToFolder } from "@/hooks";
 
 import { ENUM_RESOURCE } from "@/enum/resource";
 
@@ -18,7 +19,11 @@ export interface TypeFilesProps
  * @name Files 文件列表
  */
 const Files: React.FC<TypeFilesProps> = ({ data, onMenu, loading }) => {
+  const dataCache = useRef<Record<string, NonNullable<typeof data>[number]>>();
+
+  const actions = useActions();
   const { selects } = useStore("resource");
+
   const toFolder = useToFolder();
 
   // 预览、打开
@@ -27,6 +32,13 @@ const Files: React.FC<TypeFilesProps> = ({ data, onMenu, loading }) => {
     switch (type) {
       case ENUM_RESOURCE.TYPE.FOLDER:
         return toFolder(id);
+      case ENUM_RESOURCE.TYPE.IMAGE:
+        if (!dataCache.current?.[id]) {
+          dataCache.current = Object.fromEntries(data!.map((v) => [v.id, v]));
+        }
+        const resource = dataCache.current[id];
+        actions.preview({ key: "images", value: resource });
+        return;
       default:
         return;
     }
