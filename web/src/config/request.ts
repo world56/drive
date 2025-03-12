@@ -39,3 +39,8 @@ export const API_PROXY_RECYCLE_URL = `/api/recovery/`;
  * @name API_PROXY_STATS_URL API 统计
  */
 export const API_PROXY_STATS_URL = `/api/stats/`;
+
+/**
+ * @name API_PROXY_IO_URL IO服务
+ */
+export const API_PROXY_IO_URL = `/api/io/`;

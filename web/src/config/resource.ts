@@ -18,4 +18,18 @@ export const ICON_THRESHOLD = 5 * 1024 * 1024;
 /**
  * @name RESOURCE_PREVIEW_PREFIX 资源预览前缀
  */
-export const RESOURCE_PREVIEW_PREFIX = '/static';
+export const RESOURCE_PREVIEW_PREFIX = "/static";
+
+/**
+ * @name PREVIEW_Z_INDEX 预览层级
+ */
+export const PREVIEW_Z_INDEX = 'Z_INDEX';
+
+/**
+ * @name PREVIEW_RESOURCE 预览资源类型
+ */
+export const PREVIEW_RESOURCE = {
+  IMAGE: ["jpg", "png", "gif", "svg", "bmp", "jpeg", "webp"],
+  AUDIO: ["mp3", "ogg"],
+  VIDEO: ["mp4", "avi"],
+};

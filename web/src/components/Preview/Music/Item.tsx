@@ -1,22 +1,20 @@
 import styles from "./index.module.sass";
 import { DeleteOutlined } from "@ant-design/icons";
 
+import type { TypeResource } from "@/interface/resource";
+
+interface TypeItemProps extends Pick<TypeResource.DTO, "id" | "name"> {}
+
 /**
  * @name Item 音乐标签
  */
-const Item = () => {
+const Item: React.FC<TypeItemProps> = ({ id, name }) => {
   return (
-    <div className={styles.item}>
-      <div>
-        <div>
-          <p>不能说的秘密</p>
-        </div>
-        <div>
-          <DeleteOutlined />
-        </div>
-      </div>
+    <div data-id={id} className={styles.item}>
+      <p>{name}</p>
+      <DeleteOutlined />
     </div>
   );
 };
-
+``;
 export default Item;

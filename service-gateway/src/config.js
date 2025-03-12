@@ -36,6 +36,13 @@ const config = [
     rateLimit: {},
     whitelist: [],
   },
+  {
+    prefix: `${BASE_URL}/io`,
+    upstream: "http://127.0.0.1:2004",
+    auth: true,
+    rateLimit: {},
+    whitelist: [],
+  },
 ];
 
 module.exports = config;

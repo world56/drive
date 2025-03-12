@@ -6,53 +6,70 @@ import {
   MediaPlayButton,
   MediaVolumeRange,
   MediaTimeDisplay,
+  MediaPlaybackRateButton,
 } from "media-chrome/react";
-import Item from "./Item";
 import Container from "../Container";
+import WaveSurfer from "wavesurfer.js";
 import styles from "./index.module.sass";
+import { useEffect, useRef } from "react";
+import { API_PROXY_EXPLORER_URL } from "@/config/request";
 
-import ICON_NEXT from "@/assets/next.svg";
-import ICON_PRE from "@/assets/previous.svg";
+import { TypeResource } from "@/interface/resource";
 
-const URL =
-  "https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/high.mp4";
-
-const IMG = `https://img1.baidu.com/it/u=2949796277,2040339066&fm=253&fmt=auto&app=120&f=JPEG?w=500&h=502`;
+interface TypeMusicProps {
+  data?: TypeResource.DTO;
+}
 
 /**
  * @name Music 音频播放器
  */
-const Music = () => {
+const Music: React.FC<TypeMusicProps> = ({ data }) => {
+  const api = useRef<WaveSurfer>(null!);
+  const view = useRef<HTMLDivElement>(null);
+  const audio = useRef<HTMLAudioElement>(null);
+
+  useEffect(() => {
+    api.current = WaveSurfer.create({
+      container: view.current!,
+      backend: "MediaElement",
+      media: audio.current!,
+      interact: false,
+      height: "auto",
+      waveColor: "#4F4A85",
+      progressColor: "#383351",
+      cursorWidth: 2,
+    });
+    return () => {
+      api.current.destroy();
+    };
+  }, []);
+
   return (
-    <Container backgroundColor="transparent">
+    <Container
+      hover
+      data={data}
+      type="audios"
+      defaultWidth={500}
+      defaultHeight={260}
+      backgroundColor="transparent"
+    >
       <div className={styles.layout}>
-        <div className={styles.title}>
-          <img src={IMG} alt="" />
-          <div>
-            <p>回到故去</p>
-            <p>周杰伦</p>
-          </div>
-        </div>
+        <div ref={view} className={styles.view} />
         <MediaController audio>
-          <video muted slot="media" preload="auto" src={URL} />
+          <audio
+            slot="media"
+            ref={audio}
+            src={`${API_PROXY_EXPLORER_URL}resource/${data!.path}`}
+          />
           <MediaControlBar>
-            <div className={styles.progress}>
-              <MediaTimeRange />
-              <MediaTimeDisplay showDuration />
-            </div>
-            <div className={styles.tools}>
-              <img src={ICON_PRE} style={{ width: 19 }} />
-              <MediaPlayButton />
-              <img src={ICON_NEXT} style={{ width: 18 }} />
-              <MediaMuteButton />
-              <MediaVolumeRange />
-            </div>
+            <MediaPlayButton />
+            <MediaTimeDisplay showduration />
+            <MediaTimeRange />
+            <MediaPlaybackRateButton />
+            <MediaMuteButton />
+            <MediaVolumeRange />
           </MediaControlBar>
         </MediaController>
-        <Item />
-        <Item />
-        <Item />
-        <Item />
       </div>
     </Container>
   );

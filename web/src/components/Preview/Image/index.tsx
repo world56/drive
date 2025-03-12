@@ -4,6 +4,8 @@ import Container from "../Container";
 import styles from "./index.module.sass";
 import { TypeResource } from "@/interface/resource";
 
+import { API_PROXY_EXPLORER_URL } from "@/config/request";
+
 /**
  * @name Image 图片预览
  */
@@ -79,7 +81,7 @@ const Image: React.FC<{ data: TypeResource.DTO }> = ({ data }) => {
   }
 
   return (
-    <Container data={data}>
+    <Container type="images" data={data}>
       <div
         ref={container}
         className={styles.layout}
@@ -87,9 +89,9 @@ const Image: React.FC<{ data: TypeResource.DTO }> = ({ data }) => {
       >
         <img
           ref={ref}
-          src={data.path}
           onLoad={onLoad}
           onMouseDown={onMouseDown}
+          src={`${API_PROXY_EXPLORER_URL}resource/${data.path}`}
         />
         <Tools onRotate={onRotate} onSize={onSize} onReset={onReset} />
       </div>

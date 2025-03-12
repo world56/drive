@@ -3,6 +3,7 @@ import { message } from "antd";
 import { ActionsConfig } from "@/store/config";
 
 import { ENUM_COMMON } from "@/enum/common";
+import { PREVIEW_Z_INDEX } from "@/config/resource";
 import { API_DOWNLOAD_FILE_URL } from "@/api/resource";
 
 /**
@@ -59,4 +60,13 @@ export function downloadFile(id?: string) {
   } catch (e) {
     message.error(`下载失败${e}`);
   }
+}
+
+/**
+ * @name getPreviewZIndex 预览层级
+ */
+export function getPreviewZIndex() {
+  let i = Number(sessionStorage.getItem(PREVIEW_Z_INDEX)) || 10;
+  sessionStorage.setItem(PREVIEW_Z_INDEX, String(++i));
+  return i.toString();
 }

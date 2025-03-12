@@ -18,6 +18,10 @@ export default function useElementMove(ref: React.RefObject<HTMLDivElement>) {
     clientY: 0,
   });
 
+  function getElementZIndex() {
+    return ref.current?.style.zIndex;
+  }
+
   function getElementStyle(e: React.MouseEvent<HTMLDivElement>) {
     const { offsetX, offsetY } = e.nativeEvent;
     const { top, left } = ref.current!.getBoundingClientRect();
@@ -62,7 +66,8 @@ export default function useElementMove(ref: React.RefObject<HTMLDivElement>) {
     if (top + 20 >= window.innerHeight) {
       top = window.innerHeight - 20;
     }
-    ref.current!.style.cssText = `width:${width}px;height:${height}px;top:${top}px;left:${left}px;`;
+    const zIndex = getElementZIndex();
+    ref.current!.style.cssText = `width:${width}px;height:${height}px;top:${top}px;left:${left}px;z-index:${zIndex};`;
   }
 
   function onDragSize(
@@ -192,8 +197,8 @@ export default function useElementMove(ref: React.RefObject<HTMLDivElement>) {
         }
         break;
     }
-
-    ref.current!.style.cssText = `top:${top}px;left:${left}px;width:${width}px;height:${height}px`;
+    const zIndex = getElementZIndex();
+    ref.current!.style.cssText = `top:${top}px;left:${left}px;width:${width}px;height:${height}px;z-index:${zIndex};`;
   }
 
   function onDragSizeEnd() {

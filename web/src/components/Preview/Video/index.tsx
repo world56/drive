@@ -11,28 +11,31 @@ import {
 import Container from "../Container";
 import styles from "./index.module.sass";
 
-const URL =
-  "https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/high.mp4";
+import { API_PROXY_EXPLORER_URL } from "@/config/request";
+
+import { TypeResource } from "@/interface/resource";
 
 /**
  * @name Video 视频播放
  */
-const Video = () => {
-  return (
-    <Container hover className={styles.video}>
-      <MediaController>
-        <video muted slot="media" preload="auto" src={URL} />
-        <MediaControlBar>
-          <MediaPlayButton />
-          <MediaTimeRange />
-          <MediaTimeDisplay showDuration />
-          <MediaMuteButton />
-          <MediaVolumeRange />
-          <MediaFullscreenButton />
-        </MediaControlBar>
-      </MediaController>
-    </Container>
-  );
-};
+const Video: React.FC<{ data: TypeResource.DTO }> = ({ data }) => (
+  <Container hover type="videos" data={data} className={styles.video}>
+    <MediaController>
+      <video
+        slot="media"
+        preload="auto"
+        src={`${API_PROXY_EXPLORER_URL}resource/${data.path}`}
+      />
+      <MediaControlBar>
+        <MediaPlayButton />
+        <MediaTimeRange />
+        <MediaTimeDisplay showDuration />
+        <MediaMuteButton />
+        <MediaVolumeRange />
+        <MediaFullscreenButton />
+      </MediaControlBar>
+    </MediaController>
+  </Container>
+);
 
 export default Video;

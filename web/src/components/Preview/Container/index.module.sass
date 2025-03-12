@@ -16,7 +16,6 @@
       display: flex !important
 
 .layout
-  z-index: 10
   overflow: hidden
   position: absolute
   border-radius: 3px
@@ -48,20 +47,17 @@
       text-overflow: ellipsis
       color: rgba(255,255 ,255,0.8)
 
-    :global(.anticon)
-      position: absolute
-      width: 16px
-      color: #fff
-      cursor: pointer
+    .tools
       top: 10
+      right: 10px
+      display: flex
+      color: #fff
+      position: absolute
 
-    :global(.anticon):nth-last-child(1)
-      right: 12px
-      font-size: 20px
-
-    :global(.anticon):nth-last-child(2)
-      right: 40px
-      font-size: 25px
+      :global(.anticon)
+        width: 16px
+        cursor: pointer
+        margin-left: 10px
 
   .bl
     @extend .corner
