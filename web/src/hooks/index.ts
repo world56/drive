@@ -7,4 +7,5 @@ export { default as useReqDetails } from "./useReqDetails";
 export { default as useWindowSize } from "./useWindowSize";
 export { default as usePageTurning } from "./usePageTurning";
 export { default as useElementMove } from "./useElementMove";
+export { default as usePreviewFile } from "./usePreviewFile";
 export { default as useEventListener } from "./useEventListener";

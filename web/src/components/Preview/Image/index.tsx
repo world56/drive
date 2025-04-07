@@ -1,7 +1,9 @@
 import Tools from "./Tools";
 import { useRef } from "react";
 import Container from "../Container";
+import { useToFolder } from "@/hooks";
 import styles from "./index.module.sass";
+import { downloadFile } from "@/utils/resource";
 import { TypeResource } from "@/interface/resource";
 
 import { API_PROXY_EXPLORER_URL } from "@/config/request";
@@ -10,6 +12,8 @@ import { API_PROXY_EXPLORER_URL } from "@/config/request";
  * @name Image 图片预览
  */
 const Image: React.FC<{ data: TypeResource.DTO }> = ({ data }) => {
+  const toFolder = useToFolder();
+
   const offset = useRef({ top: 0, left: 0, offsetX: 0, offsetY: 0 });
 
   const ref = useRef<HTMLImageElement>(null!);
@@ -29,6 +33,14 @@ const Image: React.FC<{ data: TypeResource.DTO }> = ({ data }) => {
 
   function onReset() {
     onLoad();
+  }
+
+  function onSkip() {
+    toFolder(data?.parentId);
+  }
+
+  function onDownload() {
+    downloadFile(data?.id);
   }
 
   function onLoad() {
@@ -93,7 +105,13 @@ const Image: React.FC<{ data: TypeResource.DTO }> = ({ data }) => {
           onMouseDown={onMouseDown}
           src={`${API_PROXY_EXPLORER_URL}resource/${data.path}`}
         />
-        <Tools onRotate={onRotate} onSize={onSize} onReset={onReset} />
+        <Tools
+          onSkip={onSkip}
+          onSize={onSize}
+          onReset={onReset}
+          onRotate={onRotate}
+          onDownload={onDownload}
+        />
       </div>
     </Container>
   );

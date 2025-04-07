@@ -7,10 +7,12 @@ import Container from "./Container";
 import styles from "./index.module.sass";
 import { FixedSizeList } from "react-window";
 import { getGlobalResources } from "@/api/resource";
+import { useToFolder, useActions, usePreviewFile } from "@/hooks";
 
 import { ENUM_COMMON } from "@/enum/common";
 
 import type { TypeInputProps } from "./Input";
+import type { TypeResource } from "@/interface/resource";
 
 const IMAGE = Empty.PRESENTED_IMAGE_SIMPLE;
 
@@ -18,6 +20,10 @@ const IMAGE = Empty.PRESENTED_IMAGE_SIMPLE;
  * @name Search 资源查询
  */
 const Search = () => {
+  const actions = useActions();
+  const toFolder = useToFolder();
+  const onPreviewFile = usePreviewFile();
+
   const [search, setSearch] = useState<TypeInputProps["value"]>({
     name: "",
     type: [],
@@ -29,8 +35,13 @@ const Search = () => {
     debounceWait: 200,
   });
 
-  function onSelect() {
-    console.log("@-onSelect");
+  function onSelect(value: TypeResource.DTO) {
+    onPreviewFile(value);
+  }
+
+  function onToPath(parentId?: string) {
+    toFolder(parentId);
+    actions.setConfig({ SEARCH: false });
   }
 
   function onChange(e: TypeInputProps["value"]) {
@@ -44,7 +55,7 @@ const Search = () => {
     : "请输入关键字进行查询";
 
   return (
-    <Container loading={loading} onSelect={onSelect}>
+    <Container loading={loading} onSelect={onSelect} onPath={onToPath}>
       <Input value={search} onChange={onChange} />
       {desc ? (
         <Empty image={IMAGE} description={desc} />

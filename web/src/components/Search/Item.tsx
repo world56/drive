@@ -17,8 +17,11 @@ const Item: React.FC<TypeItemProps> = ({ index, style, data }) => {
     <div
       style={style}
       data-id={row.id}
+      data-path={row.path}
       className={styles.item}
-      data-name={row.fullName}
+      data-suffix={row.suffix}
+      data-parent-id={row.parentId}
+      data-full-name={row.fullName}
     >
       <ResourceIcon width={40} {...row} />
       <div className={styles.detail}>
@@ -26,7 +29,8 @@ const Item: React.FC<TypeItemProps> = ({ index, style, data }) => {
         <p
           title="点击打开目录"
           className={styles.path}
-          data-path={row.parentId || '/'}
+          data-full-name={row.fullName}
+          data-dir-path={row.parentId || "/"}
         >
           {row?.paths?.length ? "主目录/" : "主目录"}
           {row?.paths?.map((v) => v.name).join("/")}
