@@ -350,7 +350,7 @@ const Container: React.FC<TypeFilesContainerProps> = ({
       <Dropdown trigger={["contextMenu"]} menu={{ onClick, items }}>
         <div className={styles.layout} ref={ref}>
           <Selects
-            hitRate={0}
+            hitRate={1}
             onSelect={onSelect}
             container={ref.current}
             toggleContinueSelect="shift"
