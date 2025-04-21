@@ -2,13 +2,25 @@ syntax = "proto3";
 
 package auth;
 
-service AuthService {
-  rpc GetKey (Null) returns (KeyResponse) {}
+service UserService {
+  rpc GetUserInfo (FindUserId) returns (User) {}
 }
 
-message Null {}
+service LogService {
+  rpc WriteLog(Log) returns (Log) {}
+}
 
-message KeyResponse {
-  string public  = 1;
-  string private = 2;
+message Log {
+  string event = 1;
+  string operatorId = 2;
+  string desc = 3;
+}
+
+message User {
+  string id = 1;
+  string name = 2;
+}
+
+message FindUserId {
+  string id = 1;
 }

@@ -15,6 +15,34 @@ const config = [
     rateLimit: {},
     whitelist: [],
   },
+  {
+    prefix: `${BASE_URL}/favorite`,
+    upstream: "http://127.0.0.1:2002",
+    auth: true,
+    rateLimit: {},
+    whitelist: [],
+  },
+  {
+    prefix: `${BASE_URL}/recovery`,
+    upstream: "http://127.0.0.1:2002",
+    auth: true,
+    rateLimit: {},
+    whitelist: [],
+  },
+  {
+    prefix: `${BASE_URL}/stats`,
+    upstream: "http://127.0.0.1:2003",
+    auth: true,
+    rateLimit: {},
+    whitelist: [],
+  },
+  {
+    prefix: `${BASE_URL}/io`,
+    upstream: "http://127.0.0.1:2004",
+    auth: true,
+    rateLimit: {},
+    whitelist: [],
+  },
 ];
 
 module.exports = config;

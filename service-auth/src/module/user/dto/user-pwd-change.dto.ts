@@ -1,4 +1,4 @@
-import { IsString } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 import { ApiProperty, PickType } from '@nestjs/swagger';
 
 import { UserDTO } from '@/dto/user.dto';
@@ -12,6 +12,7 @@ export class UserPwdChangeDTO extends PickType(UserDTO, [
     example: '123456',
     description: '规则与用户密码一致',
   })
+  @IsOptional()
   @IsString()
-  newPassword: string;
+  pwd?: string;
 }

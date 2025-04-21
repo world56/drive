@@ -1,0 +1,74 @@
+.layout
+  width: 100%
+  height: 100%
+  overflow: hidden
+  padding-bottom: 20px
+  backdrop-filter: blur(10px)
+  background-color: rgba(0, 0, 0, 1)
+  box-shadow: 0px 0px 12px rgba(0, 0, 0, .05)
+
+  .view
+    width: calc(100% - 10px)
+    height: calc(100% - 80px)
+    margin-top: 30px
+    padding: 0 5px
+    display: flex
+    align-items: center
+    & > div
+      width: 100%
+
+  media-time-range,
+  media-mute-button,
+  media-play-button,
+  media-time-display,
+  media-volume-range,
+  media-playback-rate-button 
+    background: transparent !important
+  
+  media-controller
+    width: 100%
+    background: transparent
+    --media-tooltip-display: none
+
+  media-control-bar 
+    width: 100%
+    height: 100%
+    align-items: center
+
+  media-play-button 
+    --media-button-icon-width: 25px
+    --media-button-icon-height: 25px
+    padding-left: 10px
+    border-radius: 50%
+
+  media-time-display 
+    color: white
+    background: transparent
+
+  media-time-range 
+    width: calc(100% - 320px)
+    --media-range-thumb-width: 5px
+    --media-range-thumb-height: 12px
+    --media-range-track-height: 6px
+    --media-range-track-border-radius: 10px
+    --media-range-bar-color: gray
+    --media-range-thumb-background: white
+    --media-range-track-background: #2c2c30
+  
+  media-mute-button 
+    padding-right: 0
+    --media-icon-color: white
+
+  media-volume-range 
+    padding-right: 10px
+    --media-range-thumb-width: 5px
+    --media-range-thumb-height: 12px
+    --media-range-track-height: 6px
+    --media-range-track-border-radius: 10px
+    --media-range-bar-color: gray
+    --media-range-thumb-background: white
+    --media-range-track-background: #2c2c30
+
+  media-playback-rate-button 
+    color: white
+

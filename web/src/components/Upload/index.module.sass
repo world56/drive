@@ -1,0 +1,151 @@
+@import '@/index.sass'
+
+.open
+  width: 340px !important
+  height: 500px !important
+
+.close
+  overflow: hidden
+
+.layout
+  width: 260px
+  height: 52px
+  right: 15px
+  bottom: 15px
+  position: fixed
+  transition: 0.5s
+  background: #fff
+  border-radius: 8px
+  box-shadow: 0 0 1px 1px rgb(28 28 32 / 5%), 0 8px 24px rgb(28 28 32 / 12%)
+
+  :global(.ant-empty)
+    user-select: none
+    margin-top: 160px
+
+  :global(.anticon-close):hover,
+  :global(.anticon-delete):hover
+    background: rgba($red,0.1) !important
+    svg
+      fill: $red !important
+
+  & > div > div > div:nth-last-child(1)
+    border-bottom: none
+
+  .header
+    cursor: pointer
+    height: 52px
+    display: flex
+    padding: 0 15px
+    font-size: 15px
+    overflow: hidden
+    user-select: none
+    align-items: center
+    background: rgba(0, 0, 0, 0)
+    justify-content: space-between
+    border-bottom: 1px solid rgba(28, 28, 32, 0.05)
+
+    .hover
+      position: absolute
+      width: 100%
+      height: 52px
+      left: 0
+      z-index: 1
+      border-radius: 8px 8px 0 0
+      &:hover
+        background: rgba(0, 0, 0, .05)
+
+    .status
+      display: flex
+      align-items: center
+      & > span:nth-child(2)
+        font-weight: bold
+      & > span:nth-child(3)
+        margin: 0 8px
+        &::before
+          content: ""
+          display: block
+          width: 2px
+          height: 2px
+          background: black
+      & > span:nth-child(4)
+        font-weight: 300
+
+      :global(.anticon)
+        margin-right: 12px
+        svg
+          font-size: 18px
+
+  .btn
+    width: 58px
+    display: flex
+    position: absolute
+    z-index: 2
+    right: 15px
+    align-items: center
+    justify-content: right
+    :global(.anticon)
+      width: 24px
+      height: 24px
+      display: flex
+      cursor: pointer
+      border-radius: 50%
+      align-content: center
+      justify-content: center
+      background: rgb(0,0,0,0.05)
+      svg
+        font-size: 17px
+        fill: rgb(98,99,102)
+      &:hover
+        background: rgb(0,0,0,0.08)
+        svg
+          fill: black
+
+    :global(.anticon):nth-last-child(1)
+      margin-left: 8px
+
+  .item
+    width: 320px !important
+    height: 55px
+    display: flex
+    align-items: center
+    padding: 0 10px 0 11px
+    border-bottom: 1px solid rgba(28, 28, 32, 0.05)
+
+    img
+      width: 32px
+      margin-right: 7.5px
+
+    p
+      margin: 0
+
+    & div:nth-child(2)
+      margin: 0
+      width: 201px
+      font-size: 14px
+      padding-right: 14px
+
+      p
+        overflow: hidden
+        white-space: nowrap
+        text-overflow: ellipsis
+
+        &:nth-child(1)
+          color: rgba(0, 0, 0, 0.7)
+
+        &:nth-child(2)
+          font-size: 12px
+          color: #878D96
+
+        span:nth-child(2)
+          margin-left: 5px
+        span:nth-last-child(1)
+          color: rgba(0, 0, 0, 0.7)
+          display: none
+
+      &:hover
+        p:nth-child(2)
+          span:nth-child(1),
+          span:nth-child(2)
+            display: none
+          span:nth-last-child(1)
+            display: inline-block

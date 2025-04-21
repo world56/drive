@@ -1,0 +1,22 @@
+{
+  "name": "service-statistics",
+  "version": "0.0.1",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node ./src/.",
+    "start:dev": "nodemon ./src/."
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@fastify/one-line-logger": "^1.4.0",
+    "@grpc/grpc-js": "^1.12.4",
+    "@grpc/proto-loader": "^0.7.13",
+    "dayjs": "^1.11.13",
+    "diskusage": "^1.2.0",
+    "fastify": "^4.28.1",
+    "ioredis": "^5.4.1"
+  }
+}

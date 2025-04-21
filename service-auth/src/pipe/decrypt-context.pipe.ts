@@ -1,5 +1,7 @@
+import { Injectable } from '@nestjs/common';
 import { CryptoService } from '@/module/crypto/crypto.service';
-import { ArgumentMetadata, Injectable, PipeTransform } from '@nestjs/common';
+
+import type { PipeTransform, ArgumentMetadata } from '@nestjs/common';
 
 @Injectable()
 export class DecryptContextPipe<T extends string> implements PipeTransform {

@@ -14,16 +14,33 @@ generator js {
 }
 
 model User {
-  id         String     @id @default(uuid())
-  name       String?
-  account    String     @unique
+  id         String   @id @default(cuid())
+  name       String   @db.VarChar(15)
+  account    String   @unique @db.VarChar(20)
   password   String
-  status     Int        @default(1)
-  isSuper    Int        @default(0) @map("is_super") @db.Int()
-  createTime DateTime   @default(now()) @map("create_time")
+  status     Int      @default(1)
+  role       Int      @default(1) @db.Int()
+  createTime DateTime @default(now()) @map("create_time")
+  remark     String?  @db.VarChar(255)
+  contact    String?  @db.VarChar(100)
+  logs       Log[]
 
   @@unique([account, password])
-  @@index([account])
-  @@index([isSuper])
+  @@index(account)
+  @@index(role)
   @@map("user")
+}
+
+model Log {
+  id         Int      @id @default(autoincrement())
+  event      String
+  desc       String?  @db.Text
+  operatorId String   @map("operator_id")
+  createTime DateTime @default(now()) @map("create_time")
+  operator   User     @relation(fields: [operatorId], references: [id])
+
+  @@index([event, operatorId])
+  @@index(event)
+  @@index(operatorId)
+  @@map("log")
 }

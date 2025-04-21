@@ -1,18 +1,22 @@
-import Header from './Header';
-import Navigation from './Navigation';
-import styles from './index.module.sass';
+import Header from "./Header";
+import Upload from "../Upload";
+import Preview from "../Preview";
+import Navigation from "./Navigation";
+import styles from "./index.module.sass";
 import { Outlet } from "react-router-dom";
 
-const Entrance = () => {
-  return (
-    <>
-      <Header />
-      <main className={styles.main}>
-        <Navigation />
+const Entrance = () => (
+  <>
+    <Header />
+    <main className={styles.main}>
+      <Navigation />
+      <div className={styles.children}>
         <Outlet />
-      </main>
-    </>
-  );
-};
+      </div>
+    </main>
+    <Upload />
+    <Preview />
+  </>
+);
 
 export default Entrance;

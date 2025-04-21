@@ -3,15 +3,17 @@ import {
   IsEnum,
   IsString,
   MinLength,
+  MaxLength,
   IsOptional,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { ApiProperty } from '@nestjs/swagger';
-import { PrimaryKeyStringDTO } from './common.dto';
+import { ApiProperty, IntersectionType } from '@nestjs/swagger';
+
+import { RemarkDTO, PrimaryKeyStringDTO } from './common.dto';
 
 import { ENUM_COMMON } from '@/enum/common';
 
-export class UserDTO extends PrimaryKeyStringDTO {
+export class UserDTO extends IntersectionType(RemarkDTO, PrimaryKeyStringDTO) {
   @ApiProperty({
     required: true,
     minLength: 5,
@@ -24,19 +26,17 @@ export class UserDTO extends PrimaryKeyStringDTO {
 
   @ApiProperty({
     required: true,
-    minLength: 5,
     description: '登陆密码',
   })
-  @MinLength(5, { message: '密码长度不得少于5位' })
   @IsString()
   password: string;
 
   @ApiProperty({
     required: true,
-    minLength: 6,
+    maxLength: 15,
     description: '用户名称',
   })
-  @MinLength(6, { message: '用户名称不得超过6位' })
+  @MaxLength(15, { message: '用户名称不得超过15位' })
   @IsString()
   name: string;
 
@@ -52,12 +52,21 @@ export class UserDTO extends PrimaryKeyStringDTO {
   status: ENUM_COMMON.STATUS;
 
   @ApiProperty({
-    description: '是否为超级管理员',
-    default: ENUM_COMMON.SUPER_ADMIN.NOT_SUPER,
+    description: '角色类型',
+    default: ENUM_COMMON.ROLE.REG,
   })
   @IsOptional()
-  @IsEnum(ENUM_COMMON.SUPER_ADMIN)
+  @IsEnum(ENUM_COMMON.ROLE)
   @IsInt()
   @Type(() => Number)
-  isSuper?: ENUM_COMMON.SUPER_ADMIN;
+  role?: ENUM_COMMON.ROLE;
+
+  @ApiProperty({
+    maxLength: 100,
+    description: '联系方式（邮箱、电话均可）',
+  })
+  @IsOptional()
+  @MaxLength(100)
+  @IsString()
+  contact?: string;
 }

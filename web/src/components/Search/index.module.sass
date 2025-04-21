@@ -1,0 +1,84 @@
+.center
+  display: flex
+  user-select: none
+  align-items: center
+  flex-direction: column
+  justify-content: center
+
+.layout
+  width: 100%
+  height: 100%
+  position: fixed
+  background: rgba(0, 0, 0, 0.3)
+  .search
+    width: 760px
+    height: 700px
+    position: fixed
+    z-index: 99
+    background: #fff
+    top: calc(50% - 320px)
+    left: calc(50% - 380px)
+    border-radius: 15px
+    box-shadow: rgba(15, 15, 15, 0.05) 0px 0px 0px 1px, rgba(15, 15, 15, 0.1) 0px 5px 10px, rgba(15, 15, 15, 0.2) 0px 15px 40px
+    .ctx
+      .item
+        cursor: pointer
+        max-width: 740px
+        height: 59.5px
+        padding: 0 0 0 10px
+        display: flex
+        margin: 0 0 0 5px
+        align-items: center
+        border-radius: 6px
+        &:hover
+          background: rgba(0, 0, 0, 0.06)
+        .detail
+          width: 640px
+          overflow: hidden
+          margin-left: 10px
+          display: flex
+          flex-direction: column
+          p
+            margin: 0
+            padding: 0
+            overflow: hidden
+            white-space: nowrap
+            text-overflow: ellipsis
+          .name
+            color: #0F151D
+            font-size: 18px
+            margin-bottom: 2px
+          .path
+            font-size: 13px
+            color: #5A647B
+          .path
+            width: max-content
+            display: inline-block
+            &:hover
+              text-decoration: underline
+        .tools
+          width: 45px
+          height: 100%
+          display: none
+          font-size: 18px
+          align-items: center
+          justify-content: center
+          color: rgb(145, 145, 142)
+        &:hover
+          .tools
+            display: flex
+
+      .item:nth-last-child(1)
+        border-bottom: none
+
+  :global(.ant-spin)
+    position: absolute
+    top: 100px
+    left: 0
+    width: 100%
+    height: 500px
+    background: #fff
+    @extend .center
+  :global(.ant-empty)
+    height: 400px
+    @extend .center

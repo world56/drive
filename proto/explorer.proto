@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package explorer;
+
+import "google/protobuf/empty.proto";
+
+service ExplorerService {
+  rpc GetCount (google.protobuf.Empty) returns (Count) {};
+  rpc GetRecently (google.protobuf.Empty) returns (Resources) {};
+  rpc GetFavorite (google.protobuf.Empty) returns (Resources) {};
+}
+
+message Count {
+  map<string, int32> count = 1;
+}
+
+message Resource {
+  string id  = 1;
+  string fullName = 2;
+  string path = 3;
+  int32  type = 4;
+  int64  count = 5;
+}
+
+message Resources {
+  repeated Resource data = 1;
+}

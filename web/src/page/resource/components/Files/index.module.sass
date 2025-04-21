@@ -1,0 +1,30 @@
+@import '@/index.sass'
+
+.files
+  width: 100%
+  @extend .loading
+
+  .nav
+    height: 40px
+    display: flex
+    padding: 0 15px
+    background: #fff
+    align-items: center
+    justify-content: space-between
+
+    li
+      cursor: pointer
+    :global(.anticon-search)
+      cursor: pointer
+
+  .layout
+    padding: 10px 0 0 10px
+    height: calc(100% - 50px)
+
+    :global(.ant-empty-normal)
+      width: 100%
+      display: flex
+      align-items: center
+      flex-direction: column
+      justify-content: center
+      height: calc(100% - 47px)

@@ -1,0 +1,67 @@
+.thumbnail
+  .file
+    padding: 6px
+    cursor: pointer
+    user-select: none
+    background: #fff
+    border-radius: 2px
+    position: relative
+    width: calc(100% - 22.5px)
+    height: calc(100% - 22.5px)
+    border: 1px solid rgba(204,204 ,204, 0.4)
+
+    & > span
+      width: 100%
+      height: 74%
+      overflow: hidden
+      border-radius: 3px
+      margin-bottom: 4px
+      display: flex
+      justify-content: center
+      align-items: center
+      background: #F7F7F7
+
+    p
+      margin: 0
+
+    & > p:nth-child(2)
+      height: 20px
+      overflow: hidden
+      font-size: 13.5px
+      padding-top: 0.5px
+      margin-bottom: 1px
+      white-space: nowrap
+      text-overflow: ellipsis
+
+    & > p:nth-child(3)
+      display: flex
+      font-size: 12px
+      font-weight: 300
+      user-select: none
+      color: rgb(135,141 ,150)
+      justify-content: space-between
+      span:nth-child(2)
+        display: none
+
+    :global(.anticon-heart)
+      right: 12px
+      bottom: 50px
+      font-size: 17px
+      position: absolute
+
+    :global(.anticon-check-circle)
+      font-size: 16px
+      display: inline-block !important
+      svg
+        fill: black
+
+  .hover:hover
+    box-shadow: 0 2px 12px 0 rgba(0,0,0,.1)
+    :global(.anticon-heart)
+      display: block
+
+    p:nth-last-child(1)
+      span:nth-child(2)
+        display: inline-block
+      span:nth-child(3)
+        display: none

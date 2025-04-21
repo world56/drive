@@ -1,0 +1,21 @@
+.container
+  padding: 10px
+  background: #fff
+  border-radius: 8px
+  position: relative
+  margin-bottom: 10px
+  border: 1px solid #f1f2f4
+  h3
+    user-select: none
+    margin: 8px 0 0 8px
+
+.recently
+  width: 100%
+  display: flex
+  & > div:nth-child(1)
+    margin-right: 10px
+  .container
+    width: calc(50% - 27px)
+  :global(.ant-empty)
+    min-height: 380px
+    padding-top: 150px

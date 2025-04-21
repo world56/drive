@@ -1,6 +1,9 @@
 import zhCN from "antd/locale/zh_CN";
 
+import { DB_PRIMARY_KEY } from "./db";
+
 import type { ConfigProviderProps } from "antd/es/config-provider";
+import React from "react";
 
 /**
  * @name CONFIG_ANTD antd 默认配置
@@ -33,6 +36,18 @@ export const CONFIG_ANTD: ConfigProviderProps = {
   },
 };
 
+/**
+ * @name CONFIG_ANTD_COMP_FIELD antd默认匹配字段
+ */
+export const CONFIG_ANTD_COMP_FIELD = {
+  title: "name",
+  key: DB_PRIMARY_KEY,
+  children: "children",
+};
+
+/**
+ * @name FORM_ACCOUNT_RULES 正则 校验用户账户合法性
+ */
 export const FORM_ACCOUNT_RULES = [
   { required: true, message: "请输入登录账号" },
   { min: 5, message: "最少5位字符" },
@@ -40,6 +55,9 @@ export const FORM_ACCOUNT_RULES = [
   { message: "只允许包含数字、字母、下划线", pattern: /^[0-9a-zA-Z_]{1,}$/ },
 ];
 
+/**
+ * @name FORM_ACCOUNT_RULES 正则 校验用户密码合法性
+ */
 export const FORM_PASSWORD_RULES = [
   { required: true, message: "请输入登录密码" },
   { min: 5, message: "密码不得少于5位字符" },

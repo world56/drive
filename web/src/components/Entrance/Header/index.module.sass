@@ -1,12 +1,10 @@
 .header
+  z-index: 10
   height: 66px
   background: #fff
-  user-select: none
   display: flex
   position: relative
-  z-index: 1
   justify-content: space-between
-  // border-bottom: 1px solid #e5e7eb
   box-shadow: -7px 3px 10px 0 rgba(0,0,0,.06)
 
   h1
@@ -16,8 +14,8 @@
     font-size: 22px
     font-weight: 400
     color: #444746
-    // color: #0F172A
     align-items: center
+    user-select: none
 
     & > span:nth-child(2)
       font-weight: bold
@@ -30,8 +28,9 @@
   .user
     display: flex
     cursor: pointer
-    align-items: center
+    user-select: none
     margin-right: 18px
+    align-items: center
     div
       width: 46px
       height: 46px

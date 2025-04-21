@@ -1,10 +1,10 @@
 import cookie from "js-cookie";
 import { createSlice } from "@reduxjs/toolkit";
 
-import { TOKEN_KEY } from "@/config/user";
+import { TOKEN_KEY } from "@/config/request";
 
 import type { TypeUser } from "@/interface/user";
-import type { PayloadAction } from "@reduxjs/toolkit/dist";
+import type { PayloadAction } from "@reduxjs/toolkit";
 
 export const DEFAULT_USER: Partial<TypeUser.DTO> = {};
 
@@ -12,7 +12,7 @@ const userSlice = createSlice({
   name: "USER",
   initialState: DEFAULT_USER,
   reducers: {
-    setUserInfo: (state, action: PayloadAction<TypeUser.DTO, string>) => {
+    setUserInfo: (_state, action: PayloadAction<TypeUser.DTO, string>) => {
       return action.payload;
     },
     delUserInfo() {

@@ -1,0 +1,42 @@
+.video
+  display: flex
+  media-controller
+    width: 100%
+    height: 100%
+    overflow: hidden
+    user-select: none
+    border-radius: 3px
+    box-shadow: 0px 0px 12px rgba(0, 0, 0, .12)
+
+    .play
+      border-radius: 50%
+      overflow: hidden
+
+    media-controller,
+    media-controller > video 
+      border-radius: 6px
+
+    media-control-bar > * 
+      background: none
+
+    media-control-bar
+      // backdrop-filter: blur(100px)
+      background: rgba(0, 0, 0, 0.3)
+
+    media-control-bar 
+      margin: 10px
+      overflow: hidden
+      border-radius: 3px
+
+    media-time-range 
+      --media-range-thumb-width: 5px
+      --media-range-thumb-height: 12px
+      --media-range-track-height: 6px
+      --media-range-track-border-radius: 10px
+
+    media-volume-range
+      padding-right: 0
+      --media-range-thumb-width: 5px
+      --media-range-thumb-height: 12px
+      --media-range-track-height: 6px
+      --media-range-track-border-radius: 10px

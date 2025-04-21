@@ -1,7 +1,7 @@
 import store from "@/store";
 import cookie from "js-cookie";
-import { TOKEN_KEY } from "@/config/user";
 import { redirect } from "react-router-dom";
+import { TOKEN_KEY } from "@/config/request";
 import { getUserInfo } from "@/store/saga/actions";
 
 import type { LoaderFunctionArgs } from "@remix-run/router";
