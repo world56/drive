@@ -13,6 +13,6 @@ type Server struct {
 func NewServer(db *gorm.DB, redis *redis.Client) *Server {
 	return &Server{
 		Crypto:  NewAuthService(redis),
-		Account: NewAccountService(db),
+		Account: NewAccountService(db, redis),
 	}
 }
