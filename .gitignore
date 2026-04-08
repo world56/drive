@@ -1,21 +1,44 @@
 # OS
 .DS_Store
 
-# Refused to match
+# Logs
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
 
+# Frontend/Node
 dist/
-.vscode/
 node_modules/
-/service-explorer/resource
 
-# IDE - VSCode
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
+# IDE
+.vscode/
+.idea/
+
+# Go build artifacts
+bin/
+build/
+tmp/
+temp/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+
+# Go coverage and profiling outputs
+*.out
+coverage.out
+*.coverprofile
+*.prof
+*.pprof
+
+# Local environment files (keep template)
+.env
+.env.*
+!.env.example
+
+# Project-specific generated resources
+/service-explorer/resource
