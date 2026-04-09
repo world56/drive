@@ -6,13 +6,14 @@ import (
 )
 
 type Server struct {
-	Crypto  *CryptoService
-	Account *AccountService
+	CryptoService  *CryptoService
+	AccountService *AccountService
 }
 
 func NewServer(db *gorm.DB, redis *redis.Client) *Server {
+	CryptoService := NewCryptoService(redis)
 	return &Server{
-		Crypto:  NewAuthService(redis),
-		Account: NewAccountService(db, redis),
+		CryptoService:  CryptoService,
+		AccountService: NewAccountService(db, redis, CryptoService),
 	}
 }

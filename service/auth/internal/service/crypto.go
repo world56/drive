@@ -1,7 +1,7 @@
 package service
 
 import (
-	"auth/internal/pkg/utils"
+	"context"
 	"crypto/rand"
 	"crypto/rsa"
 	"crypto/sha256"
@@ -18,7 +18,7 @@ type CryptoService struct {
 	redis *redis.Client
 }
 
-func NewAuthService(r *redis.Client) *CryptoService {
+func NewCryptoService(r *redis.Client) *CryptoService {
 	return &CryptoService{
 		redis: r,
 	}
@@ -59,13 +59,18 @@ func (s *CryptoService) getRSA() (*RSAKeyPair, error) {
 }
 
 // 解密
-func Decrypt(privateKeyPEM string, token string) ([]byte, error) {
-	ciphertext, err := base64.StdEncoding.DecodeString(token)
+func (s *CryptoService) Decrypt(c context.Context, token string) ([]byte, error) {
+	privateKey, err := s.redis.HGet(c, "book:rsa", "private").Result()
+	if err != nil {
+		return nil, err
+	}
+
+	cipherText, err := base64.StdEncoding.DecodeString(token)
 	if err != nil {
 		return nil, errors.New("base64 decode error")
 	}
 
-	block, _ := pem.Decode([]byte(privateKeyPEM))
+	block, _ := pem.Decode([]byte(privateKey))
 	if block == nil {
 		return nil, errors.New("failed to parse PEM block")
 	}
@@ -81,16 +86,16 @@ func Decrypt(privateKeyPEM string, token string) ([]byte, error) {
 	}
 
 	hash := sha256.New()
-	return rsa.DecryptOAEP(hash, rand.Reader, rsaPriv, ciphertext, nil)
+	return rsa.DecryptOAEP(hash, rand.Reader, rsaPriv, cipherText, nil)
 }
 
 func (s *CryptoService) GetKey(c *gin.Context) (string, error) {
-	public, _ := s.redis.HGet(c, "book:rsa", "public").Result()
+	public, _ := s.redis.HGet(c, "drive:rsa", "public").Result()
 	if len(public) > 0 {
 		return public, nil
 	}
-	key, err := utils.GetKey()
-	s.redis.HSet(c, "book:rsa", key).Result()
+	key, err := s.getRSA()
+	s.redis.HSet(c, "drive:rsa", key).Result()
 	if err != nil {
 		return "", errors.New("generation failure")
 	}

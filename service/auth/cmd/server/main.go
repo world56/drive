@@ -10,7 +10,6 @@ import (
 )
 
 func main() {
-
 	app := gin.Default()
 
 	db, sqlDBerr := databases.InitPostgresSQL()
@@ -28,5 +27,5 @@ func main() {
 
 	router.RegisterRoutes(app, h)
 
-	app.Run("0.0.0.0:1001")
+	app.Run("0.0.0.0:9002")
 }

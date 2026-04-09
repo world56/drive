@@ -29,9 +29,13 @@ func (h *AccountHandler) HasSuperAdmin(c *gin.Context) {
 
 // 注册超级管理员
 func (h *AccountHandler) RegisterSuperAdmin(c *gin.Context) {
-	// body, err := c.GetRawData()
-	// if err != nil {
-	// 	response.ClientError(c, err)
-	// }
-
+	body, err := c.GetRawData()
+	if err != nil {
+		response.ClientError(c, err)
+		return
+	} else if err := h.AccountService.Register(c.Request.Context(), body); err != nil {
+		response.ServerError(c, err)
+	} else {
+		response.Success(c, true)
+	}
 }

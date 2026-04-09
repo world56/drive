@@ -7,8 +7,8 @@ import (
 )
 
 func RegisterRoutes(app *gin.Engine, h *handler.Handler) {
-	api := app.Group("/api/")
+	api := app.Group("/")
 
-	RegisterAccountRoutes(api, h.Account)
-	RegisterCryptoRoutes(api, h.Crypto)
+	RegisterCryptoRoutes(api, h.CryptoHandler)
+	RegisterAccountRoutes(api, h.AccountHandler)
 }

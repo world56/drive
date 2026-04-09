@@ -3,6 +3,9 @@ package service
 import (
 	"auth/internal/model"
 	"context"
+	"crypto/md5"
+	"encoding/hex"
+	"encoding/json"
 	"errors"
 
 	"github.com/redis/go-redis/v9"
@@ -10,14 +13,16 @@ import (
 )
 
 type AccountService struct {
-	db    *gorm.DB
-	redis *redis.Client
+	db            *gorm.DB
+	redis         *redis.Client
+	cryptoService *CryptoService
 }
 
-func NewAccountService(db *gorm.DB, r *redis.Client) *AccountService {
+func NewAccountService(d *gorm.DB, r *redis.Client, c *CryptoService) *AccountService {
 	return &AccountService{
-		db:    db,
-		redis: r,
+		db:            d,
+		redis:         r,
+		cryptoService: c,
 	}
 }
 
@@ -34,11 +39,24 @@ func (s *AccountService) HasSuperAdmin() (bool, error) {
 	}
 }
 
-func (s *AccountService) RegisterSuperAdmin(body context.Context, token []byte) (bool, error) {
+func (s *AccountService) Register(context context.Context, token []byte) error {
 	has, err := s.HasSuperAdmin()
 	if err != nil || has {
-		return false, errors.New("Illegal request")
+		return errors.New("Illegal request")
 	}
 
-	return has, nil
+	body, err := s.cryptoService.Decrypt(context, string(token))
+	if err != nil {
+		return err
+	}
+
+	var user model.User
+	if err := json.Unmarshal(body, &user); err != nil {
+		return err
+	}
+
+	user.Role = model.RoleAdmin
+	bytes := md5.Sum([]byte(user.Password))
+	user.Password = hex.EncodeToString(bytes[:])
+	return s.db.Create(user).Error
 }
