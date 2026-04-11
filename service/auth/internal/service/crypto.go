@@ -60,7 +60,7 @@ func (s *CryptoService) getRSA() (*RSAKeyPair, error) {
 
 // 解密
 func (s *CryptoService) Decrypt(c context.Context, token string) ([]byte, error) {
-	privateKey, err := s.redis.HGet(c, "book:rsa", "private").Result()
+	privateKey, err := s.redis.HGet(c, "drive:rsa", "private").Result()
 	if err != nil {
 		return nil, err
 	}

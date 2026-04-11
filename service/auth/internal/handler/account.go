@@ -17,25 +17,50 @@ func NewAccountHandler(s *service.AccountService) *AccountHandler {
 	}
 }
 
-// 是否存在超级管理员
+// 是否存在超管
 func (h *AccountHandler) HasSuperAdmin(c *gin.Context) {
 	has, err := h.AccountService.HasSuperAdmin()
 	if err != nil {
 		response.ServerError(c, err)
-		return
+	} else {
+		response.Success(c, has)
 	}
-	response.Success(c, has)
 }
 
-// 注册超级管理员
-func (h *AccountHandler) RegisterSuperAdmin(c *gin.Context) {
+// 注册超管
+func (h *AccountHandler) Register(c *gin.Context) {
 	body, err := c.GetRawData()
 	if err != nil {
 		response.ClientError(c, err)
-		return
 	} else if err := h.AccountService.Register(c.Request.Context(), body); err != nil {
 		response.ServerError(c, err)
 	} else {
 		response.Success(c, true)
 	}
+}
+
+// 登录
+func (h *AccountHandler) Login(c *gin.Context) {
+	body, err := c.GetRawData()
+	if err != nil {
+		response.ClientError(c, err)
+		return
+	}
+
+	token, err := h.AccountService.Login(c.Request.Context(), body)
+	if err != nil {
+		response.ClientError(c, err)
+		return
+	}
+
+	c.SetCookie(
+		"Authorization",
+		token,
+		3600*24,
+		"/",
+		"",
+		false,
+		true,
+	)
+	response.Success(c, true)
 }

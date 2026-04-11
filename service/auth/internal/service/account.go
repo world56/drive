@@ -2,6 +2,7 @@ package service
 
 import (
 	"auth/internal/model"
+	"auth/internal/pkg/utils"
 	"context"
 	"crypto/md5"
 	"encoding/hex"
@@ -24,6 +25,10 @@ func NewAccountService(d *gorm.DB, r *redis.Client, c *CryptoService) *AccountSe
 		redis:         r,
 		cryptoService: c,
 	}
+}
+
+func (s *AccountService) createJWT() {
+
 }
 
 func (s *AccountService) HasSuperAdmin() (bool, error) {
@@ -59,4 +64,18 @@ func (s *AccountService) Register(context context.Context, token []byte) error {
 	bytes := md5.Sum([]byte(user.Password))
 	user.Password = hex.EncodeToString(bytes[:])
 	return s.db.Create(user).Error
+}
+
+func (s *AccountService) Login(c context.Context, token []byte) (string, error) {
+	body, err := s.cryptoService.Decrypt(c, string(token))
+	if err != nil {
+		return "", err
+	}
+
+	var user = model.User{}
+	if err := json.Unmarshal(body, &user); err != nil {
+		return "", err
+	}
+
+	return utils.CreateJWT(int(user.ID))
 }
