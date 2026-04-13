@@ -24,5 +24,10 @@ func (s *UserHandler) getUsers(c *gin.Context) {
 		response.ClientError(c, err)
 		return
 	}
-	s.UserServer.FindUsers(c.Request.Context(), query)
+	data, err := s.UserServer.FindUsers(c.Request.Context(), query)
+	if err != nil {
+		response.ServerError(c, err)
+	} else {
+		response.Success(c, data)
+	}
 }

@@ -1,6 +1,6 @@
 package dto
 
 type PageTurnQuery struct {
-	CurrentPage int64 `json:"currentPage" binding:"required"`
-	PageSize    int64 `json:"pageSize" binding:"required"`
+	CurrentPage int `json:"currentPage" binding:"required"`
+	PageSize    int `json:"pageSize" binding:"required"`
 }
