@@ -8,18 +8,18 @@ import (
 )
 
 type AccountHandler struct {
-	AccountService *service.AccountService
+	accountService *service.AccountService
 }
 
 func NewAccountHandler(s *service.AccountService) *AccountHandler {
 	return &AccountHandler{
-		AccountService: s,
+		accountService: s,
 	}
 }
 
 // 是否存在超管
 func (h *AccountHandler) HasSuperAdmin(c *gin.Context) {
-	has, err := h.AccountService.HasSuperAdmin()
+	has, err := h.accountService.HasSuperAdmin()
 	if err != nil {
 		response.ServerError(c, err)
 	} else {
@@ -32,7 +32,7 @@ func (h *AccountHandler) Register(c *gin.Context) {
 	body, err := c.GetRawData()
 	if err != nil {
 		response.ClientError(c, err)
-	} else if err := h.AccountService.Register(c.Request.Context(), body); err != nil {
+	} else if err := h.accountService.Register(c.Request.Context(), body); err != nil {
 		response.ServerError(c, err)
 	} else {
 		response.Success(c, true)
@@ -47,20 +47,19 @@ func (h *AccountHandler) Login(c *gin.Context) {
 		return
 	}
 
-	token, err := h.AccountService.Login(c.Request.Context(), body)
+	token, err := h.accountService.Login(c.Request.Context(), body)
 	if err != nil {
 		response.ClientError(c, err)
-		return
+	} else {
+		c.SetCookie(
+			"Authorization",
+			token,
+			3600*24,
+			"/",
+			"",
+			false,
+			true,
+		)
+		response.Success(c, true)
 	}
-
-	c.SetCookie(
-		"Authorization",
-		token,
-		3600*24,
-		"/",
-		"",
-		false,
-		true,
-	)
-	response.Success(c, true)
 }

@@ -7,13 +7,13 @@ import (
 )
 
 type Claims struct {
-	UserID int
+	UserID string
 	jwt.RegisteredClaims
 }
 
 var secret = []byte("book-jwt-key")
 
-func CreateJWT(userId int) (string, error) {
+func CreateJWT(userId string) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, Claims{
 		UserID: userId,
 		RegisteredClaims: jwt.RegisteredClaims{

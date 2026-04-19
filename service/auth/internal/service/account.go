@@ -33,7 +33,7 @@ func (s *AccountService) createJWT() {
 
 func (s *AccountService) HasSuperAdmin() (bool, error) {
 	var count int64
-	db := s.db.Model(&model.User{}).Where("role = ?", model.RoleAdmin).Limit(1).Count(&count)
+	db := s.db.Model(&model.User{}).Where("role = ?", model.UserRoleAdmin).Limit(1).Count(&count)
 	if db.Error != nil {
 		return false, db.Error
 	}
@@ -60,7 +60,7 @@ func (s *AccountService) Register(context context.Context, token []byte) error {
 		return err
 	}
 
-	user.Role = model.RoleAdmin
+	user.Role = model.UserRoleAdmin
 	bytes := md5.Sum([]byte(user.Password))
 	user.Password = hex.EncodeToString(bytes[:])
 	return s.db.Create(user).Error
@@ -77,5 +77,5 @@ func (s *AccountService) Login(c context.Context, token []byte) (string, error) 
 		return "", err
 	}
 
-	return utils.CreateJWT(int(user.ID))
+	return utils.CreateJWT(user.ID.String())
 }
