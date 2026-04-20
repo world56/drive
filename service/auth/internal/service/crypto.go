@@ -2,11 +2,13 @@ package service
 
 import (
 	"context"
+	"crypto/md5"
 	"crypto/rand"
 	"crypto/rsa"
 	"crypto/sha256"
 	"crypto/x509"
 	"encoding/base64"
+	"encoding/hex"
 	"encoding/pem"
 	"errors"
 
@@ -100,4 +102,10 @@ func (s *CryptoService) GetKey(c *gin.Context) (string, error) {
 		return "", errors.New("generation failure")
 	}
 	return key.Public, nil
+}
+
+func (s *CryptoService) md5(str string) string {
+	bytes := md5.Sum([]byte(str))
+	text := hex.EncodeToString(bytes[:])
+	return text
 }

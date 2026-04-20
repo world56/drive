@@ -48,9 +48,16 @@ func (h *UserHandler) GetUserInfo(c *gin.Context) {
 	var query dto.RequestFindStringPrimaryKey
 	if err := c.ShouldBindQuery(&query); err != nil {
 		response.ClientError(c, err)
-	} else {
-		response.Success(c, query)
+		return
 	}
+
+	user, err := h.userServer.GetUserInfo(query)
+	if err != nil {
+		response.ServerError(c, err)
+		return
+	}
+
+	response.Success(c, user)
 }
 
 // 新增用户
@@ -75,7 +82,7 @@ func (h *UserHandler) UpdateUserInfo(c *gin.Context) {
 		response.ClientError(c, err)
 		return
 	}
-	success, err := h.userServer.UpdateUserInfo(body)
+	success, err := h.userServer.UpdateUserInfo(c.Request.Context(), body)
 	if err != nil {
 		response.ServerError(c, err)
 	} else {
@@ -85,12 +92,12 @@ func (h *UserHandler) UpdateUserInfo(c *gin.Context) {
 
 // 编辑状态
 func (h *UserHandler) ChangeStatus(c *gin.Context) {
-	var query dto.RequestFindStringPrimaryKey
-	if err := c.ShouldBindQuery(&query); err != nil {
+	var body dto.RequestFindStringPrimaryKey
+	if err := c.ShouldBindJSON(&body); err != nil {
 		response.ClientError(c, err)
 		return
 	}
-	update, err := h.userServer.ChangeStatus(query)
+	update, err := h.userServer.ChangeStatus(c.Request.Context(), body)
 	if err != nil {
 		response.ServerError(c, err)
 	} else {

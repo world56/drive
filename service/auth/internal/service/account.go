@@ -1,13 +1,14 @@
 package service
 
 import (
+	"auth/internal/dto"
 	"auth/internal/model"
 	"auth/internal/pkg/utils"
 	"context"
-	"crypto/md5"
-	"encoding/hex"
 	"encoding/json"
 	"errors"
+	"strconv"
+	"time"
 
 	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
@@ -27,13 +28,14 @@ func NewAccountService(d *gorm.DB, r *redis.Client, c *CryptoService) *AccountSe
 	}
 }
 
-func (s *AccountService) createJWT() {
-
-}
-
 func (s *AccountService) HasSuperAdmin() (bool, error) {
 	var count int64
-	db := s.db.Model(&model.User{}).Where("role = ?", model.UserRoleAdmin).Limit(1).Count(&count)
+	db := s.db.
+		Model(&model.User{}).
+		Where("role = ?", model.UserRoleAdmin).
+		Limit(1).
+		Count(&count)
+
 	if db.Error != nil {
 		return false, db.Error
 	}
@@ -61,8 +63,7 @@ func (s *AccountService) Register(context context.Context, token []byte) error {
 	}
 
 	user.Role = model.UserRoleAdmin
-	bytes := md5.Sum([]byte(user.Password))
-	user.Password = hex.EncodeToString(bytes[:])
+	user.Password = s.cryptoService.md5(user.Password)
 	return s.db.Create(user).Error
 }
 
@@ -72,10 +73,64 @@ func (s *AccountService) Login(c context.Context, token []byte) (string, error) 
 		return "", err
 	}
 
-	var user = model.User{}
-	if err := json.Unmarshal(body, &user); err != nil {
+	var login model.User
+	if err := json.Unmarshal(body, &login); err != nil {
 		return "", err
 	}
 
-	return utils.CreateJWT(user.ID.String())
+	login.Password = s.cryptoService.md5(login.Password)
+	if err := s.db.WithContext(c).
+		Select("id", "name", "role", "status").
+		Where("account = ?", login.Account).
+		Where("password = ?", login.Password).
+		First(&login).Error; err != nil {
+		return "", errors.New("Account Password Error")
+	}
+
+	userRedisKey := "drive:user:" + login.ID.String()
+	if err := s.redis.
+		HSet(c, userRedisKey, map[string]interface{}{
+			"id":     login.ID,
+			"name":   login.Name,
+			"role":   login.Role,
+			"status": login.Status,
+		}).
+		Err(); err != nil {
+		return "", err
+	}
+
+	if err := s.redis.
+		Expire(c, userRedisKey, 7*24*time.Hour).
+		Err(); err != nil {
+		return "", err
+	}
+
+	return utils.CreateJWT(login.ID.String())
+}
+
+func (s *AccountService) GetUserInfo(c context.Context, authToken string) (*dto.ResponseUserLoginInfo, error) {
+	jwt, err := utils.ParseJWT(authToken)
+	if err != nil {
+		return nil, err
+	}
+
+	user, err := s.redis.HGetAll(c, "drive:user:"+jwt.UserID).Result()
+	if err != nil {
+		return nil, err
+	}
+
+	if len(user) == 0 {
+		return nil, errors.New("Login timeout")
+	}
+
+	role, err := strconv.Atoi(user["role"])
+	if err != nil {
+		return nil, errors.New("Failed to acquire a character")
+	}
+
+	return &dto.ResponseUserLoginInfo{
+		Id:   user["id"],
+		Name: user["name"],
+		Role: role,
+	}, nil
 }

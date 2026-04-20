@@ -1,6 +1,14 @@
 package dto
 
-import "auth/internal/model"
+type User struct {
+	Id      string `json:"id"`
+	Name    string `json:"name"`
+	Role    int    `json:"role"`
+	Status  int    `json:"status"`
+	Account string `json:"account"`
+	Contact string `json:"contact"`
+	Remark  string `json:"description"`
+}
 
 type RequestCreateUserDTO struct {
 	Name     string `json:"name,omitempty" binding:"required"`
@@ -17,8 +25,8 @@ type RequestFindUsersQuery struct {
 }
 
 type ResponseFindUsersDTO struct {
-	Count int          `json:"count"`
-	Users []model.User `json:"data"`
+	Count int    `json:"count"`
+	Users []User `json:"data"`
 }
 
 type RequestUpdateUser struct {
@@ -32,4 +40,10 @@ type RequestUpdatePassword struct {
 	RequestFindStringPrimaryKey
 	Pwd      string `json:"pwd" binding:"required"`      // 旧密码
 	Password string `json:"password" binding:"required"` // 新密码
+}
+
+type ResponseUserLoginInfo struct {
+	Id   string `json:"id"`
+	Name string `json:"name"`
+	Role int    `json:"role"`
 }

@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"auth/internal/pkg/request"
 	"auth/internal/pkg/response"
 	"auth/internal/service"
 
@@ -62,4 +63,10 @@ func (h *AccountHandler) Login(c *gin.Context) {
 		)
 		response.Success(c, true)
 	}
+}
+
+// 获取用户登陆信息
+func (h *AccountHandler) getUserInfo(c *gin.Context) {
+	user := request.GetUserInfo(c)
+	h.accountService.GetUserInfo(c.Request.Context(), user.Auth)
 }

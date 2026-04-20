@@ -19,3 +19,8 @@ func ServerError(c *gin.Context, err error) {
 func ClientError(c *gin.Context, err error) {
 	c.JSON(http.StatusBadRequest, err.Error())
 }
+
+// token 无效
+func ClientLoginTimeout(c *gin.Context) {
+	c.JSON(http.StatusUnauthorized, "Login Timeout")
+}
