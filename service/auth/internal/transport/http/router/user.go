@@ -1,9 +1,9 @@
 package router
 
 import (
-	"auth/internal/handler"
-	"auth/internal/middleware"
 	"auth/internal/model"
+	"auth/internal/transport/http/handler"
+	"auth/internal/transport/http/middleware"
 
 	"github.com/gin-gonic/gin"
 )
@@ -15,7 +15,7 @@ func RegisterUserRoutes(api *gin.RouterGroup, h *handler.UserHandler) {
 	}
 
 	adminGroup := group.Group("")
-	adminGroup.Use(middleware.RolesGurd(model.UserRoleAdmin))
+	adminGroup.Use(middleware.RolesGuard(model.UserRoleAdmin))
 	{
 		adminGroup.GET("", h.GetAllUsers)
 		adminGroup.GET("list", h.GetUsers)
