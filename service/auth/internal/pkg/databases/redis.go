@@ -8,8 +8,8 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
-func InitReds() (*redis.Client, error) {
-	address, err := redis.ParseURL("redis://:slash@127.0.0.1:6379/1")
+func InitReds(redisURL string) (*redis.Client, error) {
+	address, err := redis.ParseURL(redisURL)
 	if err != nil {
 		fmt.Printf("err-redis-url %v", err.Error())
 		return nil, err
@@ -23,7 +23,7 @@ func InitReds() (*redis.Client, error) {
 	_, pingErr := rdb.Ping(ctx).Result()
 	if pingErr != nil {
 		fmt.Printf("error-redis-ping %v", pingErr.Error())
-		return nil, err
+		return nil, pingErr
 	}
 
 	return rdb, nil

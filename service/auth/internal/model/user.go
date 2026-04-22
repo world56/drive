@@ -1,6 +1,8 @@
 package model
 
 import (
+	"time"
+
 	"github.com/google/uuid"
 )
 
@@ -27,4 +29,6 @@ type User struct {
 	Contact  string    `gorm:"type:varchar(30);" json:"contact"`           // 联系方式
 	Avatar   string    `gorm:"type:varchar(16)" json:"avatar"`
 	Remark   string    `gorm:"type:varchar(30);" json:"remark"` // 备注
+
+	CreateTime time.Time `gorm:"column:create_time;autoCreateTime" json:"createTime"`
 }

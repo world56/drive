@@ -2,30 +2,28 @@ package databases
 
 import (
 	"auth/internal/model"
-	"fmt"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
-func InitPostgresSQL() (*gorm.DB, error) {
-	dsn := "host=localhost user=postgres password=Abc123456 dbname=drive port=5432 sslmode=disable TimeZone=Asia/Shanghai"
+func InitPostgresSQL(dsn string) (*gorm.DB, error) {
 	db, err := gorm.Open(
 		postgres.Open(dsn), &gorm.Config{},
 	)
 	if err != nil {
-		return nil, fmt.Errorf("error-pg-connect: %w", err)
+		return nil, err
 	}
 
 	sqlDB, err := db.DB()
 	if err != nil {
-		return nil, fmt.Errorf("error-pg-init: %w", err)
+		return nil, err
 	}
 
 	sqlDB.SetMaxOpenConns(100)
 
-	if err := db.AutoMigrate(&model.User{}); err != nil {
-		return nil, fmt.Errorf("error-pg-model-init: %w", err)
+	if err := db.AutoMigrate(&model.User{}, &model.Log{}); err != nil {
+		return nil, err
 	}
 
 	return db, nil

@@ -1,8 +1,8 @@
 package middleware
 
 import (
-	"auth/internal/pkg/request"
-	"auth/internal/pkg/response"
+	"auth/internal/transport/http/request"
+	"auth/internal/transport/http/response"
 	"errors"
 	"slices"
 
@@ -12,7 +12,7 @@ import (
 // 角色权限中间件
 func RolesGuard(allowedRoles ...int) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		currentUser := request.GetUserInfo(c)
+		currentUser := request.GetCurrentUser(c)
 		if slices.Contains(allowedRoles, currentUser.Role) {
 			return
 		}

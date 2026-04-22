@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"auth/internal/config"
 	"fmt"
 	"time"
 
@@ -12,7 +13,7 @@ type Claims struct {
 	jwt.RegisteredClaims
 }
 
-var secret = []byte("book-jwt-key")
+var secret = []byte(config.Load().JWTSecret)
 
 func CreateJWT(userId string) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, Claims{

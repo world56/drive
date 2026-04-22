@@ -14,7 +14,7 @@ type CurrentUserInfo struct {
 }
 
 // 获取当前操作人员用户信息
-func GetUserInfo(c *gin.Context) *CurrentUserInfo {
+func GetCurrentUser(c *gin.Context) *CurrentUserInfo {
 	id := c.Request.Header.Get("user-id")
 	role := c.Request.Header.Get("user-role")
 	auth := c.Request.Header.Get("Authorization")

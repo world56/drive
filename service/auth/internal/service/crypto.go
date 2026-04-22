@@ -12,7 +12,6 @@ import (
 	"encoding/pem"
 	"errors"
 
-	"github.com/gin-gonic/gin"
 	"github.com/redis/go-redis/v9"
 )
 
@@ -91,7 +90,7 @@ func (s *CryptoService) Decrypt(c context.Context, token string) ([]byte, error)
 	return rsa.DecryptOAEP(hash, rand.Reader, rsaPriv, cipherText, nil)
 }
 
-func (s *CryptoService) GetKey(c *gin.Context) (string, error) {
+func (s *CryptoService) GetKey(c context.Context) (string, error) {
 	public, _ := s.redis.HGet(c, "drive:rsa", "public").Result()
 	if len(public) > 0 {
 		return public, nil

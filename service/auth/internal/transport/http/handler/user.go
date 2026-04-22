@@ -2,8 +2,8 @@ package handler
 
 import (
 	"auth/internal/dto"
-	"auth/internal/pkg/response"
 	"auth/internal/service"
+	"auth/internal/transport/http/response"
 
 	"github.com/gin-gonic/gin"
 )

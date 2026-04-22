@@ -1,9 +1,9 @@
 package handler
 
 import (
-	"auth/internal/pkg/request"
-	"auth/internal/pkg/response"
 	"auth/internal/service"
+	"auth/internal/transport/http/request"
+	"auth/internal/transport/http/response"
 
 	"github.com/gin-gonic/gin"
 )
@@ -67,6 +67,6 @@ func (h *AccountHandler) Login(c *gin.Context) {
 
 // 获取用户登陆信息
 func (h *AccountHandler) getUserInfo(c *gin.Context) {
-	user := request.GetUserInfo(c)
+	user := request.GetCurrentUser(c)
 	h.accountService.GetUserInfo(c.Request.Context(), user.Auth)
 }

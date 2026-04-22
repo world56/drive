@@ -1,12 +1,12 @@
 package main
 
 import (
-	httpServer "auth/cmd/http-server"
+	"auth/internal/app"
 	"log"
 )
 
 func main() {
-	if err := httpServer.Run("0.0.0.0:9002"); err != nil {
+	if err := app.RunHTTP(); err != nil {
 		log.Fatal(err)
 	}
 }

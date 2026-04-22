@@ -1,8 +1,8 @@
 package handler
 
 import (
-	"auth/internal/pkg/response"
 	"auth/internal/service"
+	"auth/internal/transport/http/response"
 
 	"github.com/gin-gonic/gin"
 )
@@ -19,7 +19,7 @@ func NewCryptoHandler(c *service.CryptoService) *CryptoHandler {
 
 // 获取密钥
 func (h *CryptoHandler) GetSecret(c *gin.Context) {
-	public, err := h.cryptoService.GetKey(c)
+	public, err := h.cryptoService.GetKey(c.Request.Context())
 	if err != nil {
 		response.ServerError(c, err)
 		return

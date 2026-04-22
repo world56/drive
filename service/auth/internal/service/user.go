@@ -67,7 +67,7 @@ func (s *UserService) GetUserInfo(query dto.RequestFindStringPrimaryKey) (*model
 	var user model.User
 	if err := s.db.
 		Where("id = ? AND status = ?", query.Id, model.UserStatusActive).
-		Find(&user).
+		First(&user).
 		Error; err != nil {
 		return nil, err
 	}
