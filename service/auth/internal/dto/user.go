@@ -25,8 +25,8 @@ type RequestFindUsersQuery struct {
 }
 
 type ResponseFindUsersDTO struct {
-	Count int    `json:"count"`
-	Users []User `json:"data"`
+	Count int64  `json:"count"`
+	List  []User `json:"list"`
 }
 
 type RequestUpdateUser struct {

@@ -63,7 +63,12 @@ func (s *AccountService) Register(context context.Context, token []byte) error {
 	}
 
 	user.Role = model.UserRoleAdmin
-	user.Password = s.cryptoService.md5(user.Password)
+	pwd, err := s.cryptoService.HashPassword(user.Password)
+	if err != nil {
+		return err
+	}
+
+	user.Password = pwd
 	return s.db.Create(user).Error
 }
 
@@ -78,22 +83,29 @@ func (s *AccountService) Login(c context.Context, token []byte) (string, error) 
 		return "", err
 	}
 
-	login.Password = s.cryptoService.md5(login.Password)
+	var user model.User
 	if err := s.db.WithContext(c).
-		Select("id", "name", "role", "status").
+		Select("id", "name", "role", "status", "password").
 		Where("account = ?", login.Account).
-		Where("password = ?", login.Password).
-		First(&login).Error; err != nil {
+		First(&user).Error; err != nil {
 		return "", errors.New("Account Password Error")
 	}
 
-	userRedisKey := "drive:user:" + login.ID.String()
+	valid, err := s.cryptoService.VerifyPassword(login.Password, user.Password)
+	if err != nil {
+		return "", err
+	}
+	if !valid {
+		return "", errors.New("Account Password Error")
+	}
+
+	userRedisKey := "drive:user:" + user.ID.String()
 	if err := s.redis.
 		HSet(c, userRedisKey, map[string]interface{}{
-			"id":     login.ID,
-			"name":   login.Name,
-			"role":   login.Role,
-			"status": login.Status,
+			"id":     user.ID,
+			"name":   user.Name,
+			"role":   user.Role,
+			"status": user.Status,
 		}).
 		Err(); err != nil {
 		return "", err
@@ -105,7 +117,7 @@ func (s *AccountService) Login(c context.Context, token []byte) (string, error) 
 		return "", err
 	}
 
-	return utils.CreateJWT(login.ID.String())
+	return utils.CreateJWT(user.ID.String())
 }
 
 func (s *AccountService) GetUserInfo(c context.Context, authToken string) (*dto.ResponseUserLoginInfo, error) {

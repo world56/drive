@@ -36,19 +36,18 @@ func (s *UserService) FindUsers(context context.Context, query dto.RequestFindUs
 		return nil, err
 	}
 
-	offset := (query.CurrentPage - 1) * query.PageSize
 	var users []dto.User
 	if err := db.
 		Select("id", "name", "account", "status", "role", "remark", "contact").
-		Offset(offset).
+		Offset((query.CurrentPage - 1) * query.PageSize).
 		Limit(query.PageSize).
 		Find(&users).Error; err != nil {
 		return nil, err
 	}
 
 	return &dto.ResponseFindUsersDTO{
-		Users: users,
-		Count: int(count),
+		List:  users,
+		Count: count,
 	}, nil
 }
 
@@ -79,13 +78,18 @@ func (s *UserService) InsertUser(body dto.RequestCreateUserDTO) (bool, error) {
 		return false, errors.New("Account already exists")
 	}
 
+	passwordHash, err := s.cryptoService.HashPassword(body.Password)
+	if err != nil {
+		return false, err
+	}
+
 	if err := s.db.Create(&model.User{
 		Name:     body.Name,
 		Account:  body.Account,
 		Remark:   body.Remark,
 		Contact:  body.Contact,
 		Status:   model.UserStatusActive,
-		Password: s.cryptoService.md5(body.Password),
+		Password: passwordHash,
 	}).Error; err != nil {
 		return false, err
 	}
@@ -139,11 +143,19 @@ func (s *UserService) ChangePassword(context context.Context, body dto.RequestUp
 		First(&user).Error; err != nil {
 		return false, errors.New("Not a valid user")
 	}
-	if user.Password != body.Pwd {
+
+	valid, err := s.cryptoService.VerifyPassword(body.Pwd, user.Password)
+	if err != nil {
+		return false, err
+	}
+	if !valid {
 		return false, errors.New("Old password is incorrect")
 	}
 
-	pwd := s.cryptoService.md5(body.Password)
+	pwd, err := s.cryptoService.HashPassword(body.Password)
+	if err != nil {
+		return false, err
+	}
 	if err := db.Model(&user).
 		Where("id = ?", body.Id).
 		Update("password", pwd).

@@ -2,17 +2,16 @@ package service
 
 import (
 	"context"
-	"crypto/md5"
 	"crypto/rand"
 	"crypto/rsa"
 	"crypto/sha256"
 	"crypto/x509"
 	"encoding/base64"
-	"encoding/hex"
 	"encoding/pem"
 	"errors"
 
 	"github.com/redis/go-redis/v9"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type CryptoService struct {
@@ -29,6 +28,8 @@ type RSAKeyPair struct {
 	Public  string `redis:"public"`
 	Private string `redis:"private"`
 }
+
+const bcryptCost = 10
 
 // 生成密钥
 func (s *CryptoService) getRSA() (*RSAKeyPair, error) {
@@ -103,8 +104,30 @@ func (s *CryptoService) GetKey(c context.Context) (string, error) {
 	return key.Public, nil
 }
 
-func (s *CryptoService) md5(str string) string {
-	bytes := md5.Sum([]byte(str))
-	text := hex.EncodeToString(bytes[:])
-	return text
+func (s *CryptoService) HashPassword(password string) (string, error) {
+	if len(password) == 0 {
+		return "", errors.New("password is empty")
+	}
+
+	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcryptCost)
+	if err != nil {
+		return "", err
+	}
+
+	return string(hash), nil
+}
+
+func (s *CryptoService) VerifyPassword(password string, encodedHash string) (bool, error) {
+	if len(password) == 0 || len(encodedHash) == 0 {
+		return false, nil
+	}
+
+	err := bcrypt.CompareHashAndPassword([]byte(encodedHash), []byte(password))
+	if err == nil {
+		return true, nil
+	}
+	if errors.Is(err, bcrypt.ErrMismatchedHashAndPassword) {
+		return false, nil
+	}
+	return false, err
 }
