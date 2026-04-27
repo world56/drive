@@ -1,6 +1,7 @@
 syntax = "proto3";
 
 package auth;
+option go_package = "auth/internal/api/auth;authpb";
 
 service UserService {
   rpc GetUserInfo (FindUserId) returns (User) {}
@@ -11,13 +12,13 @@ service LogService {
 }
 
 message Log {
-  string event = 1;
+  string event      = 1;
   string operatorId = 2;
-  string desc = 3;
+  string desc       = 3;
 }
 
 message User {
-  string id = 1;
+  string id   = 1;
   string name = 2;
 }
 

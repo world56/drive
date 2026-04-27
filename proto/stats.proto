@@ -3,6 +3,7 @@ syntax = "proto3";
 package stats;
 
 import "google/protobuf/empty.proto";
+option go_package = "auth/internal/api/stats;statspb";
 
 service StatsService {
   rpc Access (User) returns (google.protobuf.Empty) {}
@@ -14,6 +15,6 @@ message User {
 }
 
 message Resource {
-  int32 type = 1;
+  int32 type  = 1;
   int32 count = 2;
 }

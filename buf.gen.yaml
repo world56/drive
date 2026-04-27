@@ -1,0 +1,12 @@
+version: v2
+
+plugins:
+  - remote: buf.build/protocolbuffers/go
+    out: service/auth
+    opt:
+      - module=auth
+      
+  - remote: buf.build/grpc/go
+    out: service/auth
+    opt:
+      - module=auth
