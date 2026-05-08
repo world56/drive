@@ -4,6 +4,7 @@ import (
 	"auth/internal/dto"
 	"auth/internal/model"
 	"context"
+	"errors"
 
 	"gorm.io/gorm"
 )
@@ -18,14 +19,14 @@ func NewLogService(db *gorm.DB) *LogService {
 	}
 }
 
-func (s *LogService) FindLogs(context context.Context, query dto.RequestFindLogsDTO) (*dto.ResponseFindLogsDTO, error) {
-	db := s.db.WithContext(context).Model(&model.Log{})
+func (s *LogService) FindLogs(c context.Context, query dto.RequestFindLogsDTO) (*dto.ResponseFindLogsDTO, error) {
+	db := s.db.WithContext(c).Model(&model.Log{})
 
 	if query.Event != nil {
 		db = db.Where("event = ?", *query.Event)
 	}
-	if query.UserId != nil {
-		db = db.Where("user_id = ?", *query.UserId)
+	if query.UserID != nil {
+		db = db.Where("user_id = ?", *query.UserID)
 	}
 
 	var count int64
@@ -46,4 +47,17 @@ func (s *LogService) FindLogs(context context.Context, query dto.RequestFindLogs
 		Count: count,
 		List:  logs,
 	}, nil
+}
+
+// 写入日志
+func (s *LogService) WriteLog(c context.Context, log *dto.WriteLog) error {
+	if err := s.db.WithContext(c).
+		Create(&model.Log{
+			Desc:   log.Desc,
+			Event:  log.Event,
+			UserID: log.UserID,
+		}).Error; err != nil {
+		return errors.New("Log write failed")
+	}
+	return nil
 }

@@ -9,6 +9,7 @@ package authpb
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
@@ -182,7 +183,7 @@ var File_auth_proto protoreflect.FileDescriptor
 const file_auth_proto_rawDesc = "" +
 	"\n" +
 	"\n" +
-	"auth.proto\x12\x04auth\"O\n" +
+	"auth.proto\x12\x04auth\x1a\x1bgoogle/protobuf/empty.proto\"O\n" +
 	"\x03Log\x12\x14\n" +
 	"\x05event\x18\x01 \x01(\tR\x05event\x12\x1e\n" +
 	"\n" +
@@ -197,10 +198,10 @@ const file_auth_proto_rawDesc = "" +
 	"\x02id\x18\x01 \x01(\tR\x02id2<\n" +
 	"\vUserService\x12-\n" +
 	"\vGetUserInfo\x12\x10.auth.FindUserId\x1a\n" +
-	".auth.User\"\x0020\n" +
+	".auth.User\"\x002=\n" +
 	"\n" +
-	"LogService\x12\"\n" +
-	"\bWriteLog\x12\t.auth.Log\x1a\t.auth.Log\"\x00B\x1fZ\x1dauth/internal/api/auth;authpbb\x06proto3"
+	"LogService\x12/\n" +
+	"\bWriteLog\x12\t.auth.Log\x1a\x16.google.protobuf.Empty\"\x00B\x1fZ\x1dauth/internal/api/auth;authpbb\x06proto3"
 
 var (
 	file_auth_proto_rawDescOnce sync.Once
@@ -216,15 +217,16 @@ func file_auth_proto_rawDescGZIP() []byte {
 
 var file_auth_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_auth_proto_goTypes = []any{
-	(*Log)(nil),        // 0: auth.Log
-	(*User)(nil),       // 1: auth.User
-	(*FindUserId)(nil), // 2: auth.FindUserId
+	(*Log)(nil),           // 0: auth.Log
+	(*User)(nil),          // 1: auth.User
+	(*FindUserId)(nil),    // 2: auth.FindUserId
+	(*emptypb.Empty)(nil), // 3: google.protobuf.Empty
 }
 var file_auth_proto_depIdxs = []int32{
 	2, // 0: auth.UserService.GetUserInfo:input_type -> auth.FindUserId
 	0, // 1: auth.LogService.WriteLog:input_type -> auth.Log
 	1, // 2: auth.UserService.GetUserInfo:output_type -> auth.User
-	0, // 3: auth.LogService.WriteLog:output_type -> auth.Log
+	3, // 3: auth.LogService.WriteLog:output_type -> google.protobuf.Empty
 	2, // [2:4] is the sub-list for method output_type
 	0, // [0:2] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name

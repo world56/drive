@@ -11,6 +11,7 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -128,7 +129,7 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type LogServiceClient interface {
-	WriteLog(ctx context.Context, in *Log, opts ...grpc.CallOption) (*Log, error)
+	WriteLog(ctx context.Context, in *Log, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
 type logServiceClient struct {
@@ -139,9 +140,9 @@ func NewLogServiceClient(cc grpc.ClientConnInterface) LogServiceClient {
 	return &logServiceClient{cc}
 }
 
-func (c *logServiceClient) WriteLog(ctx context.Context, in *Log, opts ...grpc.CallOption) (*Log, error) {
+func (c *logServiceClient) WriteLog(ctx context.Context, in *Log, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(Log)
+	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, LogService_WriteLog_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -153,7 +154,7 @@ func (c *logServiceClient) WriteLog(ctx context.Context, in *Log, opts ...grpc.C
 // All implementations must embed UnimplementedLogServiceServer
 // for forward compatibility.
 type LogServiceServer interface {
-	WriteLog(context.Context, *Log) (*Log, error)
+	WriteLog(context.Context, *Log) (*emptypb.Empty, error)
 	mustEmbedUnimplementedLogServiceServer()
 }
 
@@ -164,7 +165,7 @@ type LogServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedLogServiceServer struct{}
 
-func (UnimplementedLogServiceServer) WriteLog(context.Context, *Log) (*Log, error) {
+func (UnimplementedLogServiceServer) WriteLog(context.Context, *Log) (*emptypb.Empty, error) {
 	return nil, status.Error(codes.Unimplemented, "method WriteLog not implemented")
 }
 func (UnimplementedLogServiceServer) mustEmbedUnimplementedLogServiceServer() {}

@@ -31,5 +31,5 @@ type User struct {
 	Remark     string    `gorm:"type:varchar(30);" json:"remark"` // 备注
 	CreateTime time.Time `gorm:"column:create_time;autoCreateTime" json:"createTime"`
 
-	Logs []Log `gorm:"foreignKey:UserId"`
+	Logs []Log `gorm:"foreignKey:UserID"`
 }

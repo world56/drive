@@ -21,8 +21,8 @@ func NewUserService(db *gorm.DB, c *CryptoService) *UserService {
 	}
 }
 
-func (s *UserService) FindUsers(context context.Context, query dto.RequestFindUsersQuery) (*dto.ResponseFindUsersDTO, error) {
-	db := s.db.WithContext(context).Model(&model.User{})
+func (s *UserService) FindUsers(c context.Context, query dto.RequestFindUsersQuery) (*dto.ResponseFindUsersDTO, error) {
+	db := s.db.WithContext(c).Model(&model.User{})
 
 	if query.Account != nil {
 		db = db.Where("account = ?", *query.Account)
@@ -62,9 +62,10 @@ func (s *UserService) GetAllUsers(context context.Context) ([]dto.User, error) {
 	return users, nil
 }
 
-func (s *UserService) GetUserInfo(query dto.RequestFindStringPrimaryKey) (*model.User, error) {
+func (s *UserService) GetUserInfo(c context.Context, query dto.RequestFindStringPrimaryKey) (*model.User, error) {
 	var user model.User
 	if err := s.db.
+		WithContext(c).
 		Where("id = ? AND status = ?", query.Id, model.UserStatusActive).
 		First(&user).
 		Error; err != nil {
@@ -115,8 +116,8 @@ func (s *UserService) UpdateUserInfo(c context.Context, body dto.RequestUpdateUs
 	return true, nil
 }
 
-func (s *UserService) ChangeStatus(context context.Context, body dto.RequestFindStringPrimaryKey) (bool, error) {
-	db := s.db.WithContext(context)
+func (s *UserService) ChangeStatus(c context.Context, body dto.RequestFindStringPrimaryKey) (bool, error) {
+	db := s.db.WithContext(c)
 	var user model.User
 	if err := db.Select("id", "status").
 		Where("id = ?", body.Id).
@@ -135,8 +136,8 @@ func (s *UserService) ChangeStatus(context context.Context, body dto.RequestFind
 	return true, nil
 }
 
-func (s *UserService) ChangePassword(context context.Context, body dto.RequestUpdatePassword) (bool, error) {
-	db := s.db.WithContext(context)
+func (s *UserService) ChangePassword(c context.Context, body dto.RequestUpdatePassword) (bool, error) {
+	db := s.db.WithContext(c)
 	var user model.User
 	if err := db.Select("password").
 		Where("id = ?", body.Id).

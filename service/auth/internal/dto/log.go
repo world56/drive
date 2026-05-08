@@ -9,16 +9,22 @@ type Log struct {
 	Event      string    `json:"event"`
 	Desc       string    `json:"desc"`
 	CreateTime time.Time `json:"createTime"`
-	UserId     string    `json:"userId"`
+	UserID     string    `json:"userID"`
 }
 
 type RequestFindLogsDTO struct {
 	PageTurnQuery
 	Event  *string `json:"event,omitempty"`
-	UserId *string `json:"userId,omitempty"`
+	UserID *string `json:"userID,omitempty"`
 }
 
 type ResponseFindLogsDTO struct {
 	Count int64 `json:"count"`
 	List  []Log `json:"list"`
+}
+
+type WriteLog struct {
+	Event  string
+	Desc   string
+	UserID string
 }

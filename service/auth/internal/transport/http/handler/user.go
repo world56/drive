@@ -51,7 +51,7 @@ func (h *UserHandler) GetUserInfo(c *gin.Context) {
 		return
 	}
 
-	user, err := h.userServer.GetUserInfo(query)
+	user, err := h.userServer.GetUserInfo(c.Request.Context(), query)
 	if err != nil {
 		response.ServerError(c, err)
 		return

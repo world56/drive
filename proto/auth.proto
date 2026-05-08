@@ -1,6 +1,7 @@
 syntax = "proto3";
 
 package auth;
+import "google/protobuf/empty.proto";
 option go_package = "auth/internal/api/auth;authpb";
 
 service UserService {
@@ -8,7 +9,7 @@ service UserService {
 }
 
 service LogService {
-  rpc WriteLog(Log) returns (Log) {}
+  rpc WriteLog(Log) returns (google.protobuf.Empty) {}
 }
 
 message Log {
