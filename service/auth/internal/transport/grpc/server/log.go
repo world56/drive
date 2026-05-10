@@ -6,7 +6,7 @@ import (
 	"auth/internal/service"
 	"context"
 
-	"github.com/golang/protobuf/ptypes/empty"
+	"google.golang.org/protobuf/types/known/emptypb"
 )
 
 type LogGrpcServer struct {
@@ -20,13 +20,13 @@ func NewLogGrpcServer(s *service.LogService) *LogGrpcServer {
 	}
 }
 
-func (s *LogGrpcServer) WriteLog(c context.Context, req *authpb.Log) (*empty.Empty, error) {
+func (s *LogGrpcServer) WriteLog(c context.Context, req *authpb.Log) (*emptypb.Empty, error) {
 	if err := s.logService.WriteLog(c, &dto.WriteLog{
 		Desc:   req.GetDesc(),
 		Event:  req.GetEvent(),
 		UserID: req.GetOperatorId(),
 	}); err != nil {
-		return &empty.Empty{}, err
+		return &emptypb.Empty{}, err
 	}
-	return &empty.Empty{}, nil
+	return &emptypb.Empty{}, nil
 }

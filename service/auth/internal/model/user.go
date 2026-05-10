@@ -20,7 +20,7 @@ const (
 )
 
 type User struct {
-	ID         uuid.UUID `gorm:"type:uuid;primaryKey" json:"id"`
+	ID         uuid.UUID `gorm:"type:uuid;gen_random_uuid();primaryKey" json:"id"`
 	Name       string    `gorm:"type:varchar(6);uniqueIndex;not null;" json:"name"`
 	Account    string    `gorm:"type:varchar(12);unique;not null;index:account_password;" json:"account"`
 	Password   string    `gorm:"type:varchar(255);not null;index:account_password;" json:"password"`

@@ -67,6 +67,11 @@ func (h *AccountHandler) Login(c *gin.Context) {
 
 // 获取用户登陆信息
 func (h *AccountHandler) getUserInfo(c *gin.Context) {
-	user := request.GetCurrentUser(c)
-	h.accountService.GetUserInfo(c.Request.Context(), user.Auth)
+	currentUser := request.GetCurrentUser(c)
+	userInfo, err := h.accountService.GetUserInfo(c.Request.Context(), currentUser.Auth)
+	if err != nil {
+		response.ClientLoginTimeout(c)
+	} else {
+		response.Success(c, userInfo)
+	}
 }

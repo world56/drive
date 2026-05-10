@@ -13,7 +13,7 @@ type Claims struct {
 	jwt.RegisteredClaims
 }
 
-var secret = []byte(config.Load().JWTSecret)
+var secret = []byte(config.Load().JWT_SECRET)
 
 func CreateJWT(userId string) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, Claims{

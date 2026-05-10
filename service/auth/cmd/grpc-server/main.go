@@ -11,7 +11,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	if err := a.RunHTTP(); err != nil {
+	if err := a.RunGRPC(); err != nil {
 		log.Fatal(err)
 	}
 }

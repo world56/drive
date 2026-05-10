@@ -1,35 +1,20 @@
 package app
 
 import (
-	"auth/internal/config"
-	"auth/internal/pkg/databases"
-	"auth/internal/service"
 	"auth/internal/transport/http/handler"
 	"auth/internal/transport/http/router"
 
 	"github.com/gin-gonic/gin"
 )
 
-func RunHTTP() error {
-	cfg := config.Load()
+func (a *App) RunHTTP() error {
 	engine := gin.Default()
 
-	db, sqlDBerr := databases.InitPostgresSQL(cfg.PostgresDSN)
-	if sqlDBerr != nil {
-		return sqlDBerr
-	}
-
-	redis, rDBerr := databases.InitReds(cfg.RedisURL)
-	if rDBerr != nil {
-		return rDBerr
-	}
-
-	svc := service.NewServer(db, redis)
-	h := handler.NewHandler(svc)
+	h := handler.NewHandler(a.Service)
 
 	router.RegisterRoutes(engine, h)
 
-	if err := engine.Run(cfg.HTTPAddr); err != nil {
+	if err := engine.Run(a.Config.HTTP_ADDR); err != nil {
 		return err
 	}
 

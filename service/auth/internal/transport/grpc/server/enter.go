@@ -7,7 +7,7 @@ import (
 	"google.golang.org/grpc"
 )
 
-func RegisterGrpcServers(s *grpc.Server, service *service.Server) {
-	authpb.RegisterLogServiceServer(s, NewLogGrpcServer(service.LogService))
-	authpb.RegisterUserServiceServer(s, NewUserGrpcServer(service.UserService))
+func RegisterGrpcServers(s grpc.ServiceRegistrar, svc *service.Server) {
+	authpb.RegisterLogServiceServer(s, NewLogGrpcServer(svc.LogService))
+	authpb.RegisterUserServiceServer(s, NewUserGrpcServer(svc.UserService))
 }
