@@ -1,13 +1,13 @@
 const CONTENT_TYPE_WHITE_LIST = ["application/json", "text/plain"];
 
-function toJSON(chunks = []) {
-  const content = { code: 200, message: "success" };
-  const res = JSON.parse(Buffer.concat(chunks));
-  if (res && res.statusCode) {
-    content.code = res.statusCode;
-    content.message = res.message;
+function toJSON(chunks = [], code = 200) {
+  const content = { code, message: "success" };
+  const data = JSON.parse(Buffer.concat(chunks));
+  if (code === 200) {
+    content.content = data;
   } else {
-    content.content = res;
+    content.content = null;
+    content.message = data;
   }
   return content;
 }
@@ -21,7 +21,8 @@ module.exports = function (request, reply, res) {
     res.on("end", () => {
       switch (type) {
         case "application/json":
-          return reply.code(200).send(toJSON(chunks));
+          const code = reply.statusCode;
+          return reply.code(200).send(toJSON(chunks, code));
         case "text/plain":
           reply
             .code(200)

@@ -10,6 +10,6 @@ func RegisterCryptoRoutes(api *gin.RouterGroup, h *handler.CryptoHandler) {
 	route := api.Group("/crypto")
 
 	{
-		route.GET("key", h.GetSecret)
+		route.GET("", h.GetSecret)
 	}
 }

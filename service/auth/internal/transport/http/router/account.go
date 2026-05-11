@@ -11,7 +11,7 @@ func RegisterAccountRoutes(app *gin.RouterGroup, h *handler.AccountHandler) {
 
 	{
 		route.POST("login", h.Login)
-		route.GET("has", h.HasSuperAdmin)
+		route.GET("super", h.HasSuperAdmin)
 		route.POST("register", h.Register)
 	}
 
