@@ -13,6 +13,7 @@ func RegisterAccountRoutes(app *gin.RouterGroup, h *handler.AccountHandler) {
 		route.POST("login", h.Login)
 		route.GET("super", h.HasSuperAdmin)
 		route.POST("register", h.Register)
+		route.POST("user", h.GetUserInfo)
 	}
 
 }

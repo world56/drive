@@ -69,7 +69,7 @@ func (s *AccountService) Register(context context.Context, token []byte) error {
 	}
 
 	user.Password = pwd
-	return s.db.Create(user).Error
+	return s.db.Create(&user).Error
 }
 
 func (s *AccountService) Login(c context.Context, token []byte) (string, error) {

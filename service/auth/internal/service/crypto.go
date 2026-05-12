@@ -4,7 +4,6 @@ import (
 	"context"
 	"crypto/rand"
 	"crypto/rsa"
-	"crypto/sha256"
 	"crypto/x509"
 	"encoding/base64"
 	"encoding/pem"
@@ -87,8 +86,7 @@ func (s *CryptoService) Decrypt(c context.Context, token string) ([]byte, error)
 		return nil, errors.New("not an rsa private key")
 	}
 
-	hash := sha256.New()
-	return rsa.DecryptOAEP(hash, rand.Reader, rsaPriv, cipherText, nil)
+	return rsa.DecryptPKCS1v15(rand.Reader, rsaPriv, cipherText)
 }
 
 func (s *CryptoService) GetKey(c context.Context) (string, error) {
