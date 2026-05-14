@@ -23,5 +23,6 @@ func RegisterUserRoutes(api *gin.RouterGroup, h *handler.UserHandler) {
 		adminGroup.POST("insert", h.InsertUser)
 		adminGroup.PUT("update", h.UpdateUserInfo)
 		adminGroup.PUT("status", h.ChangeStatus)
+		adminGroup.PUT("password", h.AdminSetUserPassword)
 	}
 }

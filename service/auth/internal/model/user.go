@@ -11,8 +11,8 @@ type UserRole = int
 type UserStatus = int
 
 const (
-	UserRoleReg UserRole = iota
-	UserRoleAdmin
+	UserRoleAdmin UserRole = iota
+	UserRoleReg
 )
 
 const (

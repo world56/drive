@@ -16,10 +16,21 @@ const app = fastify({
 const start = async () => {
   try {
     proxy(app);
-    app.register(jwt, { secret: "jwt-key" });
+    app.register(jwt, {
+      secret: "jwt-key",
+      verify: {
+        extractToken: (request) => {
+          console.log("@-->", request.headers.authorization);
+          return request.headers.authorization;
+        },
+      },
+    });
     app.register(cors);
     app.register(cookie);
-    app.register(redis, { url: "redis://:slash@127.0.0.1:6379" });
+    app.register(redis, {
+      url: "redis://:slash@127.0.0.1:6379",
+      db: 1,
+    });
     await app.listen({ port: 2000 });
   } catch (err) {
     app.log.error(err);

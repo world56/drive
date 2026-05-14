@@ -25,13 +25,13 @@ func (s *UserGrpcServer) GetUserInfo(c context.Context, r *authpb.FindUserId) (*
 		return nil, errors.New("User ID must not be empty")
 	}
 
-	user, err := s.userService.GetUserInfo(c, dto.RequestFindStringPrimaryKey{Id: userID})
+	user, err := s.userService.GetUserInfo(c, dto.RequestFindStringPrimaryKey{ID: userID})
 	if err != nil {
 		return nil, err
 	}
 
 	return &authpb.User{
-		Id:   user.ID.String(),
+		Id:   user.ID,
 		Name: user.Name,
 	}, nil
 }

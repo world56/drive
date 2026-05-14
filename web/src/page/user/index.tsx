@@ -129,7 +129,7 @@ const User = () => {
           rowKey={DB_PRIMARY_KEY}
           scroll={{ y: height - 285 }}
         />
-        <Password id={editUserPwdId} onClose={onResetPWD} />
+        <Password admin id={editUserPwdId} onClose={onResetPWD} />
       </PagedQuery>
     </>
   );

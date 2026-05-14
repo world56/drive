@@ -6,8 +6,8 @@ type PageTurnQuery struct {
 }
 
 type RequestFindIntPrimaryKey struct {
-	Id int `form:"id" binding:"required"`
+	ID int `form:"id" binding:"required"`
 }
 type RequestFindStringPrimaryKey struct {
-	Id string `form:"id" binding:"required"`
+	ID string `form:"id" binding:"required"`
 }

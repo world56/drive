@@ -18,6 +18,7 @@ func NewLogHandler(s *service.LogService) *LogHandler {
 	}
 }
 
+// 查询日志列表
 func (s *LogHandler) GetLogs(c *gin.Context) {
 	var query dto.RequestFindLogsDTO
 	if err := c.ShouldBindJSON(&query); err != nil {

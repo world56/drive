@@ -84,3 +84,15 @@ export function updatePassword(data: string) {
     data,
   });
 }
+
+/**
+ * @name adminResetUserPassword 管理员重置 “用户密码”
+ */
+export function adminResetUserPassword(data: string) {
+  return request<TypeUser.DTO>("user/password", {
+    method: ENUM_HTTP.REQUEST_MODE.PUT,
+    proxy: ENUM_HTTP.PROXY.AUTH,
+    message: "密码修改成功",
+    data,
+  });
+}

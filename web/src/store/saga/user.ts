@@ -1,8 +1,6 @@
 import { message } from "antd";
-import Cookies from "js-cookie";
 import { encryption } from "@/utils";
 import { ActionsUser } from "../user";
-import { TOKEN_KEY } from "@/config/request";
 import * as ActionsMiddleware from "./actions";
 import { login, getUserInfo } from "@/api/auth";
 import { put, call, throttle, takeLatest } from "redux-saga/effects";
@@ -16,8 +14,7 @@ function* taskInUserLogin(
 ) {
   try {
     const param: string = yield encryption(data.payload);
-    const token: string = yield call(login, param);
-    Cookies.set(TOKEN_KEY, token, { sameSite: "strict" });
+    yield call(login, param);
     yield put(ActionsMiddleware.getUserInfo());
   } catch {}
 }
@@ -29,7 +26,6 @@ function* taskInGetUserInfo() {
     document.title = "DriveCloud";
   } catch {
     message.error("获取用户信息失败");
-    Cookies.remove(TOKEN_KEY);
     yield put(ActionsUser.delUserInfo());
     setTimeout(() => {
       window.location.href = "/login";

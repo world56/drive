@@ -4,6 +4,7 @@ import (
 	"auth/internal/service"
 	"auth/internal/transport/http/request"
 	"auth/internal/transport/http/response"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
@@ -52,6 +53,7 @@ func (h *AccountHandler) Login(c *gin.Context) {
 	if err != nil {
 		response.ClientError(c, err)
 	} else {
+		c.SetSameSite(http.SameSiteLaxMode)
 		c.SetCookie(
 			"Authorization",
 			token,
@@ -68,10 +70,27 @@ func (h *AccountHandler) Login(c *gin.Context) {
 // 获取用户登陆信息
 func (h *AccountHandler) GetUserInfo(c *gin.Context) {
 	currentUser := request.GetCurrentUser(c)
-	userInfo, err := h.accountService.GetUserInfo(c.Request.Context(), currentUser.Auth)
+	userInfo, err := h.accountService.GetUserInfo(c.Request.Context(), currentUser.ID)
 	if err != nil {
 		response.ClientLoginTimeout(c)
 	} else {
 		response.Success(c, userInfo)
 	}
+}
+
+// 退出登录
+func (h *AccountHandler) Logout(c *gin.Context) {
+	current := request.GetCurrentUser(c)
+	h.accountService.Logout(c.Request.Context(), current.ID)
+	c.SetSameSite(http.SameSiteLaxMode)
+	c.SetCookie(
+		"Authorization",
+		"",
+		-1,
+		"/",
+		"",
+		false,
+		false,
+	)
+	response.Success(c, true)
 }

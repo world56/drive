@@ -5,7 +5,8 @@ module.exports = async function (app, request, reply) {
   try {
     const { Authorization } = request.cookies;
     if (Authorization) {
-      const user = await app.redis.hgetall(`drive:user:${Authorization}`);
+      const { UserID } = await request.jwtVerify();
+      const user = await app.redis.hgetall(`drive:user:${UserID}`);
       if (user.id) {
         request.headers["user-id"] = user.id;
         request.headers["user-role"] = user.role;

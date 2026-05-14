@@ -17,7 +17,7 @@ func NewServer(db *gorm.DB, redis *redis.Client) *Server {
 	return &Server{
 		CryptoService:  CryptoService,
 		LogService:     NewLogService(db),
-		UserService:    NewUserService(db, CryptoService),
+		UserService:    NewUserService(db, redis, CryptoService),
 		AccountService: NewAccountService(db, redis, CryptoService),
 	}
 }

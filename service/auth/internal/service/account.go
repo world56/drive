@@ -62,6 +62,7 @@ func (s *AccountService) Register(context context.Context, token []byte) error {
 		return err
 	}
 
+	user.Name = "Administrator"
 	user.Role = model.UserRoleAdmin
 	pwd, err := s.cryptoService.HashPassword(user.Password)
 	if err != nil {
@@ -91,6 +92,10 @@ func (s *AccountService) Login(c context.Context, token []byte) (string, error) 
 		return "", errors.New("Account Password Error")
 	}
 
+	if user.Status != model.UserStatusActive {
+		return "", errors.New("Account Frozen, Please Contact The Administrator")
+	}
+
 	valid, err := s.cryptoService.VerifyPassword(login.Password, user.Password)
 	if err != nil {
 		return "", err
@@ -99,10 +104,12 @@ func (s *AccountService) Login(c context.Context, token []byte) (string, error) 
 		return "", errors.New("Account Password Error")
 	}
 
-	userRedisKey := "drive:user:" + user.ID.String()
+	UserID := user.ID.String()
+
+	userRedisKey := "drive:user:" + UserID
 	if err := s.redis.
 		HSet(c, userRedisKey, map[string]interface{}{
-			"id":     user.ID,
+			"id":     UserID,
 			"name":   user.Name,
 			"role":   user.Role,
 			"status": user.Status,
@@ -117,16 +124,11 @@ func (s *AccountService) Login(c context.Context, token []byte) (string, error) 
 		return "", err
 	}
 
-	return utils.CreateJWT(user.ID.String())
+	return utils.CreateJWT(UserID)
 }
 
-func (s *AccountService) GetUserInfo(c context.Context, authToken string) (*dto.ResponseUserLoginInfo, error) {
-	jwt, err := utils.ParseJWT(authToken)
-	if err != nil {
-		return nil, err
-	}
-
-	user, err := s.redis.HGetAll(c, "drive:user:"+jwt.UserID).Result()
+func (s *AccountService) GetUserInfo(c context.Context, UserID string) (*dto.ResponseUserLoginInfo, error) {
+	user, err := s.redis.HGetAll(c, "drive:user:"+UserID).Result()
 	if err != nil {
 		return nil, err
 	}
@@ -145,4 +147,9 @@ func (s *AccountService) GetUserInfo(c context.Context, authToken string) (*dto.
 		Name: user["name"],
 		Role: role,
 	}, nil
+}
+
+func (s *AccountService) Logout(c context.Context, UserID string) bool {
+	s.redis.Del(c, "drive:user:"+UserID)
+	return true
 }

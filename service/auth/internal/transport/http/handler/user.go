@@ -67,7 +67,7 @@ func (h *UserHandler) InsertUser(c *gin.Context) {
 		response.ClientError(c, err)
 		return
 	}
-	success, err := h.userServer.InsertUser(body)
+	success, err := h.userServer.InsertUser(c, body)
 	if err != nil {
 		response.ServerError(c, err)
 	} else {
@@ -82,7 +82,7 @@ func (h *UserHandler) UpdateUserInfo(c *gin.Context) {
 		response.ClientError(c, err)
 		return
 	}
-	success, err := h.userServer.UpdateUserInfo(c.Request.Context(), body)
+	success, err := h.userServer.UpdateUser(c.Request.Context(), body)
 	if err != nil {
 		response.ServerError(c, err)
 	} else {
@@ -105,14 +105,31 @@ func (h *UserHandler) ChangeStatus(c *gin.Context) {
 	}
 }
 
-// 修改密码
+// 用户修改自己密码
 func (h *UserHandler) ChangePassword(c *gin.Context) {
-	var body dto.RequestUpdatePassword
-	if err := c.ShouldBindJSON(&body); err != nil {
+	body, err := c.GetRawData()
+	if err != nil {
 		response.ClientError(c, err)
 		return
 	}
+
 	success, err := h.userServer.ChangePassword(c.Request.Context(), body)
+	if err != nil {
+		response.ServerError(c, err)
+	} else {
+		response.Success(c, success)
+	}
+}
+
+// 超级管理员重置用户密码
+func (h *UserHandler) AdminSetUserPassword(c *gin.Context) {
+	body, err := c.GetRawData()
+	if err != nil {
+		response.ClientError(c, err)
+		return
+	}
+
+	success, err := h.userServer.AdminSetUserPassword(c.Request.Context(), body)
 	if err != nil {
 		response.ServerError(c, err)
 	} else {
