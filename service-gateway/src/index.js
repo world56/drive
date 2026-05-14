@@ -19,10 +19,7 @@ const start = async () => {
     app.register(jwt, {
       secret: "jwt-key",
       verify: {
-        extractToken: (request) => {
-          console.log("@-->", request.headers.authorization);
-          return request.headers.authorization;
-        },
+        extractToken: (request) => request.headers.authorization,
       },
     });
     app.register(cors);

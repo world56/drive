@@ -92,7 +92,7 @@ func (s *AccountService) Login(c context.Context, token []byte) (string, error) 
 		return "", errors.New("Account Password Error")
 	}
 
-	if user.Status != model.UserStatusActive {
+	if user.Status == model.UserStatusFreeze {
 		return "", errors.New("Account Frozen, Please Contact The Administrator")
 	}
 
