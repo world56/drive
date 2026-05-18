@@ -25,6 +25,7 @@ func (s *UserHandler) GetUsers(c *gin.Context) {
 		response.ClientError(c, err)
 		return
 	}
+	query.Normalize()
 	data, err := s.userServer.FindUsers(c.Request.Context(), query)
 	if err != nil {
 		response.ServerError(c, err)

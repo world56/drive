@@ -26,13 +26,16 @@ func NewUserService(db *gorm.DB, redis *redis.Client, c *CryptoService) *UserSer
 }
 
 func (s *UserService) FindUsers(c context.Context, query dto.RequestFindUsersQuery) (*dto.ResponseFindUsersDTO, error) {
-	db := s.db.WithContext(c).Model(&model.User{})
+	db := s.db.WithContext(c).Model(&model.User{}).Where("role = ?", model.UserRoleReg)
 
+	if query.Name != nil {
+		db = db.Where("name LIKE ?", "%"+*query.Name+"%")
+	}
 	if query.Account != nil {
 		db = db.Where("account = ?", *query.Account)
 	}
-	if query.Name != nil {
-		db = db.Where("name = ?", *query.Name)
+	if query.Status != nil {
+		db = db.Where("status = ?", *query.Status)
 	}
 
 	var count int64
@@ -82,8 +85,7 @@ func (s *UserService) GetUserInfo(c context.Context, query dto.RequestFindString
 }
 
 func (s *UserService) InsertUser(c context.Context, body dto.RequestCreateUserDTO) (bool, error) {
-	if err := s.db.
-		WithContext(c).
+	if err := s.db.WithContext(c).
 		Where("account = ?", body.Account).
 		First(&model.User{}).
 		Error; err == nil {

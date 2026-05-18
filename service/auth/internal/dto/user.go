@@ -1,6 +1,9 @@
 package dto
 
-import "time"
+import (
+	"auth/internal/pkg/utils"
+	"time"
+)
 
 type User struct {
 	ID         string    `json:"id"`
@@ -25,6 +28,7 @@ type RequestFindUsersQuery struct {
 	PageTurnQuery
 	Account *string `form:"account"`
 	Name    *string `form:"name"`
+	Status  *int    `form:"status"`
 }
 
 type ResponseFindUsersMap struct {
@@ -59,4 +63,9 @@ type ResponseUserLoginInfo struct {
 	Id   string `json:"id"`
 	Name string `json:"name"`
 	Role int    `json:"role"`
+}
+
+func (q *RequestFindUsersQuery) Normalize() {
+	q.Account = utils.OptionalString(q.Account)
+	q.Name = utils.OptionalString(q.Name)
 }
