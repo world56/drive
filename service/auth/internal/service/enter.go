@@ -13,11 +13,13 @@ type Server struct {
 }
 
 func NewServer(db *gorm.DB, redis *redis.Client) *Server {
+	LogService := NewLogService(db)
 	CryptoService := NewCryptoService(redis)
+
 	return &Server{
+		LogService:     LogService,
 		CryptoService:  CryptoService,
-		LogService:     NewLogService(db),
-		UserService:    NewUserService(db, redis, CryptoService),
-		AccountService: NewAccountService(db, redis, CryptoService),
+		UserService:    NewUserService(db, redis, CryptoService, LogService),
+		AccountService: NewAccountService(db, redis, CryptoService, LogService),
 	}
 }

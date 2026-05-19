@@ -80,8 +80,9 @@ func (h *AccountHandler) GetUserInfo(c *gin.Context) {
 
 // 退出登录
 func (h *AccountHandler) Logout(c *gin.Context) {
-	current := request.GetCurrentUser(c)
-	h.accountService.Logout(c.Request.Context(), current.ID)
+	currentUser := request.GetCurrentUser(c)
+	h.accountService.Logout(c.Request.Context(), currentUser.ID)
+
 	c.SetSameSite(http.SameSiteLaxMode)
 	c.SetCookie(
 		"Authorization",

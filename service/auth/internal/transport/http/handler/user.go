@@ -3,6 +3,7 @@ package handler
 import (
 	"auth/internal/dto"
 	"auth/internal/service"
+	"auth/internal/transport/http/request"
 	"auth/internal/transport/http/response"
 
 	"github.com/gin-gonic/gin"
@@ -68,7 +69,9 @@ func (h *UserHandler) InsertUser(c *gin.Context) {
 		response.ClientError(c, err)
 		return
 	}
-	success, err := h.userServer.InsertUser(c, body)
+
+	user := request.GetCurrentUser(c)
+	success, err := h.userServer.InsertUser(c.Request.Context(), body, user.ID)
 	if err != nil {
 		response.ServerError(c, err)
 	} else {
@@ -98,7 +101,9 @@ func (h *UserHandler) ChangeStatus(c *gin.Context) {
 		response.ClientError(c, err)
 		return
 	}
-	update, err := h.userServer.ChangeStatus(c.Request.Context(), body)
+
+	currentUser := request.GetCurrentUser(c)
+	update, err := h.userServer.ChangeStatus(c.Request.Context(), body, currentUser.ID)
 	if err != nil {
 		response.ServerError(c, err)
 	} else {
@@ -114,7 +119,8 @@ func (h *UserHandler) ChangePassword(c *gin.Context) {
 		return
 	}
 
-	success, err := h.userServer.ChangePassword(c.Request.Context(), body)
+	currentUser := request.GetCurrentUser(c)
+	success, err := h.userServer.ChangePassword(c.Request.Context(), body, currentUser.ID)
 	if err != nil {
 		response.ServerError(c, err)
 	} else {
@@ -130,7 +136,8 @@ func (h *UserHandler) AdminSetUserPassword(c *gin.Context) {
 		return
 	}
 
-	success, err := h.userServer.AdminSetUserPassword(c.Request.Context(), body)
+	currentUser := request.GetCurrentUser(c)
+	success, err := h.userServer.AdminSetUserPassword(c.Request.Context(), body, currentUser.ID)
 	if err != nil {
 		response.ServerError(c, err)
 	} else {

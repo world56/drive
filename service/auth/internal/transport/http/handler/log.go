@@ -21,10 +21,12 @@ func NewLogHandler(s *service.LogService) *LogHandler {
 // 查询日志列表
 func (s *LogHandler) GetLogs(c *gin.Context) {
 	var query dto.RequestFindLogsDTO
-	if err := c.ShouldBindJSON(&query); err != nil {
+	if err := c.ShouldBindQuery(&query); err != nil {
 		response.ClientError(c, err)
 		return
 	}
+
+	query.Normalize()
 	data, err := s.logService.FindLogs(c.Request.Context(), query)
 	if err != nil {
 		response.ServerError(c, err)

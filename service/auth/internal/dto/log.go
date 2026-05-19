@@ -1,6 +1,7 @@
 package dto
 
 import (
+	"auth/internal/pkg/utils"
 	"time"
 )
 
@@ -14,8 +15,8 @@ type Log struct {
 
 type RequestFindLogsDTO struct {
 	PageTurnQuery
-	Event  *string `json:"event,omitempty"`
-	UserID *string `json:"userID,omitempty"`
+	Event  *string `form:"event"`
+	UserID *string `form:"userID"`
 }
 
 type ResponseFindLogsDTO struct {
@@ -25,6 +26,11 @@ type ResponseFindLogsDTO struct {
 
 type WriteLog struct {
 	Event  string
-	Desc   string
+	Desc   any
 	UserID string
+}
+
+func (r *RequestFindLogsDTO) Normalize() {
+	r.Event = utils.OptionalString(r.Event)
+	r.UserID = utils.OptionalString(r.UserID)
 }

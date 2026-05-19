@@ -3,6 +3,7 @@ package service
 import (
 	"auth/internal/dto"
 	"auth/internal/model"
+	"auth/internal/pkg/utils"
 	"context"
 	"errors"
 
@@ -44,8 +45,8 @@ func (s *LogService) FindLogs(c context.Context, query dto.RequestFindLogsDTO) (
 	}
 
 	return &dto.ResponseFindLogsDTO{
-		Count: count,
 		List:  logs,
+		Count: count,
 	}, nil
 }
 
@@ -53,9 +54,9 @@ func (s *LogService) FindLogs(c context.Context, query dto.RequestFindLogsDTO) (
 func (s *LogService) WriteLog(c context.Context, log *dto.WriteLog) error {
 	if err := s.db.WithContext(c).
 		Create(&model.Log{
-			Desc:   log.Desc,
 			Event:  log.Event,
 			UserID: log.UserID,
+			Desc:   utils.ToDescString(log.Desc),
 		}).Error; err != nil {
 		return errors.New("Log write failed")
 	}

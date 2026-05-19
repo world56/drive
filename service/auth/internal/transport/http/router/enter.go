@@ -12,4 +12,5 @@ func RegisterRoutes(app *gin.Engine, h *handler.Handler) {
 	RegisterUserRoutes(api, h.UserHandler)
 	RegisterCryptoRoutes(api, h.CryptoHandler)
 	RegisterAccountRoutes(api, h.AccountHandler)
+	RegisterLogRoutes(api, h.LogHandler)
 }

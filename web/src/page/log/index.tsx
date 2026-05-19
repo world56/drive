@@ -27,7 +27,13 @@ const Log = () => {
   const { currentPage, pageSize } = pagination;
 
   const { data, loading, run } = useRequest(
-    () => getLogs({ pageSize, currentPage, event: logEvent.value }),
+    () =>
+      getLogs({
+        pageSize,
+        currentPage,
+        event: logEvent.value,
+        userID: userEvent.value,
+      }),
     { refreshDeps: [currentPage, pageSize] },
   );
 

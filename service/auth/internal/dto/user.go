@@ -55,14 +55,15 @@ type RequestUpdatePassword struct {
 }
 
 type RequestAdminSetUserPassword struct {
-	Id       string `json:"id" binding:"required"`
+	ID       string `json:"id" binding:"required"`
 	Password string `json:"password" binding:"required"` // 新密码
 }
 
 type ResponseUserLoginInfo struct {
-	Id   string `json:"id"`
-	Name string `json:"name"`
-	Role int    `json:"role"`
+	ID      string `json:"id"`
+	Name    string `json:"name"`
+	Role    int    `json:"role"`
+	Account string `json:"account"`
 }
 
 func (q *RequestFindUsersQuery) Normalize() {

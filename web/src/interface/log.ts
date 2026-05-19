@@ -19,14 +19,15 @@ export namespace TypeLog {
     event: ENUM_LOG.EVENT;
     /** @param event 操作人 */
     operator: TypeUser.DTO;
-    /** @param event 操作人ID */
-    operatorId: TypeUser.DTO["id"];
+    /** @param userID 操作人ID */
+    userID: TypeUser.DTO["id"];
   }
 
   /**
    * @name ReqLogs 查询“日志”列表
    */
   export interface ReqLogs
-    extends TypeCommon.PageTurning,
-      Partial<Pick<DTO, "event" | "createTime">> {}
+    extends
+      TypeCommon.PageTurning,
+      Partial<Pick<DTO, "event" | "createTime" | "userID">> {}
 }

@@ -18,12 +18,14 @@ type AccountService struct {
 	db            *gorm.DB
 	redis         *redis.Client
 	cryptoService *CryptoService
+	LogService    *LogService
 }
 
-func NewAccountService(d *gorm.DB, r *redis.Client, c *CryptoService) *AccountService {
+func NewAccountService(d *gorm.DB, r *redis.Client, c *CryptoService, l *LogService) *AccountService {
 	return &AccountService{
 		db:            d,
 		redis:         r,
+		LogService:    l,
 		cryptoService: c,
 	}
 }
@@ -86,7 +88,7 @@ func (s *AccountService) Login(c context.Context, token []byte) (string, error) 
 
 	var user model.User
 	if err := s.db.WithContext(c).
-		Select("id", "name", "role", "status", "password").
+		Select("id", "name", "account", "role", "status", "password").
 		Where("account = ?", login.Account).
 		First(&user).Error; err != nil {
 		return "", errors.New("Account Password Error")
@@ -107,13 +109,16 @@ func (s *AccountService) Login(c context.Context, token []byte) (string, error) 
 	UserID := user.ID.String()
 
 	userRedisKey := "drive:user:" + UserID
+	userInfo := map[string]interface{}{
+		"id":      UserID,
+		"name":    user.Name,
+		"role":    user.Role,
+		"status":  user.Status,
+		"account": user.Account,
+	}
+
 	if err := s.redis.
-		HSet(c, userRedisKey, map[string]interface{}{
-			"id":     UserID,
-			"name":   user.Name,
-			"role":   user.Role,
-			"status": user.Status,
-		}).
+		HSet(c, userRedisKey, userInfo).
 		Err(); err != nil {
 		return "", err
 	}
@@ -123,6 +128,12 @@ func (s *AccountService) Login(c context.Context, token []byte) (string, error) 
 		Err(); err != nil {
 		return "", err
 	}
+
+	s.LogService.WriteLog(c, &dto.WriteLog{
+		UserID: UserID,
+		Desc:   userInfo,
+		Event:  model.LogEventLogin,
+	})
 
 	return utils.CreateJWT(UserID)
 }
@@ -143,13 +154,27 @@ func (s *AccountService) GetUserInfo(c context.Context, UserID string) (*dto.Res
 	}
 
 	return &dto.ResponseUserLoginInfo{
-		Id:   user["id"],
-		Name: user["name"],
-		Role: role,
+		Role:    role,
+		ID:      user["id"],
+		Name:    user["name"],
+		Account: user["account"],
 	}, nil
 }
 
 func (s *AccountService) Logout(c context.Context, UserID string) bool {
-	s.redis.Del(c, "drive:user:"+UserID)
+	userKey := "drive:user:" + UserID
+
+	user, err := s.GetUserInfo(c, UserID)
+	if err != nil {
+		return false
+	}
+
+	s.LogService.WriteLog(c, &dto.WriteLog{
+		Desc:   user,
+		UserID: UserID,
+		Event:  model.LogEventLogOut,
+	})
+
+	s.redis.Del(c, userKey)
 	return true
 }
