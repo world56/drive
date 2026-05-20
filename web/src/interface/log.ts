@@ -21,6 +21,10 @@ export namespace TypeLog {
     operator: TypeUser.DTO;
     /** @param userID 操作人ID */
     userID: TypeUser.DTO["id"];
+    /** @param userID 操作人名称 */
+    userName: TypeUser.DTO["name"];
+    /** @param userID 操作人账号 */
+    userAccount: TypeUser.DTO["account"];
   }
 
   /**

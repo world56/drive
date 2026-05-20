@@ -41,7 +41,7 @@ func (s *UserService) FindUsers(c context.Context, query dto.RequestFindUsersQue
 	}
 
 	var count int64
-	if err := db.Count(&count).Error; err != nil {
+	if err := db.Session(&gorm.Session{}).Count(&count).Error; err != nil {
 		return nil, err
 	}
 
@@ -181,17 +181,17 @@ func (s *UserService) ChangeStatus(c context.Context, body dto.RequestFindString
 		return false, err
 	}
 
-	s.redis.Del(c, "user:"+body.ID) // 被冻结立即踢下线
+	s.redis.Del(c, "drive:user:"+body.ID) // 被冻结立即踢下线
 
 	user.Status = status // 最新修改的状态
 	s.logService.WriteLog(c, &dto.WriteLog{
 		UserID: userID,
 		Event:  model.LogEventUserStatus,
 		Desc: map[string]interface{}{
-			"name":    user.Name,
-			"account": user.Account,
 			"status":  status,
 			"id":      user.ID,
+			"name":    user.Name,
+			"account": user.Account,
 		},
 	})
 	return true, nil

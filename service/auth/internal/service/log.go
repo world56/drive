@@ -24,40 +24,33 @@ func (s *LogService) FindLogs(c context.Context, query dto.RequestFindLogsDTO) (
 	db := s.db.WithContext(c).Model(&model.Log{})
 
 	if query.Event != nil {
-		db = db.Where("event = ?", *query.Event)
+		db = db.Where("logs.event = ?", *query.Event)
 	}
 	if query.UserID != nil {
-		db = db.Where("user_id = ?", *query.UserID)
+		db = db.Where("logs.user_id = ?", *query.UserID)
 	}
 
 	var count int64
-	if err := db.Count(&count).Error; err != nil {
+	if err := db.Session(&gorm.Session{}).Count(&count).Error; err != nil {
 		return nil, err
 	}
 
-	var modelLogs []model.Log
-	if err := db.
-		Preload("User").
-		Order("create_time DESC").
-		Offset((query.CurrentPage - 1) * query.PageSize).
+	var logs []dto.Log
+	if err := db.Select(`
+		logs.id,
+		logs.desc,
+		logs.event,
+		logs.user_id,
+		logs.create_time,
+		users.name AS user_name,
+		users.account as user_account
+	`).
+		Joins("LEFT JOIN users ON users.id = logs.user_id").
+		Order("logs.create_time DESC").
 		Limit(query.PageSize).
-		Find(&modelLogs).Error; err != nil {
+		Offset((query.CurrentPage - 1) * query.PageSize).
+		Scan(&logs).Error; err != nil {
 		return nil, err
-	}
-
-	logs := make([]dto.Log, len(modelLogs))
-	for i, l := range modelLogs {
-		logs[i] = dto.Log{
-			ID:         l.ID.String(),
-			Event:      l.Event,
-			Desc:       l.Desc,
-			CreateTime: l.CreateTime,
-			UserID:     l.UserID,
-			User: dto.UserBasicInfo{
-				ID:   l.User.ID.String(),
-				Name: l.User.Name,
-			},
-		}
 	}
 
 	return &dto.ResponseFindLogsDTO{
