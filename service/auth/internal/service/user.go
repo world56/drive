@@ -60,8 +60,8 @@ func (s *UserService) FindUsers(c context.Context, query dto.RequestFindUsersQue
 	}, nil
 }
 
-func (s *UserService) GetAllUsers(context context.Context) ([]dto.ResponseFindUsersMap, error) {
-	var users []dto.ResponseFindUsersMap
+func (s *UserService) GetAllUsers(context context.Context) ([]dto.UserBasicInfo, error) {
+	var users []dto.UserBasicInfo
 	if err := s.db.WithContext(context).
 		Model(&model.User{}).
 		Select("id", "name").

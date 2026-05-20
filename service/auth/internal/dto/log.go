@@ -6,11 +6,12 @@ import (
 )
 
 type Log struct {
-	ID         string    `json:"id"`
-	Event      string    `json:"event"`
-	Desc       string    `json:"desc"`
-	CreateTime time.Time `json:"createTime"`
-	UserID     string    `json:"userID"`
+	ID         string        `json:"id"`
+	Event      string        `json:"event"`
+	Desc       string        `json:"desc"`
+	CreateTime time.Time     `json:"createTime"`
+	UserID     string        `json:"userID"`
+	User       UserBasicInfo `json:"user"`
 }
 
 type RequestFindLogsDTO struct {

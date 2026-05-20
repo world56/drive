@@ -16,6 +16,11 @@ type User struct {
 	CreateTime time.Time `json:"createTime"`
 }
 
+type UserBasicInfo struct {
+	ID   string `json:"id"`
+	Name string `json:"name"`
+}
+
 type RequestCreateUserDTO struct {
 	Name     string `json:"name,omitempty" binding:"required"`
 	Account  string `json:"account" binding:"required"`
@@ -29,11 +34,6 @@ type RequestFindUsersQuery struct {
 	Account *string `form:"account"`
 	Name    *string `form:"name"`
 	Status  *int    `form:"status"`
-}
-
-type ResponseFindUsersMap struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
 }
 
 type ResponseFindUsersDTO struct {

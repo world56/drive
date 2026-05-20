@@ -35,13 +35,29 @@ func (s *LogService) FindLogs(c context.Context, query dto.RequestFindLogsDTO) (
 		return nil, err
 	}
 
-	var logs []dto.Log
+	var modelLogs []model.Log
 	if err := db.
+		Preload("User").
 		Order("create_time DESC").
 		Offset((query.CurrentPage - 1) * query.PageSize).
 		Limit(query.PageSize).
-		Find(&logs).Error; err != nil {
+		Find(&modelLogs).Error; err != nil {
 		return nil, err
+	}
+
+	logs := make([]dto.Log, len(modelLogs))
+	for i, l := range modelLogs {
+		logs[i] = dto.Log{
+			ID:         l.ID.String(),
+			Event:      l.Event,
+			Desc:       l.Desc,
+			CreateTime: l.CreateTime,
+			UserID:     l.UserID,
+			User: dto.UserBasicInfo{
+				ID:   l.User.ID.String(),
+				Name: l.User.Name,
+			},
+		}
 	}
 
 	return &dto.ResponseFindLogsDTO{
