@@ -18,14 +18,14 @@ type AccountService struct {
 	db            *gorm.DB
 	redis         *redis.Client
 	cryptoService *CryptoService
-	LogService    *LogService
+	logService    *LogService
 }
 
 func NewAccountService(d *gorm.DB, r *redis.Client, c *CryptoService, l *LogService) *AccountService {
 	return &AccountService{
 		db:            d,
 		redis:         r,
-		LogService:    l,
+		logService:    l,
 		cryptoService: c,
 	}
 }
@@ -129,7 +129,7 @@ func (s *AccountService) Login(c context.Context, token []byte) (string, error) 
 		return "", err
 	}
 
-	s.LogService.WriteLog(c, &dto.WriteLog{
+	s.logService.WriteLog(c, &dto.WriteLog{
 		UserID: UserID,
 		Desc:   userInfo,
 		Event:  model.LogEventLogin,
@@ -169,7 +169,7 @@ func (s *AccountService) Logout(c context.Context, UserID string) bool {
 		return false
 	}
 
-	s.LogService.WriteLog(c, &dto.WriteLog{
+	s.logService.WriteLog(c, &dto.WriteLog{
 		Desc:   user,
 		UserID: UserID,
 		Event:  model.LogEventLogOut,

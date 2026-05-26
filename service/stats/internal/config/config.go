@@ -11,10 +11,7 @@ var loadEnvOnce sync.Once
 
 type Config struct {
 	HTTP_ADDR       string
-	POSTGRES_DSN    string
 	REDIS_URL       string
-	JWT_SECRET      string
-	GRPC_AUTH_ADDR  string
 	GRPC_STATS_ADDR string
 }
 
@@ -25,17 +22,14 @@ func Load() Config {
 
 	return Config{
 		HTTP_ADDR:       getEnv("HTTP_ADDR"),
-		GRPC_AUTH_ADDR:  getEnv("GRPC_AUTH_ADDR"),
-		GRPC_STATS_ADDR: getEnv("GRPC_STATS_ADDR"),
-		POSTGRES_DSN:    getEnv("POSTGRES_DSN"),
 		REDIS_URL:       getEnv("REDIS_URL"),
-		JWT_SECRET:      getEnv("JWT_SECRET"),
+		GRPC_STATS_ADDR: getEnv("GRPC_STATS_ADDR"),
 	}
 }
 
 func getEnv(key string) string {
-	if value, ok := os.LookupEnv(key); ok && value != "" {
-		return value
+	if v, success := os.LookupEnv(key); success && v != "" {
+		return v
 	}
 	return ""
 }
