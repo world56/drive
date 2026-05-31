@@ -4,6 +4,7 @@ import (
 	"auth/internal/dto"
 	"auth/internal/model"
 	"auth/internal/pkg/utils"
+	grpcclient "auth/internal/transport/grpc/client"
 	"context"
 	"encoding/json"
 	"errors"
@@ -17,15 +18,22 @@ import (
 type AccountService struct {
 	db            *gorm.DB
 	redis         *redis.Client
-	cryptoService *CryptoService
 	logService    *LogService
+	cryptoService *CryptoService
+	grpcClient    *grpcclient.GrpcClients
 }
 
-func NewAccountService(d *gorm.DB, r *redis.Client, c *CryptoService, l *LogService) *AccountService {
+func NewAccountService(d *gorm.DB,
+	r *redis.Client,
+	c *CryptoService,
+	l *LogService,
+	g *grpcclient.GrpcClients,
+) *AccountService {
 	return &AccountService{
 		db:            d,
 		redis:         r,
 		logService:    l,
+		grpcClient:    g,
 		cryptoService: c,
 	}
 }
@@ -152,6 +160,8 @@ func (s *AccountService) GetUserInfo(c context.Context, UserID string) (*dto.Res
 	if err != nil {
 		return nil, errors.New("Failed to acquire a character")
 	}
+
+	s.grpcClient.Stats.Access(c, UserID)
 
 	return &dto.ResponseUserLoginInfo{
 		Role:    role,

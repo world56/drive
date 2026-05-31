@@ -2,6 +2,7 @@ package handler
 
 import (
 	"stats/internal/service"
+	"stats/internal/transport/http/response"
 
 	"github.com/gin-gonic/gin"
 )
@@ -18,12 +19,17 @@ func NewStatsHandler(s *service.StatsService) *StatsHandler {
 
 // 系统存储
 func (h *StatsHandler) GetStorage(c *gin.Context) {
-
+	storage, err := h.statsService.FindStorage(c.Request.Context())
+	if err != nil {
+		response.ServerError(c, err)
+	} else {
+		response.Success(c, storage)
+	}
 }
 
 // 访问趋势
 func (h *StatsHandler) GetAccess(c *gin.Context) {
-
+	h.statsService.FindAccessTrends(c.Request.Context())
 }
 
 // 热门查询

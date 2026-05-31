@@ -4,16 +4,18 @@ import (
 	"auth/internal/config"
 	"auth/internal/pkg/databases"
 	"auth/internal/service"
+	grpcclient "auth/internal/transport/grpc/client"
 
 	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
 )
 
 type App struct {
-	Config  config.Config
-	DB      *gorm.DB
-	Redis   *redis.Client
-	Service *service.Server
+	Config     config.Config
+	DB         *gorm.DB
+	Redis      *redis.Client
+	Service    *service.Server
+	GrpcClient *grpcclient.GrpcClients
 }
 
 func New() (*App, error) {
@@ -29,12 +31,18 @@ func New() (*App, error) {
 		return nil, err
 	}
 
-	svc := service.NewServer(db, redis)
+	grpcClient, err := grpcclient.NewGrpcClients(cfg.GRPC_STATS_ADDR)
+	if err != nil {
+		return nil, err
+	}
+
+	svc := service.NewServer(db, redis, grpcClient)
 
 	return &App{
-		Config:  cfg,
-		DB:      db,
-		Redis:   redis,
-		Service: svc,
+		Config:     cfg,
+		DB:         db,
+		Redis:      redis,
+		Service:    svc,
+		GrpcClient: grpcClient,
 	}, nil
 }
