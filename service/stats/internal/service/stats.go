@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 	"stats/internal/dto"
-	"sync"
 	"time"
 
 	"github.com/redis/go-redis/v9"
@@ -27,7 +26,6 @@ func (s *StatsService) FindStorage(c context.Context) (*dto.ResponseStorageUsage
 	}
 
 	// s.redis.HGetAll("drive:storage")
-
 	return &dto.ResponseStorageUsage{
 		Free:  use.Free,
 		Total: use.Total,
@@ -35,27 +33,48 @@ func (s *StatsService) FindStorage(c context.Context) (*dto.ResponseStorageUsage
 	}, nil
 }
 
-func (s *StatsService) FindAccessTrends(c context.Context) {
+func (s *StatsService) FindAccessTrends(c context.Context) ([]dto.AccessTrendsItem, error) {
 	now := time.Now()
-	var wg sync.WaitGroup
-	ch := make(chan dto.AccessTrendsItem, 14)
+	trends := make([]dto.AccessTrendsItem, 14)
 
+	pipe := s.redis.Pipeline()
+	cmds := make([]*redis.IntCmd, 14)
 	for i := range 14 {
-		wg.Add(1)
-		go func(index int) {
-			defer wg.Done()
-			date := now.AddDate(0, 0, -index).Format("01-02")
-			value, err := s.redis.SCard(c, `drive:use:`+date).Result()
-			if err != nil {
-				return
-			}
-			ch <- dto.AccessTrendsItem{Date: date, Value: value}
-		}(i)
+		date := now.AddDate(0, 0, -i).Format("01-02")
+		trends[i] = dto.AccessTrendsItem{Date: date}
+		cmds[i] = pipe.SCard(c, "drive:use:"+date)
 	}
 
-	go func() {
-		wg.Wait()
-		close(ch)
-	}()
+	if _, err := pipe.Exec(c); err != nil {
+		return nil, err
+	}
+	for i, cmd := range cmds {
+		if value, err := cmd.Result(); err == nil {
+			trends[i].Value = value
+		}
+	}
 
+	return trends, nil
+}
+
+func (s *StatsService) FindHot(c context.Context) ([]*dto.ResponseHotItem, error) {
+	data, err := s.redis.ZRevRangeWithScores(c, "drive:hot", 0, 9).Result()
+	if err != nil {
+		return nil, err
+	}
+
+	length := len(data)
+	hots := make([]*dto.ResponseHotItem, 0, length)
+	for _, z := range data {
+		hots = append(hots, &dto.ResponseHotItem{
+			Value: z.Score,
+			Name:  z.Member.(string),
+		})
+	}
+
+	return hots, nil
+}
+
+func (s *StatsService) UpdateHot(c context.Context, query dto.RequestHotLabel) error {
+	return s.redis.ZIncrBy(c, "drive:hot", 1, query.Name).Err()
 }

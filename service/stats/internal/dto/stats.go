@@ -7,6 +7,15 @@ type ResponseStorageUsage struct {
 	Storage StorageDetails `json:"storage"`
 }
 
+type ResponseHotItem struct {
+	Name  string  `json:"name"`
+	Value float64 `json:"value"`
+}
+
+type RequestHotLabel struct {
+	Name string `json:"name" binding:"required,min=1"`
+}
+
 type StorageDetails struct{}
 
 type AccessTrendsItem struct {
