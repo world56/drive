@@ -2,11 +2,11 @@ version: v2
 
 plugins:
   - remote: buf.build/protocolbuffers/go
-    out: service/auth
+    out: .
     opt:
-      - module=auth
-      
+      - paths=import
+
   - remote: buf.build/grpc/go
-    out: service/auth
+    out: .
     opt:
-      - module=auth
+      - paths=import

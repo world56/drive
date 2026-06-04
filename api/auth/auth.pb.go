@@ -201,7 +201,7 @@ const file_auth_proto_rawDesc = "" +
 	".auth.User\"\x002=\n" +
 	"\n" +
 	"LogService\x12/\n" +
-	"\bWriteLog\x12\t.auth.Log\x1a\x16.google.protobuf.Empty\"\x00B\x1fZ\x1dauth/internal/api/auth;authpbb\x06proto3"
+	"\bWriteLog\x12\t.auth.Log\x1a\x16.google.protobuf.Empty\"\x00B\x11Z\x0fapi/auth;authpbb\x06proto3"
 
 var (
 	file_auth_proto_rawDescOnce sync.Once

@@ -11,15 +11,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	ch := make(chan error, 2)
-
-	go func() {
-		ch <- a.RunHTTP()
-	}()
-
-	go func() {
-		ch <- a.RunGRPC()
-	}()
-
-	log.Fatal(<-ch)
+	if err := a.RunGRPC(); err != nil {
+		log.Fatal(err)
+	}
 }

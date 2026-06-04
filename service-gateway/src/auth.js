@@ -1,5 +1,5 @@
-const FORBIDDEN = { code: 403, message: "用户未登陆" };
-const UNAUTHORIZED = { code: 401, message: "用户登陆超时" };
+const FORBIDDEN = { code: 403, message: "User not logged in" };
+const UNAUTHORIZED = { code: 401, message: "User login timeout" };
 
 module.exports = async function (app, request, reply) {
   try {

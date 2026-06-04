@@ -78,3 +78,18 @@ func (s *StatsService) FindHot(c context.Context) ([]*dto.ResponseHotItem, error
 func (s *StatsService) UpdateHot(c context.Context, query dto.RequestHotLabel) error {
 	return s.redis.ZIncrBy(c, "drive:hot", 1, query.Name).Err()
 }
+
+func (s *StatsService) UpdateAccess(c context.Context, userId string) error {
+	key := "drive:use:" + time.Now().Format("01-02")
+	if _, err := s.redis.SAdd(c, key, userId).Result(); err != nil {
+		return err
+	}
+
+	now := time.Now()
+	end := time.Date(now.Year(), now.Month(), now.Day()+14, 0, 0, 0, 0, now.Location())
+	if err := s.redis.Expire(c, key, time.Until(end)).Err(); err != nil {
+		return err
+	}
+
+	return nil
+}

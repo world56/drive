@@ -3,6 +3,7 @@ syntax = "proto3";
 package explorer;
 
 import "google/protobuf/empty.proto";
+option go_package = "api/explorer;authpb";
 
 service ExplorerService {
   rpc GetCount (google.protobuf.Empty) returns (Count) {};

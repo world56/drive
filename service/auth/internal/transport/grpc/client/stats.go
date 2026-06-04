@@ -1,7 +1,7 @@
 package grpcclient
 
 import (
-	statspb "auth/internal/api/stats"
+	statspb "api/stats"
 	"context"
 	"time"
 
@@ -33,10 +33,10 @@ func (s *StatsGrpcClient) Close() error {
 	return s.conn.Close()
 }
 
-func (s *StatsGrpcClient) Access(c context.Context, userID string) error {
-	ctx, cancel := context.WithTimeout(c, 2*time.Second)
-	defer cancel()
-
-	_, err := s.client.Access(ctx, &statspb.User{Id: userID})
-	return err
+func (s *StatsGrpcClient) Access(userID string) {
+	go func(id string) {
+		ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+		defer cancel()
+		s.client.Access(ctx, &statspb.User{Id: userID})
+	}(userID)
 }

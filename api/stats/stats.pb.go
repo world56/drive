@@ -130,7 +130,7 @@ const file_stats_proto_rawDesc = "" +
 	"\x05count\x18\x02 \x01(\x05R\x05count2s\n" +
 	"\fStatsService\x12/\n" +
 	"\x06Access\x12\v.stats.User\x1a\x16.google.protobuf.Empty\"\x00\x122\n" +
-	"\x05Count\x12\x0f.stats.Resource\x1a\x16.google.protobuf.Empty\"\x00B!Z\x1fauth/internal/api/stats;statspbb\x06proto3"
+	"\x05Count\x12\x0f.stats.Resource\x1a\x16.google.protobuf.Empty\"\x00B\x13Z\x11api/stats;statspbb\x06proto3"
 
 var (
 	file_stats_proto_rawDescOnce sync.Once

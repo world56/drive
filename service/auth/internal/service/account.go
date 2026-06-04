@@ -161,7 +161,7 @@ func (s *AccountService) GetUserInfo(c context.Context, UserID string) (*dto.Res
 		return nil, errors.New("Failed to acquire a character")
 	}
 
-	s.grpcClient.Stats.Access(c, UserID)
+	s.grpcClient.Stats.Access(UserID)
 
 	return &dto.ResponseUserLoginInfo{
 		Role:    role,

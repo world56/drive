@@ -3,7 +3,7 @@ syntax = "proto3";
 package stats;
 
 import "google/protobuf/empty.proto";
-option go_package = "auth/internal/api/stats;statspb";
+option go_package = "api/stats;statspb";
 
 service StatsService {
   rpc Access (User) returns (google.protobuf.Empty) {}

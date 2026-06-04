@@ -10,6 +10,7 @@ const config = [
       `${BASE_URL}/auth/crypto`,
       `${BASE_URL}/auth/account/login`,
       `${BASE_URL}/auth/account/super`,
+      `${BASE_URL}/auth/account/logout`,
       `${BASE_URL}/auth/account/register`,
     ],
   },

@@ -1,8 +1,9 @@
 syntax = "proto3";
 
 package auth;
+
 import "google/protobuf/empty.proto";
-option go_package = "auth/internal/api/auth;authpb";
+option go_package = "api/auth;authpb";
 
 service UserService {
   rpc GetUserInfo (FindUserId) returns (User) {}

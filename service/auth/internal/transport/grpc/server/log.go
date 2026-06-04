@@ -1,7 +1,7 @@
 package grpcserver
 
 import (
-	authpb "auth/internal/api/auth"
+	authpb "api/auth"
 	"auth/internal/dto"
 	"auth/internal/service"
 	"context"
