@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"stats/internal/dto"
+	"strconv"
 	"time"
 
 	"github.com/redis/go-redis/v9"
@@ -25,7 +26,7 @@ func (s *StatsService) FindStorage(c context.Context) (*dto.ResponseStorageUsage
 		return nil, err
 	}
 
-	// s.redis.HGetAll("drive:storage")
+	// s.redis.HGetAll("drive:storage") // 各种类型资源数量
 	return &dto.ResponseStorageUsage{
 		Free:  use.Free,
 		Total: use.Total,
@@ -88,6 +89,29 @@ func (s *StatsService) UpdateAccess(c context.Context, userId string) error {
 	now := time.Now()
 	end := time.Date(now.Year(), now.Month(), now.Day()+14, 0, 0, 0, 0, now.Location())
 	if err := s.redis.Expire(c, key, time.Until(end)).Err(); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *StatsService) UpdateCount(c context.Context, resourceType int32, resourceCount int32) error {
+	key := strconv.FormatInt(int64(resourceType), 10)
+
+	count, err := s.redis.HGet(c, `drive:storage`, key).Result()
+	if err == redis.Nil {
+		count = "0"
+	} else if err != nil {
+		return err
+	}
+
+	total, err := strconv.ParseInt(count, 10, 32)
+	if err != nil {
+		return err
+	}
+
+	_, err = s.redis.HSet(c, `drive:storage`, key, int32(total)+resourceCount).Result()
+	if err != nil {
 		return err
 	}
 

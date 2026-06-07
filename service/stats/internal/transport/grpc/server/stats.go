@@ -34,3 +34,12 @@ func (s *StatsGrpcServer) Access(c context.Context, r *statspb.User) (*emptypb.E
 
 	return &emptypb.Empty{}, nil
 }
+
+func (s *StatsGrpcServer) Count(c context.Context, r *statspb.Resource) (*emptypb.Empty, error) {
+	resourceType := r.GetType()
+	resourceCount := r.GetCount()
+	if err := s.statsServer.UpdateCount(c, resourceType, resourceCount); err != nil {
+		return &emptypb.Empty{}, err
+	}
+	return &emptypb.Empty{}, nil
+}
