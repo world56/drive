@@ -1,9 +1,10 @@
 module stats
 
-go 1.26.3
+go 1.26.4
 
 require (
 	api v0.0.0
+	common v0.0.0
 	github.com/gin-gonic/gin v1.12.0
 	github.com/joho/godotenv v1.5.1
 	github.com/redis/go-redis/v9 v9.19.0
@@ -50,3 +51,5 @@ require (
 )
 
 replace api => ../../api
+
+replace common => ../../common

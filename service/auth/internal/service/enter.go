@@ -7,18 +7,18 @@ import (
 	"gorm.io/gorm"
 )
 
-type Server struct {
+type Service struct {
 	LogService     *LogService
 	UserService    *UserService
 	CryptoService  *CryptoService
 	AccountService *AccountService
 }
 
-func NewServer(db *gorm.DB, redis *redis.Client, grpcClient *grpcclient.GrpcClients) *Server {
+func NewServer(db *gorm.DB, redis *redis.Client, grpcClient *grpcclient.GrpcClients) *Service {
 	LogService := NewLogService(db)
 	CryptoService := NewCryptoService(redis)
 
-	return &Server{
+	return &Service{
 		LogService:     LogService,
 		CryptoService:  CryptoService,
 		UserService:    NewUserService(db, redis, CryptoService, LogService),

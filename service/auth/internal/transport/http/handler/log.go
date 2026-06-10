@@ -3,7 +3,7 @@ package handler
 import (
 	"auth/internal/dto"
 	"auth/internal/service"
-	"auth/internal/transport/http/response"
+	"common/http/response"
 
 	"github.com/gin-gonic/gin"
 )

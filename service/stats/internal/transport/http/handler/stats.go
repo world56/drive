@@ -1,9 +1,9 @@
 package handler
 
 import (
+	"common/http/response"
 	"stats/internal/dto"
 	"stats/internal/service"
-	"stats/internal/transport/http/response"
 
 	"github.com/gin-gonic/gin"
 )

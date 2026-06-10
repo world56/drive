@@ -1,8 +1,8 @@
 package middleware
 
 import (
-	"auth/internal/transport/http/request"
-	"auth/internal/transport/http/response"
+	"common/http/request"
+	"common/http/response"
 	"errors"
 	"slices"
 

@@ -1,9 +1,10 @@
 module auth
 
-go 1.26.1
+go 1.26.4
 
 require (
 	api v0.0.0
+	common v0.0.0-00010101000000-000000000000
 	github.com/gin-gonic/gin v1.12.0
 	github.com/golang-jwt/jwt/v5 v5.3.1
 	github.com/google/uuid v1.6.0
@@ -58,3 +59,5 @@ require (
 )
 
 replace api => ../../api
+
+replace common => ../../common

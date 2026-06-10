@@ -1,11 +1,12 @@
 package request
 
 import (
-	"auth/internal/model"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
+
+var UserRoleRegularUser = 1 // 普通用户
 
 type CurrentUserInfo struct {
 	ID   string
@@ -19,7 +20,7 @@ func GetCurrentUser(c *gin.Context) *CurrentUserInfo {
 
 	Role, err := strconv.Atoi(role)
 	if err != nil {
-		Role = model.UserRoleReg
+		Role = UserRoleRegularUser
 	}
 
 	return &CurrentUserInfo{

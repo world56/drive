@@ -9,7 +9,7 @@ type Handler struct {
 	AccountHandler *AccountHandler
 }
 
-func NewHandler(svc *service.Server) *Handler {
+func NewHandler(svc *service.Service) *Handler {
 	return &Handler{
 		LogHandler:     NewLogHandler(svc.LogService),
 		UserHandler:    NewUserHandler(svc.UserService),

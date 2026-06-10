@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// 正常返回
 func Success(c *gin.Context, content interface{}) {
 	c.JSON(http.StatusOK, content)
 }

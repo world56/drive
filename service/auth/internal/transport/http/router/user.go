@@ -3,7 +3,8 @@ package router
 import (
 	"auth/internal/model"
 	"auth/internal/transport/http/handler"
-	"auth/internal/transport/http/middleware"
+
+	"common/http/middleware"
 
 	"github.com/gin-gonic/gin"
 )

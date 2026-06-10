@@ -14,7 +14,7 @@ type App struct {
 	Config     config.Config
 	DB         *gorm.DB
 	Redis      *redis.Client
-	Service    *service.Server
+	Service    *service.Service
 	GrpcClient *grpcclient.GrpcClients
 }
 
