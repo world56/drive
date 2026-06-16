@@ -25,7 +25,7 @@ func (s *UserGrpcServer) GetUserInfo(c context.Context, r *authpb.FindUserId) (*
 		return nil, errors.New("User ID must not be empty")
 	}
 
-	user, err := s.userService.GetUserInfo(c, dto.RequestFindStringPrimaryKey{ID: userID})
+	user, err := s.userService.GetUserByID(c, dto.RequestFindStringPrimaryKey{ID: userID})
 	if err != nil {
 		return nil, err
 	}

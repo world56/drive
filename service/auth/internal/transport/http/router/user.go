@@ -1,7 +1,7 @@
 package router
 
 import (
-	"auth/internal/model"
+	"auth/internal/enum"
 	"auth/internal/transport/http/handler"
 
 	"common/http/middleware"
@@ -16,7 +16,7 @@ func RegisterUserRoutes(api *gin.RouterGroup, h *handler.UserHandler) {
 	}
 
 	adminGroup := group.Group("")
-	adminGroup.Use(middleware.RolesGuard(model.UserRoleAdmin))
+	adminGroup.Use(middleware.RolesGuard(enum.UserRoleAdmin))
 	{
 		adminGroup.GET("", h.GetAllUsers)
 		adminGroup.GET("list", h.GetUsers)

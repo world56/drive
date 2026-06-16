@@ -7,19 +7,6 @@ import (
 	"gorm.io/gorm"
 )
 
-type UserRole = int
-type UserStatus = int
-
-const (
-	UserRoleAdmin UserRole = iota
-	UserRoleReg
-)
-
-const (
-	UserStatusFreeze UserStatus = iota
-	UserStatusActive            = 1
-)
-
 type User struct {
 	ID         uuid.UUID `gorm:"type:uuid;primaryKey;default:gen_random_uuid();" json:"id"`
 	Name       string    `gorm:"type:varchar(40);uniqueIndex;not null;" json:"name"`

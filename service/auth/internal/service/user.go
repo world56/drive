@@ -2,6 +2,7 @@ package service
 
 import (
 	"auth/internal/dto"
+	"auth/internal/enum"
 	"auth/internal/model"
 	"context"
 	"encoding/json"
@@ -27,8 +28,8 @@ func NewUserService(db *gorm.DB, redis *redis.Client, c *CryptoService, l *LogSe
 	}
 }
 
-func (s *UserService) FindUsers(c context.Context, query dto.RequestFindUsersQuery) (*dto.ResponseFindUsersDTO, error) {
-	db := s.db.WithContext(c).Model(&model.User{}).Where("role = ?", model.UserRoleReg)
+func (s *UserService) ListUsers(c context.Context, query dto.RequestFindUsersQuery) (*dto.ResponseFindUsersDTO, error) {
+	db := s.db.WithContext(c).Model(&model.User{}).Where("role = ?", enum.UserRoleRegular)
 
 	if query.Status != nil {
 		db = db.Where("status = ?", *query.Status)
@@ -72,7 +73,7 @@ func (s *UserService) GetAllUsers(context context.Context) ([]dto.UserBasicInfo,
 	return users, nil
 }
 
-func (s *UserService) GetUserInfo(c context.Context, query dto.RequestFindStringPrimaryKey) (*dto.User, error) {
+func (s *UserService) GetUserByID(c context.Context, query dto.RequestFindStringPrimaryKey) (*dto.User, error) {
 	var user dto.User
 	if err := s.db.
 		WithContext(c).
@@ -85,7 +86,7 @@ func (s *UserService) GetUserInfo(c context.Context, query dto.RequestFindString
 	return &user, nil
 }
 
-func (s *UserService) InsertUser(c context.Context, body dto.RequestCreateUserDTO, userID string) (bool, error) {
+func (s *UserService) CreateUser(c context.Context, body dto.RequestCreateUserDTO, userID string) (bool, error) {
 	if err := s.db.WithContext(c).
 		Where("account = ?", body.Account).
 		First(&model.User{}).
@@ -113,9 +114,9 @@ func (s *UserService) InsertUser(c context.Context, body dto.RequestCreateUserDT
 		Account:  body.Account,
 		Remark:   body.Remark,
 		Contact:  body.Contact,
-		Status:   model.UserStatusActive,
+		Status:   enum.UserStatusActive,
 		Password: passwordHash,
-		Role:     model.UserRoleReg,
+		Role:     enum.UserRoleRegular,
 	}).Error; err != nil {
 		return false, err
 	}
@@ -123,7 +124,7 @@ func (s *UserService) InsertUser(c context.Context, body dto.RequestCreateUserDT
 	s.logService.WriteLog(c, &dto.WriteLog{
 		UserID: userID,
 		Desc:   body.Account,
-		Event:  model.LogEventUserInsert,
+		Event:  enum.LogEventUserInsert,
 	})
 	return true, nil
 }
@@ -151,7 +152,7 @@ func (s *UserService) UpdateUser(c context.Context, body dto.RequestUpdateUser) 
 	s.logService.WriteLog(c, &dto.WriteLog{
 		Desc:   update,
 		UserID: body.ID,
-		Event:  model.LogEventUserUpdate,
+		Event:  enum.LogEventUserUpdate,
 	})
 
 	return true, nil
@@ -168,10 +169,10 @@ func (s *UserService) ChangeStatus(c context.Context, body dto.RequestFindString
 	}
 
 	var status int
-	if user.Status == model.UserStatusFreeze {
-		status = model.UserStatusActive
+	if user.Status == enum.UserStatusFreeze {
+		status = enum.UserStatusActive
 	} else {
-		status = model.UserStatusFreeze
+		status = enum.UserStatusFreeze
 	}
 
 	if err := db.
@@ -186,7 +187,7 @@ func (s *UserService) ChangeStatus(c context.Context, body dto.RequestFindString
 	user.Status = status // 最新修改的状态
 	s.logService.WriteLog(c, &dto.WriteLog{
 		UserID: userID,
-		Event:  model.LogEventUserStatus,
+		Event:  enum.LogEventUserStatus,
 		Desc: map[string]interface{}{
 			"status":  status,
 			"id":      user.ID,
@@ -245,7 +246,7 @@ func (s *UserService) ChangePassword(c context.Context, token []byte, userID str
 			"status":  user.Status,
 		},
 		UserID: userID,
-		Event:  model.LogEventPwdUpdate,
+		Event:  enum.LogEventPwdUpdate,
 	})
 
 	return true, nil
@@ -292,7 +293,7 @@ func (s *UserService) AdminSetUserPassword(c context.Context, token []byte, user
 			"status":  user.Status,
 		},
 		UserID: userID,
-		Event:  model.LogEventPwdUpdate,
+		Event:  enum.LogEventPwdUpdate,
 	})
 	return true, nil
 }

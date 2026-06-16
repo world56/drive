@@ -27,7 +27,7 @@ func (s *UserHandler) GetUsers(c *gin.Context) {
 		return
 	}
 	query.Normalize()
-	data, err := s.userServer.FindUsers(c.Request.Context(), query)
+	data, err := s.userServer.ListUsers(c.Request.Context(), query)
 	if err != nil {
 		response.ServerError(c, err)
 	} else {
@@ -53,7 +53,7 @@ func (h *UserHandler) GetUserInfo(c *gin.Context) {
 		return
 	}
 
-	user, err := h.userServer.GetUserInfo(c.Request.Context(), query)
+	user, err := h.userServer.GetUserByID(c.Request.Context(), query)
 	if err != nil {
 		response.ServerError(c, err)
 		return
@@ -71,7 +71,7 @@ func (h *UserHandler) InsertUser(c *gin.Context) {
 	}
 
 	user := request.GetCurrentUser(c)
-	success, err := h.userServer.InsertUser(c.Request.Context(), body, user.ID)
+	success, err := h.userServer.CreateUser(c.Request.Context(), body, user.ID)
 	if err != nil {
 		response.ServerError(c, err)
 	} else {

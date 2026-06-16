@@ -9,17 +9,17 @@ import (
 
 type File struct {
 	ID         uuid.UUID  `gorm:"type:uuid;primaryKey;default:gen_random_uuid();" json:"id"`
-	Name       string     `gorm:"type:varchat(256);" json:"name"`
-	Path       *string    `gorm:"type:varchat(60);default:null;" json:"path"`
-	FullName   string     `gorm:"type:varchat(256);not null;column:full_name;" json:"fullName"`
+	Name       string     `gorm:"type:varchar(256);" json:"name"`
+	Path       *string    `gorm:"type:varchar(60);default:null;" json:"path"`
+	FullName   string     `gorm:"type:varchar(256);not null;column:full_name;" json:"fullName"`
 	Size       int64      `gorm:"type:bigint;default:0;" json:"size"`
 	Type       int8       `gorm:"type:int2;not null" json:"type"`
-	Suffix     *string    `gorm:"type:varchat(10);default:null;" json:"suffix"`
+	Suffix     *string    `gorm:"type:varchar(10);default:null;" json:"suffix"`
 	ParentId   *uuid.UUID `gorm:"type:uuid;column:parent_id" json:"parentId"`
-	Remark     *string    `gorm:"type:varchat(256);default:null" json:"remark"`
+	Remark     *string    `gorm:"type:varchar(256);default:null" json:"remark"`
 	Count      int16      `gorm:"type:int2;default:0" json:"count"`
-	CreatorId  uuid.UUID  `gorm:"type:uuid;not nul;column:creator_id;" json:"creatorId"`
-	Remove     int8       `gprm:"type:int2;default:0" json:"remove"`
+	CreatorId  uuid.UUID  `gorm:"type:uuid;not null;column:creator_id;" json:"creatorId"`
+	Remove     int8       `gorm:"type:int2;default:0" json:"remove"`
 	CreateTime time.Time  `gorm:"column:create_time;autoCreateTime;" json:"createTime"`
 
 	Parent   *File   `gorm:"foreignKey:ParentId;references:ID" json:"parent,omitempty"`

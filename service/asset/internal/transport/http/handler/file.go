@@ -1,7 +1,9 @@
 package handler
 
 import (
+	"asset/internal/dto"
 	"asset/internal/service"
+	"common/http/response"
 
 	"github.com/gin-gonic/gin"
 )
@@ -17,7 +19,14 @@ func NewFileHandler(f *service.FileService) *FileHandler {
 }
 
 // 查询-全部文件资源
-func (s *FileHandler) SearchFiles(c *gin.Context) {}
+func (s *FileHandler) SearchFiles(c *gin.Context) {
+	var query dto.SearchFilesByName
+	if err := c.ShouldBindQuery(&query); err != nil {
+		response.ClientError(c, err)
+		return
+	}
+	s.fileService.SearchFilesByName(c.Request.Context(), query)
+}
 
 // 查询-全部文件夹
 func (s *FileHandler) FindFolders(c *gin.Context) {}

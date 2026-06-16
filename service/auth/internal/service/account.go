@@ -2,6 +2,7 @@ package service
 
 import (
 	"auth/internal/dto"
+	"auth/internal/enum"
 	"auth/internal/model"
 	"auth/internal/pkg/utils"
 	grpcclient "auth/internal/transport/grpc/client"
@@ -42,7 +43,7 @@ func (s *AccountService) HasSuperAdmin() (bool, error) {
 	var count int64
 	db := s.db.
 		Model(&model.User{}).
-		Where("role = ?", model.UserRoleAdmin).
+		Where("role = ?", enum.UserRoleAdmin).
 		Limit(1).
 		Count(&count)
 
@@ -73,7 +74,7 @@ func (s *AccountService) Register(context context.Context, token []byte) error {
 	}
 
 	user.Name = "Administrator"
-	user.Role = model.UserRoleAdmin
+	user.Role = enum.UserRoleAdmin
 	pwd, err := s.cryptoService.HashPassword(user.Password)
 	if err != nil {
 		return err
@@ -102,7 +103,7 @@ func (s *AccountService) Login(c context.Context, token []byte) (string, error) 
 		return "", errors.New("Account Password Error")
 	}
 
-	if user.Status == model.UserStatusFreeze {
+	if user.Status == enum.UserStatusFreeze {
 		return "", errors.New("Account Frozen, Please Contact The Administrator")
 	}
 
@@ -140,13 +141,13 @@ func (s *AccountService) Login(c context.Context, token []byte) (string, error) 
 	s.logService.WriteLog(c, &dto.WriteLog{
 		UserID: UserID,
 		Desc:   userInfo,
-		Event:  model.LogEventLogin,
+		Event:  enum.LogEventLogin,
 	})
 
 	return utils.CreateJWT(UserID)
 }
 
-func (s *AccountService) GetUserInfo(c context.Context, UserID string) (*dto.ResponseUserLoginInfo, error) {
+func (s *AccountService) GetUserByID(c context.Context, UserID string) (*dto.ResponseUserLoginInfo, error) {
 	user, err := s.redis.HGetAll(c, "drive:user:"+UserID).Result()
 	if err != nil {
 		return nil, err
@@ -174,7 +175,7 @@ func (s *AccountService) GetUserInfo(c context.Context, UserID string) (*dto.Res
 func (s *AccountService) Logout(c context.Context, UserID string) bool {
 	userKey := "drive:user:" + UserID
 
-	user, err := s.GetUserInfo(c, UserID)
+	user, err := s.GetUserByID(c, UserID)
 	if err != nil {
 		return false
 	}
@@ -182,7 +183,7 @@ func (s *AccountService) Logout(c context.Context, UserID string) bool {
 	s.logService.WriteLog(c, &dto.WriteLog{
 		Desc:   user,
 		UserID: UserID,
-		Event:  model.LogEventLogOut,
+		Event:  enum.LogEventLogOut,
 	})
 
 	s.redis.Del(c, userKey)
