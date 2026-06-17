@@ -20,7 +20,7 @@ func NewFileHandler(f *service.FileService) *FileHandler {
 
 // 查询-全部文件资源
 func (s *FileHandler) SearchFiles(c *gin.Context) {
-	var query dto.SearchFilesByName
+	var query dto.RequestSearchFilesByName
 	if err := c.ShouldBindQuery(&query); err != nil {
 		response.ClientError(c, err)
 		return
