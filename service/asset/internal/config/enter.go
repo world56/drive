@@ -4,12 +4,14 @@ import (
 	"os"
 	"sync"
 
+	"github.com/bwmarrin/snowflake"
 	"github.com/joho/godotenv"
 )
 
 var (
-	config Config
-	once   sync.Once
+	config        Config
+	once          sync.Once
+	SnowflakeNode *snowflake.Node
 )
 
 type Config struct {
@@ -22,6 +24,12 @@ type Config struct {
 func Load() Config {
 	once.Do(func() {
 		_ = godotenv.Load()
+
+		// node, nodeErr := snowflake.NewNode(1)
+		// if nodeErr != nil {
+		// 	return nil, nodeErr
+		// }
+		// SnowflakeNode = node
 
 		config = Config{
 			HTTP_ADDR:       getEnv("HTTP_ADDR"),

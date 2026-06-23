@@ -53,7 +53,7 @@ func (s *FileService) SearchFilesByName(c context.Context, query dto.RequestSear
 	return files, nil
 }
 
-func (s *FileService) getFilePath(fileID string) []dto.Path {
+func (s *FileService) getFilePath(c context.Context, fileID string) []dto.Path {
 	var Paths []dto.Path
 	SQL := `
 		WITH RECURSIVE resources AS (
@@ -65,7 +65,7 @@ func (s *FileService) getFilePath(fileID string) []dto.Path {
 		)
 		SELECT id, name FROM resources;
 	`
-	if err := s.db.Raw(SQL, fileID).Scan(&Paths).Error; err != nil {
+	if err := s.db.WithContext(c).Raw(SQL, fileID).Scan(&Paths).Error; err != nil {
 		return nil
 	}
 	return Paths
