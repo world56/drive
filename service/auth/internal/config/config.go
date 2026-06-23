@@ -1,13 +1,8 @@
 package config
 
 import (
-	"os"
-	"sync"
-
-	"github.com/joho/godotenv"
+	"common/env"
 )
-
-var loadEnvOnce sync.Once
 
 type Config struct {
 	HTTP_ADDR       string
@@ -19,23 +14,14 @@ type Config struct {
 }
 
 func Load() Config {
-	loadEnvOnce.Do(func() {
-		_ = godotenv.Load()
-	})
+	env.LoadEnv()
 
 	return Config{
-		HTTP_ADDR:       getEnv("HTTP_ADDR"),
-		GRPC_AUTH_ADDR:  getEnv("GRPC_AUTH_ADDR"),
-		GRPC_STATS_ADDR: getEnv("GRPC_STATS_ADDR"),
-		POSTGRES_DSN:    getEnv("POSTGRES_DSN"),
-		REDIS_URL:       getEnv("REDIS_URL"),
-		JWT_SECRET:      getEnv("JWT_SECRET"),
+		HTTP_ADDR:       env.GetEnv("HTTP_ADDR"),
+		GRPC_AUTH_ADDR:  env.GetEnv("GRPC_AUTH_ADDR"),
+		GRPC_STATS_ADDR: env.GetEnv("GRPC_STATS_ADDR"),
+		POSTGRES_DSN:    env.GetEnv("POSTGRES_DSN"),
+		REDIS_URL:       env.GetEnv("REDIS_URL"),
+		JWT_SECRET:      env.GetEnv("JWT_SECRET"),
 	}
-}
-
-func getEnv(key string) string {
-	if value, ok := os.LookupEnv(key); ok && value != "" {
-		return value
-	}
-	return ""
 }

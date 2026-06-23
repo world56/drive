@@ -1,17 +1,7 @@
 package config
 
 import (
-	"os"
-	"sync"
-
-	"github.com/bwmarrin/snowflake"
-	"github.com/joho/godotenv"
-)
-
-var (
-	config        Config
-	once          sync.Once
-	SnowflakeNode *snowflake.Node
+	"common/env"
 )
 
 type Config struct {
@@ -22,29 +12,12 @@ type Config struct {
 }
 
 func Load() Config {
-	once.Do(func() {
-		_ = godotenv.Load()
+	env.LoadEnv()
 
-		// node, nodeErr := snowflake.NewNode(1)
-		// if nodeErr != nil {
-		// 	return nil, nodeErr
-		// }
-		// SnowflakeNode = node
-
-		config = Config{
-			HTTP_ADDR:       getEnv("HTTP_ADDR"),
-			GRPC_ASSET_ADDR: getEnv("GRPC_ASSET_ADDR"),
-			POSTGRES_DSN:    getEnv("POSTGRES_DSN"),
-			REDIS_URL:       getEnv("REDIS_URL"),
-		}
-	})
-
-	return config
-}
-
-func getEnv(key string) string {
-	if value, ok := os.LookupEnv(key); ok && value != "" {
-		return value
+	return Config{
+		HTTP_ADDR:       env.GetEnv("HTTP_ADDR"),
+		REDIS_URL:       env.GetEnv("REDIS_URL"),
+		POSTGRES_DSN:    env.GetEnv("POSTGRES_DSN"),
+		GRPC_ASSET_ADDR: env.GetEnv("GRPC_ASSET_ADDR"),
 	}
-	return ""
 }

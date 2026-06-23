@@ -5,15 +5,15 @@ import (
 	"auth/internal/pkg/databases"
 	"auth/internal/service"
 	grpcclient "auth/internal/transport/grpc/client"
+	"common/rdb"
 
-	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
 )
 
 type App struct {
 	Config     config.Config
 	DB         *gorm.DB
-	Redis      *redis.Client
+	Redis      *rdb.Client
 	Service    *service.Service
 	GrpcClient *grpcclient.GrpcClients
 }
@@ -26,7 +26,7 @@ func New() (*App, error) {
 		return nil, err
 	}
 
-	redis, err := databases.InitReds(cfg.REDIS_URL)
+	redis, err := rdb.Initialize(cfg.REDIS_URL)
 	if err != nil {
 		return nil, err
 	}

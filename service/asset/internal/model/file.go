@@ -1,7 +1,7 @@
 package model
 
 import (
-	"asset/internal/pkg/idgen"
+	"common/idgen"
 	"time"
 
 	"github.com/google/uuid"

@@ -1,13 +1,8 @@
 package config
 
 import (
-	"os"
-	"sync"
-
-	"github.com/joho/godotenv"
+	"common/env"
 )
-
-var loadEnvOnce sync.Once
 
 type Config struct {
 	HTTP_ADDR       string
@@ -16,20 +11,11 @@ type Config struct {
 }
 
 func Load() Config {
-	loadEnvOnce.Do(func() {
-		_ = godotenv.Load()
-	})
+	env.LoadEnv()
 
 	return Config{
-		HTTP_ADDR:       getEnv("HTTP_ADDR"),
-		REDIS_URL:       getEnv("REDIS_URL"),
-		GRPC_STATS_ADDR: getEnv("GRPC_STATS_ADDR"),
+		HTTP_ADDR:       env.GetEnv("HTTP_ADDR"),
+		REDIS_URL:       env.GetEnv("REDIS_URL"),
+		GRPC_STATS_ADDR: env.GetEnv("GRPC_STATS_ADDR"),
 	}
-}
-
-func getEnv(key string) string {
-	if v, success := os.LookupEnv(key); success && v != "" {
-		return v
-	}
-	return ""
 }

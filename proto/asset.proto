@@ -3,19 +3,19 @@ syntax = "proto3";
 package explorer;
 
 import "google/protobuf/empty.proto";
-option go_package = "api/explorer;authpb";
+option go_package = "api/asset;authpb";
 
-service ExplorerService {
+service AssetService {
   rpc GetCount (google.protobuf.Empty) returns (Count) {};
-  rpc GetRecently (google.protobuf.Empty) returns (Resources) {};
-  rpc GetFavorite (google.protobuf.Empty) returns (Resources) {};
+  rpc GetRecently (google.protobuf.Empty) returns (Files) {};
+  rpc GetFavorite (google.protobuf.Empty) returns (Files) {};
 }
 
 message Count {
   map<string, int32> count = 1;
 }
 
-message Resource {
+message File {
   string id  = 1;
   string fullName = 2;
   string path = 3;
@@ -23,6 +23,6 @@ message Resource {
   int64  count = 5;
 }
 
-message Resources {
-  repeated Resource data = 1;
+message Files {
+  repeated File data = 1;
 }

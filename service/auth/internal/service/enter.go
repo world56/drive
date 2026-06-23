@@ -3,7 +3,8 @@ package service
 import (
 	grpcclient "auth/internal/transport/grpc/client"
 
-	"github.com/redis/go-redis/v9"
+	"common/rdb"
+
 	"gorm.io/gorm"
 )
 
@@ -14,7 +15,7 @@ type Service struct {
 	AccountService *AccountService
 }
 
-func NewServer(db *gorm.DB, redis *redis.Client, grpcClient *grpcclient.GrpcClients) *Service {
+func NewServer(db *gorm.DB, redis *rdb.Client, grpcClient *grpcclient.GrpcClients) *Service {
 	LogService := NewLogService(db)
 	CryptoService := NewCryptoService(redis)
 

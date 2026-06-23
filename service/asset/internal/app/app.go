@@ -3,7 +3,7 @@ package app
 import (
 	"asset/internal/config"
 	"asset/internal/pkg/databases"
-	"asset/internal/pkg/idgen"
+	"common/idgen"
 
 	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
