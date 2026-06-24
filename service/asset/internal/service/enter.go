@@ -11,6 +11,6 @@ type Service struct {
 
 func NewService(db *gorm.DB, redis *redis.Client) *Service {
 	return &Service{
-		FileService: NewFileService(db, redis),
+		FileService: newFileService(db, redis),
 	}
 }

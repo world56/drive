@@ -4,22 +4,22 @@ import (
 	"auth/internal/dto"
 	"auth/internal/enum"
 	"auth/internal/model"
-	"common/rdb"
 	"context"
 	"encoding/json"
 	"errors"
 
+	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
 )
 
 type UserService struct {
 	db            *gorm.DB
-	redis         *rdb.Client
+	redis         *redis.Client
 	cryptoService *CryptoService
 	logService    *LogService
 }
 
-func NewUserService(db *gorm.DB, redis *rdb.Client, c *CryptoService, l *LogService) *UserService {
+func newUserService(db *gorm.DB, redis *redis.Client, c *CryptoService, l *LogService) *UserService {
 	return &UserService{
 		db:            db,
 		redis:         redis,

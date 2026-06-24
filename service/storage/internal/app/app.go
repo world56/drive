@@ -2,8 +2,8 @@ package app
 
 import (
 	"common/rdb"
-	"stats/internal/config"
-	"stats/internal/service"
+	"storage/internal/config"
+	"storage/internal/service"
 
 	"github.com/redis/go-redis/v9"
 )

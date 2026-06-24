@@ -16,7 +16,7 @@ type FileService struct {
 	redis *redis.Client
 }
 
-func NewFileService(db *gorm.DB, redis *redis.Client) *FileService {
+func newFileService(db *gorm.DB, redis *redis.Client) *FileService {
 	return &FileService{
 		db:    db,
 		redis: redis,

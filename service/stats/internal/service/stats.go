@@ -14,7 +14,7 @@ type StatsService struct {
 	redis *redis.Client
 }
 
-func NewStatsService(r *redis.Client) *StatsService {
+func newStatsService(r *redis.Client) *StatsService {
 	return &StatsService{
 		redis: r,
 	}

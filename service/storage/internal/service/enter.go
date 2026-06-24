@@ -3,11 +3,11 @@ package service
 import "github.com/redis/go-redis/v9"
 
 type Service struct {
-	StatsService *StatsService
+	StorageService *StorageService
 }
 
 func NewService(redis *redis.Client) *Service {
 	return &Service{
-		StatsService: newStatsService(redis),
+		StorageService: newStorageService(redis),
 	}
 }

@@ -2,18 +2,20 @@ package app
 
 import (
 	"auth/internal/config"
-	"auth/internal/pkg/databases"
+	"auth/internal/pkg/db"
 	"auth/internal/service"
 	grpcclient "auth/internal/transport/grpc/client"
+	"common/idgen"
 	"common/rdb"
 
+	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
 )
 
 type App struct {
 	Config     config.Config
 	DB         *gorm.DB
-	Redis      *rdb.Client
+	Redis      *redis.Client
 	Service    *service.Service
 	GrpcClient *grpcclient.GrpcClients
 }
@@ -21,12 +23,17 @@ type App struct {
 func New() (*App, error) {
 	cfg := config.Load()
 
-	db, err := databases.InitPostgresSQL(cfg.POSTGRES_DSN)
+	err := idgen.InitSnowflake(1)
 	if err != nil {
 		return nil, err
 	}
 
-	redis, err := rdb.Initialize(cfg.REDIS_URL)
+	redis, err := rdb.InitRedis(cfg.REDIS_URL)
+	if err != nil {
+		return nil, err
+	}
+
+	db, err := db.InitPostgresSQL(cfg.POSTGRES_DSN)
 	if err != nil {
 		return nil, err
 	}
@@ -36,7 +43,7 @@ func New() (*App, error) {
 		return nil, err
 	}
 
-	svc := service.NewServer(db, redis, grpcClient)
+	svc := service.NewService(db, redis, grpcClient)
 
 	return &App{
 		Config:     cfg,

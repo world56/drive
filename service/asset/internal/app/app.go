@@ -2,8 +2,9 @@ package app
 
 import (
 	"asset/internal/config"
-	"asset/internal/pkg/databases"
+	"asset/internal/pkg/db"
 	"common/idgen"
+	"common/rdb"
 
 	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
@@ -23,12 +24,12 @@ func New() (*App, error) {
 		return nil, err
 	}
 
-	db, err := databases.InitRelationalDB(cfg.POSTGRES_DSN)
+	redis, err := rdb.InitRedis(cfg.POSTGRES_DSN)
 	if err != nil {
 		return nil, err
 	}
 
-	redis, err := databases.InitRedis(cfg.POSTGRES_DSN)
+	db, err := db.InitPostgresSQL(cfg.POSTGRES_DSN)
 	if err != nil {
 		return nil, err
 	}

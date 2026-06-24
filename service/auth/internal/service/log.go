@@ -14,7 +14,7 @@ type LogService struct {
 	db *gorm.DB
 }
 
-func NewLogService(db *gorm.DB) *LogService {
+func newLogService(db *gorm.DB) *LogService {
 	return &LogService{
 		db: db,
 	}

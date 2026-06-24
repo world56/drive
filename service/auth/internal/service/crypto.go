@@ -9,16 +9,15 @@ import (
 	"encoding/pem"
 	"errors"
 
-	"common/rdb"
-
+	"github.com/redis/go-redis/v9"
 	"golang.org/x/crypto/bcrypt"
 )
 
 type CryptoService struct {
-	redis *rdb.Client
+	redis *redis.Client
 }
 
-func NewCryptoService(r *rdb.Client) *CryptoService {
+func newCryptoService(r *redis.Client) *CryptoService {
 	return &CryptoService{
 		redis: r,
 	}

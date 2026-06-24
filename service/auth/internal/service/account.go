@@ -12,21 +12,20 @@ import (
 	"strconv"
 	"time"
 
-	"common/rdb"
-
+	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
 )
 
 type AccountService struct {
 	db            *gorm.DB
-	redis         *rdb.Client
+	redis         *redis.Client
 	logService    *LogService
 	cryptoService *CryptoService
 	grpcClient    *grpcclient.GrpcClients
 }
 
-func NewAccountService(d *gorm.DB,
-	r *rdb.Client,
+func newAccountService(d *gorm.DB,
+	r *redis.Client,
 	c *CryptoService,
 	l *LogService,
 	g *grpcclient.GrpcClients,

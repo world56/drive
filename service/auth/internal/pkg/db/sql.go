@@ -1,26 +1,18 @@
-package databases
+package db
 
 import (
 	"auth/internal/model"
 
-	"gorm.io/driver/postgres"
+	"common/databases"
+
 	"gorm.io/gorm"
 )
 
 func InitPostgresSQL(dsn string) (*gorm.DB, error) {
-	db, err := gorm.Open(
-		postgres.Open(dsn), &gorm.Config{},
-	)
+	db, err := databases.InitPostgresSQL(dsn)
 	if err != nil {
 		return nil, err
 	}
-
-	sqlDB, err := db.DB()
-	if err != nil {
-		return nil, err
-	}
-
-	sqlDB.SetMaxOpenConns(100)
 
 	if err := db.AutoMigrate(&model.User{}, &model.Log{}); err != nil {
 		return nil, err
