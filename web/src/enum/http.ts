@@ -6,6 +6,7 @@ export namespace ENUM_HTTP {
     EXPLORER = "explorer",
     FAVORITE = "favorite",
     RECOVERY = "recovery",
+    STORAGE = "storage",
   }
 
   export const enum REQUEST_MODE {

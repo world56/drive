@@ -4,7 +4,7 @@ import { ActionsConfig } from "@/store/config";
 
 import { ENUM_COMMON } from "@/enum/common";
 import { PREVIEW_Z_INDEX } from "@/config/resource";
-import { API_DOWNLOAD_FILE_URL } from "@/api/resource";
+import { API_DOWNLOAD_FILE_URL } from "@/api/storage";
 
 /**
  * @name createUpload 创建上传任务

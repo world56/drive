@@ -1,7 +1,7 @@
 import Item from "./Item";
 import { filesFormat } from "./utils";
 import Container from "./Container/index";
-import { uploadChunk } from "@/api/resource";
+import { uploadChunk } from "@/api/storage";
 import { FixedSizeList } from "react-window";
 import { useMemo, useRef, useState } from "react";
 import { useStore, useToFolder, useEventListener } from "@/hooks";
