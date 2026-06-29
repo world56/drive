@@ -11,6 +11,7 @@ type Config struct {
 	MINIO_ADDR          string
 	MINIO_ACCESS_SECRET string
 	MINIO_ACCESS_KEY    string
+	MINIO_BUCKET        string
 }
 
 func Load() Config {
@@ -23,5 +24,6 @@ func Load() Config {
 		MINIO_ADDR:          env.GetEnv("MINIO_ADDR"),
 		MINIO_ACCESS_KEY:    env.GetEnv("MINIO_ACCESS_KEY"),
 		MINIO_ACCESS_SECRET: env.GetEnv("MINIO_ACCESS_SECRET"),
+		MINIO_BUCKET:        env.GetEnv("MINIO_BUCKET"),
 	}
 }

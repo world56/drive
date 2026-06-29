@@ -1,11 +1,13 @@
 package dto
 
+import "mime/multipart"
+
 type Chunk struct {
-	ID      string `json:"id" binding:"required"`
-	Name    string `json:"name" binding:"required"`
-	Index   int    `json:"index" binding:"required"`
-	Total   int    `json:"total" binding:"required"`
-	Size    int64  `json:"size" binding:"required"`
-	Segment int    `json:"segment" binding:"required"`
-	Chunk   []byte `json:"-" binding:"required"`
+	ID       string                `form:"id" json:"id" binding:"required"`
+	Name     string                `form:"name" json:"name" binding:"required"`
+	Index    int                   `form:"index" json:"index" binding:"required"`
+	Total    int                   `form:"total" json:"total" binding:"required"`
+	Size     int64                 `form:"size" json:"size" binding:"required"`
+	ParentID string                `form:"parentId" json:"parentId"`
+	Chunk    *multipart.FileHeader `form:"chunk" binding:"required"`
 }

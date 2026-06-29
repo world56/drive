@@ -8,7 +8,7 @@ import (
 func main() {
 	a, err := app.New()
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalln(err)
 	}
 
 	ch := make(chan error, 1)

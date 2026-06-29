@@ -3,17 +3,17 @@ package app
 import (
 	"common/rdb"
 	"storage/internal/config"
-	minioclient "storage/internal/pkg/minio"
+	minio "storage/internal/pkg/minio"
 	"storage/internal/service"
 
-	"github.com/minio/minio-go/v7"
+	minioSDK "github.com/minio/minio-go/v7"
 	"github.com/redis/go-redis/v9"
 )
 
 type App struct {
 	Config  config.Config
 	Redis   *redis.Client
-	Minio   *minio.Client
+	Minio   *minioSDK.Client
 	Service *service.Service
 }
 
@@ -25,10 +25,11 @@ func New() (*App, error) {
 		return nil, err
 	}
 
-	minio, err := minioclient.InitMinio(
+	minio, err := minio.InitMinio(
 		cfg.MINIO_ADDR,
 		cfg.MINIO_ACCESS_KEY,
 		cfg.MINIO_ACCESS_SECRET,
+		cfg.MINIO_BUCKET,
 	)
 	if err != nil {
 		return nil, err
