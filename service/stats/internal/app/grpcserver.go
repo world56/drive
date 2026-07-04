@@ -9,7 +9,7 @@ import (
 
 func (a *App) RunGRPC() error {
 
-	lis, err := net.Listen("tcp", a.Config.GRPC_STATS_ADDR)
+	lis, err := net.Listen("tcp", a.Config.GRPC_ADDR)
 	if err != nil {
 		return err
 	}
