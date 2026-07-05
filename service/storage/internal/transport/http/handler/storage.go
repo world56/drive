@@ -33,6 +33,15 @@ func (s *StorageHandler) Write(c *gin.Context) {
 	}
 	defer stream.Close()
 
+	s.storageService.Write(c.Request.Context(), stream, dto.File{
+		ID:       chunk.ID,
+		Name:     chunk.Name,
+		Size:     chunk.Size,
+		Index:    chunk.Index,
+		Total:    chunk.Total,
+		ParentID: chunk.ParentID,
+	})
+
 }
 
 func (s *StorageHandler) Read(c *gin.Context) {

@@ -13,7 +13,7 @@ import (
 type App struct {
 	Config  config.Config
 	Redis   *redis.Client
-	Minio   *minioSDK.Client
+	Minio   *minioSDK.Core
 	Service *service.Service
 }
 
@@ -35,7 +35,7 @@ func New() (*App, error) {
 		return nil, err
 	}
 
-	svc := service.NewService(redis)
+	svc := service.NewService(cfg, redis, minio)
 
 	return &App{
 		Config:  cfg,
