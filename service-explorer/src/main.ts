@@ -26,7 +26,7 @@ async function bootstrap() {
     options: {
       package: 'explorer',
       url: '0.0.0.0:9001',
-      protoPath: join(__dirname, '../../proto/explorer.proto'),
+      protoPath: join(__dirname, '../../proto/asset.proto'),
     },
   });
   app.enableCors();

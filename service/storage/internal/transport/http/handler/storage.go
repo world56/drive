@@ -26,6 +26,7 @@ func (s *StorageHandler) Write(c *gin.Context) {
 		return
 	}
 
+	chunkSize := chunk.Chunk.Size
 	stream, err := chunk.Chunk.Open()
 	if err != nil {
 		response.ClientError(c, err)
@@ -33,7 +34,7 @@ func (s *StorageHandler) Write(c *gin.Context) {
 	}
 	defer stream.Close()
 
-	s.storageService.Write(c.Request.Context(), stream, dto.File{
+	done, err := s.storageService.Write(c.Request.Context(), stream, chunkSize, dto.File{
 		ID:       chunk.ID,
 		Name:     chunk.Name,
 		Size:     chunk.Size,
@@ -41,7 +42,11 @@ func (s *StorageHandler) Write(c *gin.Context) {
 		Total:    chunk.Total,
 		ParentID: chunk.ParentID,
 	})
-
+	if err != nil {
+		response.ServerError(c, err)
+	} else {
+		response.Success(c, done)
+	}
 }
 
 func (s *StorageHandler) Read(c *gin.Context) {

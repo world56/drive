@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package storage;
+
+import "google/protobuf/empty.proto";
+option go_package = "api/storage;storagepb";
+
+service StorageService {
+  rpc Write (google.protobuf.Empty) returns (google.protobuf.Empty) {};
+}

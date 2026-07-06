@@ -43,7 +43,7 @@ const config = [
     whitelist: [],
   },
   {
-    prefix: `${BASE_URL}/io`,
+    prefix: `${BASE_URL}/storage`,
     upstream: "http://127.0.0.1:2004",
     auth: true,
     rateLimit: {},

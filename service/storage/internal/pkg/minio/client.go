@@ -2,7 +2,6 @@ package minio
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	"github.com/minio/minio-go/v7"
@@ -23,7 +22,6 @@ func InitMinio(point string, accessKey string, accessSecret string, bucket strin
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
-	fmt.Printf("Checking if bucket %s exists...\n", bucket)
 	exists, err := client.BucketExists(ctx, bucket)
 	if err != nil {
 		return nil, err

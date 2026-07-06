@@ -1,7 +1,9 @@
 package app
 
 import (
+	"common/idgen"
 	"common/rdb"
+
 	"storage/internal/config"
 	minio "storage/internal/pkg/minio"
 	"storage/internal/service"
@@ -19,6 +21,11 @@ type App struct {
 
 func New() (*App, error) {
 	cfg := config.Load()
+
+	err := idgen.InitSnowflake(2)
+	if err != nil {
+		return nil, err
+	}
 
 	redis, err := rdb.InitRedis(cfg.REDIS_URL)
 	if err != nil {

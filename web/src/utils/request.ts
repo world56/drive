@@ -7,10 +7,10 @@ import { ActionsUser } from "@/store/user";
 import {
   TOKEN_KEY,
   REQUEST_TIMEOUT,
-  API_PROXY_IO_URL,
   API_PROXY_AUTH_URL,
   API_PROXY_STATS_URL,
   API_PROXY_RECYCLE_URL,
+  API_PROXY_STORAGE_URL,
   API_PROXY_EXPLORER_URL,
   API_PROXY_FAVORITE_URL,
 } from "@/config/request";
@@ -57,8 +57,8 @@ request.interceptors.request.use(
       case ENUM_HTTP.PROXY.STATS:
         config.url = API_PROXY_STATS_URL + url;
         break;
-      case ENUM_HTTP.PROXY.IO:
-        config.url = API_PROXY_IO_URL + url;
+      case ENUM_HTTP.PROXY.STORAGE:
+        config.url = API_PROXY_STORAGE_URL + url;
         break;
       default:
         break;

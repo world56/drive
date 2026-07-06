@@ -29,11 +29,7 @@ type File struct {
 
 func (f *File) BeforeCreate(tx *gorm.DB) error {
 	if f.ID == 0 {
-		ID, err := idgen.SnowflakeIDNext()
-		if err != nil {
-			return err
-		}
-		f.ID = ID
+		f.ID = idgen.SnowflakeIDNext()
 	}
 	return nil
 }

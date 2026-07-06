@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package explorer;
+package asset;
 
 import "google/protobuf/empty.proto";
 option go_package = "api/asset;authpb";

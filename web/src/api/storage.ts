@@ -9,7 +9,7 @@ import { TypeResource } from "@/interface/resource";
  * @name uploadChunk 上传资源
  */
 export function uploadChunk(data: FormData, control: AbortController) {
-  return request<TypeResource.DTO | false>("/upload", {
+  return request<TypeResource.DTO | false>("upload", {
     data,
     signal: control.signal,
     proxy: ENUM_HTTP.PROXY.STORAGE,

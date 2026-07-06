@@ -1,8 +1,6 @@
 package idgen
 
 import (
-	"errors"
-
 	"github.com/bwmarrin/snowflake"
 )
 
@@ -17,9 +15,9 @@ func InitSnowflake(nodeID int64) error {
 	return nil
 }
 
-func SnowflakeIDNext() (int64, error) {
+func SnowflakeIDNext() int64 {
 	if snowflakeNode == nil {
-		return 0, errors.New("Snowflake tot initialized")
+		return 0
 	}
-	return snowflakeNode.Generate().Int64(), nil
+	return snowflakeNode.Generate().Int64()
 }
