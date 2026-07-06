@@ -28,11 +28,19 @@ func newStorageService(config config.Config, redis *redis.Client, minio *minioSD
 	}
 }
 
+func (s *StorageService) clearFirstChunk(c context.Context, isFirst bool, info dto.File) {
+	if !isFirst {
+		return
+	}
+	s.minio.AbortMultipartUpload(c, s.config.MINIO_BUCKET, info.ObjectName, info.UploadID)
+	s.redis.Del(c, `drive:write:`+info.ID)
+}
+
 func (s *StorageService) Write(c context.Context, stream multipart.File, size int64, info dto.File) (bool, error) {
 	BUCKET := s.config.MINIO_BUCKET
 	// 单个文件直接上传
 	if info.Total == 1 {
-		objectName := strconv.FormatInt(idgen.SnowflakeIDNext(), 10) + "_" + info.Name
+		objectName := strconv.FormatInt(idgen.SnowflakeIDNext(), 10)
 		_, err := s.minio.Client.PutObject(c, BUCKET, objectName, stream, size, minio.PutObjectOptions{})
 		if err != nil {
 			return false, err
@@ -45,12 +53,12 @@ func (s *StorageService) Write(c context.Context, stream multipart.File, size in
 
 		// 初始化、拿到 minio ID
 		if IS_FIRST_CHUNK {
-			info.Name = strconv.FormatInt(idgen.SnowflakeIDNext(), 10) + "_" + info.Name
-			ID, err := s.minio.NewMultipartUpload(c, BUCKET, info.Name, minioSDK.PutObjectOptions{})
+			info.ObjectName = strconv.FormatInt(idgen.SnowflakeIDNext(), 10)
+			ID, err := s.minio.NewMultipartUpload(c, BUCKET, info.ObjectName, minioSDK.PutObjectOptions{})
 			if err != nil {
 				return false, err
 			}
-			info.MinioID = ID
+			info.UploadID = ID
 		} else {
 			var cache dto.File
 			err := s.redis.HGetAll(c, `drive:write:`+info.ID).Scan(&cache)
@@ -58,30 +66,26 @@ func (s *StorageService) Write(c context.Context, stream multipart.File, size in
 				return false, err
 			}
 			info.Name = cache.Name
-			info.MinioID = cache.MinioID
+			info.UploadID = cache.UploadID
+			info.ObjectName = cache.ObjectName
 		}
 
 		// 分段写入
-		_, err := s.minio.PutObjectPart(c, BUCKET, info.Name, info.MinioID, info.Index, stream, size, minioSDK.PutObjectPartOptions{})
+		_, err := s.minio.PutObjectPart(c, BUCKET, info.ObjectName, info.UploadID, info.Index, stream, size, minioSDK.PutObjectPartOptions{})
 		if err != nil {
-			if IS_FIRST_CHUNK {
-				s.minio.AbortMultipartUpload(c, BUCKET, info.Name, info.MinioID)
-				s.redis.Del(c, `drive:write:`+info.ID)
-			}
+			s.clearFirstChunk(c, IS_FIRST_CHUNK, info)
 			return false, err
 		}
 
 		_, rErr := s.redis.HSet(c, `drive:write:`+info.ID, info).Result()
 		if rErr != nil {
-			if IS_FIRST_CHUNK {
-				s.minio.AbortMultipartUpload(c, BUCKET, info.Name, info.MinioID)
-			}
+			s.clearFirstChunk(c, IS_FIRST_CHUNK, info)
 			return false, rErr
 		}
 
 		// 全部完成
 		if IS_COMPLETED {
-			parts, err := s.minio.ListObjectParts(c, BUCKET, info.Name, info.MinioID, 0, info.Total)
+			parts, err := s.minio.ListObjectParts(c, BUCKET, info.ObjectName, info.UploadID, 0, info.Total)
 			if err != nil {
 				return false, err
 			}
@@ -91,7 +95,7 @@ func (s *StorageService) Write(c context.Context, stream multipart.File, size in
 				mergeParts = append(mergeParts, minio.CompletePart{PartNumber: v.PartNumber, ETag: v.ETag})
 			}
 
-			_, err = s.minio.CompleteMultipartUpload(c, BUCKET, info.Name, info.MinioID, mergeParts, minio.PutObjectOptions{})
+			_, err = s.minio.CompleteMultipartUpload(c, BUCKET, info.ObjectName, info.UploadID, mergeParts, minio.PutObjectOptions{})
 			if err != nil {
 				return false, err
 			}

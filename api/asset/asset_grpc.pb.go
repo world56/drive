@@ -4,7 +4,7 @@
 // - protoc             (unknown)
 // source: asset.proto
 
-package authpb
+package assetpb
 
 import (
 	context "context"
@@ -20,9 +20,10 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	AssetService_GetCount_FullMethodName    = "/explorer.AssetService/GetCount"
-	AssetService_GetRecently_FullMethodName = "/explorer.AssetService/GetRecently"
-	AssetService_GetFavorite_FullMethodName = "/explorer.AssetService/GetFavorite"
+	AssetService_GetCount_FullMethodName    = "/asset.AssetService/GetCount"
+	AssetService_GetRecently_FullMethodName = "/asset.AssetService/GetRecently"
+	AssetService_GetFavorite_FullMethodName = "/asset.AssetService/GetFavorite"
+	AssetService_WriteDone_FullMethodName   = "/asset.AssetService/WriteDone"
 )
 
 // AssetServiceClient is the client API for AssetService service.
@@ -32,6 +33,7 @@ type AssetServiceClient interface {
 	GetCount(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*Count, error)
 	GetRecently(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*Files, error)
 	GetFavorite(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*Files, error)
+	WriteDone(ctx context.Context, in *File, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
 type assetServiceClient struct {
@@ -72,6 +74,16 @@ func (c *assetServiceClient) GetFavorite(ctx context.Context, in *emptypb.Empty,
 	return out, nil
 }
 
+func (c *assetServiceClient) WriteDone(ctx context.Context, in *File, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, AssetService_WriteDone_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AssetServiceServer is the server API for AssetService service.
 // All implementations must embed UnimplementedAssetServiceServer
 // for forward compatibility.
@@ -79,6 +91,7 @@ type AssetServiceServer interface {
 	GetCount(context.Context, *emptypb.Empty) (*Count, error)
 	GetRecently(context.Context, *emptypb.Empty) (*Files, error)
 	GetFavorite(context.Context, *emptypb.Empty) (*Files, error)
+	WriteDone(context.Context, *File) (*emptypb.Empty, error)
 	mustEmbedUnimplementedAssetServiceServer()
 }
 
@@ -97,6 +110,9 @@ func (UnimplementedAssetServiceServer) GetRecently(context.Context, *emptypb.Emp
 }
 func (UnimplementedAssetServiceServer) GetFavorite(context.Context, *emptypb.Empty) (*Files, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetFavorite not implemented")
+}
+func (UnimplementedAssetServiceServer) WriteDone(context.Context, *File) (*emptypb.Empty, error) {
+	return nil, status.Error(codes.Unimplemented, "method WriteDone not implemented")
 }
 func (UnimplementedAssetServiceServer) mustEmbedUnimplementedAssetServiceServer() {}
 func (UnimplementedAssetServiceServer) testEmbeddedByValue()                      {}
@@ -173,11 +189,29 @@ func _AssetService_GetFavorite_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AssetService_WriteDone_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(File)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AssetServiceServer).WriteDone(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AssetService_WriteDone_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AssetServiceServer).WriteDone(ctx, req.(*File))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AssetService_ServiceDesc is the grpc.ServiceDesc for AssetService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var AssetService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "explorer.AssetService",
+	ServiceName: "asset.AssetService",
 	HandlerType: (*AssetServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -191,6 +225,10 @@ var AssetService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetFavorite",
 			Handler:    _AssetService_GetFavorite_Handler,
+		},
+		{
+			MethodName: "WriteDone",
+			Handler:    _AssetService_WriteDone_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

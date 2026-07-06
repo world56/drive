@@ -4,7 +4,7 @@
 // 	protoc        (unknown)
 // source: asset.proto
 
-package authpb
+package assetpb
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -68,11 +68,11 @@ func (x *Count) GetCount() map[string]int32 {
 
 type File struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	FullName      string                 `protobuf:"bytes,2,opt,name=fullName,proto3" json:"fullName,omitempty"`
-	Path          string                 `protobuf:"bytes,3,opt,name=path,proto3" json:"path,omitempty"`
-	Type          int32                  `protobuf:"varint,4,opt,name=type,proto3" json:"type,omitempty"`
-	Count         int64                  `protobuf:"varint,5,opt,name=count,proto3" json:"count,omitempty"`
+	ID            string                 `protobuf:"bytes,1,opt,name=ID,proto3" json:"ID,omitempty"`
+	Name          string                 `protobuf:"bytes,2,opt,name=Name,proto3" json:"Name,omitempty"`
+	ParentID      string                 `protobuf:"bytes,3,opt,name=ParentID,proto3" json:"ParentID,omitempty"`
+	ObjectName    string                 `protobuf:"bytes,4,opt,name=ObjectName,proto3" json:"ObjectName,omitempty"`
+	Size          int64                  `protobuf:"varint,5,opt,name=Size,proto3" json:"Size,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -107,37 +107,37 @@ func (*File) Descriptor() ([]byte, []int) {
 	return file_asset_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *File) GetId() string {
+func (x *File) GetID() string {
 	if x != nil {
-		return x.Id
+		return x.ID
 	}
 	return ""
 }
 
-func (x *File) GetFullName() string {
+func (x *File) GetName() string {
 	if x != nil {
-		return x.FullName
+		return x.Name
 	}
 	return ""
 }
 
-func (x *File) GetPath() string {
+func (x *File) GetParentID() string {
 	if x != nil {
-		return x.Path
+		return x.ParentID
 	}
 	return ""
 }
 
-func (x *File) GetType() int32 {
+func (x *File) GetObjectName() string {
 	if x != nil {
-		return x.Type
+		return x.ObjectName
 	}
-	return 0
+	return ""
 }
 
-func (x *File) GetCount() int64 {
+func (x *File) GetSize() int64 {
 	if x != nil {
-		return x.Count
+		return x.Size
 	}
 	return 0
 }
@@ -190,25 +190,28 @@ var File_asset_proto protoreflect.FileDescriptor
 
 const file_asset_proto_rawDesc = "" +
 	"\n" +
-	"\vasset.proto\x12\bexplorer\x1a\x1bgoogle/protobuf/empty.proto\"s\n" +
-	"\x05Count\x120\n" +
-	"\x05count\x18\x01 \x03(\v2\x1a.explorer.Count.CountEntryR\x05count\x1a8\n" +
+	"\vasset.proto\x12\x05asset\x1a\x1bgoogle/protobuf/empty.proto\"p\n" +
+	"\x05Count\x12-\n" +
+	"\x05count\x18\x01 \x03(\v2\x17.asset.Count.CountEntryR\x05count\x1a8\n" +
 	"\n" +
 	"CountEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\x05R\x05value:\x028\x01\"p\n" +
+	"\x05value\x18\x02 \x01(\x05R\x05value:\x028\x01\"z\n" +
 	"\x04File\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1a\n" +
-	"\bfullName\x18\x02 \x01(\tR\bfullName\x12\x12\n" +
-	"\x04path\x18\x03 \x01(\tR\x04path\x12\x12\n" +
-	"\x04type\x18\x04 \x01(\x05R\x04type\x12\x14\n" +
-	"\x05count\x18\x05 \x01(\x03R\x05count\"+\n" +
-	"\x05Files\x12\"\n" +
-	"\x04data\x18\x01 \x03(\v2\x0e.explorer.FileR\x04data2\xb9\x01\n" +
-	"\fAssetService\x125\n" +
-	"\bGetCount\x12\x16.google.protobuf.Empty\x1a\x0f.explorer.Count\"\x00\x128\n" +
-	"\vGetRecently\x12\x16.google.protobuf.Empty\x1a\x0f.explorer.Files\"\x00\x128\n" +
-	"\vGetFavorite\x12\x16.google.protobuf.Empty\x1a\x0f.explorer.Files\"\x00B\x12Z\x10api/asset;authpbb\x06proto3"
+	"\x02ID\x18\x01 \x01(\tR\x02ID\x12\x12\n" +
+	"\x04Name\x18\x02 \x01(\tR\x04Name\x12\x1a\n" +
+	"\bParentID\x18\x03 \x01(\tR\bParentID\x12\x1e\n" +
+	"\n" +
+	"ObjectName\x18\x04 \x01(\tR\n" +
+	"ObjectName\x12\x12\n" +
+	"\x04Size\x18\x05 \x01(\x03R\x04Size\"(\n" +
+	"\x05Files\x12\x1f\n" +
+	"\x04data\x18\x01 \x03(\v2\v.asset.FileR\x04data2\xe4\x01\n" +
+	"\fAssetService\x122\n" +
+	"\bGetCount\x12\x16.google.protobuf.Empty\x1a\f.asset.Count\"\x00\x125\n" +
+	"\vGetRecently\x12\x16.google.protobuf.Empty\x1a\f.asset.Files\"\x00\x125\n" +
+	"\vGetFavorite\x12\x16.google.protobuf.Empty\x1a\f.asset.Files\"\x00\x122\n" +
+	"\tWriteDone\x12\v.asset.File\x1a\x16.google.protobuf.Empty\"\x00B\x13Z\x11api/asset;assetpbb\x06proto3"
 
 var (
 	file_asset_proto_rawDescOnce sync.Once
@@ -224,23 +227,25 @@ func file_asset_proto_rawDescGZIP() []byte {
 
 var file_asset_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_asset_proto_goTypes = []any{
-	(*Count)(nil),         // 0: explorer.Count
-	(*File)(nil),          // 1: explorer.File
-	(*Files)(nil),         // 2: explorer.Files
-	nil,                   // 3: explorer.Count.CountEntry
+	(*Count)(nil),         // 0: asset.Count
+	(*File)(nil),          // 1: asset.File
+	(*Files)(nil),         // 2: asset.Files
+	nil,                   // 3: asset.Count.CountEntry
 	(*emptypb.Empty)(nil), // 4: google.protobuf.Empty
 }
 var file_asset_proto_depIdxs = []int32{
-	3, // 0: explorer.Count.count:type_name -> explorer.Count.CountEntry
-	1, // 1: explorer.Files.data:type_name -> explorer.File
-	4, // 2: explorer.AssetService.GetCount:input_type -> google.protobuf.Empty
-	4, // 3: explorer.AssetService.GetRecently:input_type -> google.protobuf.Empty
-	4, // 4: explorer.AssetService.GetFavorite:input_type -> google.protobuf.Empty
-	0, // 5: explorer.AssetService.GetCount:output_type -> explorer.Count
-	2, // 6: explorer.AssetService.GetRecently:output_type -> explorer.Files
-	2, // 7: explorer.AssetService.GetFavorite:output_type -> explorer.Files
-	5, // [5:8] is the sub-list for method output_type
-	2, // [2:5] is the sub-list for method input_type
+	3, // 0: asset.Count.count:type_name -> asset.Count.CountEntry
+	1, // 1: asset.Files.data:type_name -> asset.File
+	4, // 2: asset.AssetService.GetCount:input_type -> google.protobuf.Empty
+	4, // 3: asset.AssetService.GetRecently:input_type -> google.protobuf.Empty
+	4, // 4: asset.AssetService.GetFavorite:input_type -> google.protobuf.Empty
+	1, // 5: asset.AssetService.WriteDone:input_type -> asset.File
+	0, // 6: asset.AssetService.GetCount:output_type -> asset.Count
+	2, // 7: asset.AssetService.GetRecently:output_type -> asset.Files
+	2, // 8: asset.AssetService.GetFavorite:output_type -> asset.Files
+	4, // 9: asset.AssetService.WriteDone:output_type -> google.protobuf.Empty
+	6, // [6:10] is the sub-list for method output_type
+	2, // [2:6] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name
 	2, // [2:2] is the sub-list for extension extendee
 	0, // [0:2] is the sub-list for field type_name

@@ -3,12 +3,14 @@ syntax = "proto3";
 package asset;
 
 import "google/protobuf/empty.proto";
-option go_package = "api/asset;authpb";
+
+option go_package = "api/asset;assetpb";
 
 service AssetService {
   rpc GetCount (google.protobuf.Empty) returns (Count) {};
   rpc GetRecently (google.protobuf.Empty) returns (Files) {};
   rpc GetFavorite (google.protobuf.Empty) returns (Files) {};
+  rpc WriteDone (asset.File) returns (google.protobuf.Empty) {};
 }
 
 message Count {
@@ -16,11 +18,11 @@ message Count {
 }
 
 message File {
-  string id  = 1;
-  string fullName = 2;
-  string path = 3;
-  int32  type = 4;
-  int64  count = 5;
+  string ID  = 1;
+  string Name = 2;
+  string ParentID = 3;
+  string ObjectName = 4;
+  int64  Size = 5;
 }
 
 message Files {

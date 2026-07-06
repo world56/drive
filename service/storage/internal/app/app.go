@@ -7,16 +7,18 @@ import (
 	"storage/internal/config"
 	minio "storage/internal/pkg/minio"
 	"storage/internal/service"
+	grpcclient "storage/internal/transport/grpc/client"
 
 	minioSDK "github.com/minio/minio-go/v7"
 	"github.com/redis/go-redis/v9"
 )
 
 type App struct {
-	Config  config.Config
-	Redis   *redis.Client
-	Minio   *minioSDK.Core
-	Service *service.Service
+	Config     config.Config
+	Redis      *redis.Client
+	Minio      *minioSDK.Core
+	Service    *service.Service
+	GrpcClient *grpcclient.GrpcClients
 }
 
 func New() (*App, error) {
@@ -26,6 +28,10 @@ func New() (*App, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	grpcClient, err := grpcclient.NewGrpcClients(
+		cfg.GRPC_ASSET_ADDR,
+	)
 
 	redis, err := rdb.InitRedis(cfg.REDIS_URL)
 	if err != nil {
@@ -45,9 +51,10 @@ func New() (*App, error) {
 	svc := service.NewService(cfg, redis, minio)
 
 	return &App{
-		Config:  cfg,
-		Redis:   redis,
-		Minio:   minio,
-		Service: svc,
+		Config:     cfg,
+		Redis:      redis,
+		Minio:      minio,
+		Service:    svc,
+		GrpcClient: grpcClient,
 	}, nil
 }
