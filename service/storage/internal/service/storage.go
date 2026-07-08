@@ -23,7 +23,12 @@ type StorageService struct {
 	grpcClient *grpcclient.GrpcClients
 }
 
-func newStorageService(config config.Config, redis *redis.Client, minio *minioSDK.Core, grpcClient *grpcclient.GrpcClients) *StorageService {
+func newStorageService(
+	config config.Config,
+	redis *redis.Client,
+	minio *minioSDK.Core,
+	grpcClient *grpcclient.GrpcClients,
+) *StorageService {
 	return &StorageService{
 		redis:      redis,
 		minio:      minio,
@@ -52,7 +57,7 @@ func (s *StorageService) Write(c context.Context, stream multipart.File, size in
 		if err != nil {
 			return false, err
 		} else {
-			s.grpcClient.Asset.WriteDone(info)
+			s.grpcClient.File.WriteDone(info)
 			return true, nil
 		}
 	} else {
@@ -109,7 +114,7 @@ func (s *StorageService) Write(c context.Context, stream multipart.File, size in
 			}
 
 			s.redis.Del(c, `drive:write:`+info.ID)
-			s.grpcClient.Asset.WriteDone(info)
+			s.grpcClient.File.WriteDone(info)
 			return true, nil
 		}
 

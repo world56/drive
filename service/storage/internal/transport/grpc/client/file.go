@@ -10,12 +10,12 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 )
 
-type AssetGrpcClient struct {
+type FileGrpcClient struct {
 	conn   *grpc.ClientConn
 	client assetpb.FileServiceClient
 }
 
-func newAssetGrpcClient(assetAddr string) (*AssetGrpcClient, error) {
+func newFileGrpcClient(assetAddr string) (*FileGrpcClient, error) {
 	conn, err := grpc.NewClient(
 		assetAddr,
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
@@ -24,17 +24,17 @@ func newAssetGrpcClient(assetAddr string) (*AssetGrpcClient, error) {
 		return nil, err
 	}
 
-	return &AssetGrpcClient{
+	return &FileGrpcClient{
 		conn:   conn,
 		client: assetpb.NewFileServiceClient(conn),
 	}, nil
 }
 
-func (s *AssetGrpcClient) Close() error {
+func (s *FileGrpcClient) Close() error {
 	return s.conn.Close()
 }
 
-func (s *AssetGrpcClient) WriteDone(info dto.File) {
+func (s *FileGrpcClient) WriteDone(info dto.File) {
 	go func(info dto.File) {
 		c, cancel := context.WithTimeout(context.Background(), 2*time.Second)
 		defer cancel()

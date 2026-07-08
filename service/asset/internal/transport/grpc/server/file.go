@@ -4,7 +4,6 @@ import (
 	assetpb "api/asset"
 	"asset/internal/service"
 	"context"
-	"fmt"
 
 	"google.golang.org/protobuf/types/known/emptypb"
 )
@@ -21,8 +20,6 @@ func newFileGrpcServer(s *service.FileService) *FileGrpcServer {
 }
 
 func (s *FileGrpcServer) WriteDone(c context.Context, req *assetpb.File) (*emptypb.Empty, error) {
-	fmt.Println("@-GetID", req.GetID())
-	fmt.Println("@-GetObjectName", req.GetObjectName())
-	fmt.Println("@-GetParentID", req.GetParentID())
+	s.fileService.InsertFile(c, req.GetName(), req.GetObjectName(), req.GetParentID(), req.GetSize())
 	return &emptypb.Empty{}, nil
 }

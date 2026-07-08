@@ -70,7 +70,7 @@ type File struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	ID            string                 `protobuf:"bytes,1,opt,name=ID,proto3" json:"ID,omitempty"`
 	Name          string                 `protobuf:"bytes,2,opt,name=Name,proto3" json:"Name,omitempty"`
-	ParentID      string                 `protobuf:"bytes,3,opt,name=ParentID,proto3" json:"ParentID,omitempty"`
+	ParentID      int64                  `protobuf:"varint,3,opt,name=ParentID,proto3" json:"ParentID,omitempty"`
 	ObjectName    string                 `protobuf:"bytes,4,opt,name=ObjectName,proto3" json:"ObjectName,omitempty"`
 	Size          int64                  `protobuf:"varint,5,opt,name=Size,proto3" json:"Size,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -121,11 +121,11 @@ func (x *File) GetName() string {
 	return ""
 }
 
-func (x *File) GetParentID() string {
+func (x *File) GetParentID() int64 {
 	if x != nil {
 		return x.ParentID
 	}
-	return ""
+	return 0
 }
 
 func (x *File) GetObjectName() string {
@@ -200,7 +200,7 @@ const file_asset_proto_rawDesc = "" +
 	"\x04File\x12\x0e\n" +
 	"\x02ID\x18\x01 \x01(\tR\x02ID\x12\x12\n" +
 	"\x04Name\x18\x02 \x01(\tR\x04Name\x12\x1a\n" +
-	"\bParentID\x18\x03 \x01(\tR\bParentID\x12\x1e\n" +
+	"\bParentID\x18\x03 \x01(\x03R\bParentID\x12\x1e\n" +
 	"\n" +
 	"ObjectName\x18\x04 \x01(\tR\n" +
 	"ObjectName\x12\x12\n" +

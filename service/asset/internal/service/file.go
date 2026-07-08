@@ -71,6 +71,16 @@ func (s *FileService) getFilePath(c context.Context, fileID string) []dto.Path {
 	return Paths
 }
 
-func (s *FileService) InsertFile(c context.Context) {
+func (s *FileService) InsertFile(c context.Context, name, objectName string, parentID int64, size int64) {
+	// db := s.db.WithContext(c).Model(&model.File{})
+
+	// suffix := strings.TrimSuffix(filepath.Ext(name), ".")
+
+	// db.Create(&model.File{
+	// 	Name:     name,
+	// 	Size:     size,
+	// 	Suffix:   &suffix,
+	// 	ParentID: &parentID,
+	// })
 
 }

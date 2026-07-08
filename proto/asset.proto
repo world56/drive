@@ -21,11 +21,11 @@ message Count {
 }
 
 message File {
-  string ID  = 1;
-  string Name = 2;
-  string ParentID = 3;
+  string ID         = 1;
+  string Name       = 2;
+  int64  ParentID   = 3;
   string ObjectName = 4;
-  int64  Size = 5;
+  int64  Size       = 5;
 }
 
 message Files {
