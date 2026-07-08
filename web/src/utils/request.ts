@@ -83,7 +83,7 @@ request.interceptors.response.use(
           Cookies.remove(TOKEN_KEY);
           store.dispatch(ActionsUser.delUserInfo());
           message.warning(data?.message || "账户异常");
-          setTimeout(() => window.location.reload(), 1500);
+          // setTimeout(() => window.location.reload(), 1500);
           return Promise.reject();
         default:
           message.error(data.message);

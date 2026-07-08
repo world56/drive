@@ -70,3 +70,7 @@ func (s *FileService) getFilePath(c context.Context, fileID string) []dto.Path {
 	}
 	return Paths
 }
+
+func (s *FileService) InsertFile(c context.Context) {
+
+}

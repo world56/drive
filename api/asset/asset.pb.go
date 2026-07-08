@@ -206,11 +206,12 @@ const file_asset_proto_rawDesc = "" +
 	"ObjectName\x12\x12\n" +
 	"\x04Size\x18\x05 \x01(\x03R\x04Size\"(\n" +
 	"\x05Files\x12\x1f\n" +
-	"\x04data\x18\x01 \x03(\v2\v.asset.FileR\x04data2\xe4\x01\n" +
+	"\x04data\x18\x01 \x03(\v2\v.asset.FileR\x04data2\xb0\x01\n" +
 	"\fAssetService\x122\n" +
 	"\bGetCount\x12\x16.google.protobuf.Empty\x1a\f.asset.Count\"\x00\x125\n" +
 	"\vGetRecently\x12\x16.google.protobuf.Empty\x1a\f.asset.Files\"\x00\x125\n" +
-	"\vGetFavorite\x12\x16.google.protobuf.Empty\x1a\f.asset.Files\"\x00\x122\n" +
+	"\vGetFavorite\x12\x16.google.protobuf.Empty\x1a\f.asset.Files\"\x002A\n" +
+	"\vFileService\x122\n" +
 	"\tWriteDone\x12\v.asset.File\x1a\x16.google.protobuf.Empty\"\x00B\x13Z\x11api/asset;assetpbb\x06proto3"
 
 var (
@@ -239,11 +240,11 @@ var file_asset_proto_depIdxs = []int32{
 	4, // 2: asset.AssetService.GetCount:input_type -> google.protobuf.Empty
 	4, // 3: asset.AssetService.GetRecently:input_type -> google.protobuf.Empty
 	4, // 4: asset.AssetService.GetFavorite:input_type -> google.protobuf.Empty
-	1, // 5: asset.AssetService.WriteDone:input_type -> asset.File
+	1, // 5: asset.FileService.WriteDone:input_type -> asset.File
 	0, // 6: asset.AssetService.GetCount:output_type -> asset.Count
 	2, // 7: asset.AssetService.GetRecently:output_type -> asset.Files
 	2, // 8: asset.AssetService.GetFavorite:output_type -> asset.Files
-	4, // 9: asset.AssetService.WriteDone:output_type -> google.protobuf.Empty
+	4, // 9: asset.FileService.WriteDone:output_type -> google.protobuf.Empty
 	6, // [6:10] is the sub-list for method output_type
 	2, // [2:6] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name
@@ -264,7 +265,7 @@ func file_asset_proto_init() {
 			NumEnums:      0,
 			NumMessages:   4,
 			NumExtensions: 0,
-			NumServices:   1,
+			NumServices:   2,
 		},
 		GoTypes:           file_asset_proto_goTypes,
 		DependencyIndexes: file_asset_proto_depIdxs,

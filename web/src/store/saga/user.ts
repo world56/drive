@@ -27,9 +27,9 @@ function* taskInGetUserInfo() {
   } catch {
     message.error("获取用户信息失败");
     yield put(ActionsUser.delUserInfo());
-    setTimeout(() => {
-      window.location.href = "/login";
-    }, 1500);
+    // setTimeout(() => {
+    //   window.location.href = "/login";
+    // }, 1500);
   }
 }
 

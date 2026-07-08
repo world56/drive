@@ -4,8 +4,10 @@ import (
 	"common/idgen"
 	"context"
 	"mime/multipart"
+	"path/filepath"
 	"storage/internal/config"
 	"storage/internal/dto"
+	grpcclient "storage/internal/transport/grpc/client"
 	"strconv"
 
 	"github.com/redis/go-redis/v9"
@@ -15,36 +17,42 @@ import (
 )
 
 type StorageService struct {
-	config config.Config
-	redis  *redis.Client
-	minio  *minioSDK.Core
+	config     config.Config
+	redis      *redis.Client
+	minio      *minioSDK.Core
+	grpcClient *grpcclient.GrpcClients
 }
 
-func newStorageService(config config.Config, redis *redis.Client, minio *minioSDK.Core) *StorageService {
+func newStorageService(config config.Config, redis *redis.Client, minio *minioSDK.Core, grpcClient *grpcclient.GrpcClients) *StorageService {
 	return &StorageService{
-		redis:  redis,
-		minio:  minio,
-		config: config,
+		redis:      redis,
+		minio:      minio,
+		config:     config,
+		grpcClient: grpcClient,
 	}
+}
+
+func (s *StorageService) getObjectName(name string) string {
+	return strconv.FormatInt(idgen.SnowflakeIDNext(), 10) + filepath.Ext(name)
 }
 
 func (s *StorageService) clearFirstChunk(c context.Context, isFirst bool, info dto.File) {
-	if !isFirst {
-		return
+	if isFirst {
+		s.minio.AbortMultipartUpload(c, s.config.MINIO_BUCKET, info.ObjectName, info.UploadID)
+		s.redis.Del(c, `drive:write:`+info.ID)
 	}
-	s.minio.AbortMultipartUpload(c, s.config.MINIO_BUCKET, info.ObjectName, info.UploadID)
-	s.redis.Del(c, `drive:write:`+info.ID)
 }
 
 func (s *StorageService) Write(c context.Context, stream multipart.File, size int64, info dto.File) (bool, error) {
 	BUCKET := s.config.MINIO_BUCKET
 	// 单个文件直接上传
 	if info.Total == 1 {
-		objectName := strconv.FormatInt(idgen.SnowflakeIDNext(), 10)
-		_, err := s.minio.Client.PutObject(c, BUCKET, objectName, stream, size, minio.PutObjectOptions{})
+		info.ObjectName = s.getObjectName(info.Name)
+		_, err := s.minio.Client.PutObject(c, BUCKET, info.ObjectName, stream, size, minio.PutObjectOptions{})
 		if err != nil {
 			return false, err
 		} else {
+			s.grpcClient.Asset.WriteDone(info)
 			return true, nil
 		}
 	} else {
@@ -53,7 +61,7 @@ func (s *StorageService) Write(c context.Context, stream multipart.File, size in
 
 		// 初始化、拿到 minio ID
 		if IS_FIRST_CHUNK {
-			info.ObjectName = strconv.FormatInt(idgen.SnowflakeIDNext(), 10)
+			info.ObjectName = s.getObjectName(info.Name)
 			ID, err := s.minio.NewMultipartUpload(c, BUCKET, info.ObjectName, minioSDK.PutObjectOptions{})
 			if err != nil {
 				return false, err
@@ -101,6 +109,7 @@ func (s *StorageService) Write(c context.Context, stream multipart.File, size in
 			}
 
 			s.redis.Del(c, `drive:write:`+info.ID)
+			s.grpcClient.Asset.WriteDone(info)
 			return true, nil
 		}
 

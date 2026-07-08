@@ -32,6 +32,9 @@ func New() (*App, error) {
 	grpcClient, err := grpcclient.NewGrpcClients(
 		cfg.GRPC_ASSET_ADDR,
 	)
+	if err != nil {
+		return nil, err
+	}
 
 	redis, err := rdb.InitRedis(cfg.REDIS_URL)
 	if err != nil {
@@ -48,7 +51,7 @@ func New() (*App, error) {
 		return nil, err
 	}
 
-	svc := service.NewService(cfg, redis, minio)
+	svc := service.NewService(cfg, redis, minio, grpcClient)
 
 	return &App{
 		Config:     cfg,

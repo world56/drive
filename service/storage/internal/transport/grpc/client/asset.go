@@ -12,12 +12,12 @@ import (
 
 type AssetGrpcClient struct {
 	conn   *grpc.ClientConn
-	client assetpb.AssetServiceClient
+	client assetpb.FileServiceClient
 }
 
-func newAssetGrpcClient(addr string) (*AssetGrpcClient, error) {
+func newAssetGrpcClient(assetAddr string) (*AssetGrpcClient, error) {
 	conn, err := grpc.NewClient(
-		addr,
+		assetAddr,
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 	)
 	if err != nil {
@@ -26,7 +26,7 @@ func newAssetGrpcClient(addr string) (*AssetGrpcClient, error) {
 
 	return &AssetGrpcClient{
 		conn:   conn,
-		client: assetpb.NewAssetServiceClient(conn),
+		client: assetpb.NewFileServiceClient(conn),
 	}, nil
 }
 

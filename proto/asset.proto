@@ -10,6 +10,9 @@ service AssetService {
   rpc GetCount (google.protobuf.Empty) returns (Count) {};
   rpc GetRecently (google.protobuf.Empty) returns (Files) {};
   rpc GetFavorite (google.protobuf.Empty) returns (Files) {};
+}
+
+service FileService {
   rpc WriteDone (asset.File) returns (google.protobuf.Empty) {};
 }
 

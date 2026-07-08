@@ -3,6 +3,7 @@ package app
 import (
 	"asset/internal/config"
 	"asset/internal/pkg/db"
+	"asset/internal/service"
 	"common/idgen"
 	"common/rdb"
 
@@ -11,9 +12,10 @@ import (
 )
 
 type App struct {
-	DB     *gorm.DB
-	Redis  *redis.Client
-	Config config.Config
+	DB      *gorm.DB
+	Redis   *redis.Client
+	Config  config.Config
+	Service *service.Service
 }
 
 func New() (*App, error) {
@@ -24,7 +26,7 @@ func New() (*App, error) {
 		return nil, err
 	}
 
-	redis, err := rdb.InitRedis(cfg.POSTGRES_DSN)
+	redis, err := rdb.InitRedis(cfg.REDIS_URL)
 	if err != nil {
 		return nil, err
 	}
@@ -34,9 +36,12 @@ func New() (*App, error) {
 		return nil, err
 	}
 
+	svc := service.NewService(db, redis)
+
 	return &App{
-		DB:     db,
-		Config: cfg,
-		Redis:  redis,
+		DB:      db,
+		Config:  cfg,
+		Redis:   redis,
+		Service: svc,
 	}, nil
 }

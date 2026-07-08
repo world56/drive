@@ -19,19 +19,21 @@ module.exports = function (request, reply, res) {
     const chunks = [];
     res.on("data", (chunk) => chunks.push(chunk));
     res.on("end", () => {
+      const code = reply.statusCode;
+      const IS_SUCCESS = code === 200;
       switch (type) {
         case "application/json":
-          const code = reply.statusCode;
           return reply.code(200).send(toJSON(chunks, code));
         case "text/plain":
+          const context = Buffer.concat(chunks).toString();
           reply
             .code(200)
             .type("application/json; charset=utf-8")
-            .send({
-              code: 200,
-              content: Buffer.concat(chunks).toString(),
-              message: "success",
-            });
+            .send(
+              IS_SUCCESS
+                ? { code: 200, content: context, message: "success" }
+                : { code: code, content: null, message: context },
+            );
           break;
         default:
           reply.send(res);
