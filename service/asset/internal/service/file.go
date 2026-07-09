@@ -5,6 +5,8 @@ import (
 	"asset/internal/enum"
 	"asset/internal/model"
 	"context"
+	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/redis/go-redis/v9"
@@ -71,16 +73,26 @@ func (s *FileService) getFilePath(c context.Context, fileID string) []dto.Path {
 	return Paths
 }
 
-func (s *FileService) InsertFile(c context.Context, name, objectName string, parentID int64, size int64) {
-	// db := s.db.WithContext(c).Model(&model.File{})
+func (s *FileService) InsertFile(c context.Context, userID, name, objectName string, parentID int64, size int64) bool {
+	db := s.db.WithContext(c).Model(&model.File{})
 
-	// suffix := strings.TrimSuffix(filepath.Ext(name), ".")
+	suffix := strings.TrimSuffix(filepath.Ext(name), ".")
 
-	// db.Create(&model.File{
-	// 	Name:     name,
-	// 	Size:     size,
-	// 	Suffix:   &suffix,
-	// 	ParentID: &parentID,
-	// })
+	var pid *int64
+	if parentID > 0 {
+		pid = &parentID
+	}
 
+	err := db.Create(&model.File{
+		Name:     name,
+		Size:     size,
+		Suffix:   &suffix,
+		ParentID: pid,
+	}).Error
+
+	if err != nil {
+		return false
+	} else {
+		return true
+	}
 }

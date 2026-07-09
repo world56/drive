@@ -8,6 +8,7 @@ import (
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/metadata"
 )
 
 type FileGrpcClient struct {
@@ -34,10 +35,12 @@ func (s *FileGrpcClient) Close() error {
 	return s.conn.Close()
 }
 
-func (s *FileGrpcClient) WriteDone(info dto.File) {
+func (s *FileGrpcClient) WriteDone(info dto.File, userID string) {
 	go func(info dto.File) {
 		c, cancel := context.WithTimeout(context.Background(), 2*time.Second)
 		defer cancel()
+
+		c = metadata.AppendToOutgoingContext(c, "user-id", userID)
 		s.client.WriteDone(c, &assetpb.File{
 			ID:         info.ID,
 			Name:       info.Name,

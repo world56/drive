@@ -48,7 +48,7 @@ func (s *StorageService) clearFirstChunk(c context.Context, isFirst bool, info d
 	}
 }
 
-func (s *StorageService) Write(c context.Context, stream multipart.File, size int64, info dto.File) (bool, error) {
+func (s *StorageService) Write(c context.Context, userID string, stream multipart.File, size int64, info dto.File) (bool, error) {
 	BUCKET := s.config.MINIO_BUCKET
 	// 单个文件直接上传
 	if info.Total == 1 {
@@ -57,7 +57,7 @@ func (s *StorageService) Write(c context.Context, stream multipart.File, size in
 		if err != nil {
 			return false, err
 		} else {
-			s.grpcClient.File.WriteDone(info)
+			s.grpcClient.File.WriteDone(info, userID)
 			return true, nil
 		}
 	} else {
@@ -114,7 +114,7 @@ func (s *StorageService) Write(c context.Context, stream multipart.File, size in
 			}
 
 			s.redis.Del(c, `drive:write:`+info.ID)
-			s.grpcClient.File.WriteDone(info)
+			s.grpcClient.File.WriteDone(info, userID)
 			return true, nil
 		}
 

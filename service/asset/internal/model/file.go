@@ -23,8 +23,8 @@ type File struct {
 	Remove     int8      `gorm:"type:int2;default:0" json:"remove"`
 	CreateTime time.Time `gorm:"column:create_time;autoCreateTime;" json:"createTime"`
 
-	Parent   *File   `gorm:"foreignKey:ParentID;references:ID" json:"parent,omitempty"`
-	Children *[]File `gorm:"foreignKey:ParentID;references:ID" json:"children,omitempty"`
+	Parent   *File  `gorm:"foreignKey:ParentID;references:ID" json:"parent,omitempty"`
+	Children []File `gorm:"foreignKey:ParentID;references:ID" json:"children,omitempty"`
 }
 
 func (f *File) BeforeCreate(tx *gorm.DB) error {

@@ -1,6 +1,7 @@
 package handler
 
 import (
+	request "common/http/request"
 	"storage/internal/dto"
 	"storage/internal/service"
 
@@ -34,14 +35,19 @@ func (s *StorageHandler) Write(c *gin.Context) {
 	}
 	defer stream.Close()
 
-	done, err := s.storageService.Write(c.Request.Context(), stream, chunkSize, dto.File{
-		ID:       chunk.ID,
-		Name:     chunk.Name,
-		Size:     chunk.Size,
-		Index:    chunk.Index,
-		Total:    chunk.Total,
-		ParentID: chunk.ParentID,
-	})
+	done, err := s.storageService.Write(
+		c.Request.Context(),
+		request.GetCurrentUser(c).ID,
+		stream,
+		chunkSize,
+		dto.File{
+			ID:       chunk.ID,
+			Name:     chunk.Name,
+			Size:     chunk.Size,
+			Index:    chunk.Index,
+			Total:    chunk.Total,
+			ParentID: chunk.ParentID,
+		})
 	if err != nil {
 		response.ServerError(c, err)
 	} else {
