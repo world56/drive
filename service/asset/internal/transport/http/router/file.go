@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func RegisterFileRoutes(app *gin.RouterGroup, h *handler.FileHandler) {
+func RegisterFileRoutes(app *gin.RouterGroup, h *handler.ResourceHandler) {
 	route := app.Group("/file")
 
 	{

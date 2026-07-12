@@ -8,7 +8,7 @@ import (
 	"gorm.io/gorm"
 )
 
-type File struct {
+type Resource struct {
 	ID         int64     `gorm:"type:bigint;primaryKey;autoIncrement:false;" json:"id,string"`
 	Name       string    `gorm:"type:varchar(256);" json:"name"`
 	FullName   string    `gorm:"type:varchar(256);not null;column:full_name;" json:"fullName"`
@@ -23,11 +23,11 @@ type File struct {
 	Remove     int8      `gorm:"type:int2;default:0" json:"remove"`
 	CreateTime time.Time `gorm:"column:create_time;autoCreateTime;" json:"createTime"`
 
-	Parent   *File  `gorm:"foreignKey:ParentID;references:ID" json:"parent,omitempty"`
-	Children []File `gorm:"foreignKey:ParentID;references:ID" json:"children,omitempty"`
+	Parent   *Resource  `gorm:"foreignKey:ParentID;references:ID" json:"parent,omitempty"`
+	Children []Resource `gorm:"foreignKey:ParentID;references:ID" json:"children,omitempty"`
 }
 
-func (f *File) BeforeCreate(tx *gorm.DB) error {
+func (f *Resource) BeforeCreate(tx *gorm.DB) error {
 	if f.ID == 0 {
 		f.ID = idgen.SnowflakeIDNext()
 	}

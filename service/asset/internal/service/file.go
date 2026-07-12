@@ -9,26 +9,27 @@ import (
 	"strings"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
 )
 
-type FileService struct {
+type ResourceService struct {
 	db    *gorm.DB
 	redis *redis.Client
 }
 
-func newFileService(db *gorm.DB, redis *redis.Client) *FileService {
-	return &FileService{
+func newResourceService(db *gorm.DB, redis *redis.Client) *ResourceService {
+	return &ResourceService{
 		db:    db,
 		redis: redis,
 	}
 }
 
-func (s *FileService) SearchFilesByName(c context.Context, query dto.RequestSearchFilesByName) ([]dto.ReposesFiles, error) {
+func (s *ResourceService) SearchResourcesByName(c context.Context, query dto.RequestSearchResourcesByName) ([]dto.ReposesResources, error) {
 	db := s.db.
 		WithContext(c).
-		Model(&model.File{}).
+		Model(&model.Resource{}).
 		Select("id", "path", "type", "suffix", "parent_id", "full_name", "create_time").
 		Where("remove = ?", 0).
 		Where("name = ?", query.Name)
@@ -47,7 +48,7 @@ func (s *FileService) SearchFilesByName(c context.Context, query dto.RequestSear
 		db = db.Order("create_time " + enum.SortDesc)
 	}
 
-	var files []dto.ReposesFiles
+	var files []dto.ReposesResources
 	if err := db.Find(&files).Error; err != nil {
 		return nil, err
 	}
@@ -55,7 +56,7 @@ func (s *FileService) SearchFilesByName(c context.Context, query dto.RequestSear
 	return files, nil
 }
 
-func (s *FileService) getFilePath(c context.Context, fileID string) []dto.Path {
+func (s *ResourceService) getFilePath(c context.Context, fileID string) []dto.Path {
 	var Paths []dto.Path
 	SQL := `
 		WITH RECURSIVE resources AS (
@@ -73,21 +74,17 @@ func (s *FileService) getFilePath(c context.Context, fileID string) []dto.Path {
 	return Paths
 }
 
-func (s *FileService) InsertFile(c context.Context, userID, name, objectName string, parentID int64, size int64) bool {
-	db := s.db.WithContext(c).Model(&model.File{})
+func (s *ResourceService) InsertFile(c context.Context, creatorID uuid.UUID, name, objectName string, parentID *int64, size int64) bool {
+	db := s.db.WithContext(c).Model(&model.Resource{})
 
 	suffix := strings.TrimSuffix(filepath.Ext(name), ".")
 
-	var pid *int64
-	if parentID > 0 {
-		pid = &parentID
-	}
-
-	err := db.Create(&model.File{
-		Name:     name,
-		Size:     size,
-		Suffix:   &suffix,
-		ParentID: pid,
+	err := db.Create(&model.Resource{
+		Name:      name,
+		Size:      size,
+		Suffix:    &suffix,
+		ParentID:  parentID,
+		CreatorID: creatorID,
 	}).Error
 
 	if err != nil {
@@ -95,4 +92,8 @@ func (s *FileService) InsertFile(c context.Context, userID, name, objectName str
 	} else {
 		return true
 	}
+}
+
+func (s *ResourceService) MkdirFolder(c context.Context, data dto.RequestMkdirFolder) {
+	// db := s.db.WithContext(c).Model(&model.Resource{})
 }

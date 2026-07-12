@@ -1,23 +1,23 @@
 package grpcclient
 
 type GrpcClients struct {
-	File *FileGrpcClient
+	Resource *ResourceGrpcClient
 }
 
 func NewGrpcClients(assetAddr string) (*GrpcClients, error) {
-	file, err := newFileGrpcClient(assetAddr)
+	Resource, err := newResourceGrpcClient(assetAddr)
 	if err != nil {
 		return nil, err
 	}
 
 	return &GrpcClients{
-		File: file,
+		Resource: Resource,
 	}, nil
 }
 
 func (s *GrpcClients) Close() error {
-	if s.File != nil {
-		return s.File.Close()
+	if s.Resource != nil {
+		return s.Resource.Close()
 	}
 
 	return nil

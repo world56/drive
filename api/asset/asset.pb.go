@@ -66,31 +66,31 @@ func (x *Count) GetCount() map[string]int32 {
 	return nil
 }
 
-type File struct {
+type Resource struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	ID            string                 `protobuf:"bytes,1,opt,name=ID,proto3" json:"ID,omitempty"`
 	Name          string                 `protobuf:"bytes,2,opt,name=Name,proto3" json:"Name,omitempty"`
-	ParentID      int64                  `protobuf:"varint,3,opt,name=ParentID,proto3" json:"ParentID,omitempty"`
+	ParentID      *int64                 `protobuf:"varint,3,opt,name=ParentID,proto3,oneof" json:"ParentID,omitempty"`
 	ObjectName    string                 `protobuf:"bytes,4,opt,name=ObjectName,proto3" json:"ObjectName,omitempty"`
 	Size          int64                  `protobuf:"varint,5,opt,name=Size,proto3" json:"Size,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *File) Reset() {
-	*x = File{}
+func (x *Resource) Reset() {
+	*x = Resource{}
 	mi := &file_asset_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *File) String() string {
+func (x *Resource) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*File) ProtoMessage() {}
+func (*Resource) ProtoMessage() {}
 
-func (x *File) ProtoReflect() protoreflect.Message {
+func (x *Resource) ProtoReflect() protoreflect.Message {
 	mi := &file_asset_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -102,67 +102,67 @@ func (x *File) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use File.ProtoReflect.Descriptor instead.
-func (*File) Descriptor() ([]byte, []int) {
+// Deprecated: Use Resource.ProtoReflect.Descriptor instead.
+func (*Resource) Descriptor() ([]byte, []int) {
 	return file_asset_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *File) GetID() string {
+func (x *Resource) GetID() string {
 	if x != nil {
 		return x.ID
 	}
 	return ""
 }
 
-func (x *File) GetName() string {
+func (x *Resource) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *File) GetParentID() int64 {
-	if x != nil {
-		return x.ParentID
+func (x *Resource) GetParentID() int64 {
+	if x != nil && x.ParentID != nil {
+		return *x.ParentID
 	}
 	return 0
 }
 
-func (x *File) GetObjectName() string {
+func (x *Resource) GetObjectName() string {
 	if x != nil {
 		return x.ObjectName
 	}
 	return ""
 }
 
-func (x *File) GetSize() int64 {
+func (x *Resource) GetSize() int64 {
 	if x != nil {
 		return x.Size
 	}
 	return 0
 }
 
-type Files struct {
+type Resources struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Data          []*File                `protobuf:"bytes,1,rep,name=data,proto3" json:"data,omitempty"`
+	Data          []*Resource            `protobuf:"bytes,1,rep,name=data,proto3" json:"data,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *Files) Reset() {
-	*x = Files{}
+func (x *Resources) Reset() {
+	*x = Resources{}
 	mi := &file_asset_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *Files) String() string {
+func (x *Resources) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*Files) ProtoMessage() {}
+func (*Resources) ProtoMessage() {}
 
-func (x *Files) ProtoReflect() protoreflect.Message {
+func (x *Resources) ProtoReflect() protoreflect.Message {
 	mi := &file_asset_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -174,12 +174,12 @@ func (x *Files) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use Files.ProtoReflect.Descriptor instead.
-func (*Files) Descriptor() ([]byte, []int) {
+// Deprecated: Use Resources.ProtoReflect.Descriptor instead.
+func (*Resources) Descriptor() ([]byte, []int) {
 	return file_asset_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *Files) GetData() []*File {
+func (x *Resources) GetData() []*Resource {
 	if x != nil {
 		return x.Data
 	}
@@ -196,23 +196,24 @@ const file_asset_proto_rawDesc = "" +
 	"\n" +
 	"CountEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\x05R\x05value:\x028\x01\"z\n" +
-	"\x04File\x12\x0e\n" +
+	"\x05value\x18\x02 \x01(\x05R\x05value:\x028\x01\"\x90\x01\n" +
+	"\bResource\x12\x0e\n" +
 	"\x02ID\x18\x01 \x01(\tR\x02ID\x12\x12\n" +
-	"\x04Name\x18\x02 \x01(\tR\x04Name\x12\x1a\n" +
-	"\bParentID\x18\x03 \x01(\x03R\bParentID\x12\x1e\n" +
+	"\x04Name\x18\x02 \x01(\tR\x04Name\x12\x1f\n" +
+	"\bParentID\x18\x03 \x01(\x03H\x00R\bParentID\x88\x01\x01\x12\x1e\n" +
 	"\n" +
 	"ObjectName\x18\x04 \x01(\tR\n" +
 	"ObjectName\x12\x12\n" +
-	"\x04Size\x18\x05 \x01(\x03R\x04Size\"(\n" +
-	"\x05Files\x12\x1f\n" +
-	"\x04data\x18\x01 \x03(\v2\v.asset.FileR\x04data2\xb0\x01\n" +
+	"\x04Size\x18\x05 \x01(\x03R\x04SizeB\v\n" +
+	"\t_ParentID\"0\n" +
+	"\tResources\x12#\n" +
+	"\x04data\x18\x01 \x03(\v2\x0f.asset.ResourceR\x04data2\xb8\x01\n" +
 	"\fAssetService\x122\n" +
-	"\bGetCount\x12\x16.google.protobuf.Empty\x1a\f.asset.Count\"\x00\x125\n" +
-	"\vGetRecently\x12\x16.google.protobuf.Empty\x1a\f.asset.Files\"\x00\x125\n" +
-	"\vGetFavorite\x12\x16.google.protobuf.Empty\x1a\f.asset.Files\"\x002A\n" +
-	"\vFileService\x122\n" +
-	"\tWriteDone\x12\v.asset.File\x1a\x16.google.protobuf.Empty\"\x00B\x13Z\x11api/asset;assetpbb\x06proto3"
+	"\bGetCount\x12\x16.google.protobuf.Empty\x1a\f.asset.Count\"\x00\x129\n" +
+	"\vGetRecently\x12\x16.google.protobuf.Empty\x1a\x10.asset.Resources\"\x00\x129\n" +
+	"\vGetFavorite\x12\x16.google.protobuf.Empty\x1a\x10.asset.Resources\"\x002I\n" +
+	"\x0fResourceService\x126\n" +
+	"\tWriteDone\x12\x0f.asset.Resource\x1a\x16.google.protobuf.Empty\"\x00B\x13Z\x11api/asset;assetpbb\x06proto3"
 
 var (
 	file_asset_proto_rawDescOnce sync.Once
@@ -229,22 +230,22 @@ func file_asset_proto_rawDescGZIP() []byte {
 var file_asset_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_asset_proto_goTypes = []any{
 	(*Count)(nil),         // 0: asset.Count
-	(*File)(nil),          // 1: asset.File
-	(*Files)(nil),         // 2: asset.Files
+	(*Resource)(nil),      // 1: asset.Resource
+	(*Resources)(nil),     // 2: asset.Resources
 	nil,                   // 3: asset.Count.CountEntry
 	(*emptypb.Empty)(nil), // 4: google.protobuf.Empty
 }
 var file_asset_proto_depIdxs = []int32{
 	3, // 0: asset.Count.count:type_name -> asset.Count.CountEntry
-	1, // 1: asset.Files.data:type_name -> asset.File
+	1, // 1: asset.Resources.data:type_name -> asset.Resource
 	4, // 2: asset.AssetService.GetCount:input_type -> google.protobuf.Empty
 	4, // 3: asset.AssetService.GetRecently:input_type -> google.protobuf.Empty
 	4, // 4: asset.AssetService.GetFavorite:input_type -> google.protobuf.Empty
-	1, // 5: asset.FileService.WriteDone:input_type -> asset.File
+	1, // 5: asset.ResourceService.WriteDone:input_type -> asset.Resource
 	0, // 6: asset.AssetService.GetCount:output_type -> asset.Count
-	2, // 7: asset.AssetService.GetRecently:output_type -> asset.Files
-	2, // 8: asset.AssetService.GetFavorite:output_type -> asset.Files
-	4, // 9: asset.FileService.WriteDone:output_type -> google.protobuf.Empty
+	2, // 7: asset.AssetService.GetRecently:output_type -> asset.Resources
+	2, // 8: asset.AssetService.GetFavorite:output_type -> asset.Resources
+	4, // 9: asset.ResourceService.WriteDone:output_type -> google.protobuf.Empty
 	6, // [6:10] is the sub-list for method output_type
 	2, // [2:6] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name
@@ -257,6 +258,7 @@ func file_asset_proto_init() {
 	if File_asset_proto != nil {
 		return
 	}
+	file_asset_proto_msgTypes[1].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{

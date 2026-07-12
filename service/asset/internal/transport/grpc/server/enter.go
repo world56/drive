@@ -8,5 +8,5 @@ import (
 )
 
 func RegisterGrpcServers(s grpc.ServiceRegistrar, svc *service.Service) {
-	assethb.RegisterFileServiceServer(s, newFileGrpcServer(svc.FileService))
+	assethb.RegisterResourceServiceServer(s, newResourceGrpcServer(svc.ResourceService))
 }

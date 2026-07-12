@@ -30,8 +30,8 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AssetServiceClient interface {
 	GetCount(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*Count, error)
-	GetRecently(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*Files, error)
-	GetFavorite(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*Files, error)
+	GetRecently(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*Resources, error)
+	GetFavorite(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*Resources, error)
 }
 
 type assetServiceClient struct {
@@ -52,9 +52,9 @@ func (c *assetServiceClient) GetCount(ctx context.Context, in *emptypb.Empty, op
 	return out, nil
 }
 
-func (c *assetServiceClient) GetRecently(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*Files, error) {
+func (c *assetServiceClient) GetRecently(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*Resources, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(Files)
+	out := new(Resources)
 	err := c.cc.Invoke(ctx, AssetService_GetRecently_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -62,9 +62,9 @@ func (c *assetServiceClient) GetRecently(ctx context.Context, in *emptypb.Empty,
 	return out, nil
 }
 
-func (c *assetServiceClient) GetFavorite(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*Files, error) {
+func (c *assetServiceClient) GetFavorite(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*Resources, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(Files)
+	out := new(Resources)
 	err := c.cc.Invoke(ctx, AssetService_GetFavorite_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -77,8 +77,8 @@ func (c *assetServiceClient) GetFavorite(ctx context.Context, in *emptypb.Empty,
 // for forward compatibility.
 type AssetServiceServer interface {
 	GetCount(context.Context, *emptypb.Empty) (*Count, error)
-	GetRecently(context.Context, *emptypb.Empty) (*Files, error)
-	GetFavorite(context.Context, *emptypb.Empty) (*Files, error)
+	GetRecently(context.Context, *emptypb.Empty) (*Resources, error)
+	GetFavorite(context.Context, *emptypb.Empty) (*Resources, error)
 	mustEmbedUnimplementedAssetServiceServer()
 }
 
@@ -92,10 +92,10 @@ type UnimplementedAssetServiceServer struct{}
 func (UnimplementedAssetServiceServer) GetCount(context.Context, *emptypb.Empty) (*Count, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetCount not implemented")
 }
-func (UnimplementedAssetServiceServer) GetRecently(context.Context, *emptypb.Empty) (*Files, error) {
+func (UnimplementedAssetServiceServer) GetRecently(context.Context, *emptypb.Empty) (*Resources, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetRecently not implemented")
 }
-func (UnimplementedAssetServiceServer) GetFavorite(context.Context, *emptypb.Empty) (*Files, error) {
+func (UnimplementedAssetServiceServer) GetFavorite(context.Context, *emptypb.Empty) (*Resources, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetFavorite not implemented")
 }
 func (UnimplementedAssetServiceServer) mustEmbedUnimplementedAssetServiceServer() {}
@@ -198,101 +198,101 @@ var AssetService_ServiceDesc = grpc.ServiceDesc{
 }
 
 const (
-	FileService_WriteDone_FullMethodName = "/asset.FileService/WriteDone"
+	ResourceService_WriteDone_FullMethodName = "/asset.ResourceService/WriteDone"
 )
 
-// FileServiceClient is the client API for FileService service.
+// ResourceServiceClient is the client API for ResourceService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type FileServiceClient interface {
-	WriteDone(ctx context.Context, in *File, opts ...grpc.CallOption) (*emptypb.Empty, error)
+type ResourceServiceClient interface {
+	WriteDone(ctx context.Context, in *Resource, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
-type fileServiceClient struct {
+type resourceServiceClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewFileServiceClient(cc grpc.ClientConnInterface) FileServiceClient {
-	return &fileServiceClient{cc}
+func NewResourceServiceClient(cc grpc.ClientConnInterface) ResourceServiceClient {
+	return &resourceServiceClient{cc}
 }
 
-func (c *fileServiceClient) WriteDone(ctx context.Context, in *File, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *resourceServiceClient) WriteDone(ctx context.Context, in *Resource, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, FileService_WriteDone_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, ResourceService_WriteDone_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// FileServiceServer is the server API for FileService service.
-// All implementations must embed UnimplementedFileServiceServer
+// ResourceServiceServer is the server API for ResourceService service.
+// All implementations must embed UnimplementedResourceServiceServer
 // for forward compatibility.
-type FileServiceServer interface {
-	WriteDone(context.Context, *File) (*emptypb.Empty, error)
-	mustEmbedUnimplementedFileServiceServer()
+type ResourceServiceServer interface {
+	WriteDone(context.Context, *Resource) (*emptypb.Empty, error)
+	mustEmbedUnimplementedResourceServiceServer()
 }
 
-// UnimplementedFileServiceServer must be embedded to have
+// UnimplementedResourceServiceServer must be embedded to have
 // forward compatible implementations.
 //
 // NOTE: this should be embedded by value instead of pointer to avoid a nil
 // pointer dereference when methods are called.
-type UnimplementedFileServiceServer struct{}
+type UnimplementedResourceServiceServer struct{}
 
-func (UnimplementedFileServiceServer) WriteDone(context.Context, *File) (*emptypb.Empty, error) {
+func (UnimplementedResourceServiceServer) WriteDone(context.Context, *Resource) (*emptypb.Empty, error) {
 	return nil, status.Error(codes.Unimplemented, "method WriteDone not implemented")
 }
-func (UnimplementedFileServiceServer) mustEmbedUnimplementedFileServiceServer() {}
-func (UnimplementedFileServiceServer) testEmbeddedByValue()                     {}
+func (UnimplementedResourceServiceServer) mustEmbedUnimplementedResourceServiceServer() {}
+func (UnimplementedResourceServiceServer) testEmbeddedByValue()                         {}
 
-// UnsafeFileServiceServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to FileServiceServer will
+// UnsafeResourceServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to ResourceServiceServer will
 // result in compilation errors.
-type UnsafeFileServiceServer interface {
-	mustEmbedUnimplementedFileServiceServer()
+type UnsafeResourceServiceServer interface {
+	mustEmbedUnimplementedResourceServiceServer()
 }
 
-func RegisterFileServiceServer(s grpc.ServiceRegistrar, srv FileServiceServer) {
-	// If the following call panics, it indicates UnimplementedFileServiceServer was
+func RegisterResourceServiceServer(s grpc.ServiceRegistrar, srv ResourceServiceServer) {
+	// If the following call panics, it indicates UnimplementedResourceServiceServer was
 	// embedded by pointer and is nil.  This will cause panics if an
 	// unimplemented method is ever invoked, so we test this at initialization
 	// time to prevent it from happening at runtime later due to I/O.
 	if t, ok := srv.(interface{ testEmbeddedByValue() }); ok {
 		t.testEmbeddedByValue()
 	}
-	s.RegisterService(&FileService_ServiceDesc, srv)
+	s.RegisterService(&ResourceService_ServiceDesc, srv)
 }
 
-func _FileService_WriteDone_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(File)
+func _ResourceService_WriteDone_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Resource)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(FileServiceServer).WriteDone(ctx, in)
+		return srv.(ResourceServiceServer).WriteDone(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: FileService_WriteDone_FullMethodName,
+		FullMethod: ResourceService_WriteDone_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(FileServiceServer).WriteDone(ctx, req.(*File))
+		return srv.(ResourceServiceServer).WriteDone(ctx, req.(*Resource))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// FileService_ServiceDesc is the grpc.ServiceDesc for FileService service.
+// ResourceService_ServiceDesc is the grpc.ServiceDesc for ResourceService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var FileService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "asset.FileService",
-	HandlerType: (*FileServiceServer)(nil),
+var ResourceService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "asset.ResourceService",
+	HandlerType: (*ResourceServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "WriteDone",
-			Handler:    _FileService_WriteDone_Handler,
+			Handler:    _ResourceService_WriteDone_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

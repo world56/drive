@@ -57,7 +57,7 @@ func (s *StorageService) Write(c context.Context, userID string, stream multipar
 		if err != nil {
 			return false, err
 		} else {
-			s.grpcClient.File.WriteDone(info, userID)
+			s.grpcClient.Resource.WriteDone(info, userID)
 			return true, nil
 		}
 	} else {
@@ -114,7 +114,7 @@ func (s *StorageService) Write(c context.Context, userID string, stream multipar
 			}
 
 			s.redis.Del(c, `drive:write:`+info.ID)
-			s.grpcClient.File.WriteDone(info, userID)
+			s.grpcClient.Resource.WriteDone(info, userID)
 			return true, nil
 		}
 

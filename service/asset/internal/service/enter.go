@@ -6,11 +6,11 @@ import (
 )
 
 type Service struct {
-	FileService *FileService
+	ResourceService *ResourceService
 }
 
 func NewService(db *gorm.DB, redis *redis.Client) *Service {
 	return &Service{
-		FileService: newFileService(db, redis),
+		ResourceService: newResourceService(db, redis),
 	}
 }
