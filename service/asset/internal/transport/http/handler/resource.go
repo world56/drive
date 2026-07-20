@@ -5,7 +5,6 @@ import (
 	"asset/internal/service"
 	request "common/http/request"
 	"common/http/response"
-	"fmt"
 
 	"github.com/gin-gonic/gin"
 )
@@ -41,13 +40,13 @@ func (s *ResourceHandler) FindFolders(c *gin.Context) {
 
 // 查询-文件夹内资源列表
 func (s *ResourceHandler) FindResources(c *gin.Context) {
-	var body dto.RequestFiles
-	if err := c.ShouldBindBodyWithJSON(&body); err != nil {
+	var query dto.RequestFiles
+	if err := c.ShouldBindQuery(&query); err != nil {
 		response.ClientError(c, err)
+		return
 	}
 
-	files, err := s.resourceService.GetResources(c.Request.Context(), body)
-	fmt.Println(files)
+	files, err := s.resourceService.GetResources(c.Request.Context(), query)
 	if err != nil {
 		response.ServerError(c, err)
 	} else {

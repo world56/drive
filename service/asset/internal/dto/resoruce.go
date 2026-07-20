@@ -26,9 +26,9 @@ type ReposesResources struct {
 }
 
 type RequestFiles struct {
-	ID    *string           `json:"id,omitempty"`
-	Order enum.SortType     `json:"order" binding:"oneof=ASC DESC"`
-	Type  enum.ResourceSort `json:"type" binding:"oneof=SORT_NAME SORT_SIZE SORT_SUFFIX SORT_TYPE SORT_CREATOR_ID SORT_CREATE_TIME"`
+	ID    *string           `form:"id,omitempty"`
+	Order enum.SortType     `form:"order" binding:"oneof=ASC DESC"`
+	Type  enum.ResourceSort `form:"type" binding:"oneof=SORT_NAME SORT_SIZE SORT_SUFFIX SORT_TYPE SORT_CREATOR_ID SORT_CREATE_TIME"`
 }
 
 type RequestSearchResourcesByName struct {

@@ -4,6 +4,7 @@ import (
 	"asset/internal/dto"
 	"asset/internal/enum"
 	"asset/internal/model"
+	"asset/internal/pkg/filetype"
 	"context"
 	"errors"
 	"path/filepath"
@@ -56,13 +57,13 @@ func (s *ResourceService) SearchResourcesByName(c context.Context, query dto.Req
 	return files, nil
 }
 
-func (s *ResourceService) GetResources(c context.Context, body dto.RequestFiles) ([]dto.Resource, error) {
-	db := s.db.WithContext(c).Order("create_time " + body.Order)
+func (s *ResourceService) GetResources(c context.Context, query dto.RequestFiles) ([]dto.Resource, error) {
+	db := s.db.WithContext(c).Order("create_time " + query.Order)
 
-	if body.ID == nil {
+	if query.ID == nil {
 		db = db.Where("parent_id IS NULL")
 	} else {
-		db = db.Where("parent_id = ?", *body.ID)
+		db = db.Where("parent_id = ?", *query.ID)
 	}
 
 	var files []dto.Resource
@@ -87,6 +88,7 @@ func (s *ResourceService) InsertFile(c context.Context, creatorID string, fullNa
 		FullName:  fullName,
 		ParentID:  parentID,
 		CreatorID: creatorID,
+		Type:      filetype.DetectBySuffix(suffix),
 	}).Error
 
 	if err != nil {

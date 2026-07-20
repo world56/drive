@@ -83,9 +83,9 @@ export namespace ENUM_RESOURCE {
     /** @param SORT_CREATE_TIME 排序-上传时间 */
     SORT_CREATE_TIME = "SORT_CREATE_TIME",
     /** @param SORT_ASC 排序方式-升序 */
-    SORT_ASC = "SORT_ASC",
+    SORT_ASC = "ASC",
     /** @param SORT_ASC 排序方式-降序 */
-    SORT_DESC = "SORT_DESC",
+    SORT_DESC = "DESC",
     /** @param OPEN 打开、预览 文件、文件夹 */
     OPEN = "OPEN",
     /** @param COPY_NAME 复制名称 */
