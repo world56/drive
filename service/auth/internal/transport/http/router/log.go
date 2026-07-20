@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func RegisterLogRoutes(api *gin.RouterGroup, h *handler.LogHandler) {
+func registerLogRoutes(api *gin.RouterGroup, h *handler.LogHandler) {
 	route := api.Group("/log")
 
 	{

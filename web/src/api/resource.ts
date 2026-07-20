@@ -55,7 +55,7 @@ export function getResourceDetails(
  * @name createFolder 创建文件夹
  */
 export function createFolder(data: TypeResource.DTO) {
-  return request("resource/create", {
+  return request("resource/mkdir", {
     method: ENUM_HTTP.REQUEST_MODE.POST,
     proxy: ENUM_HTTP.PROXY.EXPLORER,
     message: "创建成功",

@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func RegisterCryptoRoutes(api *gin.RouterGroup, h *handler.CryptoHandler) {
+func registerCryptoRoutes(api *gin.RouterGroup, h *handler.CryptoHandler) {
 	route := api.Group("/crypto")
 
 	{

@@ -9,7 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func RegisterUserRoutes(api *gin.RouterGroup, h *handler.UserHandler) {
+func registerUserRoutes(api *gin.RouterGroup, h *handler.UserHandler) {
 	group := api.Group("/user")
 	{
 		group.PUT("pwd", h.ChangePassword)

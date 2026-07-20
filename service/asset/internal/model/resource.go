@@ -4,7 +4,6 @@ import (
 	"common/idgen"
 	"time"
 
-	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
@@ -18,8 +17,8 @@ type Resource struct {
 	ParentID   *int64    `gorm:"type:bigint;column:parent_id" json:"parentID"`
 	PathIds    string    `gorm:"type:varchar(2048);index:idx_path_ids,type:btree;" json:"pathIds"`
 	Remark     *string   `gorm:"type:varchar(256);default:null" json:"remark"`
-	Count      int16     `gorm:"type:int2;default:0" json:"count"`
-	CreatorID  uuid.UUID `gorm:"type:uuid;not null;column:creator_id;" json:"CreatorID"`
+	Count      int64     `gorm:"type:bigint;default:0" json:"count"`
+	CreatorID  string    `gorm:"type:char(36);not null;column:creator_id;" json:"CreatorID"`
 	Remove     int8      `gorm:"type:int2;default:0" json:"remove"`
 	CreateTime time.Time `gorm:"column:create_time;autoCreateTime;" json:"createTime"`
 

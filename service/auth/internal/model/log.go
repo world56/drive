@@ -12,6 +12,6 @@ type Log struct {
 	Desc       string    `gorm:"type:text;" json:"desc"`
 	CreateTime time.Time `gorm:"column:create_time;autoCreateTime;" json:"createTime"`
 
-	UserID string `gorm:"type:varchar(32);index:user_id_event;not null" json:"userID"`
+	UserID string `gorm:"type:char(36);index:user_id_event;not null" json:"userID"`
 	User   *User  `gorm:"foreignKey:UserID;references:ID;" json:"user"`
 }

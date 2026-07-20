@@ -1,5 +1,7 @@
 package dto
 
+import "asset/internal/enum"
+
 type Resource struct {
 	ID        string  `json:"id"`
 	Name      string  `json:"name"`
@@ -7,7 +9,7 @@ type Resource struct {
 	Size      int64   `json:"size"`
 	Type      int8    `json:"type"`
 	Suffix    string  `json:"suffix"`
-	ParentID  *string `json:"parentID"`
+	ParentID  *int64  `json:"parentID"`
 	Remark    *string `json:"remark"`
 	Count     int16   `json:"count"`
 	CreatorID string  `json:"creatorID"`
@@ -23,6 +25,12 @@ type ReposesResources struct {
 	Paths []Path `json:"paths"`
 }
 
+type RequestFiles struct {
+	ID    *string           `json:"id,omitempty"`
+	Order enum.SortType     `json:"order" binding:"oneof=ASC DESC"`
+	Type  enum.ResourceSort `json:"type" binding:"oneof=SORT_NAME SORT_SIZE SORT_SUFFIX SORT_TYPE SORT_CREATOR_ID SORT_CREATE_TIME"`
+}
+
 type RequestSearchResourcesByName struct {
 	Name      string  `form:"name" binding:"required"`
 	Type      []int   `form:"type" binding:"omitempty,dive,oneof=-1 0 1 2 3 4 5"`                    // 资源类型
@@ -34,5 +42,5 @@ type RequestSearchResourcesByName struct {
 type RequestMkdirFolder struct {
 	Name     string  `json:"name" binding:"required"`
 	Remark   *string `json:"remark,omitempty"`
-	ParentID *string `json:"parentID,omitempty"`
+	ParentID *int64  `json:"parentID,omitempty"`
 }

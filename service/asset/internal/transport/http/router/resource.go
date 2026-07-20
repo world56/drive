@@ -6,13 +6,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func RegisterFileRoutes(app *gin.RouterGroup, h *handler.ResourceHandler) {
-	route := app.Group("/file")
+func registerResourceRoutes(app *gin.RouterGroup, h *handler.ResourceHandler) {
+	route := app.Group("/resource")
 
 	{
 		route.GET("/search", h.SearchFiles)
+		route.GET("/list", h.FindResources)
 		route.GET("/folders", h.FindFolders)
-		route.GET("/children", h.FindFolderResources)
 		route.GET("/details", h.FindResourceDetails)
 		route.POST("/mkdir", h.MkdirFolder)
 		route.PUT("/update", h.UpdateResourceInfo)
