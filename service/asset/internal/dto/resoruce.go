@@ -9,10 +9,10 @@ type Resource struct {
 	Size      int64   `json:"size"`
 	Type      int8    `json:"type"`
 	Suffix    string  `json:"suffix"`
-	ParentID  *int64  `json:"parentID"`
+	ParentID  *int64  `json:"parentId,string"`
 	Remark    *string `json:"remark"`
 	Count     int16   `json:"count"`
-	CreatorID string  `json:"creatorID"`
+	CreatorID string  `json:"creatorId"`
 }
 
 type Path struct {
@@ -42,5 +42,16 @@ type RequestSearchResourcesByName struct {
 type RequestMkdirFolder struct {
 	Name     string  `json:"name" binding:"required"`
 	Remark   *string `json:"remark,omitempty"`
-	ParentID *int64  `json:"parentID,omitempty"`
+	ParentID *int64  `json:"parentId,omitempty"`
+}
+
+type RequestResourceDetail struct {
+	ID int64 `uri:"id" binding:"required"`
+}
+
+type RequestResourceUpdateInfo struct {
+	ID       string  `json:"id" binding:"required"`
+	Name     string  `json:"name" binding:"required"`
+	ParentID *int64  `json:"parentId,string"`
+	Remark   *string `json:"remark"`
 }

@@ -33,6 +33,7 @@ const Search = () => {
   const { data, loading } = useRequest(() => getGlobalResources(search), {
     refreshDeps: [search],
     debounceWait: 200,
+    manual: true,
   });
 
   function onSelect(value: TypeResource.DTO) {

@@ -28,8 +28,7 @@ func newResourceService(db *gorm.DB, redis *redis.Client) *ResourceService {
 }
 
 func (s *ResourceService) SearchResourcesByName(c context.Context, query dto.RequestSearchResourcesByName) ([]dto.ReposesResources, error) {
-	db := s.db.
-		WithContext(c).
+	db := s.db.WithContext(c).
 		Model(&model.Resource{}).
 		Select("id", "path", "type", "suffix", "parent_id", "full_name", "create_time").
 		Where("remove = ?", 0).
@@ -74,7 +73,32 @@ func (s *ResourceService) GetResources(c context.Context, query dto.RequestFiles
 	return files, nil
 }
 
-func (s *ResourceService) InsertFile(c context.Context, creatorID string, fullName, objectName string, parentID *int64, size int64) bool {
+func (s *ResourceService) GetResourceFolders(c context.Context) ([]dto.Resource, error) {
+	var folders []dto.Resource
+	if err := s.db.WithContext(c).
+		Model(&model.Resource{}).
+		Where("type = ?", enum.ResourceTypeFolder).
+		Find(&folders).Error; err != nil {
+		return nil, err
+	}
+
+	return folders, nil
+}
+
+func (s *ResourceService) GetResourceDetail(c context.Context, query dto.RequestResourceDetail) (*dto.Resource, error) {
+	var resource *dto.Resource
+	if err := s.db.
+		WithContext(c).
+		Model(&model.Resource{}).
+		Where("id = ?", query.ID).
+		First(&resource).Error; err != nil {
+		return nil, err
+	}
+
+	return resource, nil
+}
+
+func (s *ResourceService) InsertResource(c context.Context, creatorID string, fullName, objectName string, parentID *int64, size int64) bool {
 	db := s.db.WithContext(c).Model(&model.Resource{})
 
 	ext := filepath.Ext(fullName)
@@ -96,6 +120,29 @@ func (s *ResourceService) InsertFile(c context.Context, creatorID string, fullNa
 	} else {
 		return true
 	}
+}
+
+func (s *ResourceService) UpdateResourceInfo(c context.Context, body dto.RequestResourceUpdateInfo) error {
+	db := s.db.WithContext(c)
+
+	if err := db.Where("id = ?", body.ID).First(&model.Resource{}).Error; err != nil {
+		return err
+	}
+
+	update := map[string]interface{}{
+		"name":      body.Name,
+		"remark":    body.Remark,
+		"parent_id": body.ParentID,
+	}
+
+	if err := db.Model(&model.Resource{}).
+		Where("id = ?", body.ID).
+		Updates(update).
+		Error; err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (s *ResourceService) MkdirFolder(c context.Context, creatorID string, data dto.RequestMkdirFolder) (bool, error) {

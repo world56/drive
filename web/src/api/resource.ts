@@ -44,10 +44,9 @@ export function getFolders() {
 export function getResourceDetails(
   params: Required<Pick<TypeResource.ReqResources, "id">>,
 ) {
-  return request<TypeResource.DTO>("resource/details", {
+  return request<TypeResource.DTO>(`resource/${params.id}`, {
     method: ENUM_HTTP.REQUEST_MODE.GET,
     proxy: ENUM_HTTP.PROXY.EXPLORER,
-    params,
   });
 }
 

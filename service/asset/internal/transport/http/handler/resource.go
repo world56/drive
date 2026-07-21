@@ -36,6 +36,12 @@ func (s *ResourceHandler) SearchFiles(c *gin.Context) {
 
 // 查询-全部文件夹
 func (s *ResourceHandler) FindFolders(c *gin.Context) {
+	folders, err := s.resourceService.GetResourceFolders(c.Request.Context())
+	if err != nil {
+		response.ServerError(c, err)
+	} else {
+		response.Success(c, folders)
+	}
 }
 
 // 查询-文件夹内资源列表
@@ -55,7 +61,20 @@ func (s *ResourceHandler) FindResources(c *gin.Context) {
 }
 
 // 查询-资源详情
-func (s *ResourceHandler) FindResourceDetails(c *gin.Context) {}
+func (s *ResourceHandler) FindResourceDetails(c *gin.Context) {
+	var query dto.RequestResourceDetail
+	if err := c.ShouldBindUri(&query); err != nil {
+		response.ClientError(c, err)
+		return
+	}
+
+	detail, err := s.resourceService.GetResourceDetail(c, query)
+	if err != nil {
+		response.ServerError(c, err)
+	} else {
+		response.Success(c, detail)
+	}
+}
 
 // 新增-文件夹
 func (s *ResourceHandler) MkdirFolder(c *gin.Context) {
@@ -74,7 +93,19 @@ func (s *ResourceHandler) MkdirFolder(c *gin.Context) {
 }
 
 // 编辑-资源信息
-func (s *ResourceHandler) UpdateResourceInfo(c *gin.Context) {}
+func (s *ResourceHandler) UpdateResourceInfo(c *gin.Context) {
+	var body dto.RequestResourceUpdateInfo
+	if err := c.ShouldBindJSON(&body); err != nil {
+		response.ClientError(c, err)
+		return
+	}
+
+	if err := s.resourceService.UpdateResourceInfo(c.Request.Context(), body); err != nil {
+		response.ServerError(c, err)
+	} else {
+		response.Success(c, true)
+	}
+}
 
 // 编辑-移动资源位置
 func (s *ResourceHandler) UpdateResourcesLocation(c *gin.Context) {}
