@@ -18,6 +18,7 @@ type Resource struct {
 	PathIds    string    `gorm:"type:varchar(2048);index:idx_path_ids,type:btree;" json:"pathIds"`
 	Remark     *string   `gorm:"type:varchar(256);default:null" json:"remark"`
 	Count      int64     `gorm:"type:bigint;default:0" json:"count"`
+	ObjectName string    `gorm:"type:varchar(100);uniqueIndex;" json:"object_name"`
 	CreatorID  string    `gorm:"type:char(36);not null;column:creator_id;" json:"CreatorID"`
 	Remove     int8      `gorm:"type:int2;default:0" json:"remove"`
 	CreateTime time.Time `gorm:"column:create_time;autoCreateTime;" json:"createTime"`

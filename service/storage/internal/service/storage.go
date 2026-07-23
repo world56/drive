@@ -3,6 +3,7 @@ package service
 import (
 	"common/idgen"
 	"context"
+	"fmt"
 	"mime/multipart"
 	"path/filepath"
 	"storage/internal/config"
@@ -53,6 +54,7 @@ func (s *StorageService) Write(c context.Context, userID string, stream multipar
 	// 单个文件直接上传
 	if info.Total == 1 {
 		info.ObjectName = s.getObjectName(info.Name)
+		fmt.Println(info.ObjectName)
 		_, err := s.minio.Client.PutObject(c, BUCKET, info.ObjectName, stream, size, minio.PutObjectOptions{})
 		if err != nil {
 			return false, err
@@ -120,4 +122,17 @@ func (s *StorageService) Write(c context.Context, userID string, stream multipar
 
 		return false, nil
 	}
+}
+
+func (s *StorageService) Delete(c context.Context) {
+	// ch := make(chan minio.ObjectInfo)
+
+	// go func() {
+	// 	defer close(ch)
+	// 	for _, id := range body.IDs {
+	// 		ch <- minio.ObjectInfo{
+	// 			Key:
+	// 		}
+	// 	}
+	// }()
 }

@@ -17,6 +17,6 @@ func registerResourceRoutes(app *gin.RouterGroup, h *handler.ResourceHandler) {
 		route.POST("/mkdir", h.MkdirFolder)
 		route.PUT("/update", h.UpdateResourceInfo)
 		route.PUT("/move", h.UpdateResourcesLocation)
-		route.DELETE("/deletes", h.DeleteResources)
+		route.DELETE("/delete", h.DeleteResources)
 	}
 }

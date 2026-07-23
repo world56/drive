@@ -111,4 +111,16 @@ func (s *ResourceHandler) UpdateResourceInfo(c *gin.Context) {
 func (s *ResourceHandler) UpdateResourcesLocation(c *gin.Context) {}
 
 // 删除-移动至回收站
-func (s *ResourceHandler) DeleteResources(c *gin.Context) {}
+func (s *ResourceHandler) DeleteResources(c *gin.Context) {
+	var body dto.RequestDeleteFiles
+	if err := c.ShouldBindJSON(&body); err != nil {
+		response.ClientError(c, err)
+		return
+	}
+
+	if err := s.resourceService.DeleteResources(c.Request.Context(), body); err != nil {
+		response.ServerError(c, err)
+	} else {
+		response.Success(c, true)
+	}
+}

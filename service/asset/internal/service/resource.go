@@ -66,7 +66,7 @@ func (s *ResourceService) GetResources(c context.Context, query dto.RequestFiles
 	}
 
 	var files []dto.Resource
-	if err := db.Find(&files).Error; err != nil {
+	if err := db.Where("remove = ?", enum.ResourceNormal).Find(&files).Error; err != nil {
 		return nil, err
 	}
 
@@ -91,6 +91,7 @@ func (s *ResourceService) GetResourceDetail(c context.Context, query dto.Request
 		WithContext(c).
 		Model(&model.Resource{}).
 		Where("id = ?", query.ID).
+		Where("remove = ?", enum.ResourceNormal).
 		First(&resource).Error; err != nil {
 		return nil, err
 	}
@@ -106,13 +107,14 @@ func (s *ResourceService) InsertResource(c context.Context, creatorID string, fu
 	baseName := strings.TrimSuffix(fullName, ext)
 
 	err := db.Create(&model.Resource{
-		Size:      size,
-		Suffix:    &suffix,
-		Name:      baseName,
-		FullName:  fullName,
-		ParentID:  parentID,
-		CreatorID: creatorID,
-		Type:      filetype.DetectBySuffix(suffix),
+		Size:       size,
+		Suffix:     &suffix,
+		Name:       baseName,
+		FullName:   fullName,
+		ParentID:   parentID,
+		CreatorID:  creatorID,
+		ObjectName: objectName,
+		Type:       filetype.DetectBySuffix(suffix),
 	}).Error
 
 	if err != nil {
@@ -120,6 +122,16 @@ func (s *ResourceService) InsertResource(c context.Context, creatorID string, fu
 	} else {
 		return true
 	}
+}
+
+func (s *ResourceService) DeleteResources(c context.Context, body dto.RequestDeleteFiles) error {
+	if err := s.db.WithContext(c).
+		Model(model.Resource{}).
+		Where("id IN ?", body.IDs).
+		Update("remove", enum.ResourceRecycled).Error; err != nil {
+		return err
+	}
+	return nil
 }
 
 func (s *ResourceService) UpdateResourceInfo(c context.Context, body dto.RequestResourceUpdateInfo) error {

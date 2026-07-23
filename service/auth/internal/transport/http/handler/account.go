@@ -4,6 +4,7 @@ import (
 	"auth/internal/service"
 	"common/http/request"
 	"common/http/response"
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -69,8 +70,11 @@ func (h *AccountHandler) Login(c *gin.Context) {
 
 // 获取用户登陆信息
 func (h *AccountHandler) GetUserInfo(c *gin.Context) {
+	fmt.Println(1)
 	currentUser := request.GetCurrentUser(c)
+	fmt.Println(2)
 	userInfo, err := h.accountService.GetUserByID(c.Request.Context(), currentUser.ID)
+	fmt.Println(3)
 	if err != nil {
 		response.ClientLoginTimeout(c)
 	} else {

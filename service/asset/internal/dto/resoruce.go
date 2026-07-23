@@ -3,16 +3,17 @@ package dto
 import "asset/internal/enum"
 
 type Resource struct {
-	ID        string  `json:"id"`
-	Name      string  `json:"name"`
-	FullName  string  `json:"fullName"`
-	Size      int64   `json:"size"`
-	Type      int8    `json:"type"`
-	Suffix    string  `json:"suffix"`
-	ParentID  *int64  `json:"parentId,string"`
-	Remark    *string `json:"remark"`
-	Count     int16   `json:"count"`
-	CreatorID string  `json:"creatorId"`
+	ID         string  `json:"id"`
+	Name       string  `json:"name"`
+	FullName   string  `json:"fullName"`
+	Size       int64   `json:"size"`
+	Type       int8    `json:"type"`
+	Suffix     string  `json:"suffix"`
+	ParentID   *int64  `json:"parentId,string"`
+	Remark     *string `json:"remark"`
+	Count      int16   `json:"count"`
+	CreatorID  string  `json:"creatorId"`
+	CreateTime string  `json:"createTime"`
 }
 
 type Path struct {
@@ -54,4 +55,8 @@ type RequestResourceUpdateInfo struct {
 	Name     string  `json:"name" binding:"required"`
 	ParentID *int64  `json:"parentId,string"`
 	Remark   *string `json:"remark"`
+}
+
+type RequestDeleteFiles struct {
+	IDs []string `form:"ids" json:"ids" binding:"required"`
 }

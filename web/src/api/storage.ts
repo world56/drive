@@ -6,9 +6,9 @@ import { API_PROXY_EXPLORER_URL } from "@/config/request";
 import { TypeResource } from "@/interface/resource";
 
 /**
- * @name uploadChunk 上传资源
+ * @name upload 上传资源
  */
-export function uploadChunk(data: FormData, control: AbortController) {
+export function upload(data: FormData, control: AbortController) {
   return request<TypeResource.DTO | false>("upload", {
     data,
     signal: control.signal,
@@ -17,7 +17,6 @@ export function uploadChunk(data: FormData, control: AbortController) {
     headers: { contentType: ENUM_HTTP.CONTENT_TYPE.MULTIPART },
   });
 }
-
 
 /**
  * @name API_DOWNLOAD_FILE_URL 下载文件URL

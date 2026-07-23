@@ -22,3 +22,10 @@ const (
 	ResourceSortCreator ResourceSort = "SORT_CREATOR_ID"  // 创建人排序
 	ResourceSortTime    ResourceSort = "SORT_CREATE_TIME" // 时间排序
 )
+
+type ResourceRecycleStatus = int8
+
+const (
+	ResourceNormal   ResourceRecycleStatus = iota // 资源正常
+	ResourceRecycled                              // 资源在回收站
+)

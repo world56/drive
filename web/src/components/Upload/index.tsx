@@ -1,7 +1,7 @@
 import Item from "./Item";
 import { filesFormat } from "./utils";
+import { upload } from "@/api/storage";
 import Container from "./Container/index";
-import { uploadChunk } from "@/api/storage";
 import { FixedSizeList } from "react-window";
 import { useMemo, useRef, useState } from "react";
 import { useStore, useToFolder, useEventListener } from "@/hooks";
@@ -68,7 +68,7 @@ const Upload = () => {
       while (i < length) {
         if (!file?.run) return;
         file.control = new AbortController();
-        const res = await uploadChunk(file.chunks![i], file.control);
+        const res = await upload(file.chunks![i], file.control);
         file.index = ++i;
         setStatus((s) => {
           const target = s[id];
