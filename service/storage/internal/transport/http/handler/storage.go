@@ -56,7 +56,20 @@ func (s *StorageHandler) Write(c *gin.Context) {
 }
 
 func (s *StorageHandler) Read(c *gin.Context) {
+	ObjectName := c.Param("ObjectName")
 
+	object, io, err := s.storageService.Read(c.Request.Context(), ObjectName)
+	if err != nil {
+		response.ServerError(c, err)
+		return
+	}
+
+	defer io.Close()
+
+	c.DataFromReader(200, object.Size, object.ContentType, io, map[string]string{
+		"Content-Disposition": "inline; filename=\"" + ObjectName + "\"",
+		"Cache-Control":       "public, max-age=31536000",
+	})
 }
 
 func (s *StorageHandler) Download(c *gin.Context) {

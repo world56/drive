@@ -11,8 +11,9 @@ import { CONSTANT_RESOURCE } from "@/constant/resource";
 
 import type { TypeResource } from "@/interface/resource";
 import type { GridChildComponentProps } from "react-window";
+import { API_PROXY_STORAGE_URL } from "@/config/request";
 
-interface TypeItemProps extends GridChildComponentProps<TypeResource.DTO[][]> {}
+interface TypeItemProps extends GridChildComponentProps<TypeResource.DTO[][]> { }
 
 /**
  * @name File 资源、文件图标
@@ -25,12 +26,13 @@ const File: React.FC<TypeItemProps> = ({
 }) => {
   if (!data?.[rowIndex]?.[columnIndex]) return null;
   const { selects } = useStore("resource");
-  const { id, name, type, size, fullName, suffix, favorite, path } =
+  const { id, name, type, size, count, fullName, suffix, favorite, objectName } =
     data[rowIndex][columnIndex];
   const IS_IMAGE = type === ENUM_RESOURCE.TYPE.IMAGE;
   const IS_FOLDER = type === ENUM_RESOURCE.TYPE.FOLDER;
   const IS_FAVORITE = favorite === ENUM_RESOURCE.FAVORITE.ENABLE;
   const checked = selects[id];
+
   return (
     <div style={style}>
       <div
@@ -43,14 +45,14 @@ const File: React.FC<TypeItemProps> = ({
         <span>
           <ResourceIcon
             type={type}
-            path={path}
             suffix={suffix}
+            path={`${API_PROXY_STORAGE_URL}${objectName}`}
             width={IS_FOLDER ? 60 : IS_IMAGE ? "100%" : 52}
           />
         </span>
         <p>{name}</p>
         <p>
-          <span>{IS_FOLDER ? `${size} 个` : filesize(size!).toString()}</span>
+          <span>{IS_FOLDER ? `${count} 个` : filesize(size!).toString()}</span>
           {checked ? (
             <CheckCircleTwoTone twoToneColor="#1890ff" />
           ) : (

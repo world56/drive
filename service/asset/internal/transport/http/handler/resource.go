@@ -83,6 +83,7 @@ func (s *ResourceHandler) MkdirFolder(c *gin.Context) {
 		response.ClientError(c, err)
 		return
 	}
+
 	user := request.GetCurrentUser(c)
 	bol, err := s.resourceService.MkdirFolder(c.Request.Context(), user.ID, data)
 	if err != nil {
@@ -108,7 +109,19 @@ func (s *ResourceHandler) UpdateResourceInfo(c *gin.Context) {
 }
 
 // 编辑-移动资源位置
-func (s *ResourceHandler) UpdateResourcesLocation(c *gin.Context) {}
+func (s *ResourceHandler) UpdateResourcesLocation(c *gin.Context) {
+	var body dto.RequestResourceUpdateLocation
+	if err := c.ShouldBindJSON(&body); err != nil {
+		response.ClientError(c, err)
+		return
+	}
+
+	if bol, err := s.resourceService.UpdateResourcesLocation(c.Request.Context(), body); err != nil {
+		response.ServerError(c, err)
+	} else {
+		response.Success(c, bol)
+	}
+}
 
 // 删除-移动至回收站
 func (s *ResourceHandler) DeleteResources(c *gin.Context) {

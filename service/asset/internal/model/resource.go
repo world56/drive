@@ -14,17 +14,14 @@ type Resource struct {
 	Size       int64     `gorm:"type:bigint;default:0;" json:"size"`
 	Type       int8      `gorm:"type:int2;not null" json:"type"`
 	Suffix     *string   `gorm:"type:varchar(10);default:null;" json:"suffix"`
-	ParentID   *int64    `gorm:"type:bigint;column:parent_id" json:"parentId"`
+	ParentID   *int64    `gorm:"type:bigint;column:parent_id;index:idx_parent_remove;priority:1;" json:"parentId"`
 	PathIds    string    `gorm:"type:varchar(2048);index:idx_path_ids,type:btree;" json:"pathIds"`
-	Remark     *string   `gorm:"type:varchar(256);default:null" json:"remark"`
+	Remark     *string   `gorm:"type:varchar(256);default:null;" json:"remark"`
 	Count      int64     `gorm:"type:bigint;default:0" json:"count"`
-	ObjectName string    `gorm:"type:varchar(100);uniqueIndex;" json:"object_name"`
+	ObjectName string    `gorm:"type:varchar(100);" json:"object_name"`
 	CreatorID  string    `gorm:"type:char(36);not null;column:creator_id;" json:"CreatorID"`
-	Remove     int8      `gorm:"type:int2;default:0" json:"remove"`
+	Remove     int8      `gorm:"type:int2;default:0;index:idx_parent_remove;priority:2;" json:"remove"`
 	CreateTime time.Time `gorm:"column:create_time;autoCreateTime;" json:"createTime"`
-
-	Parent   *Resource  `gorm:"foreignKey:ParentID;references:ID" json:"parent,omitempty"`
-	Children []Resource `gorm:"foreignKey:ParentID;references:ID" json:"children,omitempty"`
 }
 
 func (f *Resource) BeforeCreate(tx *gorm.DB) error {

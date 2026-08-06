@@ -3,7 +3,8 @@ package service
 import (
 	"common/idgen"
 	"context"
-	"fmt"
+	"io"
+	"mime"
 	"mime/multipart"
 	"path/filepath"
 	"storage/internal/config"
@@ -42,6 +43,14 @@ func (s *StorageService) getObjectName(name string) string {
 	return strconv.FormatInt(idgen.SnowflakeIDNext(), 10) + filepath.Ext(name)
 }
 
+func (s *StorageService) detectContentType(filename string) string {
+	contentType := mime.TypeByExtension(filepath.Ext(filename))
+	if contentType == "" {
+		contentType = "application/octet-stream"
+	}
+	return contentType
+}
+
 func (s *StorageService) clearFirstChunk(c context.Context, isFirst bool, info dto.File) {
 	if isFirst {
 		s.minio.AbortMultipartUpload(c, s.config.MINIO_BUCKET, info.ObjectName, info.UploadID)
@@ -54,8 +63,9 @@ func (s *StorageService) Write(c context.Context, userID string, stream multipar
 	// 单个文件直接上传
 	if info.Total == 1 {
 		info.ObjectName = s.getObjectName(info.Name)
-		fmt.Println(info.ObjectName)
-		_, err := s.minio.Client.PutObject(c, BUCKET, info.ObjectName, stream, size, minio.PutObjectOptions{})
+		_, err := s.minio.Client.PutObject(c, BUCKET, info.ObjectName, stream, size, minio.PutObjectOptions{
+			ContentType: s.detectContentType(info.Name),
+		})
 		if err != nil {
 			return false, err
 		} else {
@@ -69,7 +79,9 @@ func (s *StorageService) Write(c context.Context, userID string, stream multipar
 		// 初始化、拿到 minio ID
 		if IS_FIRST_CHUNK {
 			info.ObjectName = s.getObjectName(info.Name)
-			ID, err := s.minio.NewMultipartUpload(c, BUCKET, info.ObjectName, minioSDK.PutObjectOptions{})
+			ID, err := s.minio.NewMultipartUpload(c, BUCKET, info.ObjectName, minioSDK.PutObjectOptions{
+				ContentType: s.detectContentType(info.Name),
+			})
 			if err != nil {
 				return false, err
 			}
@@ -124,15 +136,13 @@ func (s *StorageService) Write(c context.Context, userID string, stream multipar
 	}
 }
 
-func (s *StorageService) Delete(c context.Context) {
-	// ch := make(chan minio.ObjectInfo)
+func (s *StorageService) Read(c context.Context, objectName string) (minioSDK.ObjectInfo, io.ReadCloser, error) {
+	read, object, _, err := s.minio.GetObject(c, s.config.MINIO_BUCKET, objectName, minio.GetObjectOptions{})
+	if err != nil {
+		return minioSDK.ObjectInfo{}, nil, err
+	}
 
-	// go func() {
-	// 	defer close(ch)
-	// 	for _, id := range body.IDs {
-	// 		ch <- minio.ObjectInfo{
-	// 			Key:
-	// 		}
-	// 	}
-	// }()
+	return object, read, nil
 }
+
+func (s *StorageService) Delete(c context.Context) {}

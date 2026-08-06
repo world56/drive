@@ -60,13 +60,23 @@ func (s *ResourceService) GetResources(c context.Context, query dto.RequestFiles
 	db := s.db.WithContext(c).Order("create_time " + query.Order)
 
 	if query.ID == nil {
-		db = db.Where("parent_id IS NULL")
+		db = db.Where("r.parent_id IS NULL")
 	} else {
-		db = db.Where("parent_id = ?", *query.ID)
+		db = db.Where("r.parent_id = ?", *query.ID)
 	}
 
-	var files []dto.Resource
-	if err := db.Where("remove = ?", enum.ResourceNormal).Find(&files).Error; err != nil {
+	var files = make([]dto.Resource, 0)
+	if err := db.Table("resources AS r").
+		Select(`r.*,
+			CASE 
+				WHEN r.type = 0 THEN COUNT(f.id)
+				ELSE NULL
+			END AS count
+		`).
+		Where("r.remove = ?", enum.ResourceNormal).
+		Joins("LEFT JOIN resources AS f ON f.parent_id = r.id AND f.remove = ?", enum.ResourceNormal).
+		Group("r.id").
+		Scan(&files).Error; err != nil {
 		return nil, err
 	}
 
@@ -77,6 +87,7 @@ func (s *ResourceService) GetResourceFolders(c context.Context) ([]dto.Resource,
 	var folders []dto.Resource
 	if err := s.db.WithContext(c).
 		Model(&model.Resource{}).
+		Where("remove = ?", enum.ResourceNormal).
 		Where("type = ?", enum.ResourceTypeFolder).
 		Find(&folders).Error; err != nil {
 		return nil, err
@@ -87,12 +98,19 @@ func (s *ResourceService) GetResourceFolders(c context.Context) ([]dto.Resource,
 
 func (s *ResourceService) GetResourceDetail(c context.Context, query dto.RequestResourceDetail) (*dto.Resource, error) {
 	var resource *dto.Resource
-	if err := s.db.
-		WithContext(c).
-		Model(&model.Resource{}).
-		Where("id = ?", query.ID).
-		Where("remove = ?", enum.ResourceNormal).
-		First(&resource).Error; err != nil {
+	if err := s.db.WithContext(c).
+		Table("resources AS r").
+		Select(`
+        r.*,
+        CASE 
+            WHEN r.type = 0 THEN COUNT(f.id)
+            ELSE NULL
+        END AS count
+    `).
+		Joins("LEFT JOIN resources AS f ON f.parent_id = r.id AND f.remove = ?", enum.ResourceNormal).
+		Where("r.id = ? AND r.remove = ?", query.ID, enum.ResourceNormal).
+		Group("r.id").
+		Scan(&resource).Error; err != nil {
 		return nil, err
 	}
 
@@ -161,12 +179,12 @@ func (s *ResourceService) MkdirFolder(c context.Context, creatorID string, data 
 	db := s.db.WithContext(c)
 
 	var folder model.Resource
-	err := db.Where("name = ?", data.Name).Select("id").First(&folder).Error
+	err := db.Where("name = ?", data.Name).Where("parent_id IS NOT DISTINCT FROM ?", data.ParentID).First(&folder).Error
 
 	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 		return false, err
 	} else if err == nil {
-		return false, nil
+		return false, errors.New("folder already exists")
 	} else {
 		if err := db.Create(&model.Resource{
 			Name:      data.Name,
@@ -181,6 +199,17 @@ func (s *ResourceService) MkdirFolder(c context.Context, creatorID string, data 
 			return true, nil
 		}
 	}
+}
+
+func (s *ResourceService) UpdateResourcesLocation(c context.Context, body dto.RequestResourceUpdateLocation) (bool, error) {
+	if err := s.db.WithContext(c).
+		Model(&model.Resource{}).
+		Where("id IN ?", body.IDs).
+		Update("parent_id", body.ParentID).Error; err != nil {
+		return false, err
+	}
+
+	return true, nil
 }
 
 func (s *ResourceService) getFilePath(c context.Context, fileID string) []dto.Path {

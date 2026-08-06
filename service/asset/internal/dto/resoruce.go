@@ -1,6 +1,9 @@
 package dto
 
-import "asset/internal/enum"
+import (
+	"asset/internal/enum"
+	jsontypes "common/utils/jsontypes"
+)
 
 type Resource struct {
 	ID         string  `json:"id"`
@@ -11,9 +14,10 @@ type Resource struct {
 	Suffix     string  `json:"suffix"`
 	ParentID   *int64  `json:"parentId,string"`
 	Remark     *string `json:"remark"`
-	Count      int16   `json:"count"`
+	Count      *int64  `json:"count"`
 	CreatorID  string  `json:"creatorId"`
 	CreateTime string  `json:"createTime"`
+	ObjectName string  `json:"objectName"`
 }
 
 type Path struct {
@@ -43,7 +47,7 @@ type RequestSearchResourcesByName struct {
 type RequestMkdirFolder struct {
 	Name     string  `json:"name" binding:"required"`
 	Remark   *string `json:"remark,omitempty"`
-	ParentID *int64  `json:"parentId,omitempty"`
+	ParentID *int64  `json:"parentId,omitempty,string"`
 }
 
 type RequestResourceDetail struct {
@@ -55,6 +59,11 @@ type RequestResourceUpdateInfo struct {
 	Name     string  `json:"name" binding:"required"`
 	ParentID *int64  `json:"parentId,string"`
 	Remark   *string `json:"remark"`
+}
+
+type RequestResourceUpdateLocation struct {
+	IDs      jsontypes.StringInt64Slice `json:"ids" binding:"required"`
+	ParentID *int64                     `json:"parentId,string"`
 }
 
 type RequestDeleteFiles struct {

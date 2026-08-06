@@ -11,5 +11,6 @@ func RegisterStorageRoutes(api *gin.RouterGroup, h *handler.StorageHandler) {
 
 	{
 		group.POST("upload", h.Write)
+		group.GET("/:ObjectName", h.Read)
 	}
 }

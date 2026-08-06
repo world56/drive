@@ -6,7 +6,7 @@ import styles from "./index.module.sass";
 import { downloadFile } from "@/utils/resource";
 import { TypeResource } from "@/interface/resource";
 
-import { API_PROXY_EXPLORER_URL } from "@/config/request";
+import { API_PROXY_STORAGE_URL } from "@/config/request";
 
 /**
  * @name Image 图片预览
@@ -26,9 +26,8 @@ const Image: React.FC<{ data: TypeResource.DTO }> = ({ data }) => {
     const height = offsetHeight * increase;
     const left = (width - offsetWidth) / 2;
     const top = (height - offsetHeight) / 2;
-    ref.current.style.cssText = `width:${width}px;height:${height}px;top:${
-      offsetTop - top
-    }px;left:${offsetLeft - left}px;transform:${style.transform}`;
+    ref.current.style.cssText = `width:${width}px;height:${height}px;top:${offsetTop - top
+      }px;left:${offsetLeft - left}px;transform:${style.transform}`;
   }
 
   function onReset() {
@@ -103,7 +102,7 @@ const Image: React.FC<{ data: TypeResource.DTO }> = ({ data }) => {
           ref={ref}
           onLoad={onLoad}
           onMouseDown={onMouseDown}
-          src={`${API_PROXY_EXPLORER_URL}resource/${data.path}`}
+          src={`${API_PROXY_STORAGE_URL}${data.objectName}`}
         />
         <Tools
           onSkip={onSkip}
