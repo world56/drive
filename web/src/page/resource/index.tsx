@@ -44,6 +44,7 @@ const Resource = () => {
     const [id] = ids;
     switch (type) {
       case ENUM_RESOURCE.MENU.REFRESH:
+        actions.getFolders();
         return run();
       case ENUM_RESOURCE.MENU.UPLOAD_FILE:
         return createUpload();

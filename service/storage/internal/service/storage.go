@@ -136,6 +136,16 @@ func (s *StorageService) Write(c context.Context, userID string, stream multipar
 	}
 }
 
+func (s *StorageService) Download(c context.Context, ID string, userID string) (minioSDK.ObjectInfo, io.ReadCloser, string, error) {
+	objectName, fullName, err := s.grpcClient.Resource.GetResourceInfo(ID, userID)
+	if err != nil {
+		return minioSDK.ObjectInfo{}, nil, "", err
+	}
+
+	object, read, err := s.Read(c, objectName)
+	return object, read, fullName, err
+}
+
 func (s *StorageService) Read(c context.Context, objectName string) (minioSDK.ObjectInfo, io.ReadCloser, error) {
 	read, object, _, err := s.minio.GetObject(c, s.config.MINIO_BUCKET, objectName, minio.GetObjectOptions{})
 	if err != nil {

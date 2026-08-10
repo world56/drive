@@ -73,5 +73,18 @@ func (s *StorageHandler) Read(c *gin.Context) {
 }
 
 func (s *StorageHandler) Download(c *gin.Context) {
+	ID := c.Param("ID")
+	UserID := request.GetCurrentUser(c).ID
 
+	object, io, fullName, err := s.storageService.Download(c.Request.Context(), ID, UserID)
+	if err != nil {
+		response.ServerError(c, err)
+		return
+	}
+
+	defer io.Close()
+
+	c.DataFromReader(200, object.Size, object.ContentType, io, map[string]string{
+		"Content-Disposition": "attachment; filename=\"" + fullName + "\"",
+	})
 }

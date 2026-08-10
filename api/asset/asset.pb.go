@@ -73,6 +73,7 @@ type Resource struct {
 	ParentID      *int64                 `protobuf:"varint,3,opt,name=ParentID,proto3,oneof" json:"ParentID,omitempty"`
 	ObjectName    string                 `protobuf:"bytes,4,opt,name=ObjectName,proto3" json:"ObjectName,omitempty"`
 	Size          int64                  `protobuf:"varint,5,opt,name=Size,proto3" json:"Size,omitempty"`
+	FullName      *string                `protobuf:"bytes,6,opt,name=FullName,proto3,oneof" json:"FullName,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -142,6 +143,57 @@ func (x *Resource) GetSize() int64 {
 	return 0
 }
 
+func (x *Resource) GetFullName() string {
+	if x != nil && x.FullName != nil {
+		return *x.FullName
+	}
+	return ""
+}
+
+type ResourcePrimaryID struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	ID            string                 `protobuf:"bytes,1,opt,name=ID,proto3" json:"ID,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ResourcePrimaryID) Reset() {
+	*x = ResourcePrimaryID{}
+	mi := &file_asset_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ResourcePrimaryID) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ResourcePrimaryID) ProtoMessage() {}
+
+func (x *ResourcePrimaryID) ProtoReflect() protoreflect.Message {
+	mi := &file_asset_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ResourcePrimaryID.ProtoReflect.Descriptor instead.
+func (*ResourcePrimaryID) Descriptor() ([]byte, []int) {
+	return file_asset_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *ResourcePrimaryID) GetID() string {
+	if x != nil {
+		return x.ID
+	}
+	return ""
+}
+
 type Resources struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Data          []*Resource            `protobuf:"bytes,1,rep,name=data,proto3" json:"data,omitempty"`
@@ -151,7 +203,7 @@ type Resources struct {
 
 func (x *Resources) Reset() {
 	*x = Resources{}
-	mi := &file_asset_proto_msgTypes[2]
+	mi := &file_asset_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -163,7 +215,7 @@ func (x *Resources) String() string {
 func (*Resources) ProtoMessage() {}
 
 func (x *Resources) ProtoReflect() protoreflect.Message {
-	mi := &file_asset_proto_msgTypes[2]
+	mi := &file_asset_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -176,7 +228,7 @@ func (x *Resources) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Resources.ProtoReflect.Descriptor instead.
 func (*Resources) Descriptor() ([]byte, []int) {
-	return file_asset_proto_rawDescGZIP(), []int{2}
+	return file_asset_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *Resources) GetData() []*Resource {
@@ -196,7 +248,7 @@ const file_asset_proto_rawDesc = "" +
 	"\n" +
 	"CountEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\x05R\x05value:\x028\x01\"\x90\x01\n" +
+	"\x05value\x18\x02 \x01(\x05R\x05value:\x028\x01\"\xbe\x01\n" +
 	"\bResource\x12\x0e\n" +
 	"\x02ID\x18\x01 \x01(\tR\x02ID\x12\x12\n" +
 	"\x04Name\x18\x02 \x01(\tR\x04Name\x12\x1f\n" +
@@ -204,16 +256,21 @@ const file_asset_proto_rawDesc = "" +
 	"\n" +
 	"ObjectName\x18\x04 \x01(\tR\n" +
 	"ObjectName\x12\x12\n" +
-	"\x04Size\x18\x05 \x01(\x03R\x04SizeB\v\n" +
-	"\t_ParentID\"0\n" +
+	"\x04Size\x18\x05 \x01(\x03R\x04Size\x12\x1f\n" +
+	"\bFullName\x18\x06 \x01(\tH\x01R\bFullName\x88\x01\x01B\v\n" +
+	"\t_ParentIDB\v\n" +
+	"\t_FullName\"#\n" +
+	"\x11ResourcePrimaryID\x12\x0e\n" +
+	"\x02ID\x18\x01 \x01(\tR\x02ID\"0\n" +
 	"\tResources\x12#\n" +
 	"\x04data\x18\x01 \x03(\v2\x0f.asset.ResourceR\x04data2\xb8\x01\n" +
 	"\fAssetService\x122\n" +
 	"\bGetCount\x12\x16.google.protobuf.Empty\x1a\f.asset.Count\"\x00\x129\n" +
 	"\vGetRecently\x12\x16.google.protobuf.Empty\x1a\x10.asset.Resources\"\x00\x129\n" +
-	"\vGetFavorite\x12\x16.google.protobuf.Empty\x1a\x10.asset.Resources\"\x002I\n" +
+	"\vGetFavorite\x12\x16.google.protobuf.Empty\x1a\x10.asset.Resources\"\x002\x89\x01\n" +
 	"\x0fResourceService\x126\n" +
-	"\tWriteDone\x12\x0f.asset.Resource\x1a\x16.google.protobuf.Empty\"\x00B\x13Z\x11api/asset;assetpbb\x06proto3"
+	"\tWriteDone\x12\x0f.asset.Resource\x1a\x16.google.protobuf.Empty\"\x00\x12>\n" +
+	"\x0fGetResourceInfo\x12\x18.asset.ResourcePrimaryID\x1a\x0f.asset.Resource\"\x00B\x13Z\x11api/asset;assetpbb\x06proto3"
 
 var (
 	file_asset_proto_rawDescOnce sync.Once
@@ -227,27 +284,30 @@ func file_asset_proto_rawDescGZIP() []byte {
 	return file_asset_proto_rawDescData
 }
 
-var file_asset_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_asset_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_asset_proto_goTypes = []any{
-	(*Count)(nil),         // 0: asset.Count
-	(*Resource)(nil),      // 1: asset.Resource
-	(*Resources)(nil),     // 2: asset.Resources
-	nil,                   // 3: asset.Count.CountEntry
-	(*emptypb.Empty)(nil), // 4: google.protobuf.Empty
+	(*Count)(nil),             // 0: asset.Count
+	(*Resource)(nil),          // 1: asset.Resource
+	(*ResourcePrimaryID)(nil), // 2: asset.ResourcePrimaryID
+	(*Resources)(nil),         // 3: asset.Resources
+	nil,                       // 4: asset.Count.CountEntry
+	(*emptypb.Empty)(nil),     // 5: google.protobuf.Empty
 }
 var file_asset_proto_depIdxs = []int32{
-	3, // 0: asset.Count.count:type_name -> asset.Count.CountEntry
+	4, // 0: asset.Count.count:type_name -> asset.Count.CountEntry
 	1, // 1: asset.Resources.data:type_name -> asset.Resource
-	4, // 2: asset.AssetService.GetCount:input_type -> google.protobuf.Empty
-	4, // 3: asset.AssetService.GetRecently:input_type -> google.protobuf.Empty
-	4, // 4: asset.AssetService.GetFavorite:input_type -> google.protobuf.Empty
+	5, // 2: asset.AssetService.GetCount:input_type -> google.protobuf.Empty
+	5, // 3: asset.AssetService.GetRecently:input_type -> google.protobuf.Empty
+	5, // 4: asset.AssetService.GetFavorite:input_type -> google.protobuf.Empty
 	1, // 5: asset.ResourceService.WriteDone:input_type -> asset.Resource
-	0, // 6: asset.AssetService.GetCount:output_type -> asset.Count
-	2, // 7: asset.AssetService.GetRecently:output_type -> asset.Resources
-	2, // 8: asset.AssetService.GetFavorite:output_type -> asset.Resources
-	4, // 9: asset.ResourceService.WriteDone:output_type -> google.protobuf.Empty
-	6, // [6:10] is the sub-list for method output_type
-	2, // [2:6] is the sub-list for method input_type
+	2, // 6: asset.ResourceService.GetResourceInfo:input_type -> asset.ResourcePrimaryID
+	0, // 7: asset.AssetService.GetCount:output_type -> asset.Count
+	3, // 8: asset.AssetService.GetRecently:output_type -> asset.Resources
+	3, // 9: asset.AssetService.GetFavorite:output_type -> asset.Resources
+	5, // 10: asset.ResourceService.WriteDone:output_type -> google.protobuf.Empty
+	1, // 11: asset.ResourceService.GetResourceInfo:output_type -> asset.Resource
+	7, // [7:12] is the sub-list for method output_type
+	2, // [2:7] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name
 	2, // [2:2] is the sub-list for extension extendee
 	0, // [0:2] is the sub-list for field type_name
@@ -265,7 +325,7 @@ func file_asset_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_asset_proto_rawDesc), len(file_asset_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   4,
+			NumMessages:   5,
 			NumExtensions: 0,
 			NumServices:   2,
 		},

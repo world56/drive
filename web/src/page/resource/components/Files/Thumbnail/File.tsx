@@ -8,10 +8,10 @@ import { HeartFilled, CheckCircleTwoTone } from "@ant-design/icons";
 
 import { ENUM_RESOURCE } from "@/enum/resource";
 import { CONSTANT_RESOURCE } from "@/constant/resource";
+import { API_PROXY_STORAGE_URL } from "@/config/request";
 
 import type { TypeResource } from "@/interface/resource";
 import type { GridChildComponentProps } from "react-window";
-import { API_PROXY_STORAGE_URL } from "@/config/request";
 
 interface TypeItemProps extends GridChildComponentProps<TypeResource.DTO[][]> { }
 

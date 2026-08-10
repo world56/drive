@@ -1,7 +1,7 @@
 import request from "@/utils/request";
 
 import { ENUM_HTTP } from "@/enum/http";
-import { API_PROXY_EXPLORER_URL } from "@/config/request";
+import { API_PROXY_STORAGE_URL } from "@/config/request";
 
 import { TypeResource } from "@/interface/resource";
 
@@ -21,4 +21,4 @@ export function upload(data: FormData, control: AbortController) {
 /**
  * @name API_DOWNLOAD_FILE_URL 下载文件URL
  */
-export const API_DOWNLOAD_FILE_URL = `${API_PROXY_EXPLORER_URL}resource/download`;
+export const API_DOWNLOAD_FILE_URL = `${API_PROXY_STORAGE_URL}download`;

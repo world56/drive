@@ -198,7 +198,8 @@ var AssetService_ServiceDesc = grpc.ServiceDesc{
 }
 
 const (
-	ResourceService_WriteDone_FullMethodName = "/asset.ResourceService/WriteDone"
+	ResourceService_WriteDone_FullMethodName       = "/asset.ResourceService/WriteDone"
+	ResourceService_GetResourceInfo_FullMethodName = "/asset.ResourceService/GetResourceInfo"
 )
 
 // ResourceServiceClient is the client API for ResourceService service.
@@ -206,6 +207,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ResourceServiceClient interface {
 	WriteDone(ctx context.Context, in *Resource, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	GetResourceInfo(ctx context.Context, in *ResourcePrimaryID, opts ...grpc.CallOption) (*Resource, error)
 }
 
 type resourceServiceClient struct {
@@ -226,11 +228,22 @@ func (c *resourceServiceClient) WriteDone(ctx context.Context, in *Resource, opt
 	return out, nil
 }
 
+func (c *resourceServiceClient) GetResourceInfo(ctx context.Context, in *ResourcePrimaryID, opts ...grpc.CallOption) (*Resource, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Resource)
+	err := c.cc.Invoke(ctx, ResourceService_GetResourceInfo_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ResourceServiceServer is the server API for ResourceService service.
 // All implementations must embed UnimplementedResourceServiceServer
 // for forward compatibility.
 type ResourceServiceServer interface {
 	WriteDone(context.Context, *Resource) (*emptypb.Empty, error)
+	GetResourceInfo(context.Context, *ResourcePrimaryID) (*Resource, error)
 	mustEmbedUnimplementedResourceServiceServer()
 }
 
@@ -243,6 +256,9 @@ type UnimplementedResourceServiceServer struct{}
 
 func (UnimplementedResourceServiceServer) WriteDone(context.Context, *Resource) (*emptypb.Empty, error) {
 	return nil, status.Error(codes.Unimplemented, "method WriteDone not implemented")
+}
+func (UnimplementedResourceServiceServer) GetResourceInfo(context.Context, *ResourcePrimaryID) (*Resource, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetResourceInfo not implemented")
 }
 func (UnimplementedResourceServiceServer) mustEmbedUnimplementedResourceServiceServer() {}
 func (UnimplementedResourceServiceServer) testEmbeddedByValue()                         {}
@@ -283,6 +299,24 @@ func _ResourceService_WriteDone_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ResourceService_GetResourceInfo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ResourcePrimaryID)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ResourceServiceServer).GetResourceInfo(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ResourceService_GetResourceInfo_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ResourceServiceServer).GetResourceInfo(ctx, req.(*ResourcePrimaryID))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ResourceService_ServiceDesc is the grpc.ServiceDesc for ResourceService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -293,6 +327,10 @@ var ResourceService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "WriteDone",
 			Handler:    _ResourceService_WriteDone_Handler,
+		},
+		{
+			MethodName: "GetResourceInfo",
+			Handler:    _ResourceService_GetResourceInfo_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

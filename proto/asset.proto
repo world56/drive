@@ -14,6 +14,7 @@ service AssetService {
 
 service ResourceService {
   rpc WriteDone (asset.Resource) returns (google.protobuf.Empty) {};
+  rpc GetResourceInfo (ResourcePrimaryID) returns (asset.Resource) {};
 }
 
 message Count {
@@ -21,11 +22,16 @@ message Count {
 }
 
 message Resource {
-  string         ID         = 1;
-  string         Name       = 2;
-  optional int64 ParentID   = 3;
-  string         ObjectName = 4;
-  int64          Size       = 5;
+  string          ID         = 1;
+  string          Name       = 2;
+  optional int64  ParentID   = 3;
+  string          ObjectName = 4;
+  int64           Size       = 5;
+  optional string FullName   = 6;
+}
+
+message ResourcePrimaryID {
+  string ID = 1;
 }
 
 message Resources {

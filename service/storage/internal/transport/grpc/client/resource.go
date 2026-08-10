@@ -48,3 +48,16 @@ func (s *ResourceGrpcClient) WriteDone(info dto.File, userID string) {
 		Size:       info.Size,
 	})
 }
+
+func (s *ResourceGrpcClient) GetResourceInfo(ID string, userID string) (string, string, error) {
+	c, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+	defer cancel()
+
+	c = metadata.AppendToOutgoingContext(c, "user-id", userID)
+	resource, err := s.client.GetResourceInfo(c, &assetpb.ResourcePrimaryID{ID: ID})
+	if err != nil {
+		return "", "", err
+	}
+
+	return resource.GetObjectName(), resource.GetFullName(), nil
+}
