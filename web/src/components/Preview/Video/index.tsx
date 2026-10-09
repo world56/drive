@@ -11,7 +11,7 @@ import {
 import Container from "../Container";
 import styles from "./index.module.sass";
 
-import { API_PROXY_EXPLORER_URL } from "@/config/request";
+import { API_PROXY_STORAGE_URL } from "@/config/request";
 
 import { TypeResource } from "@/interface/resource";
 
@@ -24,7 +24,7 @@ const Video: React.FC<{ data: TypeResource.DTO }> = ({ data }) => (
       <video
         slot="media"
         preload="auto"
-        src={`${API_PROXY_EXPLORER_URL}resource/${data.path}`}
+        src={`${API_PROXY_STORAGE_URL}${data.objectName}`}
       />
       <MediaControlBar>
         <MediaPlayButton />

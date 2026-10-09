@@ -136,7 +136,7 @@ export function getFileSuffixIcon(type?: string) {
 
 interface TypeResourceIconProps
   extends Pick<TypeResource.DTO, "type" | "suffix" | "path">,
-    Partial<Record<"width" | "height", number | string>> {
+  Partial<Record<"width" | "height", number | string>> {
   style?: React.CSSProperties;
   className?: string;
 }
@@ -150,7 +150,7 @@ function getResourceIcon<
   if (type === ENUM_RESOURCE.TYPE.FOLDER) {
     return ICON_FOLDER;
   } else if (type === ENUM_RESOURCE.TYPE.IMAGE) {
-    return `${RESOURCE_PREVIEW_PREFIX}${path}`;
+    return path;
   } else {
     return getFileSuffixIcon(suffix);
   }

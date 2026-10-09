@@ -4,7 +4,7 @@ import { ActionsConfig } from "@/store/config";
 
 import { ENUM_COMMON } from "@/enum/common";
 import { PREVIEW_Z_INDEX } from "@/config/resource";
-import { API_DOWNLOAD_FILE_URL } from "@/api/resource";
+import { API_DOWNLOAD_FILE_URL } from "@/api/storage";
 
 /**
  * @name createUpload 创建上传任务
@@ -54,7 +54,7 @@ export function downloadFile(id?: string) {
   try {
     const ele = document.createElement("iframe");
     ele.setAttribute("class", "none");
-    ele.src = `${API_DOWNLOAD_FILE_URL}?id=${id}&timestamp=${new Date().valueOf()}`;
+    ele.src = `${API_DOWNLOAD_FILE_URL}/${id}?timestamp=${new Date().valueOf()}`;
     document.body.appendChild(ele);
     setTimeout(() => document.body.removeChild(ele), 2000);
   } catch (e) {

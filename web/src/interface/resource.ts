@@ -13,7 +13,7 @@ export namespace TypeResource {
    */
   export interface DTO
     extends Pick<TypeCommon.DTO, "id" | "name">,
-      Partial<Pick<TypeCommon.DTO, "parentId">> {
+    Partial<Pick<TypeCommon.DTO, "parentId">> {
     /** @param size 资源大小 */
     size: number;
     /** @param path 预览路径  */
@@ -38,6 +38,8 @@ export namespace TypeResource {
     count: number;
     /** @param favorite 收藏 */
     favorite: ENUM_RESOURCE.FAVORITE;
+    /** @param objectName 存储文件名称 */
+    objectName: string;
   }
 
   /**
@@ -47,7 +49,7 @@ export namespace TypeResource {
    */
   export interface ReqResources
     extends Partial<Pick<DTO, "id">>,
-      Record<"order" | "type", string> {}
+    Record<"order" | "type", string> { }
 
   /**
    * @name ReqMoveResources 移动资源
@@ -64,7 +66,7 @@ export namespace TypeResource {
    * @name ReqDeleteResources 删除资源
    * @description 删除相对谨慎，如果是文件夹并存在子级，则不能删除
    */
-  export interface ReqDeleteResources extends Pick<ReqMoveResources, "ids"> {}
+  export interface ReqDeleteResources extends Pick<ReqMoveResources, "ids"> { }
 
   /**
    * @name ReqGlobalExplorer 模糊查询所有资源

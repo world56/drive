@@ -1,7 +1,4 @@
-import cookie from "js-cookie";
 import { createSlice } from "@reduxjs/toolkit";
-
-import { TOKEN_KEY } from "@/config/request";
 
 import type { TypeUser } from "@/interface/user";
 import type { PayloadAction } from "@reduxjs/toolkit";
@@ -17,7 +14,6 @@ const userSlice = createSlice({
     },
     delUserInfo() {
       document.title = "Welcome";
-      cookie.remove(TOKEN_KEY);
       return {};
     },
   },

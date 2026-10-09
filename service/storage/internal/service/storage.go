@@ -1,0 +1,158 @@
+package service
+
+import (
+	"common/idgen"
+	"context"
+	"io"
+	"mime"
+	"mime/multipart"
+	"path/filepath"
+	"storage/internal/config"
+	"storage/internal/dto"
+	grpcclient "storage/internal/transport/grpc/client"
+	"strconv"
+
+	"github.com/redis/go-redis/v9"
+
+	"github.com/minio/minio-go/v7"
+	minioSDK "github.com/minio/minio-go/v7"
+)
+
+type StorageService struct {
+	config     config.Config
+	redis      *redis.Client
+	minio      *minioSDK.Core
+	grpcClient *grpcclient.GrpcClients
+}
+
+func newStorageService(
+	config config.Config,
+	redis *redis.Client,
+	minio *minioSDK.Core,
+	grpcClient *grpcclient.GrpcClients,
+) *StorageService {
+	return &StorageService{
+		redis:      redis,
+		minio:      minio,
+		config:     config,
+		grpcClient: grpcClient,
+	}
+}
+
+func (s *StorageService) getObjectName(name string) string {
+	return strconv.FormatInt(idgen.SnowflakeIDNext(), 10) + filepath.Ext(name)
+}
+
+func (s *StorageService) detectContentType(filename string) string {
+	contentType := mime.TypeByExtension(filepath.Ext(filename))
+	if contentType == "" {
+		contentType = "application/octet-stream"
+	}
+	return contentType
+}
+
+func (s *StorageService) clearFirstChunk(c context.Context, isFirst bool, info dto.File) {
+	if isFirst {
+		s.minio.AbortMultipartUpload(c, s.config.MINIO_BUCKET, info.ObjectName, info.UploadID)
+		s.redis.Del(c, `drive:write:`+info.ID)
+	}
+}
+
+func (s *StorageService) Write(c context.Context, userID string, stream multipart.File, size int64, info dto.File) (bool, error) {
+	BUCKET := s.config.MINIO_BUCKET
+	// 单个文件直接上传
+	if info.Total == 1 {
+		info.ObjectName = s.getObjectName(info.Name)
+		_, err := s.minio.Client.PutObject(c, BUCKET, info.ObjectName, stream, size, minio.PutObjectOptions{
+			ContentType: s.detectContentType(info.Name),
+		})
+		if err != nil {
+			return false, err
+		} else {
+			s.grpcClient.Resource.WriteDone(info, userID)
+			return true, nil
+		}
+	} else {
+		IS_FIRST_CHUNK := info.Index == 1        // 第一个chunk
+		IS_COMPLETED := info.Index == info.Total // 最后一个chunk
+
+		// 初始化、拿到 minio ID
+		if IS_FIRST_CHUNK {
+			info.ObjectName = s.getObjectName(info.Name)
+			ID, err := s.minio.NewMultipartUpload(c, BUCKET, info.ObjectName, minioSDK.PutObjectOptions{
+				ContentType: s.detectContentType(info.Name),
+			})
+			if err != nil {
+				return false, err
+			}
+			info.UploadID = ID
+		} else {
+			var cache dto.File
+			err := s.redis.HGetAll(c, `drive:write:`+info.ID).Scan(&cache)
+			if err != nil {
+				return false, err
+			}
+			info.Name = cache.Name
+			info.UploadID = cache.UploadID
+			info.ObjectName = cache.ObjectName
+		}
+
+		// 分段写入
+		_, err := s.minio.PutObjectPart(c, BUCKET, info.ObjectName, info.UploadID, info.Index, stream, size, minioSDK.PutObjectPartOptions{})
+		if err != nil {
+			s.clearFirstChunk(c, IS_FIRST_CHUNK, info)
+			return false, err
+		}
+
+		_, rErr := s.redis.HSet(c, `drive:write:`+info.ID, info).Result()
+		if rErr != nil {
+			s.clearFirstChunk(c, IS_FIRST_CHUNK, info)
+			return false, rErr
+		}
+
+		// 全部完成
+		if IS_COMPLETED {
+			parts, err := s.minio.ListObjectParts(c, BUCKET, info.ObjectName, info.UploadID, 0, info.Total)
+			if err != nil {
+				return false, err
+			}
+
+			var mergeParts []minio.CompletePart
+			for _, v := range parts.ObjectParts {
+				mergeParts = append(mergeParts, minio.CompletePart{PartNumber: v.PartNumber, ETag: v.ETag})
+			}
+
+			_, err = s.minio.CompleteMultipartUpload(c, BUCKET, info.ObjectName, info.UploadID, mergeParts, minio.PutObjectOptions{})
+			if err != nil {
+				return false, err
+			}
+
+			s.redis.Del(c, `drive:write:`+info.ID)
+			s.grpcClient.Resource.WriteDone(info, userID)
+			return true, nil
+		}
+
+		return false, nil
+	}
+}
+
+func (s *StorageService) Download(c context.Context, ID string, userID string) (minioSDK.ObjectInfo, io.ReadCloser, string, error) {
+	objectName, fullName, err := s.grpcClient.Resource.GetResourceInfo(ID, userID)
+	if err != nil {
+		return minioSDK.ObjectInfo{}, nil, "", err
+	}
+
+	object, read, err := s.Read(c, objectName)
+	return object, read, fullName, err
+}
+
+func (s *StorageService) Read(c context.Context, objectName string) (minioSDK.ObjectInfo, io.ReadCloser, error) {
+	read, object, _, err := s.minio.GetObject(c, s.config.MINIO_BUCKET, objectName, minio.GetObjectOptions{})
+	if err != nil {
+		return minioSDK.ObjectInfo{}, nil, err
+	}
+
+	return object, read, nil
+}
+
+func (s *StorageService) Delete(c context.Context) {}

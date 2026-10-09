@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package storage;
+
+import "asset.proto";
+import "google/protobuf/empty.proto";
+
+option go_package = "api/storage;storagepb";
+
+service StorageService {}

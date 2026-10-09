@@ -60,7 +60,7 @@ const Attributes: React.FC<TypeAttributesProps> = ({ id, onClose }) => {
 
         {IS_FOLDER ? (
           <Item span={3} label="资源数量">
-            {value?.size || 0} 个
+            {value?.count || 0} 个
           </Item>
         ) : (
           <Item span={3} label="大小">

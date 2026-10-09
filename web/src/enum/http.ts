@@ -1,11 +1,11 @@
 export namespace ENUM_HTTP {
   export const enum PROXY {
-    IO = "io",
     AUTH = "auth",
     STATS = "stats",
     EXPLORER = "explorer",
     FAVORITE = "favorite",
     RECOVERY = "recovery",
+    STORAGE = "storage",
   }
 
   export const enum REQUEST_MODE {

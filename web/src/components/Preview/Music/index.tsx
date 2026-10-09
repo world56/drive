@@ -12,9 +12,9 @@ import Container from "../Container";
 import WaveSurfer from "wavesurfer.js";
 import styles from "./index.module.sass";
 import { useEffect, useRef } from "react";
-import { API_PROXY_EXPLORER_URL } from "@/config/request";
 
 import { TypeResource } from "@/interface/resource";
+import { API_PROXY_STORAGE_URL } from "@/config/request";
 
 interface TypeMusicProps {
   data?: TypeResource.DTO;
@@ -59,7 +59,7 @@ const Music: React.FC<TypeMusicProps> = ({ data }) => {
           <audio
             slot="media"
             ref={audio}
-            src={`${API_PROXY_EXPLORER_URL}resource/${data!.path}`}
+            src={`${API_PROXY_STORAGE_URL}${data?.objectName}`}
           />
           <MediaControlBar>
             <MediaPlayButton />

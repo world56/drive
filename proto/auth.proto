@@ -2,22 +2,25 @@ syntax = "proto3";
 
 package auth;
 
+import "google/protobuf/empty.proto";
+option go_package = "api/auth;authpb";
+
 service UserService {
   rpc GetUserInfo (FindUserId) returns (User) {}
 }
 
 service LogService {
-  rpc WriteLog(Log) returns (Log) {}
+  rpc WriteLog(Log) returns (google.protobuf.Empty) {}
 }
 
 message Log {
-  string event = 1;
+  string event      = 1;
   string operatorId = 2;
-  string desc = 3;
+  string desc       = 3;
 }
 
 message User {
-  string id = 1;
+  string id   = 1;
   string name = 2;
 }
 

@@ -2,7 +2,7 @@
  * @name UPLOAD_SLICE_SIZE 文件分割大小
  * @description Nginx、Service 最大支持10MB
  */
-export const UPLOAD_SLICE_SIZE = 2 * 1024 * 1024;
+export const UPLOAD_SLICE_SIZE = 5 * 1024 * 1024;
 
 /**
  * @name UPLOAD_FILE_MAX_COUNT 上传队列最大宏任务数

@@ -42,6 +42,7 @@ export namespace TypeUser {
    * @name ReqUsers 查询用户列表
    */
   export interface ReqUsers
-    extends Partial<Pick<DTO, "name" | "account" | "status">>,
+    extends
+      Partial<Pick<DTO, "name" | "account" | "status">>,
       TypeCommon.PageTurning {}
 }

@@ -27,7 +27,13 @@ const Log = () => {
   const { currentPage, pageSize } = pagination;
 
   const { data, loading, run } = useRequest(
-    () => getLogs({ pageSize, currentPage, event: logEvent.value }),
+    () =>
+      getLogs({
+        pageSize,
+        currentPage,
+        event: logEvent.value,
+        userID: userEvent.value,
+      }),
     { refreshDeps: [currentPage, pageSize] },
   );
 
@@ -40,7 +46,7 @@ const Log = () => {
       dataIndex: "event",
       render: (key: TypeLog.DTO["event"]) => CONSTANT_LOG.EVENT.OBJ[key]?.name,
     },
-    { title: "操作人", width: 200, dataIndex: ["operator", "name"] },
+    { title: "操作人", width: 200, dataIndex: "userName" },
     { title: "操作时间", width: 200, dataIndex: "createTime", render: toTime },
     { title: "快照", dataIndex: "desc", ellipsis: true },
   ];

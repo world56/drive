@@ -1,0 +1,20 @@
+package router
+
+import (
+	"auth/internal/transport/http/handler"
+
+	"github.com/gin-gonic/gin"
+)
+
+func registerAccountRoutes(app *gin.RouterGroup, h *handler.AccountHandler) {
+	route := app.Group("/account")
+
+	{
+		route.POST("login", h.Login)
+		route.GET("super", h.HasSuperAdmin)
+		route.POST("register", h.Register)
+		route.POST("user", h.GetUserInfo)
+		route.POST("logout", h.Logout)
+	}
+
+}

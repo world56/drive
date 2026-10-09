@@ -6,7 +6,13 @@ const config = [
     upstream: "http://127.0.0.1:2001",
     auth: true,
     rateLimit: {},
-    whitelist: [`${BASE_URL}/auth/crypto`, `${BASE_URL}/auth/account/*`],
+    whitelist: [
+      `${BASE_URL}/auth/crypto`,
+      `${BASE_URL}/auth/account/login`,
+      `${BASE_URL}/auth/account/super`,
+      `${BASE_URL}/auth/account/logout`,
+      `${BASE_URL}/auth/account/register`,
+    ],
   },
   {
     prefix: `${BASE_URL}/explorer`,
@@ -37,7 +43,7 @@ const config = [
     whitelist: [],
   },
   {
-    prefix: `${BASE_URL}/io`,
+    prefix: `${BASE_URL}/storage`,
     upstream: "http://127.0.0.1:2004",
     auth: true,
     rateLimit: {},
