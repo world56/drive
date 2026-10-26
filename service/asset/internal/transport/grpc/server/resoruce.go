@@ -29,7 +29,7 @@ func (s *FileGrpcServer) WriteDone(c context.Context, req *assetpb.Resource) (*e
 	}
 	creatorID := header["user-id"][0]
 
-	s.resourceService.InsertResource(c, creatorID, req.GetName(), req.GetObjectName(), req.ParentID, req.GetSize())
+	s.resourceService.InsertResource(c, creatorID, req.GetName(), req.GetObjectName(), req.ParentID, req.GetSize(), req.GetPath())
 	return &emptypb.Empty{}, nil
 }
 

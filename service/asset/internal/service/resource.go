@@ -5,9 +5,11 @@ import (
 	"asset/internal/enum"
 	"asset/internal/model"
 	"asset/internal/pkg/filetype"
+	"common/databases"
 	"context"
 	"errors"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"time"
 
@@ -30,9 +32,9 @@ func newResourceService(db *gorm.DB, redis *redis.Client) *ResourceService {
 func (s *ResourceService) SearchResourcesByName(c context.Context, query dto.RequestSearchResourcesByName) ([]dto.ReposesResources, error) {
 	db := s.db.WithContext(c).
 		Model(&model.Resource{}).
-		Select("id", "path", "type", "suffix", "parent_id", "full_name", "create_time").
+		Select("id", "path_ids", "type", "suffix", "parent_id", "full_name", "create_time").
 		Where("remove = ?", 0).
-		Where("name = ?", query.Name)
+		Where("name LIKE ?", "%"+query.Name+"%")
 
 	if len(query.Type) > 0 {
 		db = db.Where("type IN ?", query.Type)
@@ -117,29 +119,42 @@ func (s *ResourceService) GetResourceDetail(c context.Context, query dto.Request
 	return resource, nil
 }
 
-func (s *ResourceService) InsertResource(c context.Context, creatorID string, fullName, objectName string, parentID *int64, size int64) bool {
-	db := s.db.WithContext(c).Model(&model.Resource{})
-
+func (s *ResourceService) InsertResource(c context.Context, creatorID string, fullName, objectName string, parentID *int64, size int64, path string) bool {
 	ext := filepath.Ext(fullName)
 	suffix := strings.TrimPrefix(ext, ".")
 	baseName := strings.TrimSuffix(fullName, ext)
+	pID := parentID
 
-	err := db.Create(&model.Resource{
-		Size:       size,
-		Suffix:     &suffix,
-		Name:       baseName,
-		FullName:   fullName,
-		ParentID:   parentID,
-		CreatorID:  creatorID,
-		ObjectName: objectName,
-		Type:       filetype.DetectBySuffix(suffix),
-	}).Error
-
-	if err != nil {
-		return false
-	} else {
-		return true
+	if path != "" {
+		folderID, err := s.createFolders(c, parentID, path, creatorID)
+		if err == nil {
+			pID = folderID
+		}
 	}
+
+	for n := 1; n <= 64; n++ {
+		name := baseName
+		if n > 1 {
+			name = baseName + " " + strconv.Itoa(n)
+		}
+		err := s.db.WithContext(c).Create(&model.Resource{
+			Size:       size,
+			Suffix:     &suffix,
+			Name:       name,
+			FullName:   name + ext,
+			ParentID:   pID,
+			CreatorID:  creatorID,
+			ObjectName: objectName,
+			Type:       filetype.DetectBySuffix(suffix),
+		}).Error
+		if err == nil {
+			return true
+		}
+		if !databases.IsUniqueViolation(err) {
+			return false
+		}
+	}
+	return false
 }
 
 func (s *ResourceService) DeleteResources(c context.Context, body dto.RequestDeleteFiles) error {
@@ -155,11 +170,18 @@ func (s *ResourceService) DeleteResources(c context.Context, body dto.RequestDel
 func (s *ResourceService) UpdateResourceInfo(c context.Context, body dto.RequestResourceUpdateInfo) error {
 	db := s.db.WithContext(c)
 
-	if err := db.Where("id = ?", body.ID).First(&model.Resource{}).Error; err != nil {
+	var target model.Resource
+	if err := db.Where("id = ?", body.ID).First(&target).Error; err != nil {
 		return err
 	}
 
+	fullName := body.Name
+	if target.Type != enum.ResourceTypeFolder && target.Suffix != nil && *target.Suffix != "" {
+		fullName = body.Name + "." + *target.Suffix
+	}
+
 	update := map[string]interface{}{
+		"full_name": fullName,
 		"name":      body.Name,
 		"remark":    body.Remark,
 		"parent_id": body.ParentID,
@@ -202,14 +224,56 @@ func (s *ResourceService) MkdirFolder(c context.Context, creatorID string, data 
 }
 
 func (s *ResourceService) UpdateResourcesLocation(c context.Context, body dto.RequestResourceUpdateLocation) (bool, error) {
-	if err := s.db.WithContext(c).
-		Model(&model.Resource{}).
-		Where("id IN ?", body.IDs).
-		Update("parent_id", body.ParentID).Error; err != nil {
+	var items []model.Resource
+	err := s.db.WithContext(c).Transaction(func(t *gorm.DB) error {
+		if err := t.Where("id IN ?", body.IDs).Find(&items).Error; err != nil {
+			return err
+		}
+
+		for _, item := range items {
+			for i := 1; i <= 64; i++ {
+				name := item.Name
+				if i > 1 {
+					name = name + " " + strconv.Itoa(i)
+				}
+				fullName := name
+				if item.Type != enum.ResourceTypeFolder && item.Suffix != nil && *item.Suffix != "" {
+					fullName = name + "." + *item.Suffix
+				}
+
+				eventID := "sp_" + strconv.FormatInt(item.ID, 10) + "_" + strconv.Itoa(i)
+				if err := t.SavePoint(eventID).Error; err != nil {
+					return err
+				}
+
+				err := t.Model(&model.Resource{}).
+					Where("id = ?", item.ID).
+					Updates(map[string]interface{}{
+						"name":      name,
+						"full_name": fullName,
+						"parent_id": body.ParentID,
+					}).Error
+
+				if err == nil {
+					break
+				}
+				if !databases.IsUniqueViolation(err) {
+					return err
+				}
+
+				if err := t.RollbackTo(eventID).Error; err != nil {
+					return err
+				}
+			}
+		}
+		return nil
+	})
+
+	if err == nil {
+		return true, nil
+	} else {
 		return false, err
 	}
-
-	return true, nil
 }
 
 func (s *ResourceService) getFilePath(c context.Context, fileID string) []dto.Path {
@@ -228,4 +292,70 @@ func (s *ResourceService) getFilePath(c context.Context, fileID string) []dto.Pa
 		return nil
 	}
 	return Paths
+}
+
+// 批量上传
+func (s *ResourceService) createFolders(c context.Context, parentID *int64, path string, creatorID string) (*int64, error) {
+	dir := filepath.Dir(path)
+	paths := strings.Split(dir, "/")
+
+	parentKey := "root"
+	if parentID != nil {
+		parentKey = strconv.FormatInt(*parentID, 10)
+	}
+
+	cacheKey := "drive:folder:" + parentKey
+	if val, err := s.redis.HGet(c, cacheKey, dir).Result(); err == nil {
+		id, err := strconv.ParseInt(val, 10, 64)
+		if err == nil {
+			return &id, nil
+		}
+	}
+
+	cur := parentID
+	var last *int64
+	for _, name := range paths {
+		id, err := s.createFolder(c, cur, name, creatorID)
+		if err != nil {
+			return nil, err
+		}
+		last = &id
+		cur = &id
+	}
+	if last != nil {
+		if err := s.redis.HSet(c, cacheKey, dir, strconv.FormatInt(*last, 10)).Err(); err == nil {
+			_ = s.redis.Expire(c, cacheKey, 3*time.Minute).Err()
+		}
+	}
+	return last, nil
+}
+
+func (s *ResourceService) createFolder(c context.Context, parentId *int64, name, creatorID string) (int64, error) {
+	db := s.db.WithContext(c)
+
+	folder := model.Resource{
+		Name:      name,
+		FullName:  name,
+		ParentID:  parentId,
+		CreatorID: creatorID,
+		Type:      enum.ResourceTypeFolder,
+	}
+
+	err := db.Create(&folder).Error
+	if err == nil {
+		return folder.ID, nil
+	}
+	if !databases.IsUniqueViolation(err) {
+		return 0, err
+	}
+
+	var exist model.Resource
+	if err := db.Where("name = ?", name).
+		Where("parent_id IS NOT DISTINCT FROM ?", parentId).
+		Where("type = ?", enum.ResourceTypeFolder).
+		Where("remove = ?", enum.ResourceNormal).
+		First(&exist).Error; err != nil {
+		return 0, err
+	}
+	return exist.ID, nil
 }

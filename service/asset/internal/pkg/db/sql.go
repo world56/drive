@@ -13,7 +13,7 @@ func InitPostgresSQL(dsn string) (*gorm.DB, error) {
 		return nil, err
 	}
 
-	if err := db.AutoMigrate(&model.Resource{}); err != nil {
+	if err := db.AutoMigrate(&model.Resource{}, &model.Favorite{}); err != nil {
 		return nil, err
 	}
 

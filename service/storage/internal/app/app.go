@@ -6,6 +6,8 @@ import (
 
 	"storage/internal/config"
 	minio "storage/internal/pkg/minio"
+
+	"storage/internal/pkg/mq"
 	"storage/internal/service"
 	grpcclient "storage/internal/transport/grpc/client"
 
@@ -18,46 +20,58 @@ type App struct {
 	Redis      *redis.Client
 	Minio      *minioSDK.Core
 	Service    *service.Service
+	RabbitMQ   *mq.Client
 	GrpcClient *grpcclient.GrpcClients
 }
 
 func New() (*App, error) {
-	cfg := config.Load()
+	a := &App{
+		Config: config.Load(),
+	}
 
 	err := idgen.InitSnowflake(2)
 	if err != nil {
-		return nil, err
+		return a, err
 	}
 
-	grpcClient, err := grpcclient.NewGrpcClients(
-		cfg.GRPC_ASSET_ADDR,
-	)
-	if err != nil {
-		return nil, err
+	if a.GrpcClient, err = grpcclient.NewGrpcClients(a.Config.GRPC_ASSET_ADDR); err != nil {
+		return a, err
 	}
 
-	redis, err := rdb.InitRedis(cfg.REDIS_URL)
-	if err != nil {
-		return nil, err
+	if a.RabbitMQ, err = mq.InitRabbitMQ(a.Config.RABBITMQ_URL); err != nil {
+		return a, err
 	}
 
-	minio, err := minio.InitMinio(
-		cfg.MINIO_ADDR,
-		cfg.MINIO_ACCESS_KEY,
-		cfg.MINIO_ACCESS_SECRET,
-		cfg.MINIO_BUCKET,
-	)
-	if err != nil {
-		return nil, err
+	if a.Redis, err = rdb.InitRedis(a.Config.REDIS_URL); err != nil {
+		return a, err
 	}
 
-	svc := service.NewService(cfg, redis, minio, grpcClient)
+	if a.Minio, err = minio.InitMinio(
+		a.Config.MINIO_ADDR,
+		a.Config.MINIO_ACCESS_KEY,
+		a.Config.MINIO_ACCESS_SECRET,
+		a.Config.MINIO_BUCKET,
+	); err != nil {
+		return a, err
+	}
 
-	return &App{
-		Config:     cfg,
-		Redis:      redis,
-		Minio:      minio,
-		Service:    svc,
-		GrpcClient: grpcClient,
-	}, nil
+	a.Service = service.NewService(a.Config, a.Redis, a.RabbitMQ, a.Minio, a.GrpcClient)
+
+	return a, nil
+}
+
+func (a *App) Close() {
+	if a == nil {
+		return
+	}
+
+	if a.Redis != nil {
+		a.Redis.Close()
+	}
+	if a.RabbitMQ != nil {
+		a.RabbitMQ.Close()
+	}
+	if a.GrpcClient != nil {
+		a.GrpcClient.Close()
+	}
 }

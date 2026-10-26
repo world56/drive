@@ -21,3 +21,16 @@ func InitPostgresSQL(dsn string) (*gorm.DB, error) {
 	sqlDB.SetMaxOpenConns(100)
 	return db, nil
 }
+
+func Close(db *gorm.DB) error {
+	if db == nil {
+		return nil
+	}
+
+	sqlDB, err := db.DB()
+	if err != nil {
+		return err
+	}
+
+	return sqlDB.Close()
+}

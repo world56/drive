@@ -53,7 +53,7 @@ const Favorite = () => {
           placeholder="请输入资源名称"
           prefix={<SearchOutlined />}
           style={{ margin: 10, width: 400 }}
-          onChange={(e) => setSearch((v) => ({ ...v, name: e.target.value }))}
+          onChange={(e) => setSearch((v) => ({ ...v, fullName: e.target.value }))}
         />
       ),
     },
