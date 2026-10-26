@@ -8,7 +8,7 @@ import type { TypeResource } from "@/interface/resource";
  * @name getGlobalResources 查询全局资源
  */
 export function getGlobalResources(params: TypeResource.ReqGlobalResources) {
-  return request<TypeResource.DTO[]>("resource", {
+  return request<TypeResource.DTO[]>("resource/search", {
     method: ENUM_HTTP.REQUEST_MODE.GET,
     proxy: ENUM_HTTP.PROXY.EXPLORER,
     params,
