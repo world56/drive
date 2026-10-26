@@ -1,6 +1,6 @@
 <h1 align="center">Drive</h1>
 
-<p align="center">一款基于NodeJS的微服务网络云盘</p>
+<p align="center">一款基于Go的微服务网络云盘</p>
 
 <img width="1000" style="border-radius:20px"  src="https://raw.githubusercontent.com/world56/static/main/drive/1.png" >
 
