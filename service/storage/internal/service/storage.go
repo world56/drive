@@ -1,7 +1,9 @@
 package service
 
 import (
+	assetpb "api/asset"
 	"common/idgen"
+	rabbitmq "common/rabbitmq"
 	"context"
 	"io"
 	"mime"
@@ -9,8 +11,11 @@ import (
 	"path/filepath"
 	"storage/internal/config"
 	"storage/internal/dto"
+	"storage/internal/pkg/mq"
 	grpcclient "storage/internal/transport/grpc/client"
 	"strconv"
+
+	amqp "github.com/rabbitmq/amqp091-go"
 
 	"github.com/redis/go-redis/v9"
 
@@ -22,6 +27,7 @@ type StorageService struct {
 	config     config.Config
 	redis      *redis.Client
 	minio      *minioSDK.Core
+	rabbitmq   *mq.Client
 	grpcClient *grpcclient.GrpcClients
 }
 
@@ -29,12 +35,14 @@ func newStorageService(
 	config config.Config,
 	redis *redis.Client,
 	minio *minioSDK.Core,
+	rabbitmq *mq.Client,
 	grpcClient *grpcclient.GrpcClients,
 ) *StorageService {
 	return &StorageService{
 		redis:      redis,
 		minio:      minio,
 		config:     config,
+		rabbitmq:   rabbitmq,
 		grpcClient: grpcClient,
 	}
 }
@@ -69,8 +77,24 @@ func (s *StorageService) Write(c context.Context, userID string, stream multipar
 		if err != nil {
 			return false, err
 		} else {
-			s.grpcClient.Resource.WriteDone(info, userID)
-			return true, nil
+			if err := s.rabbitmq.Publish(c, rabbitmq.PublishOptions{
+				RoutingKey:  "upload",
+				Exchange:    "resource",
+				ContentType: "application/protobuf",
+				Headers:     amqp.Table{"UserID": userID},
+				Message: &assetpb.Resource{
+					ID:         info.ID,
+					Name:       info.Name,
+					Size:       info.Size,
+					Path:       info.Path,
+					ParentID:   info.ParentID,
+					ObjectName: info.ObjectName,
+				},
+			}); err != nil {
+				return false, err
+			} else {
+				return true, nil
+			}
 		}
 	} else {
 		IS_FIRST_CHUNK := info.Index == 1        // 第一个chunk
@@ -128,8 +152,24 @@ func (s *StorageService) Write(c context.Context, userID string, stream multipar
 			}
 
 			s.redis.Del(c, `drive:write:`+info.ID)
-			s.grpcClient.Resource.WriteDone(info, userID)
-			return true, nil
+			if err := s.rabbitmq.Publish(c, rabbitmq.PublishOptions{
+				RoutingKey:  "upload",
+				Exchange:    "resource",
+				ContentType: "application/protobuf",
+				Headers:     amqp.Table{"UserID": userID},
+				Message: &assetpb.Resource{
+					ID:         info.ID,
+					Name:       info.Name,
+					Size:       info.Size,
+					Path:       info.Path,
+					ParentID:   info.ParentID,
+					ObjectName: info.ObjectName,
+				},
+			}); err != nil {
+				return false, err
+			} else {
+				return true, nil
+			}
 		}
 
 		return false, nil

@@ -10,4 +10,5 @@ func RegisterRoutes(app *gin.Engine, h *handler.Handler) {
 	api := app.Group("/")
 
 	registerResourceRoutes(api, h.ResourceHandler)
+	registerFavoriteRoutes(api, h.FavoriteHandler)
 }

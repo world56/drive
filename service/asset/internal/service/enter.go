@@ -7,10 +7,12 @@ import (
 
 type Service struct {
 	ResourceService *ResourceService
+	FavoriteService *FavoriteService
 }
 
 func NewService(db *gorm.DB, redis *redis.Client) *Service {
 	return &Service{
 		ResourceService: newResourceService(db, redis),
+		FavoriteService: newFavoriteService(db),
 	}
 }

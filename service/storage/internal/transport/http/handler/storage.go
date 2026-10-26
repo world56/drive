@@ -44,6 +44,7 @@ func (s *StorageHandler) Write(c *gin.Context) {
 			ID:       chunk.ID,
 			Name:     chunk.Name,
 			Size:     chunk.Size,
+			Path:     chunk.Path,
 			Index:    chunk.Index,
 			Total:    chunk.Total,
 			ParentID: chunk.ParentID,

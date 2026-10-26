@@ -28,6 +28,7 @@ message Resource {
   string          ObjectName = 4;
   int64           Size       = 5;
   optional string FullName   = 6;
+  string          path       = 7;
 }
 
 message ResourcePrimaryID {

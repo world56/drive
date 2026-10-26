@@ -13,7 +13,7 @@ export namespace TypeFavorite {
    * @name ReqFavorites 查询收藏类表
    */
   export interface ReqFavorites
-    extends Partial<Pick<TypeFavorite.DTO, "name">> {
+    extends Partial<Pick<TypeFavorite.DTO, "fullName">> {
     /** @param 资源类型 */
     type: ENUM_RESOURCE.TYPE[];
     /** @param createTime 收藏时间排序方式 */

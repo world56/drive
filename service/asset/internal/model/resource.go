@@ -10,11 +10,11 @@ import (
 type Resource struct {
 	ID         int64     `gorm:"type:bigint;primaryKey;autoIncrement:false;" json:"id,string"`
 	Name       string    `gorm:"type:varchar(256);" json:"name"`
-	FullName   string    `gorm:"type:varchar(256);not null;column:full_name;" json:"fullName"`
+	FullName   string    `gorm:"type:varchar(256);not null;column:full_name;uniqueIndex:idx_folder,priority:2,option:NULLS NOT DISTINCT,where:remove = 0;" json:"fullName"`
 	Size       int64     `gorm:"type:bigint;default:0;" json:"size"`
 	Type       int8      `gorm:"type:int2;not null" json:"type"`
 	Suffix     *string   `gorm:"type:varchar(10);default:null;" json:"suffix"`
-	ParentID   *int64    `gorm:"type:bigint;column:parent_id;index:idx_parent_remove,priority:1;" json:"parentId"`
+	ParentID   *int64    `gorm:"type:bigint;column:parent_id;index:idx_parent_remove,priority:1;uniqueIndex:idx_folder,priority:1,option:NULLS NOT DISTINCT,where:remove = 0;" json:"parentId"`
 	PathIds    string    `gorm:"type:varchar(2048);index:idx_path_ids,type:btree;" json:"pathIds"`
 	Remark     *string   `gorm:"type:varchar(256);default:null;" json:"remark"`
 	Count      int64     `gorm:"type:bigint;default:0" json:"count"`

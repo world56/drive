@@ -7,9 +7,12 @@ import (
 
 func main() {
 	a, err := app.New()
+
 	if err != nil {
-		log.Fatalln(err)
+		a.Close()
+		log.Fatal(err)
 	}
+	defer a.Close()
 
 	ch := make(chan error, 1)
 
@@ -17,5 +20,8 @@ func main() {
 		ch <- a.RunHTTP()
 	}()
 
-	log.Fatal(<-ch)
+	err = <-ch
+	if err != nil {
+		log.Println(err)
+	}
 }

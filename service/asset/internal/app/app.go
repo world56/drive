@@ -3,7 +3,9 @@ package app
 import (
 	"asset/internal/config"
 	"asset/internal/pkg/db"
+	"asset/internal/pkg/mq"
 	"asset/internal/service"
+	"common/databases"
 	"common/idgen"
 	"common/rdb"
 
@@ -12,36 +14,52 @@ import (
 )
 
 type App struct {
-	DB      *gorm.DB
-	Redis   *redis.Client
-	Config  config.Config
-	Service *service.Service
+	DB       *gorm.DB
+	RabbitMQ *mq.Client
+	Redis    *redis.Client
+	Config   config.Config
+	Service  *service.Service
 }
 
 func New() (*App, error) {
-	cfg := config.Load()
+	a := &App{
+		Config: config.Load(),
+	}
 
 	err := idgen.InitSnowflake(1)
 	if err != nil {
-		return nil, err
+		return a, err
 	}
 
-	redis, err := rdb.InitRedis(cfg.REDIS_URL)
-	if err != nil {
-		return nil, err
+	if a.RabbitMQ, err = mq.InitRabbitMQ(a.Config.RABBITMQ_URL); err != nil {
+		return a, err
 	}
 
-	db, err := db.InitPostgresSQL(cfg.POSTGRES_DSN)
-	if err != nil {
-		return nil, err
+	if a.Redis, err = rdb.InitRedis(a.Config.REDIS_URL); err != nil {
+		return a, err
 	}
 
-	svc := service.NewService(db, redis)
+	if a.DB, err = db.InitPostgresSQL(a.Config.POSTGRES_DSN); err != nil {
+		return a, err
+	}
 
-	return &App{
-		DB:      db,
-		Config:  cfg,
-		Redis:   redis,
-		Service: svc,
-	}, nil
+	a.Service = service.NewService(a.DB, a.Redis)
+
+	return a, nil
+}
+
+func (a *App) Close() {
+	if a == nil {
+		return
+	}
+
+	if a.Redis != nil {
+		a.Redis.Close()
+	}
+
+	if a.RabbitMQ != nil {
+		a.RabbitMQ.Close()
+	}
+
+	databases.Close(a.DB)
 }

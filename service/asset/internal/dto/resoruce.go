@@ -37,7 +37,7 @@ type RequestFiles struct {
 }
 
 type RequestSearchResourcesByName struct {
-	Name      string  `form:"name" binding:"required"`
+	Name      string  `form:"name"`
 	Type      []int   `form:"type" binding:"omitempty,dive,oneof=-1 0 1 2 3 4 5"`                    // 资源类型
 	Sort      *string `form:"sort" binding:"omitempty,oneof=DESC ASC"`                               // 排序方式
 	StartTime *int64  `form:"startTime" binding:"omitempty,required_with=EndTime"`                   // 开始时间

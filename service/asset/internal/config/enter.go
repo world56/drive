@@ -9,6 +9,7 @@ type Config struct {
 	GRPC_ADDR    string
 	POSTGRES_DSN string
 	REDIS_URL    string
+	RABBITMQ_URL string
 }
 
 func Load() Config {
@@ -19,5 +20,6 @@ func Load() Config {
 		REDIS_URL:    env.GetEnv("REDIS_URL"),
 		POSTGRES_DSN: env.GetEnv("POSTGRES_DSN"),
 		GRPC_ADDR:    env.GetEnv("GRPC_ADDR"),
+		RABBITMQ_URL: env.GetEnv("RABBITMQ_URL"),
 	}
 }

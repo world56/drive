@@ -9,6 +9,7 @@ type Config struct {
 	GRPC_ADDR           string
 	GRPC_ASSET_ADDR     string
 	REDIS_URL           string
+	RABBITMQ_URL        string
 	MINIO_ADDR          string
 	MINIO_ACCESS_SECRET string
 	MINIO_ACCESS_KEY    string
@@ -23,6 +24,7 @@ func Load() Config {
 		GRPC_ADDR:           env.GetEnv("GRPC_STATS_ADDR"),
 		GRPC_ASSET_ADDR:     env.GetEnv("GRPC_ASSET_ADDR"),
 		REDIS_URL:           env.GetEnv("REDIS_URL"),
+		RABBITMQ_URL:        env.GetEnv("RABBITMQ_URL"),
 		MINIO_ADDR:          env.GetEnv("MINIO_ADDR"),
 		MINIO_ACCESS_KEY:    env.GetEnv("MINIO_ACCESS_KEY"),
 		MINIO_ACCESS_SECRET: env.GetEnv("MINIO_ACCESS_SECRET"),
