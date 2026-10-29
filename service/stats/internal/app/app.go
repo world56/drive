@@ -26,7 +26,9 @@ func New() (*App, error) {
 		return a, err
 	}
 
-	if a.GrpcClient, err = grpcclient.NewGrpcClient(a.Config.GRPC_STORAGE_ADDR); err != nil {
+	if a.GrpcClient, err = grpcclient.NewGrpcClient(
+		a.Config.GRPC_STORAGE_ADDR,
+		a.Config.GRPC_ASSET_ADDR); err != nil {
 		return a, err
 	}
 

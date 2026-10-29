@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"stats/internal/dto"
 	grpcclient "stats/internal/transport/grpc/client"
@@ -34,6 +35,24 @@ func (s *StatsService) FindStorage(c context.Context) (*dto.ResponseStorageUsage
 		return nil, err
 	}
 
+	if len(data) == 0 {
+		count, err := s.grpcClient.Asset.GetCount(c, nil)
+		if err != nil {
+			return nil, err
+		}
+
+		if len(*count) > 0 {
+			fields := make(map[string]interface{}, len(*count))
+			for k, v := range *count {
+				fields[k] = v
+			}
+			if err := s.redis.HSet(c, "drive:storage", fields).Err(); err != nil {
+				return nil, err
+			}
+		}
+		use.Storage = count
+		return use, nil
+	}
 	storage := make(dto.StorageCountDetails, len(data))
 	for key, value := range data {
 		n, err := strconv.ParseInt(value, 10, 64)
@@ -42,13 +61,8 @@ func (s *StatsService) FindStorage(c context.Context) (*dto.ResponseStorageUsage
 		}
 		storage[key] = n
 	}
-
-	return &dto.ResponseStorageUsage{
-		Free:    uint64(use.GetFree()),
-		Total:   uint64(use.GetTotal()),
-		Used:    uint64(use.GetUsed()),
-		Storage: storage,
-	}, nil
+	use.Storage = &storage
+	return use, nil
 }
 
 func (s *StatsService) FindAccessTrends(c context.Context) ([]dto.AccessTrendsItem, error) {
@@ -91,6 +105,66 @@ func (s *StatsService) FindHot(c context.Context) ([]*dto.ResponseHotItem, error
 	}
 
 	return hots, nil
+}
+
+func (s *StatsService) GetRecently(c context.Context) ([]dto.ResponseResourceSort, error) {
+	var recently []dto.ResponseResourceSort
+	list, err := s.redis.Get(c, "drive:recently").Bytes()
+	if err == nil {
+		if json.Unmarshal(list, &recently) == nil {
+			return recently, nil
+		}
+	}
+
+	if len(recently) > 0 {
+		return recently, nil
+	}
+
+	data, err := s.grpcClient.Asset.GetRecently(c, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	j, err := json.Marshal(data)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := s.redis.Set(c, "drive:recently", j, time.Minute).Err(); err != nil {
+		return nil, err
+	} else {
+		return data, nil
+	}
+}
+
+func (s *StatsService) GetFavorite(c context.Context) ([]dto.ResponseResourceSort, error) {
+	var favorite []dto.ResponseResourceSort
+	list, err := s.redis.Get(c, "drive:favorite").Bytes()
+	if err == nil {
+		if json.Unmarshal(list, &favorite) == nil {
+			return favorite, nil
+		}
+	}
+
+	if len(favorite) > 0 {
+		return favorite, nil
+	}
+
+	data, err := s.grpcClient.Asset.GetFavorite(c, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	j, err := json.Marshal(data)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := s.redis.Set(c, "drive:favorite", j, time.Minute).Err(); err != nil {
+		return nil, err
+	} else {
+		return data, nil
+	}
 }
 
 func (s *StatsService) UpdateHot(c context.Context, query dto.RequestHotLabel) error {

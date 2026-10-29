@@ -26,10 +26,12 @@ const Disk: React.FC<TypeDiskProps> = ({ data, loading }) => {
   useEffect(() => {
     if (!data) return;
     const { total, free, used } = data;
+    const system = Math.max(0, total - free - used);
     charts.current?.setOption({
       title: { text: filesize(total) },
       series: {
         data: [
+          { name: "系统占用", value: system, itemStyle: { color: "#94A3B8" } },
           { name: "已使用", value: used, itemStyle: { color: "#1890FF" } },
           { name: "剩余可用", value: free, itemStyle: { color: "#E8EDF1" } },
         ],

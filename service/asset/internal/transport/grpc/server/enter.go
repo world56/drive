@@ -9,4 +9,5 @@ import (
 
 func RegisterGrpcServers(s grpc.ServiceRegistrar, svc *service.Service) {
 	assethb.RegisterResourceServiceServer(s, newResourceGrpcServer(svc.ResourceService))
+	assethb.RegisterFavoriteServiceServer(s, newFavoriteGrpcServer(svc.FavoriteService))
 }

@@ -1,6 +1,7 @@
 package service
 
 import (
+	assetpb "api/asset"
 	"asset/internal/dto"
 	"asset/internal/enum"
 	"asset/internal/model"
@@ -304,25 +305,35 @@ func (s *ResourceService) UpdateResourcesLocation(c context.Context, body dto.Re
 	}
 }
 
-func (s *ResourceService) getFilePath(c context.Context, fileID string) []dto.Path {
-	var Paths []dto.Path
-	SQL := `
-		WITH RECURSIVE resources AS (
-			SELECT id, name, parent_id FROM files WHERE id = ?
-			UNION ALL
-			SELECT r.id, r.name, r.parent_id
-			FROM files AS f
-			JOIN resources AS a ON a.parent_id = f.id
-		)
-		SELECT id, name FROM resources;
-	`
-	if err := s.db.WithContext(c).Raw(SQL, fileID).Scan(&Paths).Error; err != nil {
-		return nil
+func (s *ResourceService) GetRecently(c context.Context) ([]*assetpb.Resource, error) {
+	var resources []*assetpb.Resource
+
+	if err := s.db.WithContext(c).
+		Model(&model.Resource{}).
+		Select("id, full_name, type, parent_id").
+		Where("remove = ?", enum.ResourceNormal).
+		Limit(10).
+		Order("create_time DESC").
+		Find(&resources).Error; err != nil {
+		return nil, err
 	}
-	return Paths
+	return resources, nil
 }
 
-// 批量上传
+func (s *ResourceService) GetResourceTypeCount(c context.Context) ([]dto.ResourceCountType, error) {
+	var data []dto.ResourceCountType
+	if err := s.db.WithContext(c).
+		Model(&model.Resource{}).
+		Select("type, COUNT(*) AS count").
+		Where("remove = ?", enum.ResourceNormal).
+		Group("type").Find(&data).Error; err != nil {
+		return nil, err
+	} else {
+		return data, nil
+	}
+}
+
+// 批量上传创建文件夹
 func (s *ResourceService) createFolders(c context.Context, parentID *int64, path string, creatorID string) (*int64, error) {
 	dir := filepath.Dir(path)
 	paths := strings.Split(dir, "/")

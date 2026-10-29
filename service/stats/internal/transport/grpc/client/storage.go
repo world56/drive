@@ -3,6 +3,7 @@ package grpcclient
 import (
 	storagepb "api/storage"
 	"context"
+	"stats/internal/dto"
 	"time"
 
 	"google.golang.org/grpc"
@@ -34,9 +35,19 @@ func (s *StorageGrpcClient) Close() error {
 	return s.conn.Close()
 }
 
-func (s *StorageGrpcClient) GetSpaceUsage() (*storagepb.SpaceUsage, error) {
+func (s *StorageGrpcClient) GetSpaceUsage() (*dto.ResponseStorageUsage, error) {
 	c, cancel := context.WithTimeout(context.Background(), 2*time.Second)
 	defer cancel()
 
-	return s.stats.GetSpaceUsage(c, &emptypb.Empty{})
+	data, err := s.stats.GetSpaceUsage(c, &emptypb.Empty{})
+	if err != nil {
+		return nil, err
+	}
+
+	return &dto.ResponseStorageUsage{
+		Free:    uint64(data.GetFree()),
+		Used:    uint64(data.GetUsed()),
+		Total:   uint64(data.GetTotal()),
+		Storage: nil,
+	}, nil
 }

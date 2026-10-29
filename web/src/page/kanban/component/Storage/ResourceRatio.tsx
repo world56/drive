@@ -7,7 +7,7 @@ import { CONSTANT_RESOURCE } from "@/constant/resource";
 
 import type { TypeDiskProps } from "./Disk";
 
-interface TypeResourceRatioProps extends TypeDiskProps {}
+interface TypeResourceRatioProps extends TypeDiskProps { }
 
 /**
  * @name ResourceRatio 各类资源占比
@@ -50,10 +50,10 @@ const ResourceRatio: React.FC<TypeResourceRatioProps> = ({ loading, data }) => {
             fontWeight: "bold",
             formatter: (params: { name: string; value: number }) => {
               const size = (params.value / count.current) * 100;
-              return `${params.name}：${Number(size.toFixed(2))}%`;
+              return `${params.name}：${Number(size.toFixed(2)) || 0}%`;
             },
           },
-          
+
         },
       },
     });

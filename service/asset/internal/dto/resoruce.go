@@ -25,6 +25,11 @@ type Path struct {
 	Name string `json:"name"`
 }
 
+type ResourceCountType struct {
+	Type  enum.ResourceType `json:"type"`
+	Count int64             `json:"count"`
+}
+
 type ReposesResource struct {
 	Resource
 	Favorite int8 `json:"favorite"`

@@ -11,18 +11,19 @@ import (
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
-type FileGrpcServer struct {
+type ResourceGrpcServer struct {
 	assetpb.UnimplementedResourceServiceServer
 	resourceService *service.ResourceService
 }
 
-func newResourceGrpcServer(s *service.ResourceService) *FileGrpcServer {
-	return &FileGrpcServer{
+func newResourceGrpcServer(s *service.ResourceService) *ResourceGrpcServer {
+	return &ResourceGrpcServer{
 		resourceService: s,
 	}
 }
 
-func (s *FileGrpcServer) WriteDone(c context.Context, req *assetpb.Resource) (*emptypb.Empty, error) {
+// 资源上传完成，入表
+func (s *ResourceGrpcServer) WriteDone(c context.Context, req *assetpb.Resource) (*emptypb.Empty, error) {
 	header, ok := metadata.FromIncomingContext(c)
 	if !ok {
 		return nil, nil
@@ -33,7 +34,8 @@ func (s *FileGrpcServer) WriteDone(c context.Context, req *assetpb.Resource) (*e
 	return &emptypb.Empty{}, nil
 }
 
-func (s *FileGrpcServer) GetResourceInfo(c context.Context, req *assetpb.ResourcePrimaryID) (*assetpb.Resource, error) {
+// 资源详情
+func (s *ResourceGrpcServer) GetResourceInfo(c context.Context, req *assetpb.ResourcePrimaryID) (*assetpb.Resource, error) {
 	id, err := strconv.ParseInt(req.GetID(), 10, 64)
 	if err != nil {
 		return nil, err
@@ -51,4 +53,28 @@ func (s *FileGrpcServer) GetResourceInfo(c context.Context, req *assetpb.Resourc
 			ObjectName: resource.ObjectName,
 		}, nil
 	}
+}
+
+// 获取最近上传
+func (s *ResourceGrpcServer) GetRecently(c context.Context, e *emptypb.Empty) (*assetpb.Resources, error) {
+	data, err := s.resourceService.GetRecently(c)
+	if err != nil {
+		return nil, err
+	}
+
+	return &assetpb.Resources{Data: data}, nil
+}
+
+func (s *ResourceGrpcServer) GetCount(c context.Context, e *emptypb.Empty) (*assetpb.Count, error) {
+	data, err := s.resourceService.GetResourceTypeCount(c)
+	if err != nil {
+		return nil, err
+	}
+
+	count := make(map[string]int64, len(data))
+	for _, item := range data {
+		count[strconv.Itoa(int(item.Type))] = item.Count
+	}
+
+	return &assetpb.Count{Count: count}, nil
 }

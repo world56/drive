@@ -65,10 +65,20 @@ func (h *StatsHandler) UpdateHot(c *gin.Context) {
 
 // 近期上传、创建
 func (h *StatsHandler) GetRecently(c *gin.Context) {
-	response.Success(c, []interface{}{})
+	recently, err := h.statsService.GetRecently(c.Request.Context())
+	if err != nil {
+		response.ServerError(c, err)
+	} else {
+		response.Success(c, recently)
+	}
 }
 
 // 收藏排行
 func (h *StatsHandler) GetFavorite(c *gin.Context) {
-	response.Success(c, []interface{}{})
+	favorite, err := h.statsService.GetFavorite(c.Request.Context())
+	if err != nil {
+		response.ServerError(c, err)
+	} else {
+		response.Success(c, favorite)
+	}
 }

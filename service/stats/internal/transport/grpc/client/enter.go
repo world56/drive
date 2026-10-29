@@ -1,16 +1,23 @@
 package grpcclient
 
 type GrpcClient struct {
+	Asset   *AssetGrpcClient
 	Storage *StorageGrpcClient
 }
 
-func NewGrpcClient(storageAddr string) (*GrpcClient, error) {
+func NewGrpcClient(storageAddr, assetAddr string) (*GrpcClient, error) {
+	asset, err := newAssetGrpcClient(assetAddr)
+	if err != nil {
+		return nil, err
+	}
+
 	storage, err := newStorageGrpcClient(storageAddr)
 	if err != nil {
 		return nil, err
 	}
 
 	return &GrpcClient{
+		Asset:   asset,
 		Storage: storage,
 	}, nil
 }
