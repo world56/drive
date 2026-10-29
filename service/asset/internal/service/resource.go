@@ -5,6 +5,7 @@ import (
 	"asset/internal/enum"
 	"asset/internal/model"
 	"asset/internal/pkg/filetype"
+	grpcclient "asset/internal/transport/grpc/client"
 	"common/databases"
 	"context"
 	"errors"
@@ -18,21 +19,23 @@ import (
 )
 
 type ResourceService struct {
-	db    *gorm.DB
-	redis *redis.Client
+	db         *gorm.DB
+	redis      *redis.Client
+	grpcClient *grpcclient.GrpcClient
 }
 
-func newResourceService(db *gorm.DB, redis *redis.Client) *ResourceService {
+func newResourceService(db *gorm.DB, redis *redis.Client, grpcClient *grpcclient.GrpcClient) *ResourceService {
 	return &ResourceService{
-		db:    db,
-		redis: redis,
+		db:         db,
+		redis:      redis,
+		grpcClient: grpcClient,
 	}
 }
 
-func (s *ResourceService) SearchResourcesByName(c context.Context, query dto.RequestSearchResourcesByName) ([]dto.ReposesResources, error) {
+func (s *ResourceService) SearchResourcesByName(c context.Context, query dto.RequestSearchResourcesByName) ([]dto.ReposesResource, error) {
 	db := s.db.WithContext(c).
 		Model(&model.Resource{}).
-		Select("id", "path_ids", "type", "suffix", "parent_id", "full_name", "create_time").
+		Select("id", "type", "suffix", "parent_id", "full_name", "create_time", "object_name").
 		Where("remove = ?", 0).
 		Where("name LIKE ?", "%"+query.Name+"%")
 
@@ -50,7 +53,7 @@ func (s *ResourceService) SearchResourcesByName(c context.Context, query dto.Req
 		db = db.Order("create_time " + enum.SortDesc)
 	}
 
-	var files []dto.ReposesResources
+	var files []dto.ReposesResource
 	if err := db.Find(&files).Error; err != nil {
 		return nil, err
 	}
@@ -58,7 +61,7 @@ func (s *ResourceService) SearchResourcesByName(c context.Context, query dto.Req
 	return files, nil
 }
 
-func (s *ResourceService) GetResources(c context.Context, query dto.RequestFiles) ([]dto.Resource, error) {
+func (s *ResourceService) GetResources(c context.Context, userID string, query dto.RequestFiles) ([]dto.ReposesResource, error) {
 	db := s.db.WithContext(c).Order("create_time " + query.Order)
 
 	if query.ID == nil {
@@ -67,16 +70,21 @@ func (s *ResourceService) GetResources(c context.Context, query dto.RequestFiles
 		db = db.Where("r.parent_id = ?", *query.ID)
 	}
 
-	var files = make([]dto.Resource, 0)
+	var files []dto.ReposesResource
 	if err := db.Table("resources AS r").
 		Select(`r.*,
 			CASE 
 				WHEN r.type = 0 THEN COUNT(f.id)
 				ELSE NULL
-			END AS count
+			END AS count,
+			CASE
+				WHEN COUNT(l.user_id) > 0 THEN 1
+				ELSE 0
+			END AS favorite
 		`).
 		Where("r.remove = ?", enum.ResourceNormal).
 		Joins("LEFT JOIN resources AS f ON f.parent_id = r.id AND f.remove = ?", enum.ResourceNormal).
+		Joins("LEFT JOIN favorites AS l ON l.user_id = ? AND l.resource_id = r.id", userID).
 		Group("r.id").
 		Scan(&files).Error; err != nil {
 		return nil, err
@@ -137,6 +145,7 @@ func (s *ResourceService) InsertResource(c context.Context, creatorID string, fu
 		if n > 1 {
 			name = baseName + " " + strconv.Itoa(n)
 		}
+		resourceType := filetype.DetectBySuffix(suffix)
 		err := s.db.WithContext(c).Create(&model.Resource{
 			Size:       size,
 			Suffix:     &suffix,
@@ -145,9 +154,10 @@ func (s *ResourceService) InsertResource(c context.Context, creatorID string, fu
 			ParentID:   pID,
 			CreatorID:  creatorID,
 			ObjectName: objectName,
-			Type:       filetype.DetectBySuffix(suffix),
+			Type:       resourceType,
 		}).Error
 		if err == nil {
+			s.grpcClient.Stats.UpdateAssetCount("ADD", map[int8]int32{resourceType: 1})
 			return true
 		}
 		if !databases.IsUniqueViolation(err) {
@@ -158,11 +168,29 @@ func (s *ResourceService) InsertResource(c context.Context, creatorID string, fu
 }
 
 func (s *ResourceService) DeleteResources(c context.Context, body dto.RequestDeleteFiles) error {
+	var resources []model.Resource
 	if err := s.db.WithContext(c).
-		Model(model.Resource{}).
+		Model(&model.Resource{}).
+		Select("type").
+		Where("id IN ?", body.IDs).
+		Where("remove = ?", enum.ResourceNormal).
+		Find(&resources).Error; err != nil {
+		return err
+	}
+
+	if err := s.db.WithContext(c).
+		Model(&model.Resource{}).
 		Where("id IN ?", body.IDs).
 		Update("remove", enum.ResourceRecycled).Error; err != nil {
 		return err
+	}
+
+	counts := make(map[int8]int32)
+	for _, resource := range resources {
+		counts[resource.Type]++
+	}
+	if len(counts) > 0 {
+		s.grpcClient.Stats.UpdateAssetCount("REDUCE", counts)
 	}
 	return nil
 }

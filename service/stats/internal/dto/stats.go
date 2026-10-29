@@ -1,10 +1,10 @@
 package dto
 
 type ResponseStorageUsage struct {
-	Free    uint64         `json:"free"`
-	Total   uint64         `json:"total"`
-	Used    uint64         `json:"used"`
-	Storage StorageDetails `json:"storage"`
+	Free    uint64              `json:"free"`
+	Total   uint64              `json:"total"`
+	Used    uint64              `json:"used"`
+	Storage StorageCountDetails `json:"storage"`
 }
 
 type ResponseHotItem struct {
@@ -16,7 +16,7 @@ type RequestHotLabel struct {
 	Name string `json:"name" binding:"required,min=1"`
 }
 
-type StorageDetails struct{}
+type StorageCountDetails map[string]int64
 
 type AccessTrendsItem struct {
 	Date  string `json:"date"`

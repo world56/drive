@@ -7,7 +7,11 @@
 package storagepb
 
 import (
+	context "context"
 	grpc "google.golang.org/grpc"
+	codes "google.golang.org/grpc/codes"
+	status "google.golang.org/grpc/status"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -15,62 +19,104 @@ import (
 // Requires gRPC-Go v1.64.0 or later.
 const _ = grpc.SupportPackageIsVersion9
 
-// StorageServiceClient is the client API for StorageService service.
+const (
+	StatsService_GetSpaceUsage_FullMethodName = "/storage.StatsService/GetSpaceUsage"
+)
+
+// StatsServiceClient is the client API for StatsService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type StorageServiceClient interface {
+type StatsServiceClient interface {
+	GetSpaceUsage(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*SpaceUsage, error)
 }
 
-type storageServiceClient struct {
+type statsServiceClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewStorageServiceClient(cc grpc.ClientConnInterface) StorageServiceClient {
-	return &storageServiceClient{cc}
+func NewStatsServiceClient(cc grpc.ClientConnInterface) StatsServiceClient {
+	return &statsServiceClient{cc}
 }
 
-// StorageServiceServer is the server API for StorageService service.
-// All implementations must embed UnimplementedStorageServiceServer
+func (c *statsServiceClient) GetSpaceUsage(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*SpaceUsage, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(SpaceUsage)
+	err := c.cc.Invoke(ctx, StatsService_GetSpaceUsage_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// StatsServiceServer is the server API for StatsService service.
+// All implementations must embed UnimplementedStatsServiceServer
 // for forward compatibility.
-type StorageServiceServer interface {
-	mustEmbedUnimplementedStorageServiceServer()
+type StatsServiceServer interface {
+	GetSpaceUsage(context.Context, *emptypb.Empty) (*SpaceUsage, error)
+	mustEmbedUnimplementedStatsServiceServer()
 }
 
-// UnimplementedStorageServiceServer must be embedded to have
+// UnimplementedStatsServiceServer must be embedded to have
 // forward compatible implementations.
 //
 // NOTE: this should be embedded by value instead of pointer to avoid a nil
 // pointer dereference when methods are called.
-type UnimplementedStorageServiceServer struct{}
+type UnimplementedStatsServiceServer struct{}
 
-func (UnimplementedStorageServiceServer) mustEmbedUnimplementedStorageServiceServer() {}
-func (UnimplementedStorageServiceServer) testEmbeddedByValue()                        {}
+func (UnimplementedStatsServiceServer) GetSpaceUsage(context.Context, *emptypb.Empty) (*SpaceUsage, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetSpaceUsage not implemented")
+}
+func (UnimplementedStatsServiceServer) mustEmbedUnimplementedStatsServiceServer() {}
+func (UnimplementedStatsServiceServer) testEmbeddedByValue()                      {}
 
-// UnsafeStorageServiceServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to StorageServiceServer will
+// UnsafeStatsServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to StatsServiceServer will
 // result in compilation errors.
-type UnsafeStorageServiceServer interface {
-	mustEmbedUnimplementedStorageServiceServer()
+type UnsafeStatsServiceServer interface {
+	mustEmbedUnimplementedStatsServiceServer()
 }
 
-func RegisterStorageServiceServer(s grpc.ServiceRegistrar, srv StorageServiceServer) {
-	// If the following call panics, it indicates UnimplementedStorageServiceServer was
+func RegisterStatsServiceServer(s grpc.ServiceRegistrar, srv StatsServiceServer) {
+	// If the following call panics, it indicates UnimplementedStatsServiceServer was
 	// embedded by pointer and is nil.  This will cause panics if an
 	// unimplemented method is ever invoked, so we test this at initialization
 	// time to prevent it from happening at runtime later due to I/O.
 	if t, ok := srv.(interface{ testEmbeddedByValue() }); ok {
 		t.testEmbeddedByValue()
 	}
-	s.RegisterService(&StorageService_ServiceDesc, srv)
+	s.RegisterService(&StatsService_ServiceDesc, srv)
 }
 
-// StorageService_ServiceDesc is the grpc.ServiceDesc for StorageService service.
+func _StatsService_GetSpaceUsage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(emptypb.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StatsServiceServer).GetSpaceUsage(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: StatsService_GetSpaceUsage_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StatsServiceServer).GetSpaceUsage(ctx, req.(*emptypb.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// StatsService_ServiceDesc is the grpc.ServiceDesc for StatsService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var StorageService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "storage.StorageService",
-	HandlerType: (*StorageServiceServer)(nil),
-	Methods:     []grpc.MethodDesc{},
-	Streams:     []grpc.StreamDesc{},
-	Metadata:    "storage.proto",
+var StatsService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "storage.StatsService",
+	HandlerType: (*StatsServiceServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "GetSpaceUsage",
+			Handler:    _StatsService_GetSpaceUsage_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "storage.proto",
 }

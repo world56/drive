@@ -68,8 +68,8 @@ func (x *User) GetId() string {
 
 type Resource struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Type          int32                  `protobuf:"varint,1,opt,name=type,proto3" json:"type,omitempty"`
-	Count         int32                  `protobuf:"varint,2,opt,name=count,proto3" json:"count,omitempty"`
+	Calculation   string                 `protobuf:"bytes,1,opt,name=calculation,proto3" json:"calculation,omitempty"`
+	Count         map[int32]int32        `protobuf:"bytes,2,rep,name=count,proto3" json:"count,omitempty" protobuf_key:"varint,1,opt,name=key" protobuf_val:"varint,2,opt,name=value"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -104,18 +104,18 @@ func (*Resource) Descriptor() ([]byte, []int) {
 	return file_stats_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *Resource) GetType() int32 {
+func (x *Resource) GetCalculation() string {
 	if x != nil {
-		return x.Type
+		return x.Calculation
 	}
-	return 0
+	return ""
 }
 
-func (x *Resource) GetCount() int32 {
+func (x *Resource) GetCount() map[int32]int32 {
 	if x != nil {
 		return x.Count
 	}
-	return 0
+	return nil
 }
 
 var File_stats_proto protoreflect.FileDescriptor
@@ -124,10 +124,14 @@ const file_stats_proto_rawDesc = "" +
 	"\n" +
 	"\vstats.proto\x12\x05stats\x1a\x1bgoogle/protobuf/empty.proto\"\x16\n" +
 	"\x04User\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\"4\n" +
-	"\bResource\x12\x12\n" +
-	"\x04type\x18\x01 \x01(\x05R\x04type\x12\x14\n" +
-	"\x05count\x18\x02 \x01(\x05R\x05count2s\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"\x98\x01\n" +
+	"\bResource\x12 \n" +
+	"\vcalculation\x18\x01 \x01(\tR\vcalculation\x120\n" +
+	"\x05count\x18\x02 \x03(\v2\x1a.stats.Resource.CountEntryR\x05count\x1a8\n" +
+	"\n" +
+	"CountEntry\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\x05R\x03key\x12\x14\n" +
+	"\x05value\x18\x02 \x01(\x05R\x05value:\x028\x012s\n" +
 	"\fStatsService\x12/\n" +
 	"\x06Access\x12\v.stats.User\x1a\x16.google.protobuf.Empty\"\x00\x122\n" +
 	"\x05Count\x12\x0f.stats.Resource\x1a\x16.google.protobuf.Empty\"\x00B\x13Z\x11api/stats;statspbb\x06proto3"
@@ -144,22 +148,24 @@ func file_stats_proto_rawDescGZIP() []byte {
 	return file_stats_proto_rawDescData
 }
 
-var file_stats_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_stats_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_stats_proto_goTypes = []any{
 	(*User)(nil),          // 0: stats.User
 	(*Resource)(nil),      // 1: stats.Resource
-	(*emptypb.Empty)(nil), // 2: google.protobuf.Empty
+	nil,                   // 2: stats.Resource.CountEntry
+	(*emptypb.Empty)(nil), // 3: google.protobuf.Empty
 }
 var file_stats_proto_depIdxs = []int32{
-	0, // 0: stats.StatsService.Access:input_type -> stats.User
-	1, // 1: stats.StatsService.Count:input_type -> stats.Resource
-	2, // 2: stats.StatsService.Access:output_type -> google.protobuf.Empty
-	2, // 3: stats.StatsService.Count:output_type -> google.protobuf.Empty
-	2, // [2:4] is the sub-list for method output_type
-	0, // [0:2] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	2, // 0: stats.Resource.count:type_name -> stats.Resource.CountEntry
+	0, // 1: stats.StatsService.Access:input_type -> stats.User
+	1, // 2: stats.StatsService.Count:input_type -> stats.Resource
+	3, // 3: stats.StatsService.Access:output_type -> google.protobuf.Empty
+	3, // 4: stats.StatsService.Count:output_type -> google.protobuf.Empty
+	3, // [3:5] is the sub-list for method output_type
+	1, // [1:3] is the sub-list for method input_type
+	1, // [1:1] is the sub-list for extension type_name
+	1, // [1:1] is the sub-list for extension extendee
+	0, // [0:1] is the sub-list for field type_name
 }
 
 func init() { file_stats_proto_init() }
@@ -173,7 +179,7 @@ func file_stats_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_stats_proto_rawDesc), len(file_stats_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   3,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

@@ -15,6 +15,6 @@ message User {
 }
 
 message Resource {
-  int32 type  = 1;
-  int32 count = 2;
+  string calculation = 1;
+  map<int32, int32> count = 2;
 }

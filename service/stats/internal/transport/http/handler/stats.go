@@ -50,13 +50,13 @@ func (h *StatsHandler) GetHot(c *gin.Context) {
 
 // 记录查询
 func (h *StatsHandler) UpdateHot(c *gin.Context) {
-	var query dto.RequestHotLabel
-	if err := c.ShouldBindQuery(&query); err != nil {
+	var body dto.RequestHotLabel
+	if err := c.ShouldBindJSON(&body); err != nil {
 		response.ClientError(c, err)
 		return
 	}
 
-	if err := h.statsService.UpdateHot(c.Request.Context(), query); err != nil {
+	if err := h.statsService.UpdateHot(c.Request.Context(), body); err != nil {
 		response.ServerError(c, err)
 	} else {
 		response.Success(c, true)

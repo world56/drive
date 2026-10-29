@@ -21,7 +21,7 @@ func Load() Config {
 
 	return Config{
 		HTTP_ADDR:           env.GetEnv("HTTP_ADDR"),
-		GRPC_ADDR:           env.GetEnv("GRPC_STATS_ADDR"),
+		GRPC_ADDR:           env.GetEnv("GRPC_ADDR"),
 		GRPC_ASSET_ADDR:     env.GetEnv("GRPC_ASSET_ADDR"),
 		REDIS_URL:           env.GetEnv("REDIS_URL"),
 		RABBITMQ_URL:        env.GetEnv("RABBITMQ_URL"),

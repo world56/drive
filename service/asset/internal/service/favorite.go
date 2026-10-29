@@ -55,6 +55,6 @@ func (s *FavoriteService) InsertFavorite(c context.Context, userID string, resou
 	return s.db.WithContext(c).Create(&favorites).Error
 }
 
-func (s *FavoriteService) RemoveFavorite(c context.Context, userID string, favoriteIDs jsontypes.StringInt64Slice) error {
-	return s.db.Where("id IN ? AND user_id = ?", favoriteIDs, userID).Delete(&model.Favorite{}).Error
+func (s *FavoriteService) RemoveFavorite(c context.Context, userID string, resourceIDs jsontypes.StringInt64Slice) error {
+	return s.db.Where("resource_id IN ? AND user_id = ?", resourceIDs, userID).Delete(&model.Favorite{}).Error
 }

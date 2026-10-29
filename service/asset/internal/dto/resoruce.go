@@ -25,9 +25,9 @@ type Path struct {
 	Name string `json:"name"`
 }
 
-type ReposesResources struct {
+type ReposesResource struct {
 	Resource
-	Paths []Path `json:"paths"`
+	Favorite int8 `json:"favorite"`
 }
 
 type RequestFiles struct {

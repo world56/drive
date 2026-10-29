@@ -13,13 +13,8 @@ func main() {
 
 	errCh := make(chan error, 2)
 
-	go func() {
-		errCh <- a.RunHTTP()
-	}()
-
-	go func() {
-		errCh <- a.RunGRPC()
-	}()
+	go func() { errCh <- a.RunHTTP() }()
+	go func() { errCh <- a.RunGRPC() }()
 
 	log.Fatal(<-errCh)
 }

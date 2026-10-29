@@ -1,6 +1,6 @@
 import { Spin, Tree } from "antd";
 import styles from "./index.module.sass";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useRef, useState, useEffect } from "react";
 import { useStore, useToFolder, useActions } from "@/hooks";
 
@@ -16,7 +16,7 @@ const Folder: React.FC = () => {
   const ref = useRef<HTMLDivElement>(null!);
 
   const toFolder = useToFolder();
-  const [, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
 
   const actions = useActions();
   const resource = useStore("resource");
@@ -58,14 +58,14 @@ const Folder: React.FC = () => {
   }, [resource.path]);
 
   useEffect(() => {
-    const path = resource.path.join("/");
-    setSearchParams(path ? { path } : {}, { replace: true });
+    const id = resource.path.at(-1);
+    navigate(id ? `/resource/${id}` : "/resource", { replace: true });
   }, [resource.path]);
 
   return (
     <div style={{ minWidth: FOLDER_TREE_WIDTH }} className={styles.folder}>
       <div className={styles.darg} ref={ref} onMouseDown={onMouseDown} />
-      {null ? <Spin spinning={false} tip="正在加载文件夹目录" /> : null}
+      {resource.loading ? <Spin spinning={resource.loading} tip="正在加载文件夹目录" /> : null}
       {resource.folderTree.length ? (
         <Tree.DirectoryTree
           multiple

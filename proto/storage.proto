@@ -7,4 +7,12 @@ import "google/protobuf/empty.proto";
 
 option go_package = "api/storage;storagepb";
 
-service StorageService {}
+service StatsService {
+  rpc GetSpaceUsage (google.protobuf.Empty) returns (SpaceUsage) {}
+}
+
+message SpaceUsage {
+  int64 free  = 1;
+  int64 total = 2;
+  int64 used  = 3;
+}

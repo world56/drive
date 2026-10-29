@@ -2,35 +2,52 @@ package service
 
 import (
 	"context"
+	"errors"
 	"stats/internal/dto"
+	grpcclient "stats/internal/transport/grpc/client"
 	"strconv"
 	"time"
 
 	"github.com/redis/go-redis/v9"
-	"github.com/shirou/gopsutil/v3/disk"
 )
 
 type StatsService struct {
-	redis *redis.Client
+	redis      *redis.Client
+	grpcClient *grpcclient.GrpcClient
 }
 
-func newStatsService(r *redis.Client) *StatsService {
+func newStatsService(r *redis.Client, grpcClient *grpcclient.GrpcClient) *StatsService {
 	return &StatsService{
-		redis: r,
+		redis:      r,
+		grpcClient: grpcClient,
 	}
 }
 
 func (s *StatsService) FindStorage(c context.Context) (*dto.ResponseStorageUsage, error) {
-	use, err := disk.Usage("/")
+	use, err := s.grpcClient.Storage.GetSpaceUsage()
 	if err != nil {
 		return nil, err
 	}
 
-	// s.redis.HGetAll("drive:storage") // 各种类型资源数量
+	data, err := s.redis.HGetAll(c, "drive:storage").Result()
+	if err != nil {
+		return nil, err
+	}
+
+	storage := make(dto.StorageCountDetails, len(data))
+	for key, value := range data {
+		n, err := strconv.ParseInt(value, 10, 64)
+		if err != nil {
+			return nil, err
+		}
+		storage[key] = n
+	}
+
 	return &dto.ResponseStorageUsage{
-		Free:  use.Free,
-		Total: use.Total,
-		Used:  use.Used,
+		Free:    uint64(use.GetFree()),
+		Total:   uint64(use.GetTotal()),
+		Used:    uint64(use.GetUsed()),
+		Storage: storage,
 	}, nil
 }
 
@@ -95,24 +112,43 @@ func (s *StatsService) UpdateAccess(c context.Context, userId string) error {
 	return nil
 }
 
-func (s *StatsService) UpdateCount(c context.Context, resourceType int32, resourceCount int32) error {
-	key := strconv.FormatInt(int64(resourceType), 10)
-
-	count, err := s.redis.HGet(c, `drive:storage`, key).Result()
-	if err == redis.Nil {
-		count = "0"
-	} else if err != nil {
-		return err
+func (s *StatsService) UpdateCount(c context.Context, calculation string, counts map[int32]int32) error {
+	var sign int32
+	switch calculation {
+	case "ADD":
+		sign = 1
+	case "REDUCE":
+		sign = -1
+	default:
+		return errors.New("invalid calculation")
 	}
 
-	total, err := strconv.ParseInt(count, 10, 32)
-	if err != nil {
-		return err
-	}
+	for resourceType, resourceCount := range counts {
+		if resourceCount <= 0 {
+			continue
+		}
 
-	_, err = s.redis.HSet(c, `drive:storage`, key, int32(total)+resourceCount).Result()
-	if err != nil {
-		return err
+		key := strconv.FormatInt(int64(resourceType), 10)
+		count, err := s.redis.HGet(c, `drive:storage`, key).Result()
+		if err == redis.Nil {
+			count = "0"
+		} else if err != nil {
+			return err
+		}
+
+		total, err := strconv.ParseInt(count, 10, 32)
+		if err != nil {
+			return err
+		}
+
+		next := int32(total) + sign*resourceCount
+		if next < 0 {
+			next = 0
+		}
+
+		if _, err = s.redis.HSet(c, `drive:storage`, key, next).Result(); err != nil {
+			return err
+		}
 	}
 
 	return nil
