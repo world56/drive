@@ -1,4 +1,5 @@
 import { listToTree } from "@/utils/format";
+import { matchPath } from "react-router-dom";
 import { createSlice } from "@reduxjs/toolkit";
 
 import { ENUM_RESOURCE } from "@/enum/resource";
@@ -15,7 +16,9 @@ interface TypeResourceReducersProps {
   folderTree: TypeFolder["list"];
   /** @param foldersObj 文件夹字典 */
   foldersObj: TypeFolder["obj"];
-  /** @param path 文件夹目录路径  */
+  /** @param loading 文件夹列表请求状态 */
+  loading: boolean;
+  /** @param path 当前目录面包屑 ID */
   path: Array<TypeResource.DTO["id"]>;
   /**
    * @name sort 排序类型
@@ -27,17 +30,19 @@ interface TypeResourceReducersProps {
   selects: Record<TypeResource.DTO["id"], boolean>;
 }
 
+const folderId = matchPath("/resource/:folderId", location.pathname)?.params.folderId;
+
 const DEFAULT_RESOURCE: TypeResourceReducersProps = {
   folders: [],
   folderTree: [],
   foldersObj: {},
+  loading: false,
   selects: {},
+  path: folderId ? [folderId] : [],
   sort: {
     order: ENUM_RESOURCE.MENU.SORT_DESC,
     type: ENUM_RESOURCE.MENU.SORT_CREATE_TIME,
   },
-  path:
-    new URLSearchParams(window.location.search).get("path")?.split("/") || [],
 };
 
 const resourceSlice = createSlice({
@@ -47,11 +52,23 @@ const resourceSlice = createSlice({
     setFolder(
       state,
       action: PayloadAction<
-        Omit<TypeResourceReducersProps, "path" | "sort">,
+        Omit<TypeResourceReducersProps, "path" | "sort" | "loading" | "selects">,
         string
       >,
     ) {
-      return { ...state, ...action.payload };
+      const next = { ...state, ...action.payload };
+      const id = next.path.at(-1);
+      const paths = id ? next.foldersObj[id]?.paths : undefined;
+      if (paths?.length) {
+        next.path = paths.map((v) => v.id);
+      }
+      return next;
+    },
+    setFolderLoading(
+      state,
+      action: PayloadAction<TypeResourceReducersProps["loading"], string>,
+    ) {
+      return { ...state, loading: action.payload };
     },
     setPath(
       state,

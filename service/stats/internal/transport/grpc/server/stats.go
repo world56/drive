@@ -15,7 +15,7 @@ type StatsGrpcServer struct {
 	statsServer *service.StatsService
 }
 
-func NewStatsGrpcServer(s *service.StatsService) *StatsGrpcServer {
+func newStatsGrpcServer(s *service.StatsService) *StatsGrpcServer {
 	return &StatsGrpcServer{
 		statsServer: s,
 	}
@@ -36,10 +36,9 @@ func (s *StatsGrpcServer) Access(c context.Context, r *statspb.User) (*emptypb.E
 }
 
 func (s *StatsGrpcServer) Count(c context.Context, r *statspb.Resource) (*emptypb.Empty, error) {
-	resourceType := r.GetType()
-	resourceCount := r.GetCount()
-	if err := s.statsServer.UpdateCount(c, resourceType, resourceCount); err != nil {
+	if err := s.statsServer.UpdateCount(c, r.GetCalculation(), r.GetCount()); err != nil {
 		return &emptypb.Empty{}, err
 	}
+
 	return &emptypb.Empty{}, nil
 }

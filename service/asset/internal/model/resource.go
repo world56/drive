@@ -15,13 +15,12 @@ type Resource struct {
 	Type       int8      `gorm:"type:int2;not null" json:"type"`
 	Suffix     *string   `gorm:"type:varchar(10);default:null;" json:"suffix"`
 	ParentID   *int64    `gorm:"type:bigint;column:parent_id;index:idx_parent_remove,priority:1;uniqueIndex:idx_folder,priority:1,option:NULLS NOT DISTINCT,where:remove = 0;" json:"parentId"`
-	PathIds    string    `gorm:"type:varchar(2048);index:idx_path_ids,type:btree;" json:"pathIds"`
 	Remark     *string   `gorm:"type:varchar(256);default:null;" json:"remark"`
 	Count      int64     `gorm:"type:bigint;default:0" json:"count"`
 	ObjectName string    `gorm:"type:varchar(100);" json:"object_name"`
 	CreatorID  string    `gorm:"type:char(36);not null;column:creator_id;" json:"CreatorID"`
 	Remove     int8      `gorm:"type:int2;default:0;index:idx_parent_remove,priority:2;" json:"remove"`
-	CreateTime time.Time `gorm:"column:create_time;autoCreateTime;" json:"createTime"`
+	CreateTime time.Time `gorm:"column:create_time;autoCreateTime;index:idx_create_time,sort:desc,where:remove=0;" json:"createTime"`
 }
 
 func (f *Resource) BeforeCreate(tx *gorm.DB) error {

@@ -11,14 +11,13 @@ import (
 	"storage/internal/service"
 	grpcclient "storage/internal/transport/grpc/client"
 
-	minioSDK "github.com/minio/minio-go/v7"
 	"github.com/redis/go-redis/v9"
 )
 
 type App struct {
 	Config     config.Config
 	Redis      *redis.Client
-	Minio      *minioSDK.Core
+	Minio      *minio.Client
 	Service    *service.Service
 	RabbitMQ   *mq.Client
 	GrpcClient *grpcclient.GrpcClients

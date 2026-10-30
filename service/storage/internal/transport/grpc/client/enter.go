@@ -5,13 +5,13 @@ type GrpcClients struct {
 }
 
 func NewGrpcClients(assetAddr string) (*GrpcClients, error) {
-	Resource, err := newResourceGrpcClient(assetAddr)
+	resource, err := newResourceGrpcClient(assetAddr)
 	if err != nil {
 		return nil, err
 	}
 
 	return &GrpcClients{
-		Resource: Resource,
+		Resource: resource,
 	}, nil
 }
 

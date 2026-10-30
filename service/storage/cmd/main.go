@@ -14,11 +14,10 @@ func main() {
 	}
 	defer a.Close()
 
-	ch := make(chan error, 1)
+	ch := make(chan error, 2)
 
-	go func() {
-		ch <- a.RunHTTP()
-	}()
+	go func() { ch <- a.RunHTTP() }()
+	go func() { ch <- a.RunGRPC() }()
 
 	err = <-ch
 	if err != nil {

@@ -2,36 +2,67 @@ package service
 
 import (
 	"context"
+	"encoding/json"
+	"errors"
 	"stats/internal/dto"
+	grpcclient "stats/internal/transport/grpc/client"
 	"strconv"
 	"time"
 
 	"github.com/redis/go-redis/v9"
-	"github.com/shirou/gopsutil/v3/disk"
 )
 
 type StatsService struct {
-	redis *redis.Client
+	redis      *redis.Client
+	grpcClient *grpcclient.GrpcClient
 }
 
-func newStatsService(r *redis.Client) *StatsService {
+func newStatsService(r *redis.Client, grpcClient *grpcclient.GrpcClient) *StatsService {
 	return &StatsService{
-		redis: r,
+		redis:      r,
+		grpcClient: grpcClient,
 	}
 }
 
 func (s *StatsService) FindStorage(c context.Context) (*dto.ResponseStorageUsage, error) {
-	use, err := disk.Usage("/")
+	use, err := s.grpcClient.Storage.GetSpaceUsage()
 	if err != nil {
 		return nil, err
 	}
 
-	// s.redis.HGetAll("drive:storage") // 各种类型资源数量
-	return &dto.ResponseStorageUsage{
-		Free:  use.Free,
-		Total: use.Total,
-		Used:  use.Used,
-	}, nil
+	data, err := s.redis.HGetAll(c, "drive:storage").Result()
+	if err != nil {
+		return nil, err
+	}
+
+	if len(data) == 0 {
+		count, err := s.grpcClient.Asset.GetCount(c, nil)
+		if err != nil {
+			return nil, err
+		}
+
+		if len(*count) > 0 {
+			fields := make(map[string]interface{}, len(*count))
+			for k, v := range *count {
+				fields[k] = v
+			}
+			if err := s.redis.HSet(c, "drive:storage", fields).Err(); err != nil {
+				return nil, err
+			}
+		}
+		use.Storage = count
+		return use, nil
+	}
+	storage := make(dto.StorageCountDetails, len(data))
+	for key, value := range data {
+		n, err := strconv.ParseInt(value, 10, 64)
+		if err != nil {
+			return nil, err
+		}
+		storage[key] = n
+	}
+	use.Storage = &storage
+	return use, nil
 }
 
 func (s *StatsService) FindAccessTrends(c context.Context) ([]dto.AccessTrendsItem, error) {
@@ -76,6 +107,66 @@ func (s *StatsService) FindHot(c context.Context) ([]*dto.ResponseHotItem, error
 	return hots, nil
 }
 
+func (s *StatsService) GetRecently(c context.Context) ([]dto.ResponseResourceSort, error) {
+	var recently []dto.ResponseResourceSort
+	list, err := s.redis.Get(c, "drive:recently").Bytes()
+	if err == nil {
+		if json.Unmarshal(list, &recently) == nil {
+			return recently, nil
+		}
+	}
+
+	if len(recently) > 0 {
+		return recently, nil
+	}
+
+	data, err := s.grpcClient.Asset.GetRecently(c, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	j, err := json.Marshal(data)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := s.redis.Set(c, "drive:recently", j, time.Minute).Err(); err != nil {
+		return nil, err
+	} else {
+		return data, nil
+	}
+}
+
+func (s *StatsService) GetFavorite(c context.Context) ([]dto.ResponseResourceSort, error) {
+	var favorite []dto.ResponseResourceSort
+	list, err := s.redis.Get(c, "drive:favorite").Bytes()
+	if err == nil {
+		if json.Unmarshal(list, &favorite) == nil {
+			return favorite, nil
+		}
+	}
+
+	if len(favorite) > 0 {
+		return favorite, nil
+	}
+
+	data, err := s.grpcClient.Asset.GetFavorite(c, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	j, err := json.Marshal(data)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := s.redis.Set(c, "drive:favorite", j, time.Minute).Err(); err != nil {
+		return nil, err
+	} else {
+		return data, nil
+	}
+}
+
 func (s *StatsService) UpdateHot(c context.Context, query dto.RequestHotLabel) error {
 	return s.redis.ZIncrBy(c, "drive:hot", 1, query.Name).Err()
 }
@@ -95,24 +186,43 @@ func (s *StatsService) UpdateAccess(c context.Context, userId string) error {
 	return nil
 }
 
-func (s *StatsService) UpdateCount(c context.Context, resourceType int32, resourceCount int32) error {
-	key := strconv.FormatInt(int64(resourceType), 10)
-
-	count, err := s.redis.HGet(c, `drive:storage`, key).Result()
-	if err == redis.Nil {
-		count = "0"
-	} else if err != nil {
-		return err
+func (s *StatsService) UpdateCount(c context.Context, calculation string, counts map[int32]int32) error {
+	var sign int32
+	switch calculation {
+	case "ADD":
+		sign = 1
+	case "REDUCE":
+		sign = -1
+	default:
+		return errors.New("invalid calculation")
 	}
 
-	total, err := strconv.ParseInt(count, 10, 32)
-	if err != nil {
-		return err
-	}
+	for resourceType, resourceCount := range counts {
+		if resourceCount <= 0 {
+			continue
+		}
 
-	_, err = s.redis.HSet(c, `drive:storage`, key, int32(total)+resourceCount).Result()
-	if err != nil {
-		return err
+		key := strconv.FormatInt(int64(resourceType), 10)
+		count, err := s.redis.HGet(c, `drive:storage`, key).Result()
+		if err == redis.Nil {
+			count = "0"
+		} else if err != nil {
+			return err
+		}
+
+		total, err := strconv.ParseInt(count, 10, 32)
+		if err != nil {
+			return err
+		}
+
+		next := int32(total) + sign*resourceCount
+		if next < 0 {
+			next = 0
+		}
+
+		if _, err = s.redis.HSet(c, `drive:storage`, key, next).Result(); err != nil {
+			return err
+		}
 	}
 
 	return nil

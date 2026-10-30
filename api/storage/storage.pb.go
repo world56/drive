@@ -10,8 +10,9 @@ import (
 	_ "api/asset"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
-	_ "google.golang.org/protobuf/types/known/emptypb"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	reflect "reflect"
+	sync "sync"
 	unsafe "unsafe"
 )
 
@@ -22,17 +23,101 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type SpaceUsage struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Free          int64                  `protobuf:"varint,1,opt,name=free,proto3" json:"free,omitempty"`
+	Total         int64                  `protobuf:"varint,2,opt,name=total,proto3" json:"total,omitempty"`
+	Used          int64                  `protobuf:"varint,3,opt,name=used,proto3" json:"used,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SpaceUsage) Reset() {
+	*x = SpaceUsage{}
+	mi := &file_storage_proto_msgTypes[0]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SpaceUsage) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SpaceUsage) ProtoMessage() {}
+
+func (x *SpaceUsage) ProtoReflect() protoreflect.Message {
+	mi := &file_storage_proto_msgTypes[0]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SpaceUsage.ProtoReflect.Descriptor instead.
+func (*SpaceUsage) Descriptor() ([]byte, []int) {
+	return file_storage_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *SpaceUsage) GetFree() int64 {
+	if x != nil {
+		return x.Free
+	}
+	return 0
+}
+
+func (x *SpaceUsage) GetTotal() int64 {
+	if x != nil {
+		return x.Total
+	}
+	return 0
+}
+
+func (x *SpaceUsage) GetUsed() int64 {
+	if x != nil {
+		return x.Used
+	}
+	return 0
+}
+
 var File_storage_proto protoreflect.FileDescriptor
 
 const file_storage_proto_rawDesc = "" +
 	"\n" +
-	"\rstorage.proto\x12\astorage\x1a\vasset.proto\x1a\x1bgoogle/protobuf/empty.proto2\x10\n" +
-	"\x0eStorageServiceB\x17Z\x15api/storage;storagepbb\x06proto3"
+	"\rstorage.proto\x12\astorage\x1a\vasset.proto\x1a\x1bgoogle/protobuf/empty.proto\"J\n" +
+	"\n" +
+	"SpaceUsage\x12\x12\n" +
+	"\x04free\x18\x01 \x01(\x03R\x04free\x12\x14\n" +
+	"\x05total\x18\x02 \x01(\x03R\x05total\x12\x12\n" +
+	"\x04used\x18\x03 \x01(\x03R\x04used2N\n" +
+	"\fStatsService\x12>\n" +
+	"\rGetSpaceUsage\x12\x16.google.protobuf.Empty\x1a\x13.storage.SpaceUsage\"\x00B\x17Z\x15api/storage;storagepbb\x06proto3"
 
-var file_storage_proto_goTypes = []any{}
+var (
+	file_storage_proto_rawDescOnce sync.Once
+	file_storage_proto_rawDescData []byte
+)
+
+func file_storage_proto_rawDescGZIP() []byte {
+	file_storage_proto_rawDescOnce.Do(func() {
+		file_storage_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_storage_proto_rawDesc), len(file_storage_proto_rawDesc)))
+	})
+	return file_storage_proto_rawDescData
+}
+
+var file_storage_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
+var file_storage_proto_goTypes = []any{
+	(*SpaceUsage)(nil),    // 0: storage.SpaceUsage
+	(*emptypb.Empty)(nil), // 1: google.protobuf.Empty
+}
 var file_storage_proto_depIdxs = []int32{
-	0, // [0:0] is the sub-list for method output_type
-	0, // [0:0] is the sub-list for method input_type
+	1, // 0: storage.StatsService.GetSpaceUsage:input_type -> google.protobuf.Empty
+	0, // 1: storage.StatsService.GetSpaceUsage:output_type -> storage.SpaceUsage
+	1, // [1:2] is the sub-list for method output_type
+	0, // [0:1] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
 	0, // [0:0] is the sub-list for extension extendee
 	0, // [0:0] is the sub-list for field type_name
@@ -49,12 +134,13 @@ func file_storage_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_storage_proto_rawDesc), len(file_storage_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   0,
+			NumMessages:   1,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
 		GoTypes:           file_storage_proto_goTypes,
 		DependencyIndexes: file_storage_proto_depIdxs,
+		MessageInfos:      file_storage_proto_msgTypes,
 	}.Build()
 	File_storage_proto = out.File
 	file_storage_proto_goTypes = nil

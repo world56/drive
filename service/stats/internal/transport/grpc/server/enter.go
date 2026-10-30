@@ -8,5 +8,5 @@ import (
 )
 
 func RegisterGrpcServers(s grpc.ServiceRegistrar, svc *service.Service) {
-	statspb.RegisterStatsServiceServer(s, NewStatsGrpcServer(svc.StatsService))
+	statspb.RegisterStatsServiceServer(s, newStatsGrpcServer(svc.StatsService))
 }

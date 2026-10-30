@@ -24,7 +24,7 @@ const (
 
 type Count struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Count         map[string]int32       `protobuf:"bytes,1,rep,name=count,proto3" json:"count,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"varint,2,opt,name=value"`
+	Count         map[string]int64       `protobuf:"bytes,1,rep,name=count,proto3" json:"count,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"varint,2,opt,name=value"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -59,7 +59,7 @@ func (*Count) Descriptor() ([]byte, []int) {
 	return file_asset_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *Count) GetCount() map[string]int32 {
+func (x *Count) GetCount() map[string]int64 {
 	if x != nil {
 		return x.Count
 	}
@@ -74,7 +74,8 @@ type Resource struct {
 	ObjectName    string                 `protobuf:"bytes,4,opt,name=ObjectName,proto3" json:"ObjectName,omitempty"`
 	Size          int64                  `protobuf:"varint,5,opt,name=Size,proto3" json:"Size,omitempty"`
 	FullName      *string                `protobuf:"bytes,6,opt,name=FullName,proto3,oneof" json:"FullName,omitempty"`
-	Path          string                 `protobuf:"bytes,7,opt,name=path,proto3" json:"path,omitempty"`
+	Path          string                 `protobuf:"bytes,7,opt,name=Path,proto3" json:"Path,omitempty"`
+	Type          int32                  `protobuf:"varint,8,opt,name=Type,proto3" json:"Type,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -156,6 +157,13 @@ func (x *Resource) GetPath() string {
 		return x.Path
 	}
 	return ""
+}
+
+func (x *Resource) GetType() int32 {
+	if x != nil {
+		return x.Type
+	}
+	return 0
 }
 
 type ResourcePrimaryID struct {
@@ -256,7 +264,7 @@ const file_asset_proto_rawDesc = "" +
 	"\n" +
 	"CountEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\x05R\x05value:\x028\x01\"\xd2\x01\n" +
+	"\x05value\x18\x02 \x01(\x03R\x05value:\x028\x01\"\xe6\x01\n" +
 	"\bResource\x12\x0e\n" +
 	"\x02ID\x18\x01 \x01(\tR\x02ID\x12\x12\n" +
 	"\x04Name\x18\x02 \x01(\tR\x04Name\x12\x1f\n" +
@@ -266,20 +274,21 @@ const file_asset_proto_rawDesc = "" +
 	"ObjectName\x12\x12\n" +
 	"\x04Size\x18\x05 \x01(\x03R\x04Size\x12\x1f\n" +
 	"\bFullName\x18\x06 \x01(\tH\x01R\bFullName\x88\x01\x01\x12\x12\n" +
-	"\x04path\x18\a \x01(\tR\x04pathB\v\n" +
+	"\x04Path\x18\a \x01(\tR\x04Path\x12\x12\n" +
+	"\x04Type\x18\b \x01(\x05R\x04TypeB\v\n" +
 	"\t_ParentIDB\v\n" +
 	"\t_FullName\"#\n" +
 	"\x11ResourcePrimaryID\x12\x0e\n" +
 	"\x02ID\x18\x01 \x01(\tR\x02ID\"0\n" +
 	"\tResources\x12#\n" +
-	"\x04data\x18\x01 \x03(\v2\x0f.asset.ResourceR\x04data2\xb8\x01\n" +
-	"\fAssetService\x122\n" +
-	"\bGetCount\x12\x16.google.protobuf.Empty\x1a\f.asset.Count\"\x00\x129\n" +
-	"\vGetRecently\x12\x16.google.protobuf.Empty\x1a\x10.asset.Resources\"\x00\x129\n" +
-	"\vGetFavorite\x12\x16.google.protobuf.Empty\x1a\x10.asset.Resources\"\x002\x89\x01\n" +
+	"\x04data\x18\x01 \x03(\v2\x0f.asset.ResourceR\x04data2\xf8\x01\n" +
 	"\x0fResourceService\x126\n" +
 	"\tWriteDone\x12\x0f.asset.Resource\x1a\x16.google.protobuf.Empty\"\x00\x12>\n" +
-	"\x0fGetResourceInfo\x12\x18.asset.ResourcePrimaryID\x1a\x0f.asset.Resource\"\x00B\x13Z\x11api/asset;assetpbb\x06proto3"
+	"\x0fGetResourceInfo\x12\x18.asset.ResourcePrimaryID\x1a\x0f.asset.Resource\"\x00\x122\n" +
+	"\bGetCount\x12\x16.google.protobuf.Empty\x1a\f.asset.Count\"\x00\x129\n" +
+	"\vGetRecently\x12\x16.google.protobuf.Empty\x1a\x10.asset.Resources\"\x002L\n" +
+	"\x0fFavoriteService\x129\n" +
+	"\vGetFavorite\x12\x16.google.protobuf.Empty\x1a\x10.asset.Resources\"\x00B\x13Z\x11api/asset;assetpbb\x06proto3"
 
 var (
 	file_asset_proto_rawDescOnce sync.Once
@@ -305,16 +314,16 @@ var file_asset_proto_goTypes = []any{
 var file_asset_proto_depIdxs = []int32{
 	4, // 0: asset.Count.count:type_name -> asset.Count.CountEntry
 	1, // 1: asset.Resources.data:type_name -> asset.Resource
-	5, // 2: asset.AssetService.GetCount:input_type -> google.protobuf.Empty
-	5, // 3: asset.AssetService.GetRecently:input_type -> google.protobuf.Empty
-	5, // 4: asset.AssetService.GetFavorite:input_type -> google.protobuf.Empty
-	1, // 5: asset.ResourceService.WriteDone:input_type -> asset.Resource
-	2, // 6: asset.ResourceService.GetResourceInfo:input_type -> asset.ResourcePrimaryID
-	0, // 7: asset.AssetService.GetCount:output_type -> asset.Count
-	3, // 8: asset.AssetService.GetRecently:output_type -> asset.Resources
-	3, // 9: asset.AssetService.GetFavorite:output_type -> asset.Resources
-	5, // 10: asset.ResourceService.WriteDone:output_type -> google.protobuf.Empty
-	1, // 11: asset.ResourceService.GetResourceInfo:output_type -> asset.Resource
+	1, // 2: asset.ResourceService.WriteDone:input_type -> asset.Resource
+	2, // 3: asset.ResourceService.GetResourceInfo:input_type -> asset.ResourcePrimaryID
+	5, // 4: asset.ResourceService.GetCount:input_type -> google.protobuf.Empty
+	5, // 5: asset.ResourceService.GetRecently:input_type -> google.protobuf.Empty
+	5, // 6: asset.FavoriteService.GetFavorite:input_type -> google.protobuf.Empty
+	5, // 7: asset.ResourceService.WriteDone:output_type -> google.protobuf.Empty
+	1, // 8: asset.ResourceService.GetResourceInfo:output_type -> asset.Resource
+	0, // 9: asset.ResourceService.GetCount:output_type -> asset.Count
+	3, // 10: asset.ResourceService.GetRecently:output_type -> asset.Resources
+	3, // 11: asset.FavoriteService.GetFavorite:output_type -> asset.Resources
 	7, // [7:12] is the sub-list for method output_type
 	2, // [2:7] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

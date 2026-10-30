@@ -15,7 +15,6 @@ func (a *App) RunGRPC() error {
 	}
 
 	grpcServer := grpc.NewServer()
-
 	grpcserver.RegisterGrpcServers(grpcServer, a.Service)
 
 	return grpcServer.Serve(lis)

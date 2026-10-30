@@ -20,186 +20,10 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	AssetService_GetCount_FullMethodName    = "/asset.AssetService/GetCount"
-	AssetService_GetRecently_FullMethodName = "/asset.AssetService/GetRecently"
-	AssetService_GetFavorite_FullMethodName = "/asset.AssetService/GetFavorite"
-)
-
-// AssetServiceClient is the client API for AssetService service.
-//
-// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type AssetServiceClient interface {
-	GetCount(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*Count, error)
-	GetRecently(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*Resources, error)
-	GetFavorite(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*Resources, error)
-}
-
-type assetServiceClient struct {
-	cc grpc.ClientConnInterface
-}
-
-func NewAssetServiceClient(cc grpc.ClientConnInterface) AssetServiceClient {
-	return &assetServiceClient{cc}
-}
-
-func (c *assetServiceClient) GetCount(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*Count, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(Count)
-	err := c.cc.Invoke(ctx, AssetService_GetCount_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *assetServiceClient) GetRecently(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*Resources, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(Resources)
-	err := c.cc.Invoke(ctx, AssetService_GetRecently_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *assetServiceClient) GetFavorite(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*Resources, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(Resources)
-	err := c.cc.Invoke(ctx, AssetService_GetFavorite_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-// AssetServiceServer is the server API for AssetService service.
-// All implementations must embed UnimplementedAssetServiceServer
-// for forward compatibility.
-type AssetServiceServer interface {
-	GetCount(context.Context, *emptypb.Empty) (*Count, error)
-	GetRecently(context.Context, *emptypb.Empty) (*Resources, error)
-	GetFavorite(context.Context, *emptypb.Empty) (*Resources, error)
-	mustEmbedUnimplementedAssetServiceServer()
-}
-
-// UnimplementedAssetServiceServer must be embedded to have
-// forward compatible implementations.
-//
-// NOTE: this should be embedded by value instead of pointer to avoid a nil
-// pointer dereference when methods are called.
-type UnimplementedAssetServiceServer struct{}
-
-func (UnimplementedAssetServiceServer) GetCount(context.Context, *emptypb.Empty) (*Count, error) {
-	return nil, status.Error(codes.Unimplemented, "method GetCount not implemented")
-}
-func (UnimplementedAssetServiceServer) GetRecently(context.Context, *emptypb.Empty) (*Resources, error) {
-	return nil, status.Error(codes.Unimplemented, "method GetRecently not implemented")
-}
-func (UnimplementedAssetServiceServer) GetFavorite(context.Context, *emptypb.Empty) (*Resources, error) {
-	return nil, status.Error(codes.Unimplemented, "method GetFavorite not implemented")
-}
-func (UnimplementedAssetServiceServer) mustEmbedUnimplementedAssetServiceServer() {}
-func (UnimplementedAssetServiceServer) testEmbeddedByValue()                      {}
-
-// UnsafeAssetServiceServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to AssetServiceServer will
-// result in compilation errors.
-type UnsafeAssetServiceServer interface {
-	mustEmbedUnimplementedAssetServiceServer()
-}
-
-func RegisterAssetServiceServer(s grpc.ServiceRegistrar, srv AssetServiceServer) {
-	// If the following call panics, it indicates UnimplementedAssetServiceServer was
-	// embedded by pointer and is nil.  This will cause panics if an
-	// unimplemented method is ever invoked, so we test this at initialization
-	// time to prevent it from happening at runtime later due to I/O.
-	if t, ok := srv.(interface{ testEmbeddedByValue() }); ok {
-		t.testEmbeddedByValue()
-	}
-	s.RegisterService(&AssetService_ServiceDesc, srv)
-}
-
-func _AssetService_GetCount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(emptypb.Empty)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(AssetServiceServer).GetCount(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: AssetService_GetCount_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AssetServiceServer).GetCount(ctx, req.(*emptypb.Empty))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _AssetService_GetRecently_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(emptypb.Empty)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(AssetServiceServer).GetRecently(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: AssetService_GetRecently_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AssetServiceServer).GetRecently(ctx, req.(*emptypb.Empty))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _AssetService_GetFavorite_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(emptypb.Empty)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(AssetServiceServer).GetFavorite(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: AssetService_GetFavorite_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AssetServiceServer).GetFavorite(ctx, req.(*emptypb.Empty))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-// AssetService_ServiceDesc is the grpc.ServiceDesc for AssetService service.
-// It's only intended for direct use with grpc.RegisterService,
-// and not to be introspected or modified (even as a copy)
-var AssetService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "asset.AssetService",
-	HandlerType: (*AssetServiceServer)(nil),
-	Methods: []grpc.MethodDesc{
-		{
-			MethodName: "GetCount",
-			Handler:    _AssetService_GetCount_Handler,
-		},
-		{
-			MethodName: "GetRecently",
-			Handler:    _AssetService_GetRecently_Handler,
-		},
-		{
-			MethodName: "GetFavorite",
-			Handler:    _AssetService_GetFavorite_Handler,
-		},
-	},
-	Streams:  []grpc.StreamDesc{},
-	Metadata: "asset.proto",
-}
-
-const (
 	ResourceService_WriteDone_FullMethodName       = "/asset.ResourceService/WriteDone"
 	ResourceService_GetResourceInfo_FullMethodName = "/asset.ResourceService/GetResourceInfo"
+	ResourceService_GetCount_FullMethodName        = "/asset.ResourceService/GetCount"
+	ResourceService_GetRecently_FullMethodName     = "/asset.ResourceService/GetRecently"
 )
 
 // ResourceServiceClient is the client API for ResourceService service.
@@ -208,6 +32,8 @@ const (
 type ResourceServiceClient interface {
 	WriteDone(ctx context.Context, in *Resource, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	GetResourceInfo(ctx context.Context, in *ResourcePrimaryID, opts ...grpc.CallOption) (*Resource, error)
+	GetCount(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*Count, error)
+	GetRecently(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*Resources, error)
 }
 
 type resourceServiceClient struct {
@@ -238,12 +64,34 @@ func (c *resourceServiceClient) GetResourceInfo(ctx context.Context, in *Resourc
 	return out, nil
 }
 
+func (c *resourceServiceClient) GetCount(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*Count, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Count)
+	err := c.cc.Invoke(ctx, ResourceService_GetCount_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *resourceServiceClient) GetRecently(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*Resources, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Resources)
+	err := c.cc.Invoke(ctx, ResourceService_GetRecently_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ResourceServiceServer is the server API for ResourceService service.
 // All implementations must embed UnimplementedResourceServiceServer
 // for forward compatibility.
 type ResourceServiceServer interface {
 	WriteDone(context.Context, *Resource) (*emptypb.Empty, error)
 	GetResourceInfo(context.Context, *ResourcePrimaryID) (*Resource, error)
+	GetCount(context.Context, *emptypb.Empty) (*Count, error)
+	GetRecently(context.Context, *emptypb.Empty) (*Resources, error)
 	mustEmbedUnimplementedResourceServiceServer()
 }
 
@@ -259,6 +107,12 @@ func (UnimplementedResourceServiceServer) WriteDone(context.Context, *Resource) 
 }
 func (UnimplementedResourceServiceServer) GetResourceInfo(context.Context, *ResourcePrimaryID) (*Resource, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetResourceInfo not implemented")
+}
+func (UnimplementedResourceServiceServer) GetCount(context.Context, *emptypb.Empty) (*Count, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetCount not implemented")
+}
+func (UnimplementedResourceServiceServer) GetRecently(context.Context, *emptypb.Empty) (*Resources, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetRecently not implemented")
 }
 func (UnimplementedResourceServiceServer) mustEmbedUnimplementedResourceServiceServer() {}
 func (UnimplementedResourceServiceServer) testEmbeddedByValue()                         {}
@@ -317,6 +171,42 @@ func _ResourceService_GetResourceInfo_Handler(srv interface{}, ctx context.Conte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ResourceService_GetCount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(emptypb.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ResourceServiceServer).GetCount(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ResourceService_GetCount_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ResourceServiceServer).GetCount(ctx, req.(*emptypb.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ResourceService_GetRecently_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(emptypb.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ResourceServiceServer).GetRecently(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ResourceService_GetRecently_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ResourceServiceServer).GetRecently(ctx, req.(*emptypb.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ResourceService_ServiceDesc is the grpc.ServiceDesc for ResourceService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -331,6 +221,116 @@ var ResourceService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetResourceInfo",
 			Handler:    _ResourceService_GetResourceInfo_Handler,
+		},
+		{
+			MethodName: "GetCount",
+			Handler:    _ResourceService_GetCount_Handler,
+		},
+		{
+			MethodName: "GetRecently",
+			Handler:    _ResourceService_GetRecently_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "asset.proto",
+}
+
+const (
+	FavoriteService_GetFavorite_FullMethodName = "/asset.FavoriteService/GetFavorite"
+)
+
+// FavoriteServiceClient is the client API for FavoriteService service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type FavoriteServiceClient interface {
+	GetFavorite(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*Resources, error)
+}
+
+type favoriteServiceClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewFavoriteServiceClient(cc grpc.ClientConnInterface) FavoriteServiceClient {
+	return &favoriteServiceClient{cc}
+}
+
+func (c *favoriteServiceClient) GetFavorite(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*Resources, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Resources)
+	err := c.cc.Invoke(ctx, FavoriteService_GetFavorite_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// FavoriteServiceServer is the server API for FavoriteService service.
+// All implementations must embed UnimplementedFavoriteServiceServer
+// for forward compatibility.
+type FavoriteServiceServer interface {
+	GetFavorite(context.Context, *emptypb.Empty) (*Resources, error)
+	mustEmbedUnimplementedFavoriteServiceServer()
+}
+
+// UnimplementedFavoriteServiceServer must be embedded to have
+// forward compatible implementations.
+//
+// NOTE: this should be embedded by value instead of pointer to avoid a nil
+// pointer dereference when methods are called.
+type UnimplementedFavoriteServiceServer struct{}
+
+func (UnimplementedFavoriteServiceServer) GetFavorite(context.Context, *emptypb.Empty) (*Resources, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetFavorite not implemented")
+}
+func (UnimplementedFavoriteServiceServer) mustEmbedUnimplementedFavoriteServiceServer() {}
+func (UnimplementedFavoriteServiceServer) testEmbeddedByValue()                         {}
+
+// UnsafeFavoriteServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to FavoriteServiceServer will
+// result in compilation errors.
+type UnsafeFavoriteServiceServer interface {
+	mustEmbedUnimplementedFavoriteServiceServer()
+}
+
+func RegisterFavoriteServiceServer(s grpc.ServiceRegistrar, srv FavoriteServiceServer) {
+	// If the following call panics, it indicates UnimplementedFavoriteServiceServer was
+	// embedded by pointer and is nil.  This will cause panics if an
+	// unimplemented method is ever invoked, so we test this at initialization
+	// time to prevent it from happening at runtime later due to I/O.
+	if t, ok := srv.(interface{ testEmbeddedByValue() }); ok {
+		t.testEmbeddedByValue()
+	}
+	s.RegisterService(&FavoriteService_ServiceDesc, srv)
+}
+
+func _FavoriteService_GetFavorite_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(emptypb.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FavoriteServiceServer).GetFavorite(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: FavoriteService_GetFavorite_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FavoriteServiceServer).GetFavorite(ctx, req.(*emptypb.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// FavoriteService_ServiceDesc is the grpc.ServiceDesc for FavoriteService service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var FavoriteService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "asset.FavoriteService",
+	HandlerType: (*FavoriteServiceServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "GetFavorite",
+			Handler:    _FavoriteService_GetFavorite_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

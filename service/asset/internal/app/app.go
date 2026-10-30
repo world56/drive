@@ -5,6 +5,7 @@ import (
 	"asset/internal/pkg/db"
 	"asset/internal/pkg/mq"
 	"asset/internal/service"
+	grpcclient "asset/internal/transport/grpc/client"
 	"common/databases"
 	"common/idgen"
 	"common/rdb"
@@ -14,11 +15,12 @@ import (
 )
 
 type App struct {
-	DB       *gorm.DB
-	RabbitMQ *mq.Client
-	Redis    *redis.Client
-	Config   config.Config
-	Service  *service.Service
+	DB         *gorm.DB
+	RabbitMQ   *mq.Client
+	Redis      *redis.Client
+	Config     config.Config
+	Service    *service.Service
+	GrpcClient *grpcclient.GrpcClient
 }
 
 func New() (*App, error) {
@@ -43,7 +45,11 @@ func New() (*App, error) {
 		return a, err
 	}
 
-	a.Service = service.NewService(a.DB, a.Redis)
+	if a.GrpcClient, err = grpcclient.NewGrpcClients(a.Config.GRPC_STATS_ADDR); err != nil {
+		return a, err
+	}
+
+	a.Service = service.NewService(a.DB, a.Redis, a.GrpcClient)
 
 	return a, nil
 }
@@ -59,6 +65,10 @@ func (a *App) Close() {
 
 	if a.RabbitMQ != nil {
 		a.RabbitMQ.Close()
+	}
+
+	if a.GrpcClient != nil {
+		a.GrpcClient.Close()
 	}
 
 	databases.Close(a.DB)

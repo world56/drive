@@ -20,6 +20,7 @@ import {
 import Selects from "react-selecto";
 import styles from "./index.module.sass";
 import Choose from "@/components/Choose";
+import { useParams } from "react-router-dom";
 import { Dropdown, Spin, Breadcrumb, message } from "antd";
 import { useStore, useToFolder, useActions } from "@/hooks";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -146,8 +147,9 @@ const Container: React.FC<TypeFilesContainerProps> = ({
 
   const [items, setMenus] = useState<MenuProps["items"]>([]);
 
-  const { path, sort, selects, foldersObj } = resource;
-  const folderId = resource.path.at(-1);
+  const { folderId } = useParams();
+  const { sort, selects, foldersObj } = resource;
+  const crumbs = (folderId && foldersObj[folderId]?.paths) || [];
 
   const MENU_CONTAINER: MenuProps["items"] = [
     {
@@ -271,19 +273,19 @@ const Container: React.FC<TypeFilesContainerProps> = ({
         title: (
           <>
             <HomeOutlined />
-            {path.length ? null : <span>主目录</span>}
+            {crumbs.length ? null : <span>主目录</span>}
           </>
         ),
         key: "resource",
         onClick: () => toFolder(),
       },
-      ...path.map((id) => ({
-        key: id,
-        title: foldersObj?.[id]?.name,
-        onClick: () => toFolder(id),
+      ...crumbs.map((v) => ({
+        key: v.id,
+        title: v.name,
+        onClick: () => toFolder(v.id),
       })),
     ],
-    [path, foldersObj, toFolder],
+    [crumbs, toFolder],
   );
 
   function onSearch() {

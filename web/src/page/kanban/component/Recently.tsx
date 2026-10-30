@@ -35,7 +35,7 @@ const Recently = () => {
 
   return (
     <div className={styles.recently}>
-      <Container title="近期上传、创建" loading={loading}>
+      <Container title="近期上传" loading={loading}>
         <Table
           columns={columns}
           pagination={false}

@@ -1,6 +1,7 @@
 package service
 
 import (
+	assetpb "api/asset"
 	"asset/internal/dto"
 	"asset/internal/enum"
 	"asset/internal/model"
@@ -55,6 +56,28 @@ func (s *FavoriteService) InsertFavorite(c context.Context, userID string, resou
 	return s.db.WithContext(c).Create(&favorites).Error
 }
 
-func (s *FavoriteService) RemoveFavorite(c context.Context, userID string, favoriteIDs jsontypes.StringInt64Slice) error {
-	return s.db.Where("id IN ? AND user_id = ?", favoriteIDs, userID).Delete(&model.Favorite{}).Error
+func (s *FavoriteService) RemoveFavorite(c context.Context, userID string, resourceIDs jsontypes.StringInt64Slice) error {
+	return s.db.WithContext(c).Where("resource_id IN ? AND user_id = ?", resourceIDs, userID).Delete(&model.Favorite{}).Error
+}
+
+func (s *FavoriteService) GetFavorite(c context.Context) ([]*assetpb.Resource, error) {
+	db := s.db.WithContext(c)
+	var resources []*assetpb.Resource
+
+	ranking := db.Table("favorites").
+		Select("resource_id, COUNT(*) AS count").
+		Group("resource_id").
+		Order("count DESC").
+		Limit(10)
+
+	if err := db.Table("resources AS r").
+		Select("r.full_name, r.type, r.parent_id").
+		Joins("INNER JOIN (?) AS f ON f.resource_id = r.id", ranking).
+		Where("r.remove = ?", enum.ResourceNormal).
+		Order("f.count DESC").
+		Scan(&resources).Error; err != nil {
+		return nil, err
+	} else {
+		return resources, nil
+	}
 }

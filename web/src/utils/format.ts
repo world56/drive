@@ -28,6 +28,32 @@ export function listToTree<T extends TypeListToTree>(
   return { list: format, obj };
 }
 
+type TypeFolderPath = Pick<TypeListToTree, "id" | "name">;
+
+/**
+ * @name fillFolderPaths 给文件夹字典补上路径
+ * @description 文件夹列表入库时算一次，之后各处直接读 folder.paths
+ */
+export function fillFolderPaths<
+  T extends TypeListToTree & { paths?: TypeFolderPath[] },
+>(foldersObj: TypeCommon.GenericObject<T> = {}) {
+  const cache = new Set<string>();
+
+  function fill(id?: string): TypeFolderPath[] {
+    if (!id) return [];
+
+    const folder = foldersObj[id];
+    if (!folder) return [];
+    if (cache.has(id)) return folder.paths || [];
+
+    cache.add(id);
+    folder.paths = [...fill(folder.parentId), { id: folder.id, name: folder.name }];
+    return folder.paths;
+  }
+
+  Object.keys(foldersObj).forEach((id) => fill(id));
+}
+
 /**
  * @name toCategory 转换成字典类目结构
  */

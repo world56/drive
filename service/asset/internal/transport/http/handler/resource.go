@@ -52,7 +52,8 @@ func (s *ResourceHandler) FindResources(c *gin.Context) {
 		return
 	}
 
-	files, err := s.resourceService.GetResources(c.Request.Context(), query)
+	user := request.GetCurrentUser(c)
+	files, err := s.resourceService.GetResources(c.Request.Context(), user.ID, query)
 	if err != nil {
 		response.ServerError(c, err)
 	} else {

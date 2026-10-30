@@ -1,13 +1,17 @@
 package service
 
-import "github.com/redis/go-redis/v9"
+import (
+	grpcclient "stats/internal/transport/grpc/client"
+
+	"github.com/redis/go-redis/v9"
+)
 
 type Service struct {
 	StatsService *StatsService
 }
 
-func NewService(redis *redis.Client) *Service {
+func NewService(redis *redis.Client, grpcClient *grpcclient.GrpcClient) *Service {
 	return &Service{
-		StatsService: newStatsService(redis),
+		StatsService: newStatsService(redis, grpcClient),
 	}
 }

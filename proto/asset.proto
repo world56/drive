@@ -6,19 +6,19 @@ import "google/protobuf/empty.proto";
 
 option go_package = "api/asset;assetpb";
 
-service AssetService {
-  rpc GetCount (google.protobuf.Empty) returns (Count) {};
-  rpc GetRecently (google.protobuf.Empty) returns (Resources) {};
-  rpc GetFavorite (google.protobuf.Empty) returns (Resources) {};
-}
-
 service ResourceService {
   rpc WriteDone (asset.Resource) returns (google.protobuf.Empty) {};
   rpc GetResourceInfo (ResourcePrimaryID) returns (asset.Resource) {};
+  rpc GetCount (google.protobuf.Empty) returns (Count) {};
+  rpc GetRecently (google.protobuf.Empty) returns (Resources) {};
+}
+
+service FavoriteService {
+  rpc GetFavorite (google.protobuf.Empty) returns (Resources) {};
 }
 
 message Count {
-  map<string, int32> count = 1;
+  map<string, int64> count = 1;
 }
 
 message Resource {
@@ -28,7 +28,8 @@ message Resource {
   string          ObjectName = 4;
   int64           Size       = 5;
   optional string FullName   = 6;
-  string          path       = 7;
+  string          Path       = 7;
+  int32           Type       = 8;
 }
 
 message ResourcePrimaryID {
