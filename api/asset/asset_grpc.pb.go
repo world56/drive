@@ -20,7 +20,6 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	ResourceService_WriteDone_FullMethodName       = "/asset.ResourceService/WriteDone"
 	ResourceService_GetResourceInfo_FullMethodName = "/asset.ResourceService/GetResourceInfo"
 	ResourceService_GetCount_FullMethodName        = "/asset.ResourceService/GetCount"
 	ResourceService_GetRecently_FullMethodName     = "/asset.ResourceService/GetRecently"
@@ -30,7 +29,7 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ResourceServiceClient interface {
-	WriteDone(ctx context.Context, in *Resource, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// rpc WriteDone (asset.Resource) returns (Resource) {};
 	GetResourceInfo(ctx context.Context, in *ResourcePrimaryID, opts ...grpc.CallOption) (*Resource, error)
 	GetCount(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*Count, error)
 	GetRecently(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*Resources, error)
@@ -42,16 +41,6 @@ type resourceServiceClient struct {
 
 func NewResourceServiceClient(cc grpc.ClientConnInterface) ResourceServiceClient {
 	return &resourceServiceClient{cc}
-}
-
-func (c *resourceServiceClient) WriteDone(ctx context.Context, in *Resource, opts ...grpc.CallOption) (*emptypb.Empty, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, ResourceService_WriteDone_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
 }
 
 func (c *resourceServiceClient) GetResourceInfo(ctx context.Context, in *ResourcePrimaryID, opts ...grpc.CallOption) (*Resource, error) {
@@ -88,7 +77,7 @@ func (c *resourceServiceClient) GetRecently(ctx context.Context, in *emptypb.Emp
 // All implementations must embed UnimplementedResourceServiceServer
 // for forward compatibility.
 type ResourceServiceServer interface {
-	WriteDone(context.Context, *Resource) (*emptypb.Empty, error)
+	// rpc WriteDone (asset.Resource) returns (Resource) {};
 	GetResourceInfo(context.Context, *ResourcePrimaryID) (*Resource, error)
 	GetCount(context.Context, *emptypb.Empty) (*Count, error)
 	GetRecently(context.Context, *emptypb.Empty) (*Resources, error)
@@ -102,9 +91,6 @@ type ResourceServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedResourceServiceServer struct{}
 
-func (UnimplementedResourceServiceServer) WriteDone(context.Context, *Resource) (*emptypb.Empty, error) {
-	return nil, status.Error(codes.Unimplemented, "method WriteDone not implemented")
-}
 func (UnimplementedResourceServiceServer) GetResourceInfo(context.Context, *ResourcePrimaryID) (*Resource, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetResourceInfo not implemented")
 }
@@ -133,24 +119,6 @@ func RegisterResourceServiceServer(s grpc.ServiceRegistrar, srv ResourceServiceS
 		t.testEmbeddedByValue()
 	}
 	s.RegisterService(&ResourceService_ServiceDesc, srv)
-}
-
-func _ResourceService_WriteDone_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Resource)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ResourceServiceServer).WriteDone(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: ResourceService_WriteDone_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ResourceServiceServer).WriteDone(ctx, req.(*Resource))
-	}
-	return interceptor(ctx, in, info, handler)
 }
 
 func _ResourceService_GetResourceInfo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -214,10 +182,6 @@ var ResourceService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "asset.ResourceService",
 	HandlerType: (*ResourceServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
-		{
-			MethodName: "WriteDone",
-			Handler:    _ResourceService_WriteDone_Handler,
-		},
 		{
 			MethodName: "GetResourceInfo",
 			Handler:    _ResourceService_GetResourceInfo_Handler,

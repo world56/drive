@@ -1,13 +1,17 @@
 import { ENUM_COMMON } from "@/enum/common";
 import { ENUM_RESOURCE } from "@/enum/resource";
 
+import type { TypeCommon } from "./common";
 import type { TypeResource } from "./resource";
 
 /**
  * @name TypeFavorite 收藏
  */
 export namespace TypeFavorite {
-  export interface DTO extends TypeResource.DTO {}
+  export interface DTO extends Omit<TypeResource.DTO, 'id'> {
+    id: TypeCommon.PrimaryKey;
+    resourceId: TypeResource.DTO['id'];
+  }
 
   /**
    * @name ReqFavorites 查询收藏类表
@@ -31,5 +35,5 @@ export namespace TypeFavorite {
   /**
    * @name Remove 移除收藏
    */
-  export interface Remove extends Insert {}
+  export interface Remove extends Insert { }
 }

@@ -4,7 +4,7 @@ export namespace ENUM_HTTP {
     STATS = "stats",
     EXPLORER = "explorer",
     FAVORITE = "favorite",
-    RECOVERY = "recovery",
+    RECOVERY = "explorer",
     STORAGE = "storage",
   }
 

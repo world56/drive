@@ -75,18 +75,6 @@ export function updateResource(data: TypeResource.DTO) {
 }
 
 /**
- * @name deleteResources 删除资源（文件、文件夹）
- */
-export function deleteResources(data: TypeResource.ReqDeleteResources) {
-  return request("resource/delete", {
-    method: ENUM_HTTP.REQUEST_MODE.DELETE,
-    proxy: ENUM_HTTP.PROXY.EXPLORER,
-    message: "删除成功",
-    data,
-  });
-}
-
-/**
  * @name moveResources 批量移动资源
  */
 export function moveResources(data: TypeResource.ReqMoveResources) {

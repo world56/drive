@@ -11,7 +11,7 @@ import type { TypeResource } from "@/interface/resource";
  */
 export type TypeUploadStatus = Record<
   string,
-  Pick<TypeResource.DTO, "id" | "name" | "parentId"> & {
+  Pick<TypeResource.DTO, "id" | "name" | "parentId" | "objectName"> & {
     /** @param 文件大小 */
     size: string;
     /** @param index 位置 */
@@ -24,8 +24,6 @@ export type TypeUploadStatus = Record<
     status: ENUM_RESOURCE.STATUS;
     /** @param progress 进度百分比 */
     progress: number;
-    /** @param 上传成功后的路径 */
-    paths?: TypeResource.DTO["paths"];
   }
 >;
 
@@ -97,6 +95,7 @@ export function filesFormat(
       suffix,
       index: 0,
       progress: 0,
+      objectName: "",
       length: chunks.length,
       size: filesize(file.size).toString(),
       status: ENUM_RESOURCE.STATUS.UPLOADING,

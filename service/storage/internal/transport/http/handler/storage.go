@@ -1,11 +1,16 @@
 package handler
 
 import (
+	"fmt"
+	"io"
+	"net/http"
+	"strconv"
+
 	request "common/http/request"
+	"common/http/response"
 	"storage/internal/dto"
 	"storage/internal/service"
-
-	"common/http/response"
+	"storage/internal/utils"
 
 	"github.com/gin-gonic/gin"
 )
@@ -15,9 +20,7 @@ type StorageHandler struct {
 }
 
 func newStorageHandler(s *service.StorageService) *StorageHandler {
-	return &StorageHandler{
-		storageService: s,
-	}
+	return &StorageHandler{storageService: s}
 }
 
 func (s *StorageHandler) Write(c *gin.Context) {
@@ -27,7 +30,6 @@ func (s *StorageHandler) Write(c *gin.Context) {
 		return
 	}
 
-	chunkSize := chunk.Chunk.Size
 	stream, err := chunk.Chunk.Open()
 	if err != nil {
 		response.ClientError(c, err)
@@ -35,11 +37,11 @@ func (s *StorageHandler) Write(c *gin.Context) {
 	}
 	defer stream.Close()
 
-	done, err := s.storageService.Write(
+	objectName, err := s.storageService.Write(
 		c.Request.Context(),
 		request.GetCurrentUser(c).ID,
 		stream,
-		chunkSize,
+		chunk.Chunk.Size,
 		dto.File{
 			ID:       chunk.ID,
 			Name:     chunk.Name,
@@ -51,41 +53,106 @@ func (s *StorageHandler) Write(c *gin.Context) {
 		})
 	if err != nil {
 		response.ServerError(c, err)
-	} else {
-		response.Success(c, done)
+		return
 	}
+	response.Success(c, objectName)
 }
 
 func (s *StorageHandler) Read(c *gin.Context) {
-	ObjectName := c.Param("ObjectName")
+	ctx := c.Request.Context()
+	objectName := c.Param("ObjectName")
 
-	object, io, err := s.storageService.Read(c.Request.Context(), ObjectName)
+	size, contentType, err := s.storageService.Stat(ctx, objectName)
 	if err != nil {
 		response.ServerError(c, err)
 		return
 	}
 
-	defer io.Close()
+	start, end, partial, ok := utils.ParseByteRange(c.GetHeader("Range"), size)
+	if !ok {
+		c.Header("Content-Range", fmt.Sprintf("bytes */%d", size))
+		c.Status(http.StatusRequestedRangeNotSatisfiable)
+		return
+	}
 
-	c.DataFromReader(200, object.Size, object.ContentType, io, map[string]string{
-		"Content-Disposition": "inline; filename=\"" + ObjectName + "\"",
-		"Cache-Control":       "public, max-age=31536000",
-	})
+	rs, re := int64(-1), int64(-1)
+	if partial {
+		rs, re = start, end
+	}
+	body, err := s.storageService.Open(ctx, objectName, rs, re)
+	if err != nil {
+		response.ServerError(c, err)
+		return
+	}
+	defer body.Close()
+
+	length := int64(0)
+	if size > 0 {
+		length = end - start + 1
+	}
+
+	c.Header("Accept-Ranges", "bytes")
+	c.Header("Content-Type", contentType)
+	c.Header("Content-Disposition", "inline; filename=\""+objectName+"\"")
+	c.Header("Content-Length", strconv.FormatInt(length, 10))
+	c.Header("Cache-Control", "public, max-age=31536000")
+
+	status := http.StatusOK
+	if partial {
+		status = http.StatusPartialContent
+		c.Header("Content-Range", fmt.Sprintf("bytes %d-%d/%d", start, end, size))
+	}
+	c.Status(status)
+	_, _ = io.Copy(c.Writer, body)
 }
 
 func (s *StorageHandler) Download(c *gin.Context) {
-	ID := c.Param("ID")
-	UserID := request.GetCurrentUser(c).ID
-
-	object, io, fullName, err := s.storageService.Download(c.Request.Context(), ID, UserID)
+	ctx := c.Request.Context()
+	objectName, fullName, err := s.storageService.Download(ctx, c.Param("ID"), request.GetCurrentUser(c).ID)
 	if err != nil {
 		response.ServerError(c, err)
 		return
 	}
 
-	defer io.Close()
+	size, contentType, err := s.storageService.Stat(ctx, objectName)
+	if err != nil {
+		response.ServerError(c, err)
+		return
+	}
 
-	c.DataFromReader(200, object.Size, object.ContentType, io, map[string]string{
-		"Content-Disposition": "attachment; filename=\"" + fullName + "\"",
-	})
+	start, end, partial, ok := utils.ParseByteRange(c.GetHeader("Range"), size)
+	if !ok {
+		c.Header("Content-Range", fmt.Sprintf("bytes */%d", size))
+		c.Status(http.StatusRequestedRangeNotSatisfiable)
+		return
+	}
+
+	rs, re := int64(-1), int64(-1)
+	if partial {
+		rs, re = start, end
+	}
+	body, err := s.storageService.Open(ctx, objectName, rs, re)
+	if err != nil {
+		response.ServerError(c, err)
+		return
+	}
+	defer body.Close()
+
+	length := int64(0)
+	if size > 0 {
+		length = end - start + 1
+	}
+
+	c.Header("Accept-Ranges", "bytes")
+	c.Header("Content-Type", contentType)
+	c.Header("Content-Disposition", "attachment; filename=\""+fullName+"\"")
+	c.Header("Content-Length", strconv.FormatInt(length, 10))
+
+	status := http.StatusOK
+	if partial {
+		status = http.StatusPartialContent
+		c.Header("Content-Range", fmt.Sprintf("bytes %d-%d/%d", start, end, size))
+	}
+	c.Status(status)
+	_, _ = io.Copy(c.Writer, body)
 }

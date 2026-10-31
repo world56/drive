@@ -2,10 +2,11 @@ import { useState } from "react";
 import { filesize } from "filesize";
 import { useRequest } from "ahooks";
 import { toTime } from "@/utils/format";
-import { useWindowSize } from "@/hooks";
 import styles from "./index.module.sass";
+import { useNavigate } from "react-router-dom";
 import { Button, Input, Radio, Table } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
+import { useToFolder, useWindowSize } from "@/hooks";
 import ResourceName from "@/components/Resource/Name";
 import ResourcesSelect from "@/components/Resource/Select";
 import { getFavorites, removeFavorite } from "@/api/favorite";
@@ -16,7 +17,6 @@ import { ENUM_RESOURCE } from "@/enum/resource";
 import { CONSTANT_COMMON } from "@/constant/common";
 import { CONSTANT_RESOURCE } from "@/constant/resource";
 
-import type { TypeResource } from "@/interface/resource";
 import type { TypeFavorite } from "@/interface/favorite";
 
 /**
@@ -28,6 +28,8 @@ const Favorite = () => {
     createTime: ENUM_COMMON.SORT.DESC,
   });
 
+  const nav = useNavigate();
+  const toFolder = useToFolder();
   const { height } = useWindowSize();
 
   const { data, run, loading } = useRequest(() => getFavorites(search), {
@@ -36,16 +38,24 @@ const Favorite = () => {
     refreshDeps: [search],
   });
 
-  async function onCancel(row: TypeResource.DTO) {
+  async function onCancel(row: TypeFavorite.DTO) {
     await removeFavorite({ ids: [row.id] });
     run();
+  }
+
+  function onOpen(row: TypeFavorite.DTO) {
+    if (row.type === ENUM_RESOURCE.TYPE.FOLDER) {
+      toFolder(row.resourceId);
+      nav(`/resource/${row.parentId}`);
+    } else {
+    }
   }
 
   const columns = [
     {
       title: "资源名称",
       key: DB_PRIMARY_KEY,
-      render: (row: TypeResource.DTO) => <ResourceName {...row} />,
+      render: (row: TypeFavorite.DTO) => <ResourceName {...row} />,
       filterIcon: () => <SearchOutlined />,
       filterDropdown: () => (
         <Input
@@ -66,16 +76,16 @@ const Favorite = () => {
           onChange={(type) => setSearch((v) => ({ ...v, type }))}
         />
       ),
-      render: (type: TypeResource.DTO["type"]) =>
+      render: (type: TypeFavorite.DTO["type"]) =>
         CONSTANT_RESOURCE.TYPE.OBJ[type].name,
     },
     {
       title: "大小（数量）",
       id: DB_PRIMARY_KEY,
       width: 200,
-      render: ({ type, size }: TypeResource.DTO) =>
+      render: ({ type, size, count }: TypeFavorite.DTO) =>
         type === ENUM_RESOURCE.TYPE.FOLDER
-          ? `${size} 个`
+          ? `${count} 个`
           : filesize(size).toString(),
     },
     {
@@ -101,9 +111,9 @@ const Favorite = () => {
       title: "操作",
       width: 150,
       key: DB_PRIMARY_KEY,
-      render: (row: TypeResource.DTO) => (
+      render: (row: TypeFavorite.DTO) => (
         <>
-          <Button size="small" type="link">
+          <Button size="small" type="link" onClick={() => onOpen(row)}>
             {row.type === ENUM_RESOURCE.TYPE.FOLDER ? "打开" : "预览"}
           </Button>
           <Button onClick={() => onCancel(row)} size="small" danger type="link">

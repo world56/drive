@@ -5,11 +5,13 @@ import "asset/internal/service"
 type Handler struct {
 	ResourceHandler *ResourceHandler
 	FavoriteHandler *FavoriteHandler
+	RecycleHandler  *RecycleHandler
 }
 
 func NewHandler(svc *service.Service) *Handler {
 	return &Handler{
-		ResourceHandler: NewResourceHandler(svc.ResourceService),
-		FavoriteHandler: NewFavoriteHandler(svc.FavoriteService),
+		RecycleHandler:  newRecycleHandler(svc.RecycleService),
+		ResourceHandler: newResourceHandler(svc.ResourceService),
+		FavoriteHandler: newFavoriteHandler(svc.FavoriteService),
 	}
 }

@@ -3,7 +3,6 @@ package grpcclient
 import (
 	assetpb "api/asset"
 	"context"
-	"storage/internal/dto"
 	"time"
 
 	"google.golang.org/grpc"
@@ -35,19 +34,18 @@ func (s *ResourceGrpcClient) Close() error {
 	return s.conn.Close()
 }
 
-func (s *ResourceGrpcClient) WriteDone(info dto.File, userID string) {
-	c, cancel := context.WithTimeout(context.Background(), 2*time.Second)
-	defer cancel()
+// func (s *ResourceGrpcClient) WriteDone(info dto.File, userID string) {
+// 	c, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+// 	defer cancel()
 
-	c = metadata.AppendToOutgoingContext(c, "user-id", userID)
-	s.client.WriteDone(c, &assetpb.Resource{
-		ID:         info.ID,
-		Name:       info.Name,
-		ParentID:   info.ParentID,
-		ObjectName: info.ObjectName,
-		Size:       info.Size,
-	})
-}
+// 	c = metadata.AppendToOutgoingContext(c, "user-id", userID)
+// 	s.client.WriteDone(c, &assetpb.Resource{
+// 		Name:       info.Name,
+// 		ParentID:   info.ParentID,
+// 		ObjectName: info.ObjectName,
+// 		Size:       info.Size,
+// 	})
+// }
 
 func (s *ResourceGrpcClient) GetResourceInfo(ID string, userID string) (string, string, error) {
 	c, cancel := context.WithTimeout(context.Background(), 2*time.Second)

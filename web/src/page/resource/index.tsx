@@ -5,10 +5,11 @@ import Files from "./components/Files";
 import Folder from "./components/Folder";
 import styles from "./index.module.sass";
 import { useEffect, useState } from "react";
+import { getResources } from "@/api/resource";
+import { deleteRecycles } from '@/api/recycle';
 import Attributes from "./components/Attributes";
 import MultipleChoices from "./components/MultipleChoices";
 import { createUpload, downloadFile } from "@/utils/resource";
-import { getResources, deleteResources } from "@/api/resource";
 import { removeFavorite, updateFavorite } from "@/api/favorite";
 import { useStore, useActions, useEventListener, useToFolder } from "@/hooks";
 
@@ -65,7 +66,7 @@ const Resource = () => {
       case ENUM_RESOURCE.MENU.OPEN:
         return resource.foldersObj[id!] && toFolder(id);
       case ENUM_RESOURCE.MENU.DELETE:
-        await deleteResources({ ids });
+        await deleteRecycles({ ids });
         actions.getFolders();
         actions.setSelect({});
         return run();

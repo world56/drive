@@ -68,16 +68,15 @@ const Upload = () => {
       while (i < length) {
         if (!file?.run) return;
         file.control = new AbortController();
-        const res = await upload(file.chunks![i], file.control);
+        const objectName = await upload(file.chunks![i], file.control);
         file.index = ++i;
         setStatus((s) => {
           const target = s[id];
           target.index = file.index;
           target.progress = Math.floor((i / length) * 100);
-          if (res) {
+          if (objectName) {
             file.chunks = null;
-            target.paths = res.paths;
-            target.parentId = res.parentId;
+            target.objectName = objectName;
             target.status = ENUM_RESOURCE.STATUS.DONE;
           }
           return { ...s };

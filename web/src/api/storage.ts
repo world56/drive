@@ -3,13 +3,11 @@ import request from "@/utils/request";
 import { ENUM_HTTP } from "@/enum/http";
 import { API_PROXY_STORAGE_URL } from "@/config/request";
 
-import { TypeResource } from "@/interface/resource";
-
 /**
  * @name upload 上传资源
  */
 export function upload(data: FormData, control: AbortController) {
-  return request<TypeResource.DTO | false>("upload", {
+  return request<string>("upload", {
     data,
     signal: control.signal,
     proxy: ENUM_HTTP.PROXY.STORAGE,

@@ -16,8 +16,6 @@ export namespace TypeResource {
     Partial<Pick<TypeCommon.DTO, "parentId">> {
     /** @param size 资源大小 */
     size: number;
-    /** @param path 预览路径  */
-    path?: string;
     /** @param suffix 格式 */
     suffix: string;
     /** @param createTime 初始化创建、上传时间 */

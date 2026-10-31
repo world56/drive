@@ -15,8 +15,9 @@ type Favorite struct {
 	Suffix     *string           `json:"suffix"`
 	ObjectName string            `json:"objectName"`
 	Remove     int8              `json:"remove"`
-	ParentID   *int64            `json:"parent_id"`
+	ParentID   *int64            `json:"parentId,string"`
 	CreateTime time.Time         `json:"createTime"`
+	Count      *int64            `json:"count"`
 }
 
 type RequestFavorites struct {
@@ -24,10 +25,6 @@ type RequestFavorites struct {
 	FullName   string              `form:"fullName" binding:"omitempty"`
 	CreateTime enum.SortType       `form:"createTime" binding:"omitempty,oneof=ASC DESC"`
 }
-
-// type ResponseFavorites struct {
-// 	List []Favorite `json:"list"`
-// }
 
 type RequestUpdateFavorites struct {
 	IDs jsontypes.StringInt64Slice `form:"ids" binding:"required"`

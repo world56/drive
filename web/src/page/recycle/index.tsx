@@ -47,19 +47,19 @@ const Recycle = () => {
     {
       title: "资源名称",
       key: DB_PRIMARY_KEY,
-      render: (row: TypeRecycle.DTO) => <ResourceName {...row.resource} />,
+      render: (row: TypeRecycle.DTO) => <ResourceName {...row} />,
     },
     {
       width: 200,
       title: "资源类型",
-      dataIndex: ["resource", "type"],
-      render: (type: TypeRecycle.DTO["resource"]["type"]) =>
+      dataIndex: "type",
+      render: (type: TypeRecycle.DTO["type"]) =>
         CONSTANT_RESOURCE.TYPE.OBJ[type].name,
     },
     {
       width: 150,
       title: "操作人",
-      dataIndex: ["operator", "name"],
+      dataIndex: "userName",
     },
     {
       width: 200,

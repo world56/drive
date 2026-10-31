@@ -13,7 +13,7 @@ type ResourceHandler struct {
 	resourceService *service.ResourceService
 }
 
-func NewResourceHandler(r *service.ResourceService) *ResourceHandler {
+func newResourceHandler(r *service.ResourceService) *ResourceHandler {
 	return &ResourceHandler{
 		resourceService: r,
 	}
@@ -121,20 +121,5 @@ func (s *ResourceHandler) UpdateResourcesLocation(c *gin.Context) {
 		response.ServerError(c, err)
 	} else {
 		response.Success(c, bol)
-	}
-}
-
-// 删除-移动至回收站
-func (s *ResourceHandler) DeleteResources(c *gin.Context) {
-	var body dto.RequestDeleteFiles
-	if err := c.ShouldBindJSON(&body); err != nil {
-		response.ClientError(c, err)
-		return
-	}
-
-	if err := s.resourceService.DeleteResources(c.Request.Context(), body); err != nil {
-		response.ServerError(c, err)
-	} else {
-		response.Success(c, true)
 	}
 }

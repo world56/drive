@@ -50,11 +50,11 @@ func (c *ResourceConsumer) handlerUploadFile(ctx context.Context, d amqp.Deliver
 	}
 
 	creatorID, _ := d.Headers["UserID"].(string)
-	ok := c.resourceService.InsertResource(
+	_, err := c.resourceService.InsertResource(
 		ctx, creatorID, msg.GetName(), msg.GetObjectName(), msg.ParentID, msg.GetSize(), msg.GetPath(),
 	)
 
-	if !ok {
+	if err != nil {
 		return errors.New("@-ERROR-rabbitmq-Resource processing failed")
 	}
 

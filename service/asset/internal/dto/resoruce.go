@@ -6,7 +6,7 @@ import (
 )
 
 type Resource struct {
-	ID         string  `json:"id"`
+	ID         int64   `json:"id,string"`
 	Name       string  `json:"name"`
 	FullName   string  `json:"fullName"`
 	Size       int64   `json:"size"`

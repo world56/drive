@@ -8,6 +8,7 @@ import (
 	"asset/internal/pkg/filetype"
 	grpcclient "asset/internal/transport/grpc/client"
 	"common/databases"
+	"common/utils/jsontypes"
 	"context"
 	"errors"
 	"path/filepath"
@@ -128,7 +129,7 @@ func (s *ResourceService) GetResourceDetail(c context.Context, query dto.Request
 	return resource, nil
 }
 
-func (s *ResourceService) InsertResource(c context.Context, creatorID string, fullName, objectName string, parentID *int64, size int64, path string) bool {
+func (s *ResourceService) InsertResource(c context.Context, creatorID string, fullName, objectName string, parentID *int64, size int64, path string) (*model.Resource, error) {
 	ext := filepath.Ext(fullName)
 	suffix := strings.TrimPrefix(ext, ".")
 	baseName := strings.TrimSuffix(fullName, ext)
@@ -147,7 +148,7 @@ func (s *ResourceService) InsertResource(c context.Context, creatorID string, fu
 			name = baseName + " " + strconv.Itoa(n)
 		}
 		resourceType := filetype.DetectBySuffix(suffix)
-		err := s.db.WithContext(c).Create(&model.Resource{
+		resource := &model.Resource{
 			Size:       size,
 			Suffix:     &suffix,
 			Name:       name,
@@ -156,44 +157,17 @@ func (s *ResourceService) InsertResource(c context.Context, creatorID string, fu
 			CreatorID:  creatorID,
 			ObjectName: objectName,
 			Type:       resourceType,
-		}).Error
+		}
+		err := s.db.WithContext(c).Create(resource).Error
 		if err == nil {
 			s.grpcClient.Stats.UpdateAssetCount("ADD", map[int8]int32{resourceType: 1})
-			return true
+			return resource, nil
 		}
 		if !databases.IsUniqueViolation(err) {
-			return false
+			return nil, err
 		}
 	}
-	return false
-}
-
-func (s *ResourceService) DeleteResources(c context.Context, body dto.RequestDeleteFiles) error {
-	var resources []model.Resource
-	if err := s.db.WithContext(c).
-		Model(&model.Resource{}).
-		Select("type").
-		Where("id IN ?", body.IDs).
-		Where("remove = ?", enum.ResourceNormal).
-		Find(&resources).Error; err != nil {
-		return err
-	}
-
-	if err := s.db.WithContext(c).
-		Model(&model.Resource{}).
-		Where("id IN ?", body.IDs).
-		Update("remove", enum.ResourceRecycled).Error; err != nil {
-		return err
-	}
-
-	counts := make(map[int8]int32)
-	for _, resource := range resources {
-		counts[resource.Type]++
-	}
-	if len(counts) > 0 {
-		s.grpcClient.Stats.UpdateAssetCount("REDUCE", counts)
-	}
-	return nil
+	return nil, errors.New("resource name conflict")
 }
 
 func (s *ResourceService) UpdateResourceInfo(c context.Context, body dto.RequestResourceUpdateInfo) error {
@@ -331,6 +305,48 @@ func (s *ResourceService) GetResourceTypeCount(c context.Context) ([]dto.Resourc
 	} else {
 		return data, nil
 	}
+}
+
+func (s *ResourceService) UpdateRemoveStatus(
+	c context.Context,
+	db *gorm.DB,
+	resourceIDs jsontypes.StringInt64Slice,
+	removeStatus enum.ResourceRecycleStatus,
+) error {
+	fromStatus := enum.ResourceRecycled
+	if removeStatus == enum.ResourceRecycled {
+		fromStatus = enum.ResourceNormal
+	}
+
+	var resources []model.Resource
+	if err := db.Select("id", "type").
+		Where("id IN ?", resourceIDs).
+		Where("remove = ?", fromStatus).
+		Find(&resources).Error; err != nil {
+		return err
+	}
+
+	if err := db.
+		Model(&model.Resource{}).
+		Where("id IN ?", resourceIDs).
+		Update("remove", removeStatus).Error; err != nil {
+		return err
+	}
+
+	counts := make(map[int8]int32)
+	for _, v := range resources {
+		counts[v.Type]++
+	}
+
+	CALC := "ADD"
+	if removeStatus == enum.ResourceRecycled {
+		CALC = "REDUCE"
+	}
+
+	if len(counts) > 0 {
+		go s.grpcClient.Stats.UpdateAssetCount(CALC, counts)
+	}
+	return nil
 }
 
 // 批量上传创建文件夹

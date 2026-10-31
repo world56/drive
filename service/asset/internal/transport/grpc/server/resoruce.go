@@ -7,7 +7,6 @@ import (
 	"context"
 	"strconv"
 
-	"google.golang.org/grpc/metadata"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
@@ -22,17 +21,28 @@ func newResourceGrpcServer(s *service.ResourceService) *ResourceGrpcServer {
 	}
 }
 
-// 资源上传完成，入表
-func (s *ResourceGrpcServer) WriteDone(c context.Context, req *assetpb.Resource) (*emptypb.Empty, error) {
-	header, ok := metadata.FromIncomingContext(c)
-	if !ok {
-		return nil, nil
-	}
-	creatorID := header["user-id"][0]
+// // 资源上传完成，入表
+// func (s *ResourceGrpcServer) WriteDone(c context.Context, req *assetpb.Resource) (*assetpb.Resource, error) {
+// 	header, ok := metadata.FromIncomingContext(c)
+// 	if !ok {
+// 		return nil, nil
+// 	}
+// 	creatorID := header["user-id"][0]
 
-	s.resourceService.InsertResource(c, creatorID, req.GetName(), req.GetObjectName(), req.ParentID, req.GetSize(), req.GetPath())
-	return &emptypb.Empty{}, nil
-}
+// 	resource, err := s.resourceService.InsertResource(c, creatorID, req.GetName(), req.GetObjectName(), req.ParentID, req.GetSize(), req.GetPath())
+// 	if err != nil {
+// 		return nil, err
+// 	}
+
+// 	return &assetpb.Resource{
+// 		ID:         resource.ID,
+// 		Name:       resource.Name,
+// 		Size:       resource.Size,
+// 		ParentID:   resource.ParentID,
+// 		FullName:   &resource.FullName,
+// 		ObjectName: resource.ObjectName,
+// 	}, nil
+// }
 
 // 资源详情
 func (s *ResourceGrpcServer) GetResourceInfo(c context.Context, req *assetpb.ResourcePrimaryID) (*assetpb.Resource, error) {

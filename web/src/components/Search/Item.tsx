@@ -23,11 +23,11 @@ const Item: React.FC<TypeItemProps> = ({ index, style, data }) => {
     <div
       style={style}
       data-id={row.id}
-      data-path={row.path}
       className={styles.item}
       data-suffix={row.suffix}
       data-parent-id={row.parentId}
       data-full-name={row.fullName}
+      data-object-name={row.objectName}
     >
       <ResourceIcon width={40} {...row}
         path={`${API_PROXY_STORAGE_URL}${row.objectName}`}

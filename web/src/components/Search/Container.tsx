@@ -40,8 +40,9 @@ const Container: React.FC<TypeSearchContainerProps> = ({
     const click = e?.target as HTMLElement;
     const path = click.closest("[data-dir-path]") as HTMLElement;
     if (path) {
+      const dirPath = path?.dataset?.dirPath
       insertHistory(path?.dataset?.fullName!);
-      onPath(path?.dataset?.dirPath);
+      onPath(dirPath === "/" ? undefined : dirPath);
     }
   }
 
@@ -50,14 +51,14 @@ const Container: React.FC<TypeSearchContainerProps> = ({
     const click = e?.target as HTMLElement;
     const target = click.closest("[data-id]") as HTMLElement;
     if (target?.dataset?.id) {
-      const { id, suffix, path, parentId, fullName } = target?.dataset || {};
+      const { id, suffix, objectName, parentId, fullName } = target?.dataset || {};
       insertHistory(fullName!);
       return onSelect({
         id,
-        path,
         suffix,
         parentId,
         fullName,
+        objectName,
       } as TypeResource.DTO);
     }
   }

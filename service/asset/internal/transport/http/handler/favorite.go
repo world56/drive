@@ -13,7 +13,7 @@ type FavoriteHandler struct {
 	favoriteService *service.FavoriteService
 }
 
-func NewFavoriteHandler(f *service.FavoriteService) *FavoriteHandler {
+func newFavoriteHandler(f *service.FavoriteService) *FavoriteHandler {
 	return &FavoriteHandler{
 		favoriteService: f,
 	}

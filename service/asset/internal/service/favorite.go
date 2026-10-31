@@ -9,6 +9,7 @@ import (
 	"context"
 
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type FavoriteService struct {
@@ -28,10 +29,30 @@ func (s *FavoriteService) GetFavorites(c context.Context, userID string, query d
 	}
 	db := s.db.WithContext(c).
 		Table("favorites AS f").
-		Select("f.*, r.full_name, r.type, r.size, r.suffix, r.object_name, r.remove, r.parent_id").
-		Order("f.create_time "+order).
+		Select(`
+				f.id,
+				f.resource_id,
+				f.create_time,
+				r.full_name,
+				r.type,
+				r.size,
+				r.suffix,
+				r.object_name,
+				r.remove,
+				r.parent_id,
+				CASE
+					WHEN r.type = 0 THEN (
+						SELECT COUNT(*)
+						FROM resources AS c
+						WHERE c.parent_id = r.id AND c.remove = ?
+					)
+					ELSE NULL
+				END AS count
+	`, enum.ResourceNormal).
+		Joins("INNER JOIN resources AS r ON r.id = f.resource_id").
 		Where("f.user_id = ?", userID).
-		Joins("INNER JOIN resources AS r ON r.id = f.resource_id")
+		Where("r.remove = ?", enum.ResourceNormal).
+		Order("f.create_time " + order)
 
 	if query.FullName != "" {
 		db = db.Where("r.full_name LIKE ?", "%"+query.FullName+"%")
@@ -48,12 +69,9 @@ func (s *FavoriteService) GetFavorites(c context.Context, userID string, query d
 func (s *FavoriteService) InsertFavorite(c context.Context, userID string, resourceIDs jsontypes.StringInt64Slice) error {
 	favorites := make([]model.Favorite, 0, len(resourceIDs))
 	for _, id := range resourceIDs {
-		favorites = append(favorites, model.Favorite{
-			UserID:     userID,
-			ResourceID: id,
-		})
+		favorites = append(favorites, model.Favorite{UserID: userID, ResourceID: id})
 	}
-	return s.db.WithContext(c).Create(&favorites).Error
+	return s.db.WithContext(c).Clauses(clause.OnConflict{DoNothing: true}).Create(&favorites).Error
 }
 
 func (s *FavoriteService) RemoveFavorite(c context.Context, userID string, resourceIDs jsontypes.StringInt64Slice) error {

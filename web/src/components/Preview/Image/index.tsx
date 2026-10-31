@@ -15,6 +15,7 @@ const Image: React.FC<{ data: TypeResource.DTO }> = ({ data }) => {
   const toFolder = useToFolder();
 
   const offset = useRef({ top: 0, left: 0, offsetX: 0, offsetY: 0 });
+  const rotate = useRef(0);
 
   const ref = useRef<HTMLImageElement>(null!);
   const container = useRef<HTMLDivElement>(null!);
@@ -43,31 +44,17 @@ const Image: React.FC<{ data: TypeResource.DTO }> = ({ data }) => {
   }
 
   function onLoad() {
+    rotate.current = 0;
     ref.current.style.height = "auto";
     ref.current.style.width = `${container.current.clientWidth / 2}px`;
-    ref.current.style.transform = ``;
+    ref.current.style.transform = `rotate(0deg)`;
     ref.current.style.top = `calc(50% - ${ref.current.offsetHeight / 2}px)`;
     ref.current.style.left = `calc(50% - ${ref.current.offsetWidth / 2}px)`;
   }
 
   function onRotate() {
-    const { transform } = ref.current.style;
-    let rotate = "";
-    switch (transform) {
-      case "rotate(90deg)":
-        rotate = "";
-        break;
-      case "rotate(180deg)":
-        rotate = "rotate(90deg)";
-        break;
-      case "rotate(270deg)":
-        rotate = "rotate(180deg)";
-        break;
-      default:
-        rotate = "rotate(270deg)";
-        break;
-    }
-    ref.current.style.transform = rotate;
+    rotate.current += 90;
+    ref.current.style.transform = `rotate(${rotate.current}deg)`;
   }
 
   function onMouseDown(e: React.MouseEvent<HTMLDivElement>) {

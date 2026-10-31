@@ -8,17 +8,17 @@ import type { TypeRecycle } from "@/interface/recycle";
  * @name getRecycles “回收站资源” 列表
  */
 export function getRecycles() {
-  return request<TypeRecycle.DTO[]>("recovery", {
+  return request<TypeRecycle.DTO[]>("recycle", {
     method: ENUM_HTTP.REQUEST_MODE.GET,
     proxy: ENUM_HTTP.PROXY.RECOVERY,
   });
 }
 
 /**
- * @name deleteRecycles 删除 “回收站资源”
+ * @name deleteRecycles 将资源移动至 “资源回收站”
  */
 export function deleteRecycles(data: TypeRecycle.ReqDelete) {
-  return request<boolean>("recovery", {
+  return request<boolean>("recycle", {
     method: ENUM_HTTP.REQUEST_MODE.DELETE,
     proxy: ENUM_HTTP.PROXY.RECOVERY,
     data,
@@ -30,7 +30,7 @@ export function deleteRecycles(data: TypeRecycle.ReqDelete) {
  * @name recoverRecycles 恢复 “回收站资源”
  */
 export function recoverRecycles(data: TypeRecycle.ReqRecover) {
-  return request<boolean>("recovery", {
+  return request<boolean>("recycle", {
     method: ENUM_HTTP.REQUEST_MODE.POST,
     proxy: ENUM_HTTP.PROXY.RECOVERY,
     data,
@@ -42,7 +42,7 @@ export function recoverRecycles(data: TypeRecycle.ReqRecover) {
  * @name recoverRecycles 检查 “回收站资源” 上级目录是否存在
  */
 export function checkRecycles(params: TypeRecycle.ReqCheck) {
-  return request<TypeRecycle.ResCheck>("recovery/check", {
+  return request<TypeRecycle.ResCheck>("recycle/check", {
     method: ENUM_HTTP.REQUEST_MODE.GET,
     proxy: ENUM_HTTP.PROXY.RECOVERY,
     params,

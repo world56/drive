@@ -34,7 +34,7 @@ const MultipleChoices: React.FC<TypeMultipleChoicesProps> = ({
   const { selects } = useStore("resource");
 
   const obj = useMemo(() => {
-    const length = data.length;
+    const length = data?.length || 0;
     const map: Record<TypeResource.DTO["id"], TypeResource.DTO> = {};
     for (let i = 0; i < length; i++) map[data[i].id] = data[i];
     return map;
@@ -47,8 +47,8 @@ const MultipleChoices: React.FC<TypeMultipleChoicesProps> = ({
     () =>
       selectKeys.length
         ? selectKeys.filter(
-            (id) => obj[id]?.favorite === ENUM_RESOURCE.FAVORITE.ENABLE,
-          ).length === selectKeys.length
+          (id) => obj[id]?.favorite === ENUM_RESOURCE.FAVORITE.ENABLE,
+        ).length === selectKeys.length
         : false,
     [selectKeys, obj],
   );

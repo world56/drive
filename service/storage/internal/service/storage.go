@@ -16,7 +16,6 @@ import (
 	"strconv"
 
 	amqp "github.com/rabbitmq/amqp091-go"
-
 	"github.com/redis/go-redis/v9"
 
 	"github.com/minio/minio-go/v7"
@@ -66,7 +65,7 @@ func (s *StorageService) clearFirstChunk(c context.Context, isFirst bool, info d
 	}
 }
 
-func (s *StorageService) Write(c context.Context, userID string, stream multipart.File, size int64, info dto.File) (bool, error) {
+func (s *StorageService) Write(c context.Context, userID string, stream multipart.File, size int64, info dto.File) (string, error) {
 	BUCKET := s.config.MINIO_BUCKET
 	// 单个文件直接上传
 	if info.Total == 1 {
@@ -75,7 +74,7 @@ func (s *StorageService) Write(c context.Context, userID string, stream multipar
 			ContentType: s.detectContentType(info.Name),
 		})
 		if err != nil {
-			return false, err
+			return "", err
 		} else {
 			if err := s.rabbitmq.Publish(c, rabbitmq.PublishOptions{
 				RoutingKey:  "upload",
@@ -83,7 +82,6 @@ func (s *StorageService) Write(c context.Context, userID string, stream multipar
 				ContentType: "application/protobuf",
 				Headers:     amqp.Table{"UserID": userID},
 				Message: &assetpb.Resource{
-					ID:         info.ID,
 					Name:       info.Name,
 					Size:       info.Size,
 					Path:       info.Path,
@@ -91,9 +89,9 @@ func (s *StorageService) Write(c context.Context, userID string, stream multipar
 					ObjectName: info.ObjectName,
 				},
 			}); err != nil {
-				return false, err
+				return "", err
 			} else {
-				return true, nil
+				return info.ObjectName, nil
 			}
 		}
 	} else {
@@ -107,14 +105,14 @@ func (s *StorageService) Write(c context.Context, userID string, stream multipar
 				ContentType: s.detectContentType(info.Name),
 			})
 			if err != nil {
-				return false, err
+				return "", err
 			}
 			info.UploadID = ID
 		} else {
 			var cache dto.File
 			err := s.redis.HGetAll(c, `drive:write:`+info.ID).Scan(&cache)
 			if err != nil {
-				return false, err
+				return "", err
 			}
 			info.Name = cache.Name
 			info.UploadID = cache.UploadID
@@ -125,20 +123,20 @@ func (s *StorageService) Write(c context.Context, userID string, stream multipar
 		_, err := s.minio.PutObjectPart(c, BUCKET, info.ObjectName, info.UploadID, info.Index, stream, size, minioSDK.PutObjectPartOptions{})
 		if err != nil {
 			s.clearFirstChunk(c, IS_FIRST_CHUNK, info)
-			return false, err
+			return "", err
 		}
 
 		_, rErr := s.redis.HSet(c, `drive:write:`+info.ID, info).Result()
 		if rErr != nil {
 			s.clearFirstChunk(c, IS_FIRST_CHUNK, info)
-			return false, rErr
+			return "", rErr
 		}
 
 		// 全部完成
 		if IS_COMPLETED {
 			parts, err := s.minio.ListObjectParts(c, BUCKET, info.ObjectName, info.UploadID, 0, info.Total)
 			if err != nil {
-				return false, err
+				return "", err
 			}
 
 			var mergeParts []minio.CompletePart
@@ -148,17 +146,15 @@ func (s *StorageService) Write(c context.Context, userID string, stream multipar
 
 			_, err = s.minio.CompleteMultipartUpload(c, BUCKET, info.ObjectName, info.UploadID, mergeParts, minio.PutObjectOptions{})
 			if err != nil {
-				return false, err
+				return "", err
 			}
 
-			s.redis.Del(c, `drive:write:`+info.ID)
 			if err := s.rabbitmq.Publish(c, rabbitmq.PublishOptions{
 				RoutingKey:  "upload",
 				Exchange:    "resource",
 				ContentType: "application/protobuf",
 				Headers:     amqp.Table{"UserID": userID},
 				Message: &assetpb.Resource{
-					ID:         info.ID,
 					Name:       info.Name,
 					Size:       info.Size,
 					Path:       info.Path,
@@ -166,33 +162,42 @@ func (s *StorageService) Write(c context.Context, userID string, stream multipar
 					ObjectName: info.ObjectName,
 				},
 			}); err != nil {
-				return false, err
+				return "", err
 			} else {
-				return true, nil
+				s.redis.Del(c, `drive:write:`+info.ID)
+				return info.ObjectName, nil
 			}
 		}
 
-		return false, nil
+		return "", nil
 	}
 }
 
-func (s *StorageService) Download(c context.Context, ID string, userID string) (minioSDK.ObjectInfo, io.ReadCloser, string, error) {
-	objectName, fullName, err := s.grpcClient.Resource.GetResourceInfo(ID, userID)
-	if err != nil {
-		return minioSDK.ObjectInfo{}, nil, "", err
-	}
-
-	object, read, err := s.Read(c, objectName)
-	return object, read, fullName, err
+func (s *StorageService) Download(c context.Context, ID string, userID string) (string, string, error) {
+	return s.grpcClient.Resource.GetResourceInfo(ID, userID)
 }
 
-func (s *StorageService) Read(c context.Context, objectName string) (minioSDK.ObjectInfo, io.ReadCloser, error) {
-	read, object, _, err := s.minio.GetObject(c, s.config.MINIO_BUCKET, objectName, minio.GetObjectOptions{})
+func (s *StorageService) Stat(c context.Context, objectName string) (size int64, contentType string, err error) {
+	info, err := s.minio.Client.StatObject(c, s.config.MINIO_BUCKET, objectName, minio.StatObjectOptions{})
 	if err != nil {
-		return minioSDK.ObjectInfo{}, nil, err
+		return 0, "", err
 	}
+	ct := info.ContentType
+	if ct == "" {
+		ct = "application/octet-stream"
+	}
+	return info.Size, ct, nil
+}
 
-	return object, read, nil
+func (s *StorageService) Open(c context.Context, objectName string, start, end int64) (io.ReadCloser, error) {
+	opts := minio.GetObjectOptions{}
+	if start >= 0 && end >= start {
+		if err := opts.SetRange(start, end); err != nil {
+			return nil, err
+		}
+	}
+	body, _, _, err := s.minio.GetObject(c, s.config.MINIO_BUCKET, objectName, opts)
+	return body, err
 }
 
 func (s *StorageService) Delete(c context.Context) {}

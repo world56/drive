@@ -68,7 +68,7 @@ func (x *Count) GetCount() map[string]int64 {
 
 type Resource struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	ID            string                 `protobuf:"bytes,1,opt,name=ID,proto3" json:"ID,omitempty"`
+	ID            int64                  `protobuf:"varint,1,opt,name=ID,proto3" json:"ID,omitempty"`
 	Name          string                 `protobuf:"bytes,2,opt,name=Name,proto3" json:"Name,omitempty"`
 	ParentID      *int64                 `protobuf:"varint,3,opt,name=ParentID,proto3,oneof" json:"ParentID,omitempty"`
 	ObjectName    string                 `protobuf:"bytes,4,opt,name=ObjectName,proto3" json:"ObjectName,omitempty"`
@@ -110,11 +110,11 @@ func (*Resource) Descriptor() ([]byte, []int) {
 	return file_asset_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *Resource) GetID() string {
+func (x *Resource) GetID() int64 {
 	if x != nil {
 		return x.ID
 	}
-	return ""
+	return 0
 }
 
 func (x *Resource) GetName() string {
@@ -266,7 +266,7 @@ const file_asset_proto_rawDesc = "" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\x03R\x05value:\x028\x01\"\xe6\x01\n" +
 	"\bResource\x12\x0e\n" +
-	"\x02ID\x18\x01 \x01(\tR\x02ID\x12\x12\n" +
+	"\x02ID\x18\x01 \x01(\x03R\x02ID\x12\x12\n" +
 	"\x04Name\x18\x02 \x01(\tR\x04Name\x12\x1f\n" +
 	"\bParentID\x18\x03 \x01(\x03H\x00R\bParentID\x88\x01\x01\x12\x1e\n" +
 	"\n" +
@@ -281,9 +281,8 @@ const file_asset_proto_rawDesc = "" +
 	"\x11ResourcePrimaryID\x12\x0e\n" +
 	"\x02ID\x18\x01 \x01(\tR\x02ID\"0\n" +
 	"\tResources\x12#\n" +
-	"\x04data\x18\x01 \x03(\v2\x0f.asset.ResourceR\x04data2\xf8\x01\n" +
-	"\x0fResourceService\x126\n" +
-	"\tWriteDone\x12\x0f.asset.Resource\x1a\x16.google.protobuf.Empty\"\x00\x12>\n" +
+	"\x04data\x18\x01 \x03(\v2\x0f.asset.ResourceR\x04data2\xc0\x01\n" +
+	"\x0fResourceService\x12>\n" +
 	"\x0fGetResourceInfo\x12\x18.asset.ResourcePrimaryID\x1a\x0f.asset.Resource\"\x00\x122\n" +
 	"\bGetCount\x12\x16.google.protobuf.Empty\x1a\f.asset.Count\"\x00\x129\n" +
 	"\vGetRecently\x12\x16.google.protobuf.Empty\x1a\x10.asset.Resources\"\x002L\n" +
@@ -314,18 +313,16 @@ var file_asset_proto_goTypes = []any{
 var file_asset_proto_depIdxs = []int32{
 	4, // 0: asset.Count.count:type_name -> asset.Count.CountEntry
 	1, // 1: asset.Resources.data:type_name -> asset.Resource
-	1, // 2: asset.ResourceService.WriteDone:input_type -> asset.Resource
-	2, // 3: asset.ResourceService.GetResourceInfo:input_type -> asset.ResourcePrimaryID
-	5, // 4: asset.ResourceService.GetCount:input_type -> google.protobuf.Empty
-	5, // 5: asset.ResourceService.GetRecently:input_type -> google.protobuf.Empty
-	5, // 6: asset.FavoriteService.GetFavorite:input_type -> google.protobuf.Empty
-	5, // 7: asset.ResourceService.WriteDone:output_type -> google.protobuf.Empty
-	1, // 8: asset.ResourceService.GetResourceInfo:output_type -> asset.Resource
-	0, // 9: asset.ResourceService.GetCount:output_type -> asset.Count
-	3, // 10: asset.ResourceService.GetRecently:output_type -> asset.Resources
-	3, // 11: asset.FavoriteService.GetFavorite:output_type -> asset.Resources
-	7, // [7:12] is the sub-list for method output_type
-	2, // [2:7] is the sub-list for method input_type
+	2, // 2: asset.ResourceService.GetResourceInfo:input_type -> asset.ResourcePrimaryID
+	5, // 3: asset.ResourceService.GetCount:input_type -> google.protobuf.Empty
+	5, // 4: asset.ResourceService.GetRecently:input_type -> google.protobuf.Empty
+	5, // 5: asset.FavoriteService.GetFavorite:input_type -> google.protobuf.Empty
+	1, // 6: asset.ResourceService.GetResourceInfo:output_type -> asset.Resource
+	0, // 7: asset.ResourceService.GetCount:output_type -> asset.Count
+	3, // 8: asset.ResourceService.GetRecently:output_type -> asset.Resources
+	3, // 9: asset.FavoriteService.GetFavorite:output_type -> asset.Resources
+	6, // [6:10] is the sub-list for method output_type
+	2, // [2:6] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name
 	2, // [2:2] is the sub-list for extension extendee
 	0, // [0:2] is the sub-list for field type_name

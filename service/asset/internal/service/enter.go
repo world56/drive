@@ -8,13 +8,17 @@ import (
 )
 
 type Service struct {
+	RecycleService  *RecycleService
 	ResourceService *ResourceService
 	FavoriteService *FavoriteService
 }
 
 func NewService(db *gorm.DB, redis *redis.Client, grpcClient *grpcclient.GrpcClient) *Service {
+	resourceService := newResourceService(db, redis, grpcClient)
+
 	return &Service{
-		ResourceService: newResourceService(db, redis, grpcClient),
+		ResourceService: resourceService,
 		FavoriteService: newFavoriteService(db),
+		RecycleService:  newRecycleService(db, resourceService),
 	}
 }
