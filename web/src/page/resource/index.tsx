@@ -6,7 +6,7 @@ import Folder from "./components/Folder";
 import styles from "./index.module.sass";
 import { useEffect, useState } from "react";
 import { getResources } from "@/api/resource";
-import { deleteRecycles } from '@/api/recycle';
+import { moveToRecycles } from '@/api/recycle';
 import Attributes from "./components/Attributes";
 import MultipleChoices from "./components/MultipleChoices";
 import { createUpload, downloadFile } from "@/utils/resource";
@@ -66,7 +66,7 @@ const Resource = () => {
       case ENUM_RESOURCE.MENU.OPEN:
         return resource.foldersObj[id!] && toFolder(id);
       case ENUM_RESOURCE.MENU.DELETE:
-        await deleteRecycles({ ids });
+        await moveToRecycles({ ids });
         actions.getFolders();
         actions.setSelect({});
         return run();

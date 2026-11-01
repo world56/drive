@@ -45,11 +45,14 @@ func New() (*App, error) {
 		return a, err
 	}
 
-	if a.GrpcClient, err = grpcclient.NewGrpcClients(a.Config.GRPC_STATS_ADDR); err != nil {
+	if a.GrpcClient, err = grpcclient.NewGrpcClient(
+		a.Config.GRPC_STATS_ADDR,
+		a.Config.GRPC_AUTH_ADDR,
+	); err != nil {
 		return a, err
 	}
 
-	a.Service = service.NewService(a.DB, a.Redis, a.GrpcClient)
+	a.Service = service.NewService(a.DB, a.Redis, a.GrpcClient, a.RabbitMQ)
 
 	return a, nil
 }

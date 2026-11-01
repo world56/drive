@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"storage/internal/app"
 )
@@ -15,5 +14,4 @@ func main() {
 	if err := a.RunGRPC(); err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(222)
 }

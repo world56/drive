@@ -4,7 +4,7 @@ import { useWindowSize } from "@/hooks";
 import { SyncOutlined } from "@ant-design/icons";
 import ResourceName from "@/components/Resource/Name";
 import { Space, Table, FloatButton, Typography, Popconfirm } from "antd";
-import { getRecycles, deleteRecycles, recoverRecycles } from "@/api/recycle";
+import { deleteRecycles, getRecycles, recoverRecycles } from "@/api/recycle";
 
 // import { ENUM_COMMON } from "@/enum/common";
 import { DB_PRIMARY_KEY } from "@/config/db";
@@ -34,12 +34,12 @@ const Recycle = () => {
   const { height } = useWindowSize();
 
   async function onDelete(row: TypeRecycle.DTO) {
-    await deleteRecycles({ ids: [row.id] });
+    await deleteRecycles({ ids: [row.resourceId] });
     run();
   }
 
   async function onRecover(row: TypeRecycle.DTO) {
-    await recoverRecycles({ ids: [row.id] });
+    await recoverRecycles({ ids: [row.resourceId] });
     run();
   }
 

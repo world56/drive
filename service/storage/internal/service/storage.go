@@ -27,7 +27,7 @@ type StorageService struct {
 	redis      *redis.Client
 	minio      *minioSDK.Core
 	rabbitmq   *mq.Client
-	grpcClient *grpcclient.GrpcClients
+	grpcClient *grpcclient.GrpcClient
 }
 
 func newStorageService(
@@ -35,7 +35,7 @@ func newStorageService(
 	redis *redis.Client,
 	minio *minioSDK.Core,
 	rabbitmq *mq.Client,
-	grpcClient *grpcclient.GrpcClients,
+	grpcClient *grpcclient.GrpcClient,
 ) *StorageService {
 	return &StorageService{
 		redis:      redis,
@@ -200,4 +200,24 @@ func (s *StorageService) Open(c context.Context, objectName string, start, end i
 	return body, err
 }
 
-func (s *StorageService) Delete(c context.Context) {}
+func (s *StorageService) Remove(c context.Context, objectNames []string) error {
+	if len(objectNames) == 0 {
+		return nil
+	}
+
+	ch := make(chan minio.ObjectInfo, len(objectNames))
+	go func() {
+		defer close(ch)
+		for _, objectName := range objectNames {
+			ch <- minio.ObjectInfo{Key: objectName}
+		}
+	}()
+
+	for err := range s.minio.Client.RemoveObjects(c, s.config.MINIO_BUCKET, ch, minio.RemoveObjectsOptions{}) {
+		if err.Err != nil {
+			return err.Err
+		}
+	}
+
+	return nil
+}

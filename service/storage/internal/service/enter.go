@@ -19,7 +19,7 @@ func NewService(
 	redis *redis.Client,
 	rabbitmq *mq.Client,
 	minio *minio.Client,
-	grpcClient *grpcclient.GrpcClients,
+	grpcClient *grpcclient.GrpcClient,
 ) *Service {
 	return &Service{
 		StatsService:   newStatsService(cfg.MINIO_BUCKET, minio),

@@ -7,6 +7,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 
 	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
@@ -87,10 +88,16 @@ func (s *UserService) GetUserByID(c context.Context, query dto.RequestFindString
 }
 
 func (s *UserService) CreateUser(c context.Context, body dto.RequestCreateUserDTO, userID string) (bool, error) {
+	var count int64
 	if err := s.db.WithContext(c).
+		Model(&model.User{}).
 		Where("account = ?", body.Account).
-		First(&model.User{}).
+		Count(&count).
 		Error; err == nil {
+		fmt.Println(err)
+		return false, err
+	}
+	if count > 0 {
 		return false, errors.New("Account already exists")
 	}
 
@@ -114,9 +121,9 @@ func (s *UserService) CreateUser(c context.Context, body dto.RequestCreateUserDT
 		Account:  body.Account,
 		Remark:   body.Remark,
 		Contact:  body.Contact,
-		Status:   enum.UserStatusActive,
 		Password: passwordHash,
 		Role:     enum.UserRoleRegular,
+		Status:   enum.UserStatusActive,
 	}).Error; err != nil {
 		return false, err
 	}

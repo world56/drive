@@ -6,5 +6,5 @@ import (
 )
 
 func RegisterMQConsumers(client *mq.Client, svc *service.Service) error {
-	return NewResourceConsumer(client, svc.ResourceService).Run()
+	return newAssetConsumer(client, svc.ResourceService).Run()
 }

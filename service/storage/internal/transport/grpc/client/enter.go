@@ -1,21 +1,21 @@
 package grpcclient
 
-type GrpcClients struct {
+type GrpcClient struct {
 	Resource *ResourceGrpcClient
 }
 
-func NewGrpcClients(assetAddr string) (*GrpcClients, error) {
+func NewGrpcClient(assetAddr string) (*GrpcClient, error) {
 	resource, err := newResourceGrpcClient(assetAddr)
 	if err != nil {
 		return nil, err
 	}
 
-	return &GrpcClients{
+	return &GrpcClient{
 		Resource: resource,
 	}, nil
 }
 
-func (s *GrpcClients) Close() error {
+func (s *GrpcClient) Close() error {
 	if s.Resource != nil {
 		return s.Resource.Close()
 	}

@@ -1,11 +1,15 @@
 package service
 
 import (
+	storagepb "api/storage"
 	"asset/internal/dto"
 	"asset/internal/enum"
 	"asset/internal/model"
+	"asset/internal/pkg/mq"
+	rabbitmq "common/rabbitmq"
 	"common/utils/jsontypes"
 	"context"
+	"fmt"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -13,12 +17,21 @@ import (
 
 type RecycleService struct {
 	db              *gorm.DB
+	rabbitmq        *mq.Client
 	resourceService *ResourceService
+	favoriteService *FavoriteService
 }
 
-func newRecycleService(db *gorm.DB, resourceService *ResourceService) *RecycleService {
+func newRecycleService(
+	db *gorm.DB,
+	rabbitmq *mq.Client,
+	resourceService *ResourceService,
+	favoriteService *FavoriteService,
+) *RecycleService {
 	return &RecycleService{
 		db:              db,
+		rabbitmq:        rabbitmq,
+		favoriteService: favoriteService,
 		resourceService: resourceService,
 	}
 }
@@ -88,6 +101,54 @@ func (s *RecycleService) RestoreResources(c context.Context, userID string, reso
 	})
 }
 
-func (s *RecycleService) RemoveRecycleBinResource(c context.Context) {
+func (s *RecycleService) RemoveRecycleBinResource(c context.Context, userID string, resourceIDs jsontypes.StringInt64Slice) error {
+	fmt.Println("@-1", resourceIDs)
+	var objectNames []string
+	if err := s.db.WithContext(c).Transaction(func(t *gorm.DB) error {
+		var resources []model.Resource
+		if err := t.Raw(`
+			WITH RECURSIVE tree AS (
+				SELECT id, object_name, parent_id, type FROM resources WHERE id IN ?
+				UNION ALL
+				SELECT r.id, r.object_name, r.parent_id, r.type FROM resources AS r
+				INNER JOIN tree AS p ON r.parent_id = p.id AND p.type = ?
+			)
+			SELECT id, type, object_name FROM tree
+		`, resourceIDs, enum.ResourceTypeFolder).Scan(&resources).Error; err != nil {
+			return err
+		}
 
+		resourcesIDs := make([]int64, 0, len(resources))
+		for _, resource := range resources {
+			resourcesIDs = append(resourcesIDs, resource.ID)
+			if resource.ObjectName != "" && resource.Type != enum.ResourceTypeFolder {
+				objectNames = append(objectNames, resource.ObjectName)
+			}
+		}
+		if err := s.resourceService.DeleteResources(c, t, resourcesIDs); err != nil {
+			return err
+		}
+		if err := t.Where("resource_id IN ?", resourcesIDs).Delete(&model.Recycle{}).Error; err != nil {
+			return err
+		}
+		if err := s.favoriteService.RemoveFavorites(c, t, resourcesIDs); err != nil {
+			return err
+		}
+
+		return nil
+	}); err != nil {
+		return err
+	}
+
+	if len(objectNames) == 0 {
+		return nil
+	}
+
+	return s.rabbitmq.Publish(c, rabbitmq.PublishOptions{
+		RoutingKey:  "remove",
+		Exchange:    "resource",
+		ContentType: "application/protobuf",
+		Headers:     map[string]interface{}{"UserID": userID},
+		Message:     &storagepb.ObjectNames{IDs: objectNames},
+	})
 }

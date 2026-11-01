@@ -74,7 +74,7 @@ func (s *FavoriteService) InsertFavorite(c context.Context, userID string, resou
 	return s.db.WithContext(c).Clauses(clause.OnConflict{DoNothing: true}).Create(&favorites).Error
 }
 
-func (s *FavoriteService) RemoveFavorite(c context.Context, userID string, resourceIDs jsontypes.StringInt64Slice) error {
+func (s *FavoriteService) RemoveUserFavorite(c context.Context, userID string, resourceIDs jsontypes.StringInt64Slice) error {
 	return s.db.WithContext(c).Where("resource_id IN ? AND user_id = ?", resourceIDs, userID).Delete(&model.Favorite{}).Error
 }
 
@@ -98,4 +98,8 @@ func (s *FavoriteService) GetFavorite(c context.Context) ([]*assetpb.Resource, e
 	} else {
 		return resources, nil
 	}
+}
+
+func (s *FavoriteService) RemoveFavorites(c context.Context, db *gorm.DB, resourceIDs []int64) error {
+	return db.Where("resource_id IN ?", resourceIDs).Delete(&model.Favorite{}).Error
 }

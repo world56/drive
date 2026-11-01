@@ -16,3 +16,7 @@ message SpaceUsage {
   int64 total = 2;
   int64 used  = 3;
 }
+
+message ObjectNames {
+  repeated string IDs = 1;
+}

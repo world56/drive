@@ -11,6 +11,8 @@ func registerRecycleRoutes(app *gin.RouterGroup, h *handler.RecycleHandler) {
 
 	{
 		route.GET("", h.FindRecycles)
-		route.DELETE("", h.MoveToRecycleBin)
+		route.POST("move", h.MoveToRecycleBin)
+		route.POST("restore", h.RestoreRecycleBinResources)
+		route.DELETE("delete", h.RemoveRecycleBinResource)
 	}
 }

@@ -108,8 +108,8 @@ func (s *ResourceService) GetResourceFolders(c context.Context) ([]dto.Resource,
 	return folders, nil
 }
 
-func (s *ResourceService) GetResourceDetail(c context.Context, query dto.RequestResourceDetail) (*dto.Resource, error) {
-	var resource *dto.Resource
+func (s *ResourceService) GetResourceDetail(c context.Context, query dto.RequestResourceDetail) (*dto.ReposesResourceDetail, error) {
+	var resource dto.ReposesResourceDetail
 	if err := s.db.WithContext(c).
 		Table("resources AS r").
 		Select(`
@@ -126,7 +126,12 @@ func (s *ResourceService) GetResourceDetail(c context.Context, query dto.Request
 		return nil, err
 	}
 
-	return resource, nil
+	user, _ := s.grpcClient.Auth.GetUserInfo(resource.CreatorID)
+	if user.Name != "" {
+		resource.CreatorName = user.Name
+	}
+
+	return &resource, nil
 }
 
 func (s *ResourceService) InsertResource(c context.Context, creatorID string, fullName, objectName string, parentID *int64, size int64, path string) (*model.Resource, error) {
@@ -319,34 +324,107 @@ func (s *ResourceService) UpdateRemoveStatus(
 	}
 
 	var resources []model.Resource
-	if err := db.Select("id", "type").
-		Where("id IN ?", resourceIDs).
-		Where("remove = ?", fromStatus).
-		Find(&resources).Error; err != nil {
+	if err := db.Raw(`
+		WITH RECURSIVE tree AS (
+			SELECT id, type FROM resources WHERE id IN ? AND remove = ?
+			UNION ALL
+			SELECT r.id, r.type FROM resources AS r
+			INNER JOIN tree AS t ON r.parent_id = t.id AND t.type = ?
+			WHERE r.remove = ?
+		)
+		SELECT id, type FROM tree
+	`, resourceIDs, fromStatus, enum.ResourceTypeFolder, fromStatus).Scan(&resources).Error; err != nil {
 		return err
 	}
-
-	if err := db.
-		Model(&model.Resource{}).
-		Where("id IN ?", resourceIDs).
-		Update("remove", removeStatus).Error; err != nil {
-		return err
+	if len(resources) == 0 {
+		return nil
 	}
 
-	counts := make(map[int8]int32)
-	for _, v := range resources {
+	ids := make([]int64, len(resources))
+	counts := make(map[int8]int32, len(resources))
+	for i, v := range resources {
+		ids[i] = v.ID
 		counts[v.Type]++
+	}
+
+	// 恢复时先处理孤儿数据
+	if removeStatus == enum.ResourceNormal {
+		if err := reOrphansToRoot(db, ids); err != nil {
+			return err
+		}
+	}
+
+	if err := db.Model(&model.Resource{}).Where("id IN ?", ids).Update("remove", removeStatus).Error; err != nil {
+		return err
 	}
 
 	CALC := "ADD"
 	if removeStatus == enum.ResourceRecycled {
 		CALC = "REDUCE"
 	}
+	go s.grpcClient.Stats.UpdateAssetCount(CALC, counts)
+	return nil
+}
 
-	if len(counts) > 0 {
-		go s.grpcClient.Stats.UpdateAssetCount(CALC, counts)
+func (s *ResourceService) DeleteResources(c context.Context, db *gorm.DB, resourceIDs []int64) error {
+	return db.Where("id IN ?", resourceIDs).Delete(&model.Resource{}).Error
+}
+
+// 挂主目录 重名处理
+func reOrphansToRoot(db *gorm.DB, ids []int64) error {
+	var orphans []model.Resource
+	if err := db.Raw(`
+		SELECT r.id, r.full_name, r.type
+		FROM resources r
+		WHERE r.id IN ?
+		  AND r.parent_id IS NOT NULL
+		  AND NOT EXISTS (
+			SELECT 1 FROM resources p
+			WHERE p.id = r.parent_id AND (p.remove = ? OR p.id IN ?)
+		  )
+	`, ids, enum.ResourceNormal, ids).Scan(&orphans).Error; err != nil || len(orphans) == 0 {
+		return err
+	}
+
+	var rootNames []string
+	if err := db.Model(&model.Resource{}).Where("parent_id IS NULL").Pluck("full_name", &rootNames).Error; err != nil {
+		return err
+	}
+	used := make(map[string]struct{}, len(rootNames)+len(orphans))
+	for _, n := range rootNames {
+		used[n] = struct{}{}
+	}
+
+	for _, o := range orphans {
+		name, fullName := allocRootName(o.FullName, o.Type, used)
+		used[fullName] = struct{}{}
+		if err := db.Exec(
+			`UPDATE resources SET name = ?, full_name = ?, parent_id = NULL WHERE id = ?`,
+			name, fullName, o.ID,
+		).Error; err != nil {
+			return err
+		}
 	}
 	return nil
+}
+
+func allocRootName(fullName string, typ int8, used map[string]struct{}) (string, string) {
+	ext := ""
+	base := fullName
+	if typ != enum.ResourceTypeFolder {
+		ext = filepath.Ext(fullName)
+		base = strings.TrimSuffix(fullName, ext)
+	}
+	for n := 1; ; n++ {
+		name := base
+		if n > 1 {
+			name = base + " " + strconv.Itoa(n)
+		}
+		out := name + ext
+		if _, ok := used[out]; !ok {
+			return name, out
+		}
+	}
 }
 
 // 批量上传创建文件夹

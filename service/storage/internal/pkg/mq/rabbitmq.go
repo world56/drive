@@ -24,6 +24,11 @@ func InitRabbitMQ(url string) (client *Client, err error) {
 		return nil, err
 	}
 
+	if err := conn.Ensure("direct", "resource", "remove", "remove"); err != nil {
+		conn.Close()
+		return nil, err
+	}
+
 	publisher, err := conn.NewPublisher()
 	if err != nil {
 		conn.Close()

@@ -15,11 +15,11 @@ export function getRecycles() {
 }
 
 /**
- * @name deleteRecycles 将资源移动至 “资源回收站”
+ * @name moveToRecycles 将资源移动至 “资源回收站”
  */
-export function deleteRecycles(data: TypeRecycle.ReqDelete) {
-  return request<boolean>("recycle", {
-    method: ENUM_HTTP.REQUEST_MODE.DELETE,
+export function moveToRecycles(data: TypeRecycle.ReqDelete) {
+  return request<boolean>("recycle/move", {
+    method: ENUM_HTTP.REQUEST_MODE.POST,
     proxy: ENUM_HTTP.PROXY.RECOVERY,
     data,
     message: "操作完成",
@@ -30,7 +30,7 @@ export function deleteRecycles(data: TypeRecycle.ReqDelete) {
  * @name recoverRecycles 恢复 “回收站资源”
  */
 export function recoverRecycles(data: TypeRecycle.ReqRecover) {
-  return request<boolean>("recycle", {
+  return request<boolean>("recycle/restore", {
     method: ENUM_HTTP.REQUEST_MODE.POST,
     proxy: ENUM_HTTP.PROXY.RECOVERY,
     data,
@@ -39,12 +39,24 @@ export function recoverRecycles(data: TypeRecycle.ReqRecover) {
 }
 
 /**
- * @name recoverRecycles 检查 “回收站资源” 上级目录是否存在
+ * @name deleteRecycles 删除 “回收站资源”
  */
-export function checkRecycles(params: TypeRecycle.ReqCheck) {
-  return request<TypeRecycle.ResCheck>("recycle/check", {
-    method: ENUM_HTTP.REQUEST_MODE.GET,
+export function deleteRecycles(data: TypeRecycle.ReqRecover) {
+  return request<boolean>("recycle/delete", {
+    method: ENUM_HTTP.REQUEST_MODE.DELETE,
     proxy: ENUM_HTTP.PROXY.RECOVERY,
-    params,
+    data,
+    message: "操作成功",
   });
 }
+
+// /**
+//  * @name recoverRecycles 检查 “回收站资源” 上级目录是否存在
+//  */
+// export function checkRecycles(params: TypeRecycle.ReqCheck) {
+//   return request<TypeRecycle.ResCheck>("recycle/check", {
+//     method: ENUM_HTTP.REQUEST_MODE.GET,
+//     proxy: ENUM_HTTP.PROXY.RECOVERY,
+//     params,
+//   });
+// }

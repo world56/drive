@@ -35,6 +35,11 @@ type ReposesResource struct {
 	Favorite int8 `json:"favorite"`
 }
 
+type ReposesResourceDetail struct {
+	Resource
+	CreatorName string `json:"creatorName"`
+}
+
 type RequestFiles struct {
 	ID    *string           `form:"id,omitempty"`
 	Order enum.SortType     `form:"order" binding:"oneof=ASC DESC"`

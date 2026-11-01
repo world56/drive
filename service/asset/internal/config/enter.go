@@ -11,6 +11,7 @@ type Config struct {
 	REDIS_URL       string
 	RABBITMQ_URL    string
 	GRPC_STATS_ADDR string
+	GRPC_AUTH_ADDR  string
 }
 
 func Load() Config {
@@ -23,5 +24,6 @@ func Load() Config {
 		GRPC_ADDR:       env.GetEnv("GRPC_ADDR"),
 		RABBITMQ_URL:    env.GetEnv("RABBITMQ_URL"),
 		GRPC_STATS_ADDR: env.GetEnv("GRPC_STATS_ADDR"),
+		GRPC_AUTH_ADDR:  env.GetEnv("GRPC_AUTH_ADDR"),
 	}
 }

@@ -3,13 +3,12 @@ import { filesize } from "filesize";
 import { useRequest } from "ahooks";
 import { toTime } from "@/utils/format";
 import styles from "./index.module.sass";
-import { useNavigate } from "react-router-dom";
 import { Button, Input, Radio, Table } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
-import { useToFolder, useWindowSize } from "@/hooks";
 import ResourceName from "@/components/Resource/Name";
 import ResourcesSelect from "@/components/Resource/Select";
 import { getFavorites, removeFavorite } from "@/api/favorite";
+import { useToFolder, usePreviewFile, useWindowSize } from "@/hooks";
 
 import { ENUM_COMMON } from "@/enum/common";
 import { DB_PRIMARY_KEY } from "@/config/db";
@@ -28,9 +27,10 @@ const Favorite = () => {
     createTime: ENUM_COMMON.SORT.DESC,
   });
 
-  const nav = useNavigate();
-  const toFolder = useToFolder();
   const { height } = useWindowSize();
+
+  const toFolder = useToFolder();
+  const onPreviewFile = usePreviewFile();
 
   const { data, run, loading } = useRequest(() => getFavorites(search), {
     debounceWait: 1000,
@@ -39,16 +39,15 @@ const Favorite = () => {
   });
 
   async function onCancel(row: TypeFavorite.DTO) {
-    await removeFavorite({ ids: [row.id] });
+    await removeFavorite({ ids: [row.resourceId] });
     run();
   }
 
   function onOpen(row: TypeFavorite.DTO) {
     if (row.type === ENUM_RESOURCE.TYPE.FOLDER) {
-      toFolder(row.resourceId);
-      nav(`/resource/${row.parentId}`);
-    } else {
+      return toFolder(row.resourceId);
     }
+    onPreviewFile({ ...row, id: row.resourceId });
   }
 
   const columns = [

@@ -58,7 +58,7 @@ func (f *FavoriteHandler) RemoveFavorite(c *gin.Context) {
 	}
 
 	user := request.GetCurrentUser(c)
-	if err := f.favoriteService.RemoveFavorite(c.Request.Context(), user.ID, body.IDs); err == nil {
+	if err := f.favoriteService.RemoveUserFavorite(c.Request.Context(), user.ID, body.IDs); err == nil {
 		response.Success(c, true)
 	} else {
 		response.ServerError(c, err)

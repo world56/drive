@@ -43,6 +43,32 @@ func (r *RecycleHandler) MoveToRecycleBin(c *gin.Context) {
 	}
 }
 
-func (r *RecycleHandler) RemoveRecycleBinResource(c *gin.Context) {
+func (r *RecycleHandler) RestoreRecycleBinResources(c *gin.Context) {
+	var query dto.RequestRecycleIds
+	if err := c.ShouldBindJSON(&query); err != nil {
+		response.ClientError(c, err)
+		return
+	}
 
+	user := request.GetCurrentUser(c)
+	if err := r.recycleService.RestoreResources(c.Request.Context(), user.ID, query.IDs); err != nil {
+		response.ServerError(c, err)
+	} else {
+		response.Success(c, true)
+	}
+}
+
+func (r *RecycleHandler) RemoveRecycleBinResource(c *gin.Context) {
+	var query dto.RequestRecycleIds
+	if err := c.ShouldBindJSON(&query); err != nil {
+		response.ClientError(c, err)
+		return
+	}
+
+	user := request.GetCurrentUser(c)
+	if err := r.recycleService.RemoveRecycleBinResource(c.Request.Context(), user.ID, query.IDs); err != nil {
+		response.ServerError(c, err)
+	} else {
+		response.Success(c, true)
+	}
 }

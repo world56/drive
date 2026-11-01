@@ -14,10 +14,11 @@ func main() {
 	}
 	defer a.Close()
 
-	ch := make(chan error, 2)
+	ch := make(chan error, 3)
 
 	go func() { ch <- a.RunHTTP() }()
 	go func() { ch <- a.RunGRPC() }()
+	go func() { ch <- a.RunMQConsumer() }()
 
 	err = <-ch
 	if err != nil {

@@ -30,8 +30,8 @@ export namespace TypeResource {
     paths?: Array<Pick<DTO, "id" | "name">>;
     /** @param creatorId 创建、上传人 */
     creatorId: TypeUser.DTO["id"];
-    /** @param creator 创建、上传人详情 */
-    creator?: Pick<TypeUser.DTO, "id" | "name">;
+    /** @param creatorName 创建、上传人详情 */
+    creatorName: TypeUser.DTO["name"];
     /** @param count 下载次数 */
     count: number;
     /** @param favorite 收藏 */

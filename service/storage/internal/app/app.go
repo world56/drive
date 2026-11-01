@@ -20,7 +20,7 @@ type App struct {
 	Minio      *minio.Client
 	Service    *service.Service
 	RabbitMQ   *mq.Client
-	GrpcClient *grpcclient.GrpcClients
+	GrpcClient *grpcclient.GrpcClient
 }
 
 func New() (*App, error) {
@@ -33,7 +33,7 @@ func New() (*App, error) {
 		return a, err
 	}
 
-	if a.GrpcClient, err = grpcclient.NewGrpcClients(a.Config.GRPC_ASSET_ADDR); err != nil {
+	if a.GrpcClient, err = grpcclient.NewGrpcClient(a.Config.GRPC_ASSET_ADDR); err != nil {
 		return a, err
 	}
 
@@ -67,9 +67,11 @@ func (a *App) Close() {
 	if a.Redis != nil {
 		a.Redis.Close()
 	}
+
 	if a.RabbitMQ != nil {
 		a.RabbitMQ.Close()
 	}
+
 	if a.GrpcClient != nil {
 		a.GrpcClient.Close()
 	}
