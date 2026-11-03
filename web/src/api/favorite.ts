@@ -10,7 +10,7 @@ import type { TypeFavorite } from "@/interface/favorite";
 export function getFavorites(params: TypeFavorite.ReqFavorites) {
   return request<TypeFavorite.DTO[]>("favorite/list", {
     method: ENUM_HTTP.REQUEST_MODE.GET,
-    proxy: ENUM_HTTP.PROXY.FAVORITE,
+    proxy: ENUM_HTTP.PROXY.ASSET,
     params,
   });
 }
@@ -21,7 +21,7 @@ export function getFavorites(params: TypeFavorite.ReqFavorites) {
 export function updateFavorite(data: TypeFavorite.Insert) {
   return request<boolean>(`favorite/insert`, {
     method: ENUM_HTTP.REQUEST_MODE.POST,
-    proxy: ENUM_HTTP.PROXY.FAVORITE,
+    proxy: ENUM_HTTP.PROXY.ASSET,
     message: '收藏成功',
     data
   });
@@ -33,7 +33,7 @@ export function updateFavorite(data: TypeFavorite.Insert) {
 export function removeFavorite(data: TypeFavorite.Remove) {
   return request<boolean>(`favorite/remove`, {
     method: ENUM_HTTP.REQUEST_MODE.DELETE,
-    proxy: ENUM_HTTP.PROXY.FAVORITE,
+    proxy: ENUM_HTTP.PROXY.ASSET,
     data
   });
 }

@@ -60,9 +60,7 @@ func (c Config) Routes() []Route {
 				"/api/auth/account/register",
 			},
 		},
-		{Prefix: "/api/explorer", Upstream: c.UPSTREAM_ASSET, Auth: true},
-		{Prefix: "/api/favorite", Upstream: c.UPSTREAM_ASSET, Auth: true},
-		{Prefix: "/api/recovery", Upstream: c.UPSTREAM_ASSET, Auth: true},
+		{Prefix: "/api/asset", Upstream: c.UPSTREAM_ASSET, Auth: true},
 		{Prefix: "/api/stats", Upstream: c.UPSTREAM_STATS, Auth: true},
 		{Prefix: "/api/storage", Upstream: c.UPSTREAM_STORAGE, Auth: true},
 	}

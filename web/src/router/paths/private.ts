@@ -46,12 +46,12 @@ const privateRoutes = [
     path: "/recycle",
     element: lazy(() => import("@/page/recycle")),
   },
-  {
-    title: "设置",
-    icon: ToolOutlined,
-    path: "/system",
-    element: lazy(() => import("@/page/system")),
-  },
+  // {
+  //   title: "设置",
+  //   icon: ToolOutlined,
+  //   path: "/system",
+  //   element: lazy(() => import("@/page/system")),
+  // },
 ];
 
 export default privateRoutes;

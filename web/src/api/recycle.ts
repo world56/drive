@@ -10,7 +10,7 @@ import type { TypeRecycle } from "@/interface/recycle";
 export function getRecycles() {
   return request<TypeRecycle.DTO[]>("recycle", {
     method: ENUM_HTTP.REQUEST_MODE.GET,
-    proxy: ENUM_HTTP.PROXY.RECOVERY,
+    proxy: ENUM_HTTP.PROXY.ASSET,
   });
 }
 
@@ -20,7 +20,7 @@ export function getRecycles() {
 export function moveToRecycles(data: TypeRecycle.ReqDelete) {
   return request<boolean>("recycle/move", {
     method: ENUM_HTTP.REQUEST_MODE.POST,
-    proxy: ENUM_HTTP.PROXY.RECOVERY,
+    proxy: ENUM_HTTP.PROXY.ASSET,
     data,
     message: "操作完成",
   });
@@ -32,7 +32,7 @@ export function moveToRecycles(data: TypeRecycle.ReqDelete) {
 export function recoverRecycles(data: TypeRecycle.ReqRecover) {
   return request<boolean>("recycle/restore", {
     method: ENUM_HTTP.REQUEST_MODE.POST,
-    proxy: ENUM_HTTP.PROXY.RECOVERY,
+    proxy: ENUM_HTTP.PROXY.ASSET,
     data,
     message: "操作成功，若资源归属文件夹被删除，则恢复至主目录",
   });
@@ -44,7 +44,7 @@ export function recoverRecycles(data: TypeRecycle.ReqRecover) {
 export function deleteRecycles(data: TypeRecycle.ReqRecover) {
   return request<boolean>("recycle/delete", {
     method: ENUM_HTTP.REQUEST_MODE.DELETE,
-    proxy: ENUM_HTTP.PROXY.RECOVERY,
+    proxy: ENUM_HTTP.PROXY.ASSET,
     data,
     message: "操作成功",
   });
@@ -56,7 +56,7 @@ export function deleteRecycles(data: TypeRecycle.ReqRecover) {
 // export function checkRecycles(params: TypeRecycle.ReqCheck) {
 //   return request<TypeRecycle.ResCheck>("recycle/check", {
 //     method: ENUM_HTTP.REQUEST_MODE.GET,
-//     proxy: ENUM_HTTP.PROXY.RECOVERY,
+//     proxy: ENUM_HTTP.PROXY.ASSET,
 //     params,
 //   });
 // }

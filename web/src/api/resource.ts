@@ -10,7 +10,7 @@ import type { TypeResource } from "@/interface/resource";
 export function getGlobalResources(params: TypeResource.ReqGlobalResources) {
   return request<TypeResource.DTO[]>("resource/search", {
     method: ENUM_HTTP.REQUEST_MODE.GET,
-    proxy: ENUM_HTTP.PROXY.EXPLORER,
+    proxy: ENUM_HTTP.PROXY.ASSET,
     params,
   });
 }
@@ -22,7 +22,7 @@ export function getGlobalResources(params: TypeResource.ReqGlobalResources) {
 export function getResources(params: TypeResource.ReqResources) {
   return request<TypeResource.DTO[]>("resource/list", {
     method: ENUM_HTTP.REQUEST_MODE.GET,
-    proxy: ENUM_HTTP.PROXY.EXPLORER,
+    proxy: ENUM_HTTP.PROXY.ASSET,
     params,
   });
 }
@@ -34,7 +34,7 @@ export function getResources(params: TypeResource.ReqResources) {
 export function getFolders() {
   return request<TypeResource.DTO[]>("resource/folders", {
     method: ENUM_HTTP.REQUEST_MODE.GET,
-    proxy: ENUM_HTTP.PROXY.EXPLORER,
+    proxy: ENUM_HTTP.PROXY.ASSET,
   });
 }
 
@@ -46,7 +46,7 @@ export function getResourceDetails(
 ) {
   return request<TypeResource.DTO>(`resource/${params.id}`, {
     method: ENUM_HTTP.REQUEST_MODE.GET,
-    proxy: ENUM_HTTP.PROXY.EXPLORER,
+    proxy: ENUM_HTTP.PROXY.ASSET,
   });
 }
 
@@ -56,7 +56,7 @@ export function getResourceDetails(
 export function createFolder(data: TypeResource.DTO) {
   return request("resource/mkdir", {
     method: ENUM_HTTP.REQUEST_MODE.POST,
-    proxy: ENUM_HTTP.PROXY.EXPLORER,
+    proxy: ENUM_HTTP.PROXY.ASSET,
     message: "创建成功",
     data,
   });
@@ -68,7 +68,7 @@ export function createFolder(data: TypeResource.DTO) {
 export function updateResource(data: TypeResource.DTO) {
   return request("resource/update", {
     method: ENUM_HTTP.REQUEST_MODE.PUT,
-    proxy: ENUM_HTTP.PROXY.EXPLORER,
+    proxy: ENUM_HTTP.PROXY.ASSET,
     message: "编辑成功",
     data,
   });
@@ -80,7 +80,7 @@ export function updateResource(data: TypeResource.DTO) {
 export function moveResources(data: TypeResource.ReqMoveResources) {
   return request("resource/move", {
     method: ENUM_HTTP.REQUEST_MODE.PUT,
-    proxy: ENUM_HTTP.PROXY.EXPLORER,
+    proxy: ENUM_HTTP.PROXY.ASSET,
     message: "移动资源成功",
     data,
   });

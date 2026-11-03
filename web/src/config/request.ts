@@ -21,19 +21,9 @@ export const REQUEST_TIMEOUT = 1000 * 30;
 export const API_PROXY_AUTH_URL = `/api/auth/`;
 
 /**
- * @name API_PROXY_EXPLORER_URL API 资源管理
+ * @name API_PROXY_ASSET_URL API 资源服务
  */
-export const API_PROXY_EXPLORER_URL = `/api/explorer/`;
-
-/**
- * @name API_PROXY_FAVORITE_URL API 资源收藏管理
- */
-export const API_PROXY_FAVORITE_URL = `/api/favorite/`;
-
-/**
- * @name API_PROXY_RECYCLE_URL API 回收站
- */
-export const API_PROXY_RECYCLE_URL = `/api/recovery/`;
+export const API_PROXY_ASSET_URL = `/api/asset/`;
 
 /**
  * @name API_PROXY_STATS_URL API 统计
