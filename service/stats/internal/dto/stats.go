@@ -24,7 +24,7 @@ type AccessTrendsItem struct {
 }
 
 type ResponseResourceSort struct {
-	ID       string `json:"id"`
+	ID       int64  `json:"id"`
 	FullName string `json:"fullName"`
 	ParentID *int64 `json:"parentId,string,omitempty"`
 	Type     int32  `json:"type"`

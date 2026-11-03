@@ -9,8 +9,8 @@ import (
 	request "common/http/request"
 	"common/http/response"
 	"storage/internal/dto"
+	"storage/internal/pkg/utils"
 	"storage/internal/service"
-	"storage/internal/utils"
 
 	"github.com/gin-gonic/gin"
 )

@@ -5,26 +5,25 @@ import (
 	"asset/internal/dto"
 	"asset/internal/enum"
 	"asset/internal/model"
-	"asset/internal/pkg/mq"
 	rabbitmq "common/rabbitmq"
 	"common/utils/jsontypes"
 	"context"
-	"fmt"
 
+	amqp "github.com/rabbitmq/amqp091-go"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
 
 type RecycleService struct {
 	db              *gorm.DB
-	rabbitmq        *mq.Client
+	rabbitmq        *rabbitmq.Client
 	resourceService *ResourceService
 	favoriteService *FavoriteService
 }
 
 func newRecycleService(
 	db *gorm.DB,
-	rabbitmq *mq.Client,
+	rabbitmq *rabbitmq.Client,
 	resourceService *ResourceService,
 	favoriteService *FavoriteService,
 ) *RecycleService {
@@ -102,7 +101,6 @@ func (s *RecycleService) RestoreResources(c context.Context, userID string, reso
 }
 
 func (s *RecycleService) RemoveRecycleBinResource(c context.Context, userID string, resourceIDs jsontypes.StringInt64Slice) error {
-	fmt.Println("@-1", resourceIDs)
 	var objectNames []string
 	if err := s.db.WithContext(c).Transaction(func(t *gorm.DB) error {
 		var resources []model.Resource
@@ -134,7 +132,6 @@ func (s *RecycleService) RemoveRecycleBinResource(c context.Context, userID stri
 		if err := s.favoriteService.RemoveFavorites(c, t, resourcesIDs); err != nil {
 			return err
 		}
-
 		return nil
 	}); err != nil {
 		return err
@@ -143,12 +140,11 @@ func (s *RecycleService) RemoveRecycleBinResource(c context.Context, userID stri
 	if len(objectNames) == 0 {
 		return nil
 	}
-
 	return s.rabbitmq.Publish(c, rabbitmq.PublishOptions{
 		RoutingKey:  "remove",
 		Exchange:    "resource",
 		ContentType: "application/protobuf",
-		Headers:     map[string]interface{}{"UserID": userID},
+		Headers:     amqp.Table{"UserID": userID},
 		Message:     &storagepb.ObjectNames{IDs: objectNames},
 	})
 }

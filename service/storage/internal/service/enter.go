@@ -1,9 +1,9 @@
 package service
 
 import (
+	rabbitmq "common/rabbitmq"
 	"storage/internal/config"
 	"storage/internal/pkg/minio"
-	"storage/internal/pkg/mq"
 	grpcclient "storage/internal/transport/grpc/client"
 
 	"github.com/redis/go-redis/v9"
@@ -17,7 +17,7 @@ type Service struct {
 func NewService(
 	cfg config.Config,
 	redis *redis.Client,
-	rabbitmq *mq.Client,
+	rabbitmq *rabbitmq.Client,
 	minio *minio.Client,
 	grpcClient *grpcclient.GrpcClient,
 ) *Service {

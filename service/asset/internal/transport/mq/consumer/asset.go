@@ -2,8 +2,8 @@ package mqconsumer
 
 import (
 	assetpb "api/asset"
-	"asset/internal/pkg/mq"
 	"asset/internal/service"
+	rabbitmq "common/rabbitmq"
 	"context"
 	"errors"
 
@@ -12,11 +12,11 @@ import (
 )
 
 type AssetConsumer struct {
-	mq              *mq.Client
+	mq              *rabbitmq.Client
 	resourceService *service.ResourceService
 }
 
-func newAssetConsumer(client *mq.Client, svc *service.ResourceService) *AssetConsumer {
+func newAssetConsumer(client *rabbitmq.Client, svc *service.ResourceService) *AssetConsumer {
 	return &AssetConsumer{
 		resourceService: svc,
 		mq:              client,
@@ -24,26 +24,13 @@ func newAssetConsumer(client *mq.Client, svc *service.ResourceService) *AssetCon
 }
 
 func (r *AssetConsumer) Run() error {
-	deliveries, err := r.mq.Consume("upload", "asset-resource-upload")
-	if err != nil {
-		return err
-	}
-
-	for d := range deliveries {
-		if err := r.onUploadFile(context.Background(), d); err != nil {
-			d.Nack(false, true)
-			continue
-		}
-		d.Ack(false)
-	}
-
-	return nil
+	return r.mq.Serve("upload", "asset-resource-upload", r.onUploadFile)
 }
 
 func (a *AssetConsumer) onUploadFile(c context.Context, d amqp.Delivery) error {
 	var msg assetpb.Resource
 	if err := proto.Unmarshal(d.Body, &msg); err != nil {
-		return err
+		return rabbitmq.ErrInvalidMessage
 	}
 
 	creatorID, _ := d.Headers["UserID"].(string)

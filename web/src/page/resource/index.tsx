@@ -37,8 +37,13 @@ const Resource = () => {
   });
 
   const { data, loading, run } = useRequest(
-    () => getResources({ id: resource.path?.at(-1), ...resource.sort }),
-    { refreshDeps: [resource.path, resource.sort] },
+    () =>
+      getResources({
+        id: resource.path?.at(-1),
+        type: ENUM_RESOURCE.MENU.SORT_CREATE_TIME,
+        order: ENUM_RESOURCE.MENU.SORT_DESC,
+      }),
+    { refreshDeps: [resource.path] },
   );
 
   const onMenu: TypeFilesProps["onMenu"] = async (type, ids = []) => {

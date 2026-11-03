@@ -7,9 +7,10 @@ import (
 	"storage/internal/config"
 	minio "storage/internal/pkg/minio"
 
-	"storage/internal/pkg/mq"
+	rabbitmq "common/rabbitmq"
 	"storage/internal/service"
 	grpcclient "storage/internal/transport/grpc/client"
+	"storage/internal/transport/mq"
 
 	"github.com/redis/go-redis/v9"
 )
@@ -19,7 +20,7 @@ type App struct {
 	Redis      *redis.Client
 	Minio      *minio.Client
 	Service    *service.Service
-	RabbitMQ   *mq.Client
+	RabbitMQ   *rabbitmq.Client
 	GrpcClient *grpcclient.GrpcClient
 }
 

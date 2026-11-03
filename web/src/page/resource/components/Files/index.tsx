@@ -1,8 +1,9 @@
-import { useRef } from "react";
 import Container from "./Container";
 import Thumbnail from "./Thumbnail";
+import { useMemo, useRef } from "react";
 import { getResources } from "@/api/resource";
-import { usePreviewFile, useToFolder } from "@/hooks";
+import { RESOURCE_SORTERS } from "@/utils/filter";
+import { usePreviewFile, useStore, useToFolder } from "@/hooks";
 
 import { ENUM_RESOURCE } from "@/enum/resource";
 
@@ -21,6 +22,16 @@ export interface TypeFilesProps
 const Files: React.FC<TypeFilesProps> = ({ data, onMenu, loading }) => {
   const toFolder = useToFolder();
   const onPreviewFile = usePreviewFile();
+  const { sort } = useStore("resource");
+
+  const list = useMemo(() => {
+    if (!data?.length) return data;
+    const compare =
+      RESOURCE_SORTERS[sort.type] ??
+      RESOURCE_SORTERS[ENUM_RESOURCE.MENU.SORT_CREATE_TIME];
+    const dir = sort.order === ENUM_RESOURCE.MENU.SORT_DESC ? -1 : 1;
+    return data.slice().sort((a, b) => dir * compare(a, b));
+  }, [data, sort]);
 
   const dataCache = useRef<Record<string, NonNullable<typeof data>[number]>>();
 
@@ -35,7 +46,7 @@ const Files: React.FC<TypeFilesProps> = ({ data, onMenu, loading }) => {
 
   return (
     <Container loading={loading} onMenu={onMenu}>
-      <Thumbnail data={data} onPreview={onPreview} onMenu={onMenu} />
+      <Thumbnail data={list} onPreview={onPreview} onMenu={onMenu} />
     </Container>
   );
 };

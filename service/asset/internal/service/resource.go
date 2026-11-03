@@ -171,6 +171,16 @@ func (s *ResourceService) InsertResource(c context.Context, creatorID string, fu
 		if !databases.IsUniqueViolation(err) {
 			return nil, err
 		}
+		if objectName != "" {
+			var existing model.Resource
+			err := s.db.WithContext(c).Where("object_name = ?", objectName).Take(&existing).Error
+			if err == nil {
+				return &existing, nil
+			}
+			if !errors.Is(err, gorm.ErrRecordNotFound) {
+				return nil, err
+			}
+		}
 	}
 	return nil, errors.New("resource name conflict")
 }

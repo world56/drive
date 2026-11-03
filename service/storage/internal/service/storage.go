@@ -11,7 +11,6 @@ import (
 	"path/filepath"
 	"storage/internal/config"
 	"storage/internal/dto"
-	"storage/internal/pkg/mq"
 	grpcclient "storage/internal/transport/grpc/client"
 	"strconv"
 
@@ -26,7 +25,7 @@ type StorageService struct {
 	config     config.Config
 	redis      *redis.Client
 	minio      *minioSDK.Core
-	rabbitmq   *mq.Client
+	rabbitmq   *rabbitmq.Client
 	grpcClient *grpcclient.GrpcClient
 }
 
@@ -34,7 +33,7 @@ func newStorageService(
 	config config.Config,
 	redis *redis.Client,
 	minio *minioSDK.Core,
-	rabbitmq *mq.Client,
+	rabbitmq *rabbitmq.Client,
 	grpcClient *grpcclient.GrpcClient,
 ) *StorageService {
 	return &StorageService{
@@ -70,30 +69,27 @@ func (s *StorageService) Write(c context.Context, userID string, stream multipar
 	// 单个文件直接上传
 	if info.Total == 1 {
 		info.ObjectName = s.getObjectName(info.Name)
-		_, err := s.minio.Client.PutObject(c, BUCKET, info.ObjectName, stream, size, minio.PutObjectOptions{
+		if _, err := s.minio.Client.PutObject(c, BUCKET, info.ObjectName, stream, size, minio.PutObjectOptions{
 			ContentType: s.detectContentType(info.Name),
-		})
-		if err != nil {
+		}); err != nil {
 			return "", err
-		} else {
-			if err := s.rabbitmq.Publish(c, rabbitmq.PublishOptions{
-				RoutingKey:  "upload",
-				Exchange:    "resource",
-				ContentType: "application/protobuf",
-				Headers:     amqp.Table{"UserID": userID},
-				Message: &assetpb.Resource{
-					Name:       info.Name,
-					Size:       info.Size,
-					Path:       info.Path,
-					ParentID:   info.ParentID,
-					ObjectName: info.ObjectName,
-				},
-			}); err != nil {
-				return "", err
-			} else {
-				return info.ObjectName, nil
-			}
 		}
+		if err := s.rabbitmq.Publish(c, rabbitmq.PublishOptions{
+			RoutingKey:  "upload",
+			Exchange:    "resource",
+			ContentType: "application/protobuf",
+			Headers:     amqp.Table{"UserID": userID},
+			Message: &assetpb.Resource{
+				Name:       info.Name,
+				Size:       info.Size,
+				Path:       info.Path,
+				ParentID:   info.ParentID,
+				ObjectName: info.ObjectName,
+			},
+		}); err != nil {
+			return "", err
+		}
+		return info.ObjectName, nil
 	} else {
 		IS_FIRST_CHUNK := info.Index == 1        // 第一个chunk
 		IS_COMPLETED := info.Index == info.Total // 最后一个chunk
@@ -148,7 +144,6 @@ func (s *StorageService) Write(c context.Context, userID string, stream multipar
 			if err != nil {
 				return "", err
 			}
-
 			if err := s.rabbitmq.Publish(c, rabbitmq.PublishOptions{
 				RoutingKey:  "upload",
 				Exchange:    "resource",
@@ -163,10 +158,9 @@ func (s *StorageService) Write(c context.Context, userID string, stream multipar
 				},
 			}); err != nil {
 				return "", err
-			} else {
-				s.redis.Del(c, `drive:write:`+info.ID)
-				return info.ObjectName, nil
 			}
+			s.redis.Del(c, `drive:write:`+info.ID)
+			return info.ObjectName, nil
 		}
 
 		return "", nil
@@ -213,9 +207,9 @@ func (s *StorageService) Remove(c context.Context, objectNames []string) error {
 		}
 	}()
 
-	for err := range s.minio.Client.RemoveObjects(c, s.config.MINIO_BUCKET, ch, minio.RemoveObjectsOptions{}) {
-		if err.Err != nil {
-			return err.Err
+	for result := range s.minio.Client.RemoveObjects(c, s.config.MINIO_BUCKET, ch, minio.RemoveObjectsOptions{}) {
+		if result.Err != nil && minio.ToErrorResponse(result.Err).Code != minio.NoSuchKey {
+			return result.Err
 		}
 	}
 

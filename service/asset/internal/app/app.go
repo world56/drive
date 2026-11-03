@@ -3,11 +3,12 @@ package app
 import (
 	"asset/internal/config"
 	"asset/internal/pkg/db"
-	"asset/internal/pkg/mq"
 	"asset/internal/service"
 	grpcclient "asset/internal/transport/grpc/client"
+	"asset/internal/transport/mq"
 	"common/databases"
 	"common/idgen"
+	rabbitmq "common/rabbitmq"
 	"common/rdb"
 
 	"github.com/redis/go-redis/v9"
@@ -16,7 +17,7 @@ import (
 
 type App struct {
 	DB         *gorm.DB
-	RabbitMQ   *mq.Client
+	RabbitMQ   *rabbitmq.Client
 	Redis      *redis.Client
 	Config     config.Config
 	Service    *service.Service

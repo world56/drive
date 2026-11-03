@@ -7,7 +7,7 @@ export const UPLOAD_SLICE_SIZE = 5 * 1024 * 1024;
 /**
  * @name UPLOAD_FILE_MAX_COUNT 上传队列最大宏任务数
  */
-export const UPLOAD_FILE_MAX_COUNT = 2;
+export const UPLOAD_FILE_MAX_COUNT = 1;
 
 /**
  * @name ICON_THRESHOLD 图标最大阈值

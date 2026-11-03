@@ -1,8 +1,8 @@
 package service
 
 import (
-	"asset/internal/pkg/mq"
 	grpcclient "asset/internal/transport/grpc/client"
+	rabbitmq "common/rabbitmq"
 
 	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
@@ -14,7 +14,7 @@ type Service struct {
 	FavoriteService *FavoriteService
 }
 
-func NewService(db *gorm.DB, redis *redis.Client, grpcClient *grpcclient.GrpcClient, rabbitmq *mq.Client) *Service {
+func NewService(db *gorm.DB, redis *redis.Client, grpcClient *grpcclient.GrpcClient, rabbitmq *rabbitmq.Client) *Service {
 	resourceService := newResourceService(db, redis, grpcClient)
 	favoriteService := newFavoriteService(db)
 

@@ -2,9 +2,8 @@ package mqconsumer
 
 import (
 	storagepb "api/storage"
+	rabbitmq "common/rabbitmq"
 	"context"
-	"fmt"
-	"storage/internal/pkg/mq"
 	"storage/internal/service"
 
 	amqp "github.com/rabbitmq/amqp091-go"
@@ -12,11 +11,11 @@ import (
 )
 
 type AssetConsumer struct {
-	mq             *mq.Client
+	mq             *rabbitmq.Client
 	storageService *service.StorageService
 }
 
-func newAssetConsumer(client *mq.Client, svc *service.StorageService) *AssetConsumer {
+func newAssetConsumer(client *rabbitmq.Client, svc *service.StorageService) *AssetConsumer {
 	return &AssetConsumer{
 		mq:             client,
 		storageService: svc,
@@ -24,27 +23,13 @@ func newAssetConsumer(client *mq.Client, svc *service.StorageService) *AssetCons
 }
 
 func (a *AssetConsumer) Run() error {
-	deliveries, err := a.mq.Consume("remove", "asset-resource-remove")
-	if err != nil {
-		return err
-	}
-
-	for d := range deliveries {
-		if err := a.onRemoveFile(context.Background(), d); err != nil {
-			fmt.Println("@-asset-NACK")
-			d.Nack(false, true)
-			continue
-		}
-		d.Ack(false)
-	}
-
-	return nil
+	return a.mq.Serve("remove", "storage-resource-remove", a.onRemoveFile)
 }
 
 func (a *AssetConsumer) onRemoveFile(c context.Context, d amqp.Delivery) error {
 	var msg storagepb.ObjectNames
 	if err := proto.Unmarshal(d.Body, &msg); err != nil {
-		return err
+		return rabbitmq.ErrInvalidMessage
 	}
 
 	return a.storageService.Remove(c, msg.GetIDs())
