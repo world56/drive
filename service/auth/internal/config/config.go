@@ -10,6 +10,7 @@ type Config struct {
 	POSTGRES_DSN    string
 	REDIS_URL       string
 	JWT_SECRET      string
+	RABBITMQ_URL    string
 	GRPC_STATS_ADDR string
 }
 
@@ -23,5 +24,6 @@ func Load() Config {
 		POSTGRES_DSN:    env.GetEnv("POSTGRES_DSN"),
 		REDIS_URL:       env.GetEnv("REDIS_URL"),
 		JWT_SECRET:      env.GetEnv("JWT_SECRET"),
+		RABBITMQ_URL:    env.GetEnv("RABBITMQ_URL"),
 	}
 }

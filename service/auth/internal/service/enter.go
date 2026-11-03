@@ -15,13 +15,13 @@ type Service struct {
 }
 
 func NewService(db *gorm.DB, redis *redis.Client, grpcClient *grpcclient.GrpcClients) *Service {
-	LogService := newLogService(db)
-	CryptoService := newCryptoService(redis)
+	logService := newLogService(db)
+	cryptoService := newCryptoService(redis)
 
 	return &Service{
-		LogService:     LogService,
-		CryptoService:  CryptoService,
-		UserService:    newUserService(db, redis, CryptoService, LogService),
-		AccountService: newAccountService(db, redis, CryptoService, LogService, grpcClient),
+		LogService:     logService,
+		CryptoService:  cryptoService,
+		UserService:    newUserService(db, redis, cryptoService, logService),
+		AccountService: newAccountService(db, redis, cryptoService, logService, grpcClient),
 	}
 }

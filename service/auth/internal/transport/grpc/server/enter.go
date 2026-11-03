@@ -8,6 +8,6 @@ import (
 )
 
 func RegisterGrpcServers(s grpc.ServiceRegistrar, svc *service.Service) {
-	authpb.RegisterLogServiceServer(s, NewLogGrpcServer(svc.LogService))
-	authpb.RegisterUserServiceServer(s, NewUserGrpcServer(svc.UserService))
+	authpb.RegisterLogServiceServer(s, newLogGrpcServer(svc.LogService))
+	authpb.RegisterUserServiceServer(s, newUserGrpcServer(svc.UserService))
 }

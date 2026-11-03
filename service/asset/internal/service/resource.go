@@ -23,15 +23,21 @@ import (
 type ResourceService struct {
 	db         *gorm.DB
 	redis      *redis.Client
+	logService *LogService
 	grpcClient *grpcclient.GrpcClient
 }
 
-func newResourceService(db *gorm.DB, redis *redis.Client, grpcClient *grpcclient.GrpcClient) *ResourceService {
+func newResourceService(db *gorm.DB, redis *redis.Client, grpcClient *grpcclient.GrpcClient, logService *LogService) *ResourceService {
 	return &ResourceService{
 		db:         db,
 		redis:      redis,
+		logService: logService,
 		grpcClient: grpcClient,
 	}
+}
+
+func (s *ResourceService) WriteDownloadLog(c context.Context, operatorID string, desc any) {
+	s.logService.Write(c, enum.LogEventResourceDownload, operatorID, desc)
 }
 
 func (s *ResourceService) SearchResourcesByName(c context.Context, query dto.RequestSearchResourcesByName) ([]dto.ReposesResource, error) {
@@ -166,6 +172,7 @@ func (s *ResourceService) InsertResource(c context.Context, creatorID string, fu
 		err := s.db.WithContext(c).Create(resource).Error
 		if err == nil {
 			s.grpcClient.Stats.UpdateAssetCount("ADD", map[int8]int32{resourceType: 1})
+			s.logService.Write(c, enum.LogEventResourceUpload, creatorID, resource)
 			return resource, nil
 		}
 		if !databases.IsUniqueViolation(err) {
@@ -185,7 +192,7 @@ func (s *ResourceService) InsertResource(c context.Context, creatorID string, fu
 	return nil, errors.New("resource name conflict")
 }
 
-func (s *ResourceService) UpdateResourceInfo(c context.Context, body dto.RequestResourceUpdateInfo) error {
+func (s *ResourceService) UpdateResourceInfo(c context.Context, operatorID string, body dto.RequestResourceUpdateInfo) error {
 	db := s.db.WithContext(c)
 
 	var target model.Resource
@@ -212,6 +219,11 @@ func (s *ResourceService) UpdateResourceInfo(c context.Context, body dto.Request
 		return err
 	}
 
+	var updated model.Resource
+	if err := db.Where("id = ?", body.ID).First(&updated).Error; err == nil {
+		s.logService.Write(c, enum.LogEventResourceUpdate, operatorID, updated)
+	}
+
 	return nil
 }
 
@@ -225,23 +237,25 @@ func (s *ResourceService) MkdirFolder(c context.Context, creatorID string, data 
 		return false, err
 	} else if err == nil {
 		return false, errors.New("folder already exists")
-	} else {
-		if err := db.Create(&model.Resource{
-			Name:      data.Name,
-			FullName:  data.Name,
-			CreatorID: creatorID,
-			Remark:    data.Remark,
-			ParentID:  data.ParentID,
-			Type:      enum.ResourceTypeFolder,
-		}).Error; err != nil {
-			return false, err
-		} else {
-			return true, nil
-		}
 	}
+
+	folder = model.Resource{
+		Name:      data.Name,
+		FullName:  data.Name,
+		CreatorID: creatorID,
+		Remark:    data.Remark,
+		ParentID:  data.ParentID,
+		Type:      enum.ResourceTypeFolder,
+	}
+	if err := db.Create(&folder).Error; err != nil {
+		return false, err
+	}
+
+	s.logService.Write(c, enum.LogEventResourceMkdirFolder, creatorID, folder)
+	return true, nil
 }
 
-func (s *ResourceService) UpdateResourcesLocation(c context.Context, body dto.RequestResourceUpdateLocation) (bool, error) {
+func (s *ResourceService) UpdateResourcesLocation(c context.Context, operatorID string, body dto.RequestResourceUpdateLocation) (bool, error) {
 	var items []model.Resource
 	err := s.db.WithContext(c).Transaction(func(t *gorm.DB) error {
 		if err := t.Where("id IN ?", body.IDs).Find(&items).Error; err != nil {
@@ -287,11 +301,15 @@ func (s *ResourceService) UpdateResourcesLocation(c context.Context, body dto.Re
 		return nil
 	})
 
-	if err == nil {
-		return true, nil
-	} else {
+	if err != nil {
 		return false, err
 	}
+
+	var moved []model.Resource
+	if err := s.db.WithContext(c).Where("id IN ?", body.IDs).Find(&moved).Error; err == nil {
+		s.logService.Write(c, enum.LogEventResourceMove, operatorID, moved)
+	}
+	return true, nil
 }
 
 func (s *ResourceService) GetRecently(c context.Context) ([]*assetpb.Resource, error) {
@@ -327,7 +345,7 @@ func (s *ResourceService) UpdateRemoveStatus(
 	db *gorm.DB,
 	resourceIDs jsontypes.StringInt64Slice,
 	removeStatus enum.ResourceRecycleStatus,
-) error {
+) ([]model.Resource, error) {
 	fromStatus := enum.ResourceRecycled
 	if removeStatus == enum.ResourceRecycled {
 		fromStatus = enum.ResourceNormal
@@ -336,18 +354,20 @@ func (s *ResourceService) UpdateRemoveStatus(
 	var resources []model.Resource
 	if err := db.Raw(`
 		WITH RECURSIVE tree AS (
-			SELECT id, type FROM resources WHERE id IN ? AND remove = ?
+			SELECT id, type, size, full_name, parent_id, creator_id, object_name, suffix
+			FROM resources WHERE id IN ? AND remove = ?
 			UNION ALL
-			SELECT r.id, r.type FROM resources AS r
+			SELECT r.id, r.type, r.size, r.full_name, r.parent_id, r.creator_id, r.object_name, r.suffix
+			FROM resources AS r
 			INNER JOIN tree AS t ON r.parent_id = t.id AND t.type = ?
 			WHERE r.remove = ?
 		)
-		SELECT id, type FROM tree
+		SELECT id, type, size, full_name, parent_id, creator_id, object_name, suffix FROM tree
 	`, resourceIDs, fromStatus, enum.ResourceTypeFolder, fromStatus).Scan(&resources).Error; err != nil {
-		return err
+		return nil, err
 	}
 	if len(resources) == 0 {
-		return nil
+		return nil, nil
 	}
 
 	ids := make([]int64, len(resources))
@@ -360,12 +380,12 @@ func (s *ResourceService) UpdateRemoveStatus(
 	// 恢复时先处理孤儿数据
 	if removeStatus == enum.ResourceNormal {
 		if err := reOrphansToRoot(db, ids); err != nil {
-			return err
+			return nil, err
 		}
 	}
 
 	if err := db.Model(&model.Resource{}).Where("id IN ?", ids).Update("remove", removeStatus).Error; err != nil {
-		return err
+		return nil, err
 	}
 
 	CALC := "ADD"
@@ -373,7 +393,7 @@ func (s *ResourceService) UpdateRemoveStatus(
 		CALC = "REDUCE"
 	}
 	go s.grpcClient.Stats.UpdateAssetCount(CALC, counts)
-	return nil
+	return resources, nil
 }
 
 func (s *ResourceService) DeleteResources(c context.Context, db *gorm.DB, resourceIDs []int64) error {

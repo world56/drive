@@ -14,7 +14,7 @@ type LogGrpcServer struct {
 	logService *service.LogService
 }
 
-func NewLogGrpcServer(s *service.LogService) *LogGrpcServer {
+func newLogGrpcServer(s *service.LogService) *LogGrpcServer {
 	return &LogGrpcServer{
 		logService: s,
 	}

@@ -7,6 +7,7 @@ import (
 	"context"
 	"strconv"
 
+	"google.golang.org/grpc/metadata"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
@@ -51,18 +52,27 @@ func (s *ResourceGrpcServer) GetResourceInfo(c context.Context, req *assetpb.Res
 		return nil, err
 	}
 
-	if resource, err := s.resourceService.GetResourceDetail(c, dto.RequestResourceDetail{ID: id}); err != nil {
+	resource, err := s.resourceService.GetResourceDetail(c, dto.RequestResourceDetail{ID: id})
+	if err != nil {
 		return nil, err
-	} else {
-		return &assetpb.Resource{
-			ID:         resource.ID,
-			Name:       resource.Name,
-			Size:       resource.Size,
-			ParentID:   resource.ParentID,
-			FullName:   &resource.FullName,
-			ObjectName: resource.ObjectName,
-		}, nil
 	}
+
+	operatorID := ""
+	if md, ok := metadata.FromIncomingContext(c); ok {
+		if vals := md.Get("user-id"); len(vals) > 0 {
+			operatorID = vals[0]
+		}
+	}
+	s.resourceService.WriteDownloadLog(c, operatorID, resource)
+
+	return &assetpb.Resource{
+		ID:         resource.ID,
+		Name:       resource.Name,
+		Size:       resource.Size,
+		ParentID:   resource.ParentID,
+		FullName:   &resource.FullName,
+		ObjectName: resource.ObjectName,
+	}, nil
 }
 
 // 获取最近上传

@@ -5,7 +5,9 @@ import (
 	"auth/internal/pkg/db"
 	"auth/internal/service"
 	grpcclient "auth/internal/transport/grpc/client"
+	"auth/internal/transport/mq"
 	"common/idgen"
+	rabbitmq "common/rabbitmq"
 	"common/rdb"
 
 	"github.com/redis/go-redis/v9"
@@ -16,6 +18,7 @@ type App struct {
 	Config     config.Config
 	DB         *gorm.DB
 	Redis      *redis.Client
+	RabbitMQ   *rabbitmq.Client
 	Service    *service.Service
 	GrpcClient *grpcclient.GrpcClients
 }
@@ -38,6 +41,11 @@ func New() (*App, error) {
 		return nil, err
 	}
 
+	mqClient, err := mq.InitRabbitMQ(cfg.RABBITMQ_URL)
+	if err != nil {
+		return nil, err
+	}
+
 	grpcClient, err := grpcclient.NewGrpcClients(cfg.GRPC_STATS_ADDR)
 	if err != nil {
 		return nil, err
@@ -49,7 +57,23 @@ func New() (*App, error) {
 		Config:     cfg,
 		DB:         db,
 		Redis:      redis,
+		RabbitMQ:   mqClient,
 		Service:    svc,
 		GrpcClient: grpcClient,
 	}, nil
+}
+
+func (a *App) Close() {
+	if a == nil {
+		return
+	}
+	if a.Redis != nil {
+		a.Redis.Close()
+	}
+	if a.RabbitMQ != nil {
+		a.RabbitMQ.Close()
+	}
+	if a.GrpcClient != nil {
+		a.GrpcClient.Close()
+	}
 }

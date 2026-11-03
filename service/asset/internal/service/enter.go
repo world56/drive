@@ -9,18 +9,21 @@ import (
 )
 
 type Service struct {
+	LogService      *LogService
 	RecycleService  *RecycleService
 	ResourceService *ResourceService
 	FavoriteService *FavoriteService
 }
 
-func NewService(db *gorm.DB, redis *redis.Client, grpcClient *grpcclient.GrpcClient, rabbitmq *rabbitmq.Client) *Service {
-	resourceService := newResourceService(db, redis, grpcClient)
+func NewService(db *gorm.DB, redis *redis.Client, grpcClient *grpcclient.GrpcClient, mq *rabbitmq.Client) *Service {
+	logService := newLogService(mq)
+	resourceService := newResourceService(db, redis, grpcClient, logService)
 	favoriteService := newFavoriteService(db)
 
 	return &Service{
+		LogService:      logService,
 		ResourceService: resourceService,
 		FavoriteService: favoriteService,
-		RecycleService:  newRecycleService(db, rabbitmq, resourceService, favoriteService),
+		RecycleService:  newRecycleService(db, mq, logService, resourceService, favoriteService),
 	}
 }

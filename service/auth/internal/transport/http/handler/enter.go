@@ -11,9 +11,9 @@ type Handler struct {
 
 func NewHandler(svc *service.Service) *Handler {
 	return &Handler{
-		LogHandler:     NewLogHandler(svc.LogService),
-		UserHandler:    NewUserHandler(svc.UserService),
-		CryptoHandler:  NewCryptoHandler(svc.CryptoService),
-		AccountHandler: NewAccountHandler(svc.AccountService),
+		LogHandler:     newLogHandler(svc.LogService),
+		UserHandler:    newUserHandler(svc.UserService),
+		CryptoHandler:  newCryptoHandler(svc.CryptoService),
+		AccountHandler: newAccountHandler(svc.AccountService),
 	}
 }

@@ -17,19 +17,22 @@ import (
 type RecycleService struct {
 	db              *gorm.DB
 	rabbitmq        *rabbitmq.Client
+	logService      *LogService
 	resourceService *ResourceService
 	favoriteService *FavoriteService
 }
 
 func newRecycleService(
 	db *gorm.DB,
-	rabbitmq *rabbitmq.Client,
+	mq *rabbitmq.Client,
+	logService *LogService,
 	resourceService *ResourceService,
 	favoriteService *FavoriteService,
 ) *RecycleService {
 	return &RecycleService{
 		db:              db,
-		rabbitmq:        rabbitmq,
+		rabbitmq:        mq,
+		logService:      logService,
 		favoriteService: favoriteService,
 		resourceService: resourceService,
 	}
@@ -72,7 +75,8 @@ func (s *RecycleService) GetRecycles(c context.Context) ([]dto.Recycle, error) {
 }
 
 func (s *RecycleService) InsertResources(c context.Context, userID string, resourceIDs jsontypes.StringInt64Slice) error {
-	return s.db.WithContext(c).Transaction(func(t *gorm.DB) error {
+	var affected []model.Resource
+	if err := s.db.WithContext(c).Transaction(func(t *gorm.DB) error {
 		resources := make([]model.Recycle, 0, len(resourceIDs))
 		for _, id := range resourceIDs {
 			resources = append(resources, model.Recycle{UserID: userID, ResourceID: id})
@@ -80,44 +84,54 @@ func (s *RecycleService) InsertResources(c context.Context, userID string, resou
 		if err := t.Clauses(clause.OnConflict{DoNothing: true}).Create(&resources).Error; err != nil {
 			return err
 		}
-		if err := s.resourceService.UpdateRemoveStatus(c, t, resourceIDs, enum.ResourceRecycled); err != nil {
-			return err
-		}
-		return nil
-	})
+		var err error
+		affected, err = s.resourceService.UpdateRemoveStatus(c, t, resourceIDs, enum.ResourceRecycled)
+		return err
+	}); err != nil {
+		return err
+	}
 
+	s.logService.Write(c, enum.LogEventResourceToRecycle, userID, affected)
+	return nil
 }
 
 func (s *RecycleService) RestoreResources(c context.Context, userID string, resourceIDs jsontypes.StringInt64Slice) error {
-	return s.db.WithContext(c).Transaction(func(t *gorm.DB) error {
+	var affected []model.Resource
+	if err := s.db.WithContext(c).Transaction(func(t *gorm.DB) error {
 		if err := t.Where("resource_id IN ? AND user_id = ?", resourceIDs, userID).Delete(&model.Recycle{}).Error; err != nil {
 			return err
 		}
-		if err := s.resourceService.UpdateRemoveStatus(c, t, resourceIDs, enum.ResourceNormal); err != nil {
-			return err
-		}
-		return nil
-	})
+		var err error
+		affected, err = s.resourceService.UpdateRemoveStatus(c, t, resourceIDs, enum.ResourceNormal)
+		return err
+	}); err != nil {
+		return err
+	}
+
+	s.logService.Write(c, enum.LogEventRecycleBinRecovery, userID, affected)
+	return nil
 }
 
 func (s *RecycleService) RemoveRecycleBinResource(c context.Context, userID string, resourceIDs jsontypes.StringInt64Slice) error {
 	var objectNames []string
+	var removed []model.Resource
 	if err := s.db.WithContext(c).Transaction(func(t *gorm.DB) error {
-		var resources []model.Resource
 		if err := t.Raw(`
 			WITH RECURSIVE tree AS (
-				SELECT id, object_name, parent_id, type FROM resources WHERE id IN ?
+				SELECT id, object_name, parent_id, type, size, full_name, creator_id, suffix
+				FROM resources WHERE id IN ?
 				UNION ALL
-				SELECT r.id, r.object_name, r.parent_id, r.type FROM resources AS r
+				SELECT r.id, r.object_name, r.parent_id, r.type, r.size, r.full_name, r.creator_id, r.suffix
+				FROM resources AS r
 				INNER JOIN tree AS p ON r.parent_id = p.id AND p.type = ?
 			)
-			SELECT id, type, object_name FROM tree
-		`, resourceIDs, enum.ResourceTypeFolder).Scan(&resources).Error; err != nil {
+			SELECT id, type, size, full_name, parent_id, creator_id, object_name, suffix FROM tree
+		`, resourceIDs, enum.ResourceTypeFolder).Scan(&removed).Error; err != nil {
 			return err
 		}
 
-		resourcesIDs := make([]int64, 0, len(resources))
-		for _, resource := range resources {
+		resourcesIDs := make([]int64, 0, len(removed))
+		for _, resource := range removed {
 			resourcesIDs = append(resourcesIDs, resource.ID)
 			if resource.ObjectName != "" && resource.Type != enum.ResourceTypeFolder {
 				objectNames = append(objectNames, resource.ObjectName)
@@ -136,6 +150,8 @@ func (s *RecycleService) RemoveRecycleBinResource(c context.Context, userID stri
 	}); err != nil {
 		return err
 	}
+
+	s.logService.Write(c, enum.LogEventRecycleBinDelete, userID, removed)
 
 	if len(objectNames) == 0 {
 		return nil

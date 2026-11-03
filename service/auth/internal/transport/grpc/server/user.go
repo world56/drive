@@ -13,7 +13,7 @@ type UserGrpcServer struct {
 	userService *service.UserService
 }
 
-func NewUserGrpcServer(s *service.UserService) *UserGrpcServer {
+func newUserGrpcServer(s *service.UserService) *UserGrpcServer {
 	return &UserGrpcServer{
 		userService: s,
 	}

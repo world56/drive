@@ -12,7 +12,7 @@ type LogHandler struct {
 	logService *service.LogService
 }
 
-func NewLogHandler(s *service.LogService) *LogHandler {
+func newLogHandler(s *service.LogService) *LogHandler {
 	return &LogHandler{
 		logService: s,
 	}

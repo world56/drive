@@ -11,7 +11,7 @@ type CryptoHandler struct {
 	cryptoService *service.CryptoService
 }
 
-func NewCryptoHandler(c *service.CryptoService) *CryptoHandler {
+func newCryptoHandler(c *service.CryptoService) *CryptoHandler {
 	return &CryptoHandler{
 		cryptoService: c,
 	}

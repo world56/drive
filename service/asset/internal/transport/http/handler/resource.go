@@ -102,7 +102,8 @@ func (s *ResourceHandler) UpdateResourceInfo(c *gin.Context) {
 		return
 	}
 
-	if err := s.resourceService.UpdateResourceInfo(c.Request.Context(), body); err != nil {
+	user := request.GetCurrentUser(c)
+	if err := s.resourceService.UpdateResourceInfo(c.Request.Context(), user.ID, body); err != nil {
 		response.ServerError(c, err)
 	} else {
 		response.Success(c, true)
@@ -117,7 +118,8 @@ func (s *ResourceHandler) UpdateResourcesLocation(c *gin.Context) {
 		return
 	}
 
-	if bol, err := s.resourceService.UpdateResourcesLocation(c.Request.Context(), body); err != nil {
+	user := request.GetCurrentUser(c)
+	if bol, err := s.resourceService.UpdateResourcesLocation(c.Request.Context(), user.ID, body); err != nil {
 		response.ServerError(c, err)
 	} else {
 		response.Success(c, bol)

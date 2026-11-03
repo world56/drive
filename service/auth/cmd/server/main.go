@@ -10,11 +10,13 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	defer a.Close()
 
-	errCh := make(chan error, 2)
+	errCh := make(chan error, 3)
 
 	go func() { errCh <- a.RunHTTP() }()
 	go func() { errCh <- a.RunGRPC() }()
+	go func() { errCh <- a.RunMQConsumer() }()
 
 	log.Fatal(<-errCh)
 }
