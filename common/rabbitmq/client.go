@@ -94,21 +94,7 @@ func (r *RabbitMQ) Ensure(kind, exchange, queue, routingKey string) error {
 		"x-dead-letter-routing-key": queue,
 	}
 	if _, err := ch.QueueDeclare(queue, true, false, false, false, args); err != nil {
-		var aerr *amqp.Error
-		if !errors.As(err, &aerr) || aerr.Code != amqp.PreconditionFailed {
-			return err
-		}
-		ch, err = r.connection.Channel()
-		if err != nil {
-			return err
-		}
-		defer ch.Close()
-		if _, err = ch.QueueDelete(queue, false, false, false); err != nil {
-			return err
-		}
-		if _, err = ch.QueueDeclare(queue, true, false, false, false, args); err != nil {
-			return err
-		}
+		return err
 	}
 	return ch.QueueBind(queue, routingKey, exchange, false, nil)
 }

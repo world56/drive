@@ -28,8 +28,6 @@ type RSAKeyPair struct {
 	Private string `redis:"private"`
 }
 
-const bcryptCost = 10
-
 // 生成密钥
 func (s *CryptoService) getRSA() (*RSAKeyPair, error) {
 	privateKey, err := rsa.GenerateKey(rand.Reader, 2048)
@@ -89,17 +87,61 @@ func (s *CryptoService) Decrypt(c context.Context, token string) ([]byte, error)
 	return rsa.DecryptPKCS1v15(rand.Reader, rsaPriv, cipherText)
 }
 
-func (s *CryptoService) GetKey(c context.Context) (string, error) {
-	public, _ := s.redis.HGet(c, "drive:rsa", "public").Result()
-	if len(public) > 0 {
+func (s *CryptoService) getPublicKey(c context.Context) (string, error) {
+	public, err := s.redis.HGet(c, "drive:rsa", "public").Result()
+	if err == nil {
 		return public, nil
 	}
+	if errors.Is(err, redis.Nil) {
+		return "", nil
+	}
+	return "", err
+}
+
+func (s *CryptoService) GetKey(c context.Context) (string, error) {
+	public, err := s.getPublicKey(c)
+	if err != nil {
+		return "", err
+	}
+	if public != "" {
+		return public, nil
+	}
+
 	key, err := s.getRSA()
-	s.redis.HSet(c, "drive:rsa", key).Result()
 	if err != nil {
 		return "", errors.New("generation failure")
 	}
-	return key.Public, nil
+
+	err = s.redis.Watch(c, func(tx *redis.Tx) error {
+		existing, err := tx.HGet(c, "drive:rsa", "public").Result()
+		if err == nil && existing != "" {
+			public = existing
+			return nil
+		}
+		if err != nil && !errors.Is(err, redis.Nil) {
+			return err
+		}
+
+		_, err = tx.TxPipelined(c, func(pipe redis.Pipeliner) error {
+			pipe.HSet(c, "drive:rsa", "public", key.Public, "private", key.Private)
+			return nil
+		})
+		if err != nil {
+			return err
+		}
+		public = key.Public
+		return nil
+	}, "drive:rsa")
+	if errors.Is(err, redis.TxFailedErr) {
+		public, err = s.getPublicKey(c)
+	}
+	if err != nil {
+		return "", err
+	}
+	if public == "" {
+		return "", errors.New("generation failure")
+	}
+	return public, nil
 }
 
 func (s *CryptoService) HashPassword(password string) (string, error) {
@@ -107,7 +149,7 @@ func (s *CryptoService) HashPassword(password string) (string, error) {
 		return "", errors.New("password is empty")
 	}
 
-	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcryptCost)
+	hash, err := bcrypt.GenerateFromPassword([]byte(password), 10)
 	if err != nil {
 		return "", err
 	}

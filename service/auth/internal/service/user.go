@@ -7,7 +7,6 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"fmt"
 
 	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
@@ -93,8 +92,7 @@ func (s *UserService) CreateUser(c context.Context, body dto.RequestCreateUserDT
 		Model(&model.User{}).
 		Where("account = ?", body.Account).
 		Count(&count).
-		Error; err == nil {
-		fmt.Println(err)
+		Error; err != nil {
 		return false, err
 	}
 	if count > 0 {
