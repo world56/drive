@@ -4,7 +4,7 @@
 package types
 
 type AdminSetPasswordReq struct {
-	ID   string `path:"id"`
+	Id   string `path:"id"`
 	Data string `json:"data"`
 }
 
@@ -17,16 +17,17 @@ type ChangePasswordReq struct {
 }
 
 type HasSuperAdminResp struct {
-	Exist bool `json:"exist"`
+	Exists bool `json:"exists"`
 }
 
 type Log struct {
-	ID          string `json:"id"`
-	UserID      string `json:"userId"`
+	Id          string `json:"id"`
+	UserId      string `json:"userId"`
 	UserAccount string `json:"userAccount"`
 	UserName    string `json:"userName"`
 	Event       string `json:"event"`
 	Desc        string `json:"desc"`
+	CreateTime  string `json:"createTime"`
 }
 
 type LoginReq struct {
@@ -35,8 +36,8 @@ type LoginReq struct {
 
 type LogsReq struct {
 	TurnPageReq
-	UserID *string `form:"userId,optional"`
-	Event  *string `form:"event,optional"`
+	UserId string `form:"userId,optional"`
+	Event  string `form:"event,optional"`
 }
 
 type LogsResp struct {
@@ -70,7 +71,7 @@ type User struct {
 }
 
 type UserInfoReq struct {
-	ID string `path:"id" validate:"required"`
+	Id string `path:"id" validate:"required"`
 }
 
 type UserInfoResp struct {
@@ -78,7 +79,7 @@ type UserInfoResp struct {
 }
 
 type UserInfoUpdateReq struct {
-	ID      string `path:"id"`
+	Id      string `path:"id"`
 	Name    string `json:"name" validate:"required"`
 	Contact string `json:"contact,optional"`
 	Remark  string `json:"remark,optional"`
@@ -94,18 +95,26 @@ type UserInsertReq struct {
 }
 
 type UserLoginInfo struct {
-	ID      string `json:"id"`
+	Id      string `json:"id"`
 	Name    string `json:"name"`
 	Role    int    `json:"role"`
 	Account string `json:"account"`
+}
+
+type UserLoginInfoReq struct {
+	UserId string `header:"user-id"`
 }
 
 type UserLoginInfoResp struct {
 	UserLoginInfo
 }
 
+type UserLogoutReq struct {
+	UserLoginInfoReq
+}
+
 type UserStatusUpdateReq struct {
-	ID string `path:"id"`
+	Id string `path:"id"`
 }
 
 type UsersReq struct {

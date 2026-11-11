@@ -8,18 +8,18 @@ import (
 )
 
 type Claims struct {
-	UserID string
+	UserId string
 	jwt.RegisteredClaims
 }
 
 func CreateJWT(secret, userId string) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, Claims{
-		UserID: userId,
+		UserId: userId,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 24)),
 		},
 	})
-	return token.SignedString(secret)
+	return token.SignedString([]byte(secret))
 }
 
 func ParseJWT(secret, tokenString string) (*Claims, error) {
@@ -27,7 +27,7 @@ func ParseJWT(secret, tokenString string) (*Claims, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
-		return secret, nil
+		return []byte(secret), nil
 	})
 
 	if err != nil {

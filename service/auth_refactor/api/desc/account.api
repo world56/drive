@@ -13,10 +13,17 @@ type RegisterReq {
 }
 
 type HasSuperAdminResp {
-	Exist bool `json:"exist"`
+	Exists bool `json:"exists"`
+}
+
+type UserLoginInfoReq {
+	UserId string `header:"user-id"`
 }
 
 type UserLoginInfoResp {
 	UserLoginInfo
 }
 
+type UserLogoutReq {
+	UserLoginInfoReq
+}

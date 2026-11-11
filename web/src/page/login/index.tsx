@@ -19,13 +19,13 @@ const Login = () => {
 
   const [form] = Form.useForm<TypeUser.Login>();
 
-  const { data: bol, loading } = useRequest(getSuperStatus);
+  const { data, loading } = useRequest(getSuperStatus);
 
   async function onSubmit() {
     const values = await form.validateFields();
-    if (!bol) {
-      const text = await encryption(values);
-      await register(text);
+    if (!data?.exists) {
+      const data = await encryption(values);
+      await register({ data });
     }
     actions.login(values);
   }
@@ -51,7 +51,7 @@ const Login = () => {
           <Checkbox>Remember me.</Checkbox>
         </Form.Item>
         <Button type="primary" onClick={onSubmit} loading={loading}>
-          {bol ? "Login" : "Register Administrator"}
+          {data?.exists ? "Login" : "Register Administrator"}
         </Button>
       </Form>
     </Container>

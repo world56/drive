@@ -23,10 +23,10 @@ service auth-api {
 	post /login (LoginReq)
 
 	@handler GetUserLoginInfo
-	post /user returns (UserLoginInfoResp)
+	post /user (UserLoginInfoReq) returns (UserLoginInfoResp)
 
 	@handler Logout
-	post /logout
+	post /logout (UserLogoutReq)
 }
 
 // CRYPTO

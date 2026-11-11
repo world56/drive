@@ -4,14 +4,14 @@ import (
 	"flag"
 	"fmt"
 
-	"auth/internal/config"
-	accountServer "auth/internal/server/account"
-	cryptoServer "auth/internal/server/crypto"
-	logServer "auth/internal/server/log"
-	userServer "auth/internal/server/user"
+	"auth/rpc/internal/config"
+	accountServer "auth/rpc/internal/server/account"
+	cryptoServer "auth/rpc/internal/server/crypto"
+	logServer "auth/rpc/internal/server/log"
+	userServer "auth/rpc/internal/server/user"
 
-	"auth/internal/svc"
-	"auth/pb"
+	"auth/rpc/internal/svc"
+	"auth/rpc/pb"
 
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/core/service"

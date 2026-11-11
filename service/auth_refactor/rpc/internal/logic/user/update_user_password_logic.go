@@ -6,14 +6,14 @@ import (
 	"encoding/json"
 	"errors"
 
-	"auth/internal/enum"
-	cryptologic "auth/internal/logic/crypto"
-	loglogic "auth/internal/logic/log"
-	"auth/internal/model"
-	"auth/internal/pkg/ctxdata"
-	"auth/internal/pkg/pwd"
-	"auth/internal/svc"
-	"auth/pb"
+	"auth/rpc/internal/enum"
+	cryptologic "auth/rpc/internal/logic/crypto"
+	loglogic "auth/rpc/internal/logic/log"
+	"auth/rpc/internal/model"
+	"auth/rpc/internal/pkg/ctxdata"
+	"auth/rpc/internal/pkg/pwd"
+	"auth/rpc/internal/svc"
+	"auth/rpc/pb"
 
 	"google.golang.org/protobuf/types/known/emptypb"
 
@@ -27,7 +27,7 @@ type UpdateUserPasswordLogic struct {
 }
 
 type UserResetPassword struct {
-	ID       string `json:"id"`
+	Id       string `json:"id"`
 	Pwd      string `json:"pwd"`
 	Password string `json:"password"`
 }
@@ -52,7 +52,7 @@ func (l *UpdateUserPasswordLogic) UpdateUserPassword(in *pb.UpdateUserPasswordRe
 		return nil, err
 	}
 
-	if operatorId == "" || userPwd.ID != operatorId {
+	if operatorId == "" || userPwd.Id != operatorId {
 		return nil, errors.New("Unauthorized")
 	}
 
@@ -60,7 +60,7 @@ func (l *UpdateUserPasswordLogic) UpdateUserPassword(in *pb.UpdateUserPasswordRe
 	var user model.User
 	if err := db.
 		Select("password", "account", "name", "role", "status").
-		Where("id = ?", userPwd.ID).
+		Where("id = ?", userPwd.Id).
 		First(&user).Error; err != nil {
 		return nil, errors.New("Not a valid user")
 	}
@@ -78,7 +78,7 @@ func (l *UpdateUserPasswordLogic) UpdateUserPassword(in *pb.UpdateUserPasswordRe
 		return nil, err
 	}
 	if err := db.Model(&user).
-		Where("id = ?", userPwd.ID).
+		Where("id = ?", userPwd.Id).
 		Update("password", hash).Error; err != nil {
 		return nil, err
 	}
@@ -89,7 +89,7 @@ func (l *UpdateUserPasswordLogic) UpdateUserPassword(in *pb.UpdateUserPasswordRe
 		Desc: utils.ToDescString(map[string]interface{}{
 			"name":    user.Name,
 			"role":    user.Role,
-			"id":      userPwd.ID,
+			"id":      userPwd.Id,
 			"status":  user.Status,
 			"account": user.Account,
 		}),

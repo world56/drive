@@ -5,11 +5,11 @@ import { call, put, takeLatest } from "redux-saga/effects";
 
 function* getEncryptionKey() {
   try {
-    const PUBLIC_KEY: Awaited<ReturnType<typeof getSecretKey>> = yield call(
+    const { text: PUBLIC_KEY }: Awaited<ReturnType<typeof getSecretKey>> = yield call(
       getSecretKey,
     );
     yield put(ActionsConfig.setConfig({ KEY: PUBLIC_KEY }));
-  } catch {}
+  } catch { }
 }
 
 export default function* SagaConfig() {

@@ -3,9 +3,9 @@ package loglogic
 import (
 	"context"
 
-	"auth/internal/model"
-	"auth/internal/svc"
-	"auth/pb"
+	"auth/rpc/internal/model"
+	"auth/rpc/internal/svc"
+	"auth/rpc/pb"
 
 	"github.com/zeromicro/go-zero/core/logx"
 	"gorm.io/gorm"

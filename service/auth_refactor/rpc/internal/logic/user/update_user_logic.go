@@ -5,12 +5,12 @@ import (
 	"context"
 	"errors"
 
-	"auth/internal/enum"
-	loglogic "auth/internal/logic/log"
-	"auth/internal/model"
-	"auth/internal/pkg/ctxdata"
-	"auth/internal/svc"
-	"auth/pb"
+	"auth/rpc/internal/enum"
+	loglogic "auth/rpc/internal/logic/log"
+	"auth/rpc/internal/model"
+	"auth/rpc/internal/pkg/ctxdata"
+	"auth/rpc/internal/svc"
+	"auth/rpc/pb"
 
 	"google.golang.org/protobuf/types/known/emptypb"
 
@@ -49,6 +49,11 @@ func (l *UpdateUserLogic) UpdateUser(in *pb.UpdateUserReq) (*emptypb.Empty, erro
 		Updates(update).
 		Error; err != nil {
 		return nil, err
+	}
+
+	loginCacheKey := "drive:user:" + in.GetId()
+	if err := l.svcCtx.Redis.HGet(l.ctx, loginCacheKey, "name").Err(); err == nil {
+		l.svcCtx.Redis.HSet(l.ctx, loginCacheKey, "name", in.Name)
 	}
 
 	loglogic.NewCreateLogLogic(l.ctx, l.svcCtx).CreateLog(&pb.CreateLogReq{

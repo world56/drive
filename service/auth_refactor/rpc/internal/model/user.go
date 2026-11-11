@@ -8,7 +8,7 @@ import (
 )
 
 type User struct {
-	ID         uuid.UUID `gorm:"type:uuid;primaryKey;default:gen_random_uuid();" json:"id"`
+	Id         uuid.UUID `gorm:"column:id;type:uuid;primaryKey;default:gen_random_uuid();" json:"id"`
 	Name       string    `gorm:"type:varchar(40);uniqueIndex;not null;" json:"name"`
 	Account    string    `gorm:"type:varchar(12);unique;not null;index:account_password;" json:"account"`
 	Password   string    `gorm:"type:varchar(255);not null;index:account_password;" json:"password"`
@@ -19,12 +19,12 @@ type User struct {
 	Remark     string    `gorm:"type:varchar(30);" json:"remark"` // 备注
 	CreateTime time.Time `gorm:"column:create_time;autoCreateTime" json:"createTime"`
 
-	Logs []Log `gorm:"foreignKey:UserID;references:ID" json:"logs"`
+	Logs []Log `gorm:"foreignKey:UserId;references:Id" json:"logs"`
 }
 
 func (u *User) BeforeCreate(db *gorm.DB) error {
-	if u.ID == uuid.Nil {
-		u.ID = uuid.New()
+	if u.Id == uuid.Nil {
+		u.Id = uuid.New()
 	}
 	return nil
 }

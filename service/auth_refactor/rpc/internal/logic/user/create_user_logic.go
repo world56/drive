@@ -5,14 +5,14 @@ import (
 	"encoding/json"
 	"errors"
 
-	"auth/internal/enum"
-	cryptologic "auth/internal/logic/crypto"
-	loglogic "auth/internal/logic/log"
-	"auth/internal/model"
-	"auth/internal/pkg/ctxdata"
-	"auth/internal/pkg/pwd"
-	"auth/internal/svc"
-	"auth/pb"
+	"auth/rpc/internal/enum"
+	cryptologic "auth/rpc/internal/logic/crypto"
+	loglogic "auth/rpc/internal/logic/log"
+	"auth/rpc/internal/model"
+	"auth/rpc/internal/pkg/ctxdata"
+	"auth/rpc/internal/pkg/pwd"
+	"auth/rpc/internal/svc"
+	"auth/rpc/pb"
 
 	"google.golang.org/protobuf/types/known/emptypb"
 
@@ -65,9 +65,9 @@ func (l *CreateUserLogic) CreateUser(in *pb.CreateUserReq) (*emptypb.Empty, erro
 	if err := l.svcCtx.DB.Create(&model.User{
 		Name:     in.Name,
 		Account:  in.Account,
-		Remark:   *in.Remark,
-		Contact:  *in.Contact,
 		Password: passwordHash,
+		Remark:   in.GetRemark(),
+		Contact:  in.GetContact(),
 		Role:     enum.UserRoleRegular,
 		Status:   enum.UserStatusActive,
 	}).Error; err != nil {

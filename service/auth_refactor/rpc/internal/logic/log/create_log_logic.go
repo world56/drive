@@ -4,10 +4,10 @@ import (
 	"context"
 	"errors"
 
-	"auth/internal/model"
-	"auth/internal/pkg/ctxdata"
-	"auth/internal/svc"
-	"auth/pb"
+	"auth/rpc/internal/model"
+	"auth/rpc/internal/pkg/ctxdata"
+	"auth/rpc/internal/svc"
+	"auth/rpc/pb"
 
 	"google.golang.org/protobuf/types/known/emptypb"
 
@@ -37,7 +37,7 @@ func (l *CreateLogLogic) CreateLog(in *pb.CreateLogReq) (*emptypb.Empty, error) 
 	if err := l.svcCtx.DB.WithContext(l.ctx).Create(&model.Log{
 		Desc:   in.Desc,
 		Event:  in.Event,
-		UserID: operatorId,
+		UserId: operatorId,
 	}).Error; err != nil {
 		l.Errorf("write log failed: %v", err)
 		return nil, errors.New("@-ERROR Log write failed")

@@ -14,9 +14,9 @@ function* taskInUserLogin(
 ) {
   try {
     const param: string = yield encryption(data.payload);
-    yield call(login, param);
+    yield call(login, { data: param });
     yield put(ActionsMiddleware.getUserInfo());
-  } catch {}
+  } catch { }
 }
 
 function* taskInGetUserInfo() {

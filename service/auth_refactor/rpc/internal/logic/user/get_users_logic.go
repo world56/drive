@@ -3,10 +3,10 @@ package userlogic
 import (
 	"context"
 
-	"auth/internal/enum"
-	"auth/internal/model"
-	"auth/internal/svc"
-	"auth/pb"
+	"auth/rpc/internal/enum"
+	"auth/rpc/internal/model"
+	"auth/rpc/internal/svc"
+	"auth/rpc/pb"
 
 	"gorm.io/gorm"
 
@@ -49,7 +49,7 @@ func (l *GetUsersLogic) GetUsers(in *pb.GetUsersReq) (*pb.GetUsersResp, error) {
 	pageSize := int(in.PageSize)
 
 	if err := db.
-		Select("id", "name", "account", "status", "role", "remark", "contact", "createTime").
+		Select("id", "name", "account", "status", "role", "remark", "contact", "create_time AS createTime").
 		Offset((int(in.CurrentPage) - 1) * pageSize).
 		Limit(pageSize).
 		Find(&users).Error; err != nil {

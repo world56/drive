@@ -5,12 +5,12 @@ import (
 	"context"
 	"errors"
 
-	"auth/internal/enum"
-	loglogic "auth/internal/logic/log"
-	"auth/internal/model"
-	"auth/internal/pkg/ctxdata"
-	"auth/internal/svc"
-	"auth/pb"
+	"auth/rpc/internal/enum"
+	loglogic "auth/rpc/internal/logic/log"
+	"auth/rpc/internal/model"
+	"auth/rpc/internal/pkg/ctxdata"
+	"auth/rpc/internal/svc"
+	"auth/rpc/pb"
 
 	"google.golang.org/protobuf/types/known/emptypb"
 
@@ -63,7 +63,7 @@ func (l *UpdateUserStatusLogic) UpdateUserStatus(in *pb.UpdateUserStatusReq) (*e
 		OperatorId: ctxdata.OperatorId(l.ctx),
 		Desc: utils.ToDescString(map[string]interface{}{
 			"status":  status,
-			"id":      user.ID,
+			"id":      user.Id,
 			"name":    user.Name,
 			"account": user.Account,
 		}),

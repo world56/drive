@@ -7,17 +7,16 @@ import (
 	"errors"
 	"time"
 
-	"auth/internal/enum"
-	cryptologic "auth/internal/logic/crypto"
+	"auth/rpc/internal/enum"
+	cryptologic "auth/rpc/internal/logic/crypto"
 
-	loglogic "auth/internal/logic/log"
+	loglogic "auth/rpc/internal/logic/log"
 
-	"auth/internal/model"
-	"auth/internal/pkg/ctxdata"
-	jsonwebtoken "auth/internal/pkg/jwt"
-	"auth/internal/pkg/pwd"
-	"auth/internal/svc"
-	"auth/pb"
+	"auth/rpc/internal/model"
+	jsonwebtoken "auth/rpc/internal/pkg/jwt"
+	"auth/rpc/internal/pkg/pwd"
+	"auth/rpc/internal/svc"
+	"auth/rpc/pb"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -67,10 +66,10 @@ func (l *LoginLogic) Login(in *pb.UserAuthReq) (*pb.UserAuthTokenResp, error) {
 		return nil, errors.New("Account Password Error")
 	}
 
-	UserID := user.ID.String()
-	key := "drive:user:" + UserID
+	UserId := user.Id.String()
+	key := "drive:user:" + UserId
 	userInfo := map[string]interface{}{
-		"id":      UserID,
+		"id":      UserId,
 		"name":    user.Name,
 		"role":    user.Role,
 		"status":  user.Status,
@@ -86,12 +85,12 @@ func (l *LoginLogic) Login(in *pb.UserAuthReq) (*pb.UserAuthTokenResp, error) {
 	}
 
 	loglogic.NewCreateLogLogic(l.ctx, l.svcCtx).CreateLog(&pb.CreateLogReq{
+		OperatorId: UserId,
 		Event:      enum.LogEventLogin,
-		OperatorId: ctxdata.OperatorId(l.ctx),
 		Desc:       utils.ToDescString(userInfo),
 	})
 
-	token, err := jsonwebtoken.CreateJWT(l.svcCtx.Config.JwtSecret, UserID)
+	token, err := jsonwebtoken.CreateJWT(l.svcCtx.Config.JwtSecret, UserId)
 	if err != nil {
 		return nil, err
 	}

@@ -19,11 +19,11 @@ export namespace TypeLog {
     event: ENUM_LOG.EVENT;
     /** @param event 操作人 */
     operator: TypeUser.DTO;
-    /** @param userID 操作人ID */
-    userID: TypeUser.DTO["id"];
-    /** @param userID 操作人名称 */
+    /** @param userId 操作人ID */
+    userId: TypeUser.DTO["id"];
+    /** @param userName 操作人名称 */
     userName: TypeUser.DTO["name"];
-    /** @param userID 操作人账号 */
+    /** @param userAccount 操作人账号 */
     userAccount: TypeUser.DTO["account"];
   }
 
@@ -33,5 +33,5 @@ export namespace TypeLog {
   export interface ReqLogs
     extends
       TypeCommon.PageTurning,
-      Partial<Pick<DTO, "event" | "createTime" | "userID">> {}
+      Partial<Pick<DTO, "event" | "createTime" | "userId">> {}
 }

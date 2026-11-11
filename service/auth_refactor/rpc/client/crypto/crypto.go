@@ -7,7 +7,7 @@ package crypto
 import (
 	"context"
 
-	"auth/pb"
+	"auth/rpc/pb"
 
 	"google.golang.org/protobuf/types/known/emptypb"
 

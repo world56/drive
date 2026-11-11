@@ -9,7 +9,7 @@ import type { TypeUser } from "@/interface/user";
  * @description 客户端用来加密数据
  */
 export function getSecretKey() {
-  return request<string>("crypto", {
+  return request<{ text: string }>("crypto", {
     method: ENUM_HTTP.REQUEST_MODE.GET,
     proxy: ENUM_HTTP.PROXY.AUTH,
   });
@@ -20,7 +20,7 @@ export function getSecretKey() {
  * @description 系统初始化必需拥有“超级管理员”
  */
 export function getSuperStatus() {
-  return request<boolean>("account/super", {
+  return request<{ exists: boolean }>("account/super", {
     method: ENUM_HTTP.REQUEST_MODE.GET,
     proxy: ENUM_HTTP.PROXY.AUTH,
   });
@@ -39,8 +39,8 @@ export function getUserInfo() {
 /**
  * @name register 注册超级管理员
  */
-export function register(data: string) {
-  return request<string>("account/register", {
+export function register(data: { data: string }) {
+  return request("account/register", {
     method: ENUM_HTTP.REQUEST_MODE.POST,
     proxy: ENUM_HTTP.PROXY.AUTH,
     data,
@@ -51,8 +51,8 @@ export function register(data: string) {
  * @name login 用户登陆
  * @returns 用户token
  */
-export function login(data: string) {
-  return request<string>("account/login", {
+export function login(data: { data: string }) {
+  return request("account/login", {
     method: ENUM_HTTP.REQUEST_MODE.POST,
     proxy: ENUM_HTTP.PROXY.AUTH,
     data,

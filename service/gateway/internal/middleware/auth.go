@@ -42,7 +42,7 @@ func (a *Auth) Handle(whitelist []string) func(http.Handler) http.Handler {
 				return
 			}
 
-			user, err := a.redis.HGetAll(r.Context(), "drive:user:"+claims.UserID).Result()
+			user, err := a.redis.HGetAll(r.Context(), "drive:user:"+claims.UserId).Result()
 			if err != nil {
 				writeJSON(w, 502, err.Error())
 				return

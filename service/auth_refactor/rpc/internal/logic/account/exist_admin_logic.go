@@ -3,10 +3,10 @@ package accountlogic
 import (
 	"context"
 
-	"auth/internal/enum"
-	"auth/internal/model"
-	"auth/internal/svc"
-	"auth/pb"
+	"auth/rpc/internal/enum"
+	"auth/rpc/internal/model"
+	"auth/rpc/internal/svc"
+	"auth/rpc/pb"
 
 	"google.golang.org/protobuf/types/known/emptypb"
 

@@ -1,0 +1,16 @@
+root = "."
+tmp_dir = "tmp"
+
+[build]
+cmd = "go build -o ./tmp/auth-rpc ."
+bin = "./tmp/auth-rpc"
+full_bin = "./tmp/auth-rpc -f etc/auth.yaml"
+include_ext = ["go", "yaml", "yml"]
+exclude_dir = ["tmp", "vendor", "client"]
+delay = 1000
+
+[log]
+time = true
+
+[misc]
+cleanup_on_exit = true

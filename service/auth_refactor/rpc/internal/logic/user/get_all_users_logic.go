@@ -3,9 +3,9 @@ package userlogic
 import (
 	"context"
 
-	"auth/internal/model"
-	"auth/internal/svc"
-	"auth/pb"
+	"auth/rpc/internal/model"
+	"auth/rpc/internal/svc"
+	"auth/rpc/pb"
 
 	"google.golang.org/protobuf/types/known/emptypb"
 

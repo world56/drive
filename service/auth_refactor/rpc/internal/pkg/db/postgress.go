@@ -1,7 +1,7 @@
 package db
 
 import (
-	"auth/internal/model"
+	"auth/rpc/internal/model"
 	"common/databases"
 
 	"gorm.io/gorm"

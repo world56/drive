@@ -6,11 +6,11 @@ package handler
 import (
 	"net/http"
 
-	account "auth/internal/handler/account"
-	crypto "auth/internal/handler/crypto"
-	log "auth/internal/handler/log"
-	user "auth/internal/handler/user"
-	"auth/internal/svc"
+	account "auth/api/internal/handler/account"
+	crypto "auth/api/internal/handler/crypto"
+	log "auth/api/internal/handler/log"
+	user "auth/api/internal/handler/user"
+	"auth/api/internal/svc"
 
 	"github.com/zeromicro/go-zero/rest"
 )

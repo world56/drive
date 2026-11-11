@@ -5,12 +5,12 @@ import (
 	"encoding/json"
 	"errors"
 
-	"auth/internal/enum"
-	cryptologic "auth/internal/logic/crypto"
-	"auth/internal/model"
-	"auth/internal/pkg/pwd"
-	"auth/internal/svc"
-	"auth/pb"
+	"auth/rpc/internal/enum"
+	cryptologic "auth/rpc/internal/logic/crypto"
+	"auth/rpc/internal/model"
+	"auth/rpc/internal/pkg/pwd"
+	"auth/rpc/internal/svc"
+	"auth/rpc/pb"
 
 	"google.golang.org/protobuf/types/known/emptypb"
 

@@ -7,9 +7,9 @@ package server
 import (
 	"context"
 
-	"auth/internal/logic/log"
-	"auth/internal/svc"
-	"auth/pb"
+	"auth/rpc/internal/logic/log"
+	"auth/rpc/internal/svc"
+	"auth/rpc/pb"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 

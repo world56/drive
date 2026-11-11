@@ -1,0 +1,16 @@
+root = "."
+tmp_dir = "tmp"
+
+[build]
+cmd = "go build -o ./tmp/auth-api ."
+bin = "./tmp/auth-api"
+full_bin = "./tmp/auth-api -f etc/auth-api.yaml"
+include_ext = ["go", "yaml", "yml", "api"]
+exclude_dir = ["tmp", "vendor"]
+delay = 1000
+
+[log]
+time = true
+
+[misc]
+cleanup_on_exit = true

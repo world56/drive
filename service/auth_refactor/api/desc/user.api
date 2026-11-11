@@ -13,7 +13,7 @@ type User {
 }
 
 type UserLoginInfo {
-	ID      string `json:"id"`
+	Id      string `json:"id"`
 	Name    string `json:"name"`
 	Role    int    `json:"role"`
 	Account string `json:"account"`
@@ -36,7 +36,7 @@ type UsersResp {
 }
 
 type UserInfoReq {
-	ID string `path:"id" validate:"required"`
+	Id string `path:"id" validate:"required"`
 }
 
 type UserInfoResp {
@@ -53,14 +53,14 @@ type UserInsertReq {
 }
 
 type UserInfoUpdateReq {
-	ID      string `path:"id"`
+	Id      string `path:"id"`
 	Name    string `json:"name" validate:"required"`
 	Contact string `json:"contact,optional"`
 	Remark  string `json:"remark,optional"`
 }
 
 type UserStatusUpdateReq {
-	ID string `path:"id"`
+	Id string `path:"id"`
 }
 
 // 用户修改自己密码：密文内为 {id, pwd, password}
@@ -70,7 +70,6 @@ type ChangePasswordReq {
 
 // 管理员重置密码：id 在 path，密文内为 {password}（亦可暂兼容含 id 的旧密文）
 type AdminSetPasswordReq {
-	ID   string `path:"id"`
+	Id   string `path:"id"`
 	Data string `json:"data"`
 }
-

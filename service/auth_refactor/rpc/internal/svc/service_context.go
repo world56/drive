@@ -1,9 +1,9 @@
 package svc
 
 import (
-	"auth/internal/config"
-	"auth/internal/pkg/db"
-	"auth/internal/pkg/mq"
+	"auth/rpc/internal/config"
+	"auth/rpc/internal/pkg/db"
+	"auth/rpc/internal/pkg/mq"
 
 	"common/idgen"
 	rabbitmq "common/rabbitmq"

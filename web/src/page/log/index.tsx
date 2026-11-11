@@ -32,7 +32,7 @@ const Log = () => {
         pageSize,
         currentPage,
         event: logEvent.value,
-        userID: userEvent.value,
+        userId: userEvent.value,
       }),
     { refreshDeps: [currentPage, pageSize] },
   );

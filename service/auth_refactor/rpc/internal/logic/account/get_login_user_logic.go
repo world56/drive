@@ -5,8 +5,8 @@ import (
 	"errors"
 	"strconv"
 
-	"auth/internal/svc"
-	"auth/pb"
+	"auth/rpc/internal/svc"
+	"auth/rpc/pb"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -40,7 +40,7 @@ func (l *GetLoginUserLogic) GetLoginUser(in *pb.LoginUserReq) (*pb.GetLoginUserR
 		return nil, errors.New("Failed to acquire a character")
 	}
 
-	// s.grpcClient.Stats.Access(UserID)
+	// s.grpcClient.Stats.Access(in.Id)
 
 	return &pb.GetLoginUserResp{
 		Id:      user["id"],

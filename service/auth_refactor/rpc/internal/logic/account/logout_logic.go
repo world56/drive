@@ -4,11 +4,10 @@ import (
 	utils "common/utils/jsonstring"
 	"context"
 
-	"auth/internal/enum"
-	loglogic "auth/internal/logic/log"
-	"auth/internal/pkg/ctxdata"
-	"auth/internal/svc"
-	"auth/pb"
+	"auth/rpc/internal/enum"
+	loglogic "auth/rpc/internal/logic/log"
+	"auth/rpc/internal/svc"
+	"auth/rpc/pb"
 
 	"google.golang.org/protobuf/types/known/emptypb"
 
@@ -35,13 +34,13 @@ func (l *LogoutLogic) Logout(in *pb.LoginUserReq) (*emptypb.Empty, error) {
 		return nil, err
 	}
 
-	l.svcCtx.Redis.Del(l.ctx, "drive:user:"+in.Id)
-
 	loglogic.NewCreateLogLogic(l.ctx, l.svcCtx).CreateLog(&pb.CreateLogReq{
 		Event:      enum.LogEventLogOut,
+		OperatorId: in.Id,
 		Desc:       utils.ToDescString(user),
-		OperatorId: ctxdata.OperatorId(l.ctx),
 	})
+
+	l.svcCtx.Redis.Del(l.ctx, "drive:user:"+in.Id)
 
 	return &emptypb.Empty{}, nil
 }
