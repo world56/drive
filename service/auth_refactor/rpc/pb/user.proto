@@ -1,0 +1,77 @@
+syntax = "proto3";
+
+package auth;
+option go_package="./pb";
+
+import "google/protobuf/empty.proto";
+
+message UserInfo {
+  string          id          = 1;
+  string          name        = 2;
+  int32           role        = 3;
+  string          account     = 4;
+  int32           status      = 5;
+  optional string contact     = 6;
+  optional string remark      = 7;
+  string          create_time = 8;
+}
+
+message GetUsersReq {
+  optional string name         = 1;
+  optional string account      = 2;
+  optional int32  status       = 3;
+  int64           page_size    = 4;
+  int64           current_page = 5;
+}
+
+message GetUsersResp {
+  int64             count = 1;
+  repeated UserInfo list  = 2;
+}
+
+message GetUserReq {
+  string id = 1;
+}
+
+message GetAllUsersResp {
+  repeated UserInfo list = 1;
+}
+
+message CreateUserReq {
+  string          name        = 1;
+  string          account     = 2;
+  optional string contact     = 3;
+  optional string remark      = 4;
+  string          password    = 5;
+}
+
+message UpdateUserReq {
+  string id      = 1;
+  string name    = 2;
+  string remark  = 3;
+  string contact = 4;
+}
+
+message UpdateUserStatusReq {
+  string id = 1;
+}
+
+message UpdateUserPasswordReq {
+ string data = 1;
+}
+
+message AdminResetUserPasswordReq {
+  string id       = 1;
+  string password = 2;
+}
+
+service User {
+  rpc GetUsers (GetUsersReq) returns (GetUsersResp){}
+  rpc GetAllUsers (google.protobuf.Empty) returns (GetAllUsersResp){}
+  rpc GetUser (GetUserReq) returns (UserInfo) {}
+  rpc CreateUser (CreateUserReq) returns (google.protobuf.Empty){}
+  rpc UpdateUser (UpdateUserReq) returns (google.protobuf.Empty){}
+  rpc UpdateUserStatus (UpdateUserStatusReq) returns  (google.protobuf.Empty){}
+  rpc UpdateUserPassword (UpdateUserPasswordReq) returns  (google.protobuf.Empty){}
+  rpc AdminResetUserPassword (AdminResetUserPasswordReq) returns  (google.protobuf.Empty){}
+}

@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package auth;
+option go_package="./pb";
+
+import "google/protobuf/empty.proto";
+
+message GetPublicKeyResp {
+  string public_key = 1;
+}
+
+message RSAKey {
+  string data = 1;
+}
+
+service Crypto {
+  rpc GetPublicKey (google.protobuf.Empty) returns (GetPublicKeyResp){}
+  rpc Decrypt (RSAKey) returns (RSAKey){}
+}

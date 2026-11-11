@@ -1,0 +1,22 @@
+syntax = "v1"
+
+import (
+	"user.api"
+)
+
+type LoginReq {
+	Data string `json:"data"`
+}
+
+type RegisterReq {
+	Data string `json:"data"`
+}
+
+type HasSuperAdminResp {
+	Exist bool `json:"exist"`
+}
+
+type UserLoginInfoResp {
+	UserLoginInfo
+}
+

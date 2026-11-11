@@ -1,0 +1,26 @@
+syntax = "v1"
+
+import (
+	"common.api"
+)
+
+type Log {
+	ID          string `json:"id"`
+	UserID      string `json:"userId"`
+	UserAccount string `json:"userAccount"`
+	UserName    string `json:"userName"`
+	Event       string `json:"event"`
+	Desc        string `json:"desc"`
+}
+
+type LogsReq {
+	TurnPageReq
+	UserID *string `form:"userId,optional"`
+	Event  *string `form:"event,optional"`
+}
+
+type LogsResp {
+	TurnPageResp
+	List []Log `json:"list"`
+}
+

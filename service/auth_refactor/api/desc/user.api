@@ -1,0 +1,76 @@
+syntax = "v1"
+
+import (
+	"common.api"
+)
+
+type User {
+	UserLoginInfo
+	Status     int    `json:"status"`
+	Contact    string `json:"contact,omitempty"`
+	Remark     string `json:"remark"`
+	CreateTime string `json:"createTime"`
+}
+
+type UserLoginInfo {
+	ID      string `json:"id"`
+	Name    string `json:"name"`
+	Role    int    `json:"role"`
+	Account string `json:"account"`
+}
+
+type AllUsersResp {
+	Users []User `json:"users"`
+}
+
+type UsersReq {
+	TurnPageReq
+	Name    *string `form:"name,optional"`
+	Status  *int    `form:"status,optional"`
+	Account *string `form:"account,optional"`
+}
+
+type UsersResp {
+	TurnPageResp
+	List []User `json:"list"`
+}
+
+type UserInfoReq {
+	ID string `path:"id" validate:"required"`
+}
+
+type UserInfoResp {
+	User
+}
+
+type UserInsertReq {
+	Name     string `json:"name" validate:"required"`
+	Role     int    `json:"role,optional"`
+	Account  string `json:"account" validate:"required"`
+	Password string `json:"password" validate:"required"`
+	Contact  string `json:"contact,optional"`
+	Remark   string `json:"remark,optional"`
+}
+
+type UserInfoUpdateReq {
+	ID      string `path:"id"`
+	Name    string `json:"name" validate:"required"`
+	Contact string `json:"contact,optional"`
+	Remark  string `json:"remark,optional"`
+}
+
+type UserStatusUpdateReq {
+	ID string `path:"id"`
+}
+
+// 用户修改自己密码：密文内为 {id, pwd, password}
+type ChangePasswordReq {
+	Data string `json:"data"`
+}
+
+// 管理员重置密码：id 在 path，密文内为 {password}（亦可暂兼容含 id 的旧密文）
+type AdminSetPasswordReq {
+	ID   string `path:"id"`
+	Data string `json:"data"`
+}
+

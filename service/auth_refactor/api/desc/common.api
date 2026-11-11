@@ -1,0 +1,11 @@
+syntax = "v1"
+
+type TurnPageResp {
+	Count int `json:"count"`
+}
+
+type TurnPageReq {
+	PageSize    int `form:"pageSize"`
+	CurrentPage int `form:"currentPage"`
+}
+

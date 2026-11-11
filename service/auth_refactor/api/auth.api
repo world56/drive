@@ -1,0 +1,82 @@
+syntax = "v1"
+
+import (
+	"desc/log.api"
+	"desc/user.api"
+	"desc/crypto.api"
+	"desc/account.api"
+)
+
+// ACCOUNT
+@server (
+	prefix: /account
+	group:  account
+)
+service auth-api {
+	@handler HasSuperAdmin
+	get /super returns (HasSuperAdminResp)
+
+	@handler Register
+	post /register (RegisterReq)
+
+	@handler Login
+	post /login (LoginReq)
+
+	@handler GetUserLoginInfo
+	post /user returns (UserLoginInfoResp)
+
+	@handler Logout
+	post /logout
+}
+
+// CRYPTO
+@server (
+	prefix: /crypto
+	group:  crypto
+)
+service auth-api {
+	@handler GetSecret
+	get / returns (SecretResp)
+}
+
+// USER
+@server (
+	prefix: /user
+	group:  user
+)
+service auth-api {
+	@handler GetAllUsers
+	get / returns (AllUsersResp)
+
+	@handler GetUsers
+	get /list (UsersReq) returns (UsersResp)
+
+	@handler GetUserInfo
+	get /:id (UserInfoReq) returns (UserInfoResp)
+
+	@handler InsertUser
+	post /insert (UserInsertReq)
+
+	@handler UpdateUser
+	put /:id (UserInfoUpdateReq)
+
+	@handler UpdateUserStatus
+	put /:id/status (UserStatusUpdateReq)
+
+	@handler ChangePassword
+	put /pwd (ChangePasswordReq)
+
+	@handler AdminSetPassword
+	put /:id/password (AdminSetPasswordReq)
+}
+
+// LOG
+@server (
+	prefix: /log
+	group:  log
+)
+service auth-api {
+	@handler GetLogs
+	get / (LogsReq) returns (LogsResp)
+}
+

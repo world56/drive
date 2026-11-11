@@ -1,0 +1,5 @@
+syntax = "v1"
+
+type SecretResp {
+  Text string `json:"text"`
+}
