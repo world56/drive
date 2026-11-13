@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package asset;
+option go_package="./pb";
+
+import "google/protobuf/empty.proto";
+
+message FavoriteInfo {
+  int64           id          = 1;  // 收藏记录 id
+  int64           resource_id = 2;
+  string          name        = 3;
+  string          full_name   = 4;
+  int64           size        = 5;
+  int32           type        = 6;
+  optional string suffix      = 7;
+  optional int64  parent_id   = 8;
+  optional string remark      = 9;
+  optional int64  count       = 10;
+  string          creator_id  = 11;
+  string          create_time = 12; // 收藏时间
+  optional string object_name = 13;
+  int32           remove      = 14;
+}
+
+message GetFavoritesReq {
+  repeated int32 type        = 1;
+  string         full_name   = 2;
+  string         create_time = 3;
+}
+
+message GetFavoritesResp {
+  repeated FavoriteInfo list = 1;
+}
+
+message UpdateFavoritesReq {
+  repeated int64 ids = 1;
+}
+
+service Favorite {
+  rpc GetFavorites(GetFavoritesReq) returns (GetFavoritesResp){}
+  rpc InsertFavorites(UpdateFavoritesReq) returns (google.protobuf.Empty){}
+  rpc RemoveFavorites(UpdateFavoritesReq) returns (google.protobuf.Empty){}
+}

@@ -1,0 +1,67 @@
+syntax = "v1"
+
+// Resource 对应 resources 表
+type Resource {
+	Id         int64   `json:"id,string"`
+	Name       string  `json:"name"`
+	FullName   string  `json:"fullName"`
+	Size       int64   `json:"size"`
+	Type       int8    `json:"type"`
+	Suffix     *string `json:"suffix,optional"`
+	ParentId   *int64  `json:"parentId,string,optional"`
+	Remark     *string `json:"remark,optional"`
+	Count      *int64  `json:"count,optional"`
+	CreatorId  string  `json:"creatorId"`
+	CreateTime string  `json:"createTime"`
+	ObjectName *string `json:"objectName,optional"`
+}
+
+type SearchAllResourcesReq {
+	Name      string `form:"name,optional"`
+	Type      []int8 `form:"type,optional"`
+	Sort      string `form:"sort,optional,options=ASC|DESC"`
+	StartTime *int64 `form:"startTime,optional"`
+	EndTime   *int64 `form:"endTime,optional"`
+}
+
+type ResourceItem {
+	Resource
+	Favorite int8 `json:"favorite"`
+}
+
+type ResourcesResp {
+	List []ResourceItem `json:"list"`
+}
+
+type GetResourcesReq {
+	Id    string `form:"id,optional"`
+	Order string `form:"order,options=ASC|DESC"`
+	Type  string `form:"type,options=SORT_NAME|SORT_SIZE|SORT_SUFFIX|SORT_TYPE|SORT_CREATOR_ID|SORT_CREATE_TIME"`
+}
+
+type GetResourceReq {
+	Id string `path:"id"`
+}
+
+type GetResourceResp {
+	Resource
+	CreatorName string `json:"creatorName"`
+}
+
+type CreateFolderReq {
+	Name     string  `json:"name"`
+	Remark   *string `json:"remark,optional"`
+	ParentId *int64  `json:"parentId,string,optional"`
+}
+
+type UpdateResourceReq {
+	Id       string  `json:"id"`
+	Name     string  `json:"name"`
+	ParentId *int64  `json:"parentId,string,optional"`
+	Remark   *string `json:"remark,optional"`
+}
+
+type MoveResourcesReq {
+	Ids      []string `json:"ids"`
+	ParentId *int64   `json:"parentId,string,optional"`
+}

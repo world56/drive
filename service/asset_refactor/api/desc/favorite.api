@@ -1,0 +1,26 @@
+syntax = "v1"
+
+import "resource.api"
+
+// Favorite 集成 Resource；Id/CreateTime 覆盖为收藏记录字段
+type Favorite {
+	Resource
+	Id         int64  `json:"id,string"`
+	ResourceId int64  `json:"resourceId,string"`
+	Remove     int8   `json:"remove"`
+	CreateTime string `json:"createTime"`
+}
+
+type GetFavoritesReq {
+	Type       []int8 `form:"type,optional"`
+	FullName   string `form:"fullName,optional"`
+	CreateTime string `form:"createTime,optional,options=ASC|DESC"`
+}
+
+type GetFavoritesResp {
+	List []Favorite `json:"list"`
+}
+
+type UpdateFavoritesReq {
+	Ids []string `json:"ids"`
+}

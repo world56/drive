@@ -1,0 +1,42 @@
+package favoritelogic
+
+import (
+	"context"
+
+	"asset/rpc/internal/model"
+	"asset/rpc/internal/pkg/ctxdata"
+	"asset/rpc/internal/svc"
+	"asset/rpc/pb"
+
+	"google.golang.org/protobuf/types/known/emptypb"
+	"gorm.io/gorm"
+
+	"github.com/zeromicro/go-zero/core/logx"
+)
+
+type RemoveFavoritesLogic struct {
+	ctx    context.Context
+	svcCtx *svc.ServiceContext
+	logx.Logger
+}
+
+func NewRemoveFavoritesLogic(ctx context.Context, svcCtx *svc.ServiceContext) *RemoveFavoritesLogic {
+	return &RemoveFavoritesLogic{
+		ctx:    ctx,
+		svcCtx: svcCtx,
+		Logger: logx.WithContext(ctx),
+	}
+}
+
+func (l *RemoveFavoritesLogic) RemoveFavorites(in *pb.UpdateFavoritesReq) (*emptypb.Empty, error) {
+	userId := ctxdata.OperatorId(l.ctx)
+	if err := l.RemoveByIds(l.svcCtx.DB.WithContext(l.ctx), in.Ids, userId); err != nil {
+		return nil, err
+	}
+
+	return &emptypb.Empty{}, nil
+}
+
+func (l *RemoveFavoritesLogic) RemoveByIds(tx *gorm.DB, ids []int64, userId string) error {
+	return tx.Where("resource_id IN ? AND user_id = ?", ids, userId).Delete(&model.Favorite{}).Error
+}

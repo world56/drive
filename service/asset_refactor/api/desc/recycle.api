@@ -1,0 +1,17 @@
+syntax = "v1"
+
+import "favorite.api"
+
+// Recycle 集成 Favorite（已含 Resource）；UserName 为回收站额外字段
+type Recycle {
+	Favorite
+	UserName string `json:"userName"`
+}
+
+type GetRecyclesResp {
+	List []Recycle `json:"list"`
+}
+
+type UpdateRecyclesReq {
+	Ids []string `json:"ids"`
+}

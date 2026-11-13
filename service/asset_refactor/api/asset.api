@@ -1,0 +1,71 @@
+syntax = "v1"
+
+import (
+	"desc/recycle.api"
+	"desc/resource.api"
+	"desc/favorite.api"
+)
+
+// RESOURCE
+@server (
+	prefix: /resource
+	group:  resource
+)
+service asset-api {
+	@handler SearchAllResources
+	get /search (SearchAllResourcesReq) returns (ResourcesResp)
+
+	@handler GetResources
+	get /list (GetResourcesReq) returns (ResourcesResp)
+
+	@handler GetFolders
+	get /folders returns (ResourcesResp)
+
+	@handler GetResource
+	get /:id (GetResourceReq) returns (GetResourceResp)
+
+	@handler CreateFolder
+	post /mkdir (CreateFolderReq)
+
+	@handler UpdateResource
+	put /update (UpdateResourceReq)
+
+	@handler MoveResources
+	put /move (MoveResourcesReq)
+}
+
+// FAVORITE
+@server (
+	prefix: /favorite
+	group:  favorite
+)
+service asset-api {
+	@handler GetFavorites
+	get /list (GetFavoritesReq) returns (GetFavoritesResp)
+
+	@handler InsertFavorites
+	post /insert (UpdateFavoritesReq)
+
+	@handler RemoveFavorites
+	delete /remove (UpdateFavoritesReq)
+}
+
+// RECYCLE
+@server (
+	prefix: /recycle
+	group:  recycle
+)
+service asset-api {
+	@handler GetRecycles
+	get / returns (GetRecyclesResp)
+
+	@handler MoveToRecycle
+	post /move (UpdateRecyclesReq)
+
+	@handler RestoreRecycleResources
+	post /restore (UpdateRecyclesReq)
+
+	@handler DeleteRestoreResources
+	delete /delete (UpdateRecyclesReq)
+}
+
