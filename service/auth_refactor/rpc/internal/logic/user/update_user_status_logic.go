@@ -8,9 +8,9 @@ import (
 	"auth/rpc/internal/enum"
 	loglogic "auth/rpc/internal/logic/log"
 	"auth/rpc/internal/model"
-	"auth/rpc/internal/pkg/ctxdata"
 	"auth/rpc/internal/svc"
 	"auth/rpc/pb"
+	"common/ctxdata"
 
 	"google.golang.org/protobuf/types/known/emptypb"
 
@@ -60,7 +60,7 @@ func (l *UpdateUserStatusLogic) UpdateUserStatus(in *pb.UpdateUserStatusReq) (*e
 	user.Status = status // 最新修改的状态
 	loglogic.NewCreateLogLogic(l.ctx, l.svcCtx).CreateLog(&pb.CreateLogReq{
 		Event:      enum.LogEventUserStatus,
-		OperatorId: ctxdata.OperatorId(l.ctx),
+		OperatorId: ctxdata.UserInfo(l.ctx).Id,
 		Desc: utils.ToDescString(map[string]interface{}{
 			"status":  status,
 			"id":      user.Id,

@@ -8,6 +8,7 @@ import (
 
 	"asset/api/internal/svc"
 	"asset/api/internal/types"
+	"asset/rpc/pb"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -27,7 +28,10 @@ func NewMoveResourcesLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Mov
 }
 
 func (l *MoveResourcesLogic) MoveResources(req *types.MoveResourcesReq) error {
-	// todo: add your logic here and delete this line
+	_, err := l.svcCtx.ResourceRpc.MoveResources(l.ctx, &pb.MoveResourcesReq{
+		Ids:      req.Ids,
+		ParentId: req.ParentId,
+	})
 
-	return nil
+	return err
 }

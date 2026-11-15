@@ -4,9 +4,9 @@ import (
 	"context"
 
 	"asset/rpc/internal/enum"
-	"asset/rpc/internal/pkg/ctxdata"
 	"asset/rpc/internal/svc"
 	"asset/rpc/pb"
+	"common/ctxdata"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -57,7 +57,7 @@ func (l *GetFavoritesLogic) GetFavorites(in *pb.GetFavoritesReq) (*pb.GetFavorit
 				END AS count
 	`, enum.ResourceNormal).
 		Joins("INNER JOIN resources AS r ON r.id = f.resource_id").
-		Where("f.user_id = ?", ctxdata.OperatorId(l.ctx)).
+		Where("f.user_id = ?", ctxdata.UserInfo(l.ctx).Id).
 		Where("r.remove = ?", enum.ResourceNormal).
 		Order("f.create_time " + order)
 

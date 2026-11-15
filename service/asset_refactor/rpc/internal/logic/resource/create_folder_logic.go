@@ -6,9 +6,9 @@ import (
 
 	"asset/rpc/internal/enum"
 	"asset/rpc/internal/model"
-	"asset/rpc/internal/pkg/ctxdata"
 	"asset/rpc/internal/svc"
 	"asset/rpc/pb"
+	"common/ctxdata"
 
 	"google.golang.org/protobuf/types/known/emptypb"
 	"gorm.io/gorm"
@@ -45,20 +45,22 @@ func (l *CreateFolderLogic) CreateFolder(in *pb.CreateFolderReq) (*emptypb.Empty
 		return nil, errors.New("folder already exists")
 	}
 
+	userId := ctxdata.UserInfo(l.ctx).Id
+
 	folder = model.Resource{
+		CreatorId: userId,
 		Name:      in.Name,
 		FullName:  in.Name,
 		Remark:    in.Remark,
 		ParentId:  in.ParentId,
 		Type:      enum.ResourceTypeFolder,
-		CreatorId: ctxdata.OperatorId(l.ctx),
 	}
 	if err := db.Create(&folder).Error; err != nil {
 		return nil, err
 	}
 
 	l.svcCtx.LogRpc.CreateLog(l.ctx, &logclient.CreateLogReq{
-		OperatorId: ctxdata.OperatorId(l.ctx),
+		OperatorId: userId,
 		Desc:       utils.ToDescString(folder),
 		Event:      enum.LogEventResourceMkdirFolder,
 	})

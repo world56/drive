@@ -4,9 +4,9 @@ import (
 	"context"
 
 	"asset/rpc/internal/enum"
-	"asset/rpc/internal/pkg/ctxdata"
 	"asset/rpc/internal/svc"
 	"asset/rpc/pb"
+	"common/ctxdata"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -48,7 +48,7 @@ func (l *GetResourcesLogic) GetResources(in *pb.GetResourcesReq) (*pb.ResourcesR
 		`).
 		Where("r.remove = ?", enum.ResourceNormal).
 		Joins("LEFT JOIN resources AS f ON f.parent_id = r.id AND f.remove = ?", enum.ResourceNormal).
-		Joins("LEFT JOIN favorites AS l ON l.user_id = ? AND l.resource_id = r.id", ctxdata.OperatorId(l.ctx)).
+		Joins("LEFT JOIN favorites AS l ON l.user_id = ? AND l.resource_id = r.id", ctxdata.UserInfo(l.ctx).Id).
 		Group("r.id").
 		Scan(&files).Error; err != nil {
 		return nil, err

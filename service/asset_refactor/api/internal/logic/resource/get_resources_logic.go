@@ -8,6 +8,7 @@ import (
 
 	"asset/api/internal/svc"
 	"asset/api/internal/types"
+	"asset/rpc/pb"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -27,7 +28,33 @@ func NewGetResourcesLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetR
 }
 
 func (l *GetResourcesLogic) GetResources(req *types.GetResourcesReq) (resp *types.ResourcesResp, err error) {
-	// todo: add your logic here and delete this line
+	resources, err := l.svcCtx.ResourceRpc.GetResources(l.ctx, &pb.GetResourcesReq{
+		Id:    req.Id,
+		Order: req.Order,
+		Type:  req.Type,
+	})
+	if err != nil {
+		return nil, err
+	}
 
-	return
+	list := make([]types.ResourceItem, 0, len(resources.List))
+	for _, val := range list {
+		list = append(list, types.ResourceItem{
+			Id:         val.Id,
+			Name:       val.Name,
+			FullName:   val.FullName,
+			Size:       val.Size,
+			Type:       int8(val.Type),
+			Suffix:     val.Suffix,
+			ParentId:   val.ParentId,
+			Remark:     val.Remark,
+			Count:      val.Count,
+			CreatorId:  val.CreatorId,
+			CreateTime: val.CreateTime,
+			ObjectName: val.ObjectName,
+			Favorite:   val.Favorite,
+		})
+	}
+
+	return &types.ResourcesResp{List: list}, nil
 }

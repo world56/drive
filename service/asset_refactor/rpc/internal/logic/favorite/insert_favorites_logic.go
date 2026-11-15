@@ -4,9 +4,9 @@ import (
 	"context"
 
 	"asset/rpc/internal/model"
-	"asset/rpc/internal/pkg/ctxdata"
 	"asset/rpc/internal/svc"
 	"asset/rpc/pb"
+	"common/ctxdata"
 
 	"google.golang.org/protobuf/types/known/emptypb"
 	"gorm.io/gorm/clause"
@@ -29,7 +29,7 @@ func NewInsertFavoritesLogic(ctx context.Context, svcCtx *svc.ServiceContext) *I
 }
 
 func (l *InsertFavoritesLogic) InsertFavorites(in *pb.UpdateFavoritesReq) (*emptypb.Empty, error) {
-	userId := ctxdata.OperatorId(l.ctx)
+	userId := ctxdata.UserInfo(l.ctx).Id
 	favorites := make([]model.Favorite, 0, len(in.Ids))
 	for _, id := range in.Ids {
 		favorites = append(favorites, model.Favorite{

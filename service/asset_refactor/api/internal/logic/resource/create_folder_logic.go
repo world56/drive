@@ -8,6 +8,7 @@ import (
 
 	"asset/api/internal/svc"
 	"asset/api/internal/types"
+	"asset/rpc/pb"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -27,7 +28,13 @@ func NewCreateFolderLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Crea
 }
 
 func (l *CreateFolderLogic) CreateFolder(req *types.CreateFolderReq) error {
-	// todo: add your logic here and delete this line
+	if _, err := l.svcCtx.ResourceRpc.CreateFolder(l.ctx, &pb.CreateFolderReq{
+		Name:     req.Name,
+		Remark:   req.Remark,
+		ParentId: req.ParentId,
+	}); err != nil {
+		return err
+	}
 
 	return nil
 }

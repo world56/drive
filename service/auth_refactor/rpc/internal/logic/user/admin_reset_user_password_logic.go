@@ -10,10 +10,10 @@ import (
 	cryptologic "auth/rpc/internal/logic/crypto"
 	loglogic "auth/rpc/internal/logic/log"
 	"auth/rpc/internal/model"
-	"auth/rpc/internal/pkg/ctxdata"
 	"auth/rpc/internal/pkg/pwd"
 	"auth/rpc/internal/svc"
 	"auth/rpc/pb"
+	"common/ctxdata"
 
 	"google.golang.org/protobuf/types/known/emptypb"
 
@@ -73,7 +73,7 @@ func (l *AdminResetUserPasswordLogic) AdminResetUserPassword(in *pb.AdminResetUs
 
 	loglogic.NewCreateLogLogic(l.ctx, l.svcCtx).CreateLog(&pb.CreateLogReq{
 		Event:      enum.LogEventPwdUpdate,
-		OperatorId: ctxdata.OperatorId(l.ctx),
+		OperatorId: ctxdata.UserInfo(l.ctx).Id,
 		Desc: utils.ToDescString(map[string]interface{}{
 			"name":    user.Name,
 			"role":    user.Role,

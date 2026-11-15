@@ -5,6 +5,7 @@ import (
 	"asset/rpc/internal/pkg/db"
 	"asset/rpc/internal/pkg/mq"
 	"common/idgen"
+	interceptorclient "common/interceptor/client"
 	rabbitmq "common/rabbitmq"
 	"common/rdb"
 
@@ -38,7 +39,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	mq, err := mq.InitRabbitMQ(c.RabbitMqUrl)
 	logx.Must(err)
 
-	authCli := zrpc.MustNewClient(c.AuthRpc)
+	authCli := zrpc.MustNewClient(c.AuthRpc, zrpc.WithUnaryClientInterceptor(interceptorclient.UnaryUser))
 
 	return &ServiceContext{
 		Config:   c,

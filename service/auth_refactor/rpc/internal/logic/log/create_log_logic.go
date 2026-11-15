@@ -5,9 +5,9 @@ import (
 	"errors"
 
 	"auth/rpc/internal/model"
-	"auth/rpc/internal/pkg/ctxdata"
 	"auth/rpc/internal/svc"
 	"auth/rpc/pb"
+	"common/ctxdata"
 
 	"google.golang.org/protobuf/types/known/emptypb"
 
@@ -31,7 +31,7 @@ func NewCreateLogLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CreateL
 func (l *CreateLogLogic) CreateLog(in *pb.CreateLogReq) (*emptypb.Empty, error) {
 	operatorId := in.OperatorId
 	if operatorId == "" {
-		operatorId = ctxdata.OperatorId(l.ctx)
+		operatorId = ctxdata.UserInfo(l.ctx).Id
 	}
 
 	if err := l.svcCtx.DB.WithContext(l.ctx).Create(&model.Log{

@@ -9,6 +9,7 @@ import (
 	cryptoServer "auth/rpc/internal/server/crypto"
 	logServer "auth/rpc/internal/server/log"
 	userServer "auth/rpc/internal/server/user"
+	interceptorcommon "common/interceptor/server"
 
 	"auth/rpc/internal/svc"
 	"auth/rpc/pb"
@@ -39,6 +40,7 @@ func main() {
 		}
 	})
 
+	s.AddUnaryInterceptors(interceptorcommon.UnaryUser)
 	defer s.Stop()
 
 	fmt.Printf("Starting rpc server at %s...\n", c.ListenOn)

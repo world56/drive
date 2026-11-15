@@ -8,9 +8,9 @@ import (
 	"auth/rpc/internal/enum"
 	loglogic "auth/rpc/internal/logic/log"
 	"auth/rpc/internal/model"
-	"auth/rpc/internal/pkg/ctxdata"
 	"auth/rpc/internal/svc"
 	"auth/rpc/pb"
+	"common/ctxdata"
 
 	"google.golang.org/protobuf/types/known/emptypb"
 
@@ -58,8 +58,8 @@ func (l *UpdateUserLogic) UpdateUser(in *pb.UpdateUserReq) (*emptypb.Empty, erro
 
 	loglogic.NewCreateLogLogic(l.ctx, l.svcCtx).CreateLog(&pb.CreateLogReq{
 		Event:      enum.LogEventUserUpdate,
-		OperatorId: ctxdata.OperatorId(l.ctx),
 		Desc:       utils.ToDescString(update),
+		OperatorId: ctxdata.UserInfo(l.ctx).Id,
 	})
 	return &emptypb.Empty{}, nil
 }

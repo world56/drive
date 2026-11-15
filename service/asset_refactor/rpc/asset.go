@@ -7,6 +7,7 @@ import (
 	resourceServer "asset/rpc/internal/server/resource"
 	"asset/rpc/internal/svc"
 	"asset/rpc/pb"
+	interceptorcommon "common/interceptor/server"
 	"flag"
 	"fmt"
 
@@ -35,6 +36,8 @@ func main() {
 			reflection.Register(grpcServer)
 		}
 	})
+
+	s.AddUnaryInterceptors(interceptorcommon.UnaryUser)
 	defer s.Stop()
 
 	fmt.Printf("Starting rpc server at %s...\n", c.ListenOn)

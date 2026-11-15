@@ -8,6 +8,8 @@ import (
 
 	"github.com/zeromicro/go-zero/zrpc"
 
+	interceptorclient "common/interceptor/client"
+
 	accountclient "auth/rpc/client/account"
 	cryptoclient "auth/rpc/client/crypto"
 
@@ -22,7 +24,7 @@ type ServiceContext struct {
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
-	authRpc := zrpc.MustNewClient(c.AuthRpc)
+	authRpc := zrpc.MustNewClient(c.AuthRpc, zrpc.WithUnaryClientInterceptor(interceptorclient.UnaryUser))
 	return &ServiceContext{
 		Config:     c,
 		LogRpc:     logclient.NewLog(authRpc),

@@ -10,6 +10,7 @@ import (
 	"asset/api/internal/types"
 
 	"github.com/zeromicro/go-zero/core/logx"
+	"google.golang.org/protobuf/types/known/emptypb"
 )
 
 type GetFoldersLogic struct {
@@ -27,7 +28,28 @@ func NewGetFoldersLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetFol
 }
 
 func (l *GetFoldersLogic) GetFolders() (resp *types.ResourcesResp, err error) {
-	// todo: add your logic here and delete this line
+	folders, err := l.svcCtx.ResourceRpc.GetFolders(l.ctx, &emptypb.Empty{})
+	if err != nil {
+		return nil, err
+	}
 
-	return
+	list := make([]types.ResourceItem, 0, len(folders.List))
+	for _, v := range folders.List {
+		list = append(list, types.ResourceItem{
+			Id:         v.Id,
+			Name:       v.Name,
+			FullName:   v.FullName,
+			Size:       v.Size,
+			Type:       int8(v.Type),
+			Suffix:     v.Suffix,
+			ParentId:   v.ParentId,
+			Remark:     v.Remark,
+			Count:      v.Count,
+			CreatorId:  v.CreatorId,
+			CreateTime: v.CreateTime,
+			ObjectName: v.ObjectName,
+		})
+	}
+
+	return &types.ResourcesResp{List: list}, nil
 }

@@ -8,6 +8,7 @@ import (
 
 	"asset/api/internal/svc"
 	"asset/api/internal/types"
+	"asset/rpc/pb"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -27,7 +28,24 @@ func NewGetResourceLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetRe
 }
 
 func (l *GetResourceLogic) GetResource(req *types.GetResourceReq) (resp *types.GetResourceResp, err error) {
-	// todo: add your logic here and delete this line
+	data, err := l.svcCtx.ResourceRpc.GetResource(l.ctx, &pb.GetResourceReq{Id: req.Id})
+	if err != nil {
+		return nil, err
+	}
 
-	return
+	return &types.GetResourceResp{
+		CreatorName: data.GetCreatorName(),
+		Id:          data.Id,
+		Name:        data.Name,
+		FullName:    data.FullName,
+		Size:        data.Size,
+		Type:        int8(data.Type),
+		Suffix:      data.Suffix,
+		ParentId:    data.ParentId,
+		Remark:      data.Remark,
+		Count:       data.Count,
+		CreatorId:   data.CreatorId,
+		CreateTime:  data.CreateTime,
+		ObjectName:  data.ObjectName,
+	}, nil
 }

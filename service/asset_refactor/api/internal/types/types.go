@@ -32,7 +32,7 @@ type GetRecyclesResp struct {
 }
 
 type GetResourceReq struct {
-	Id string `path:"id"`
+	Id int64 `path:"id"`
 }
 
 type GetResourceResp struct {
@@ -41,14 +41,14 @@ type GetResourceResp struct {
 }
 
 type GetResourcesReq struct {
-	Id    string `form:"id,optional"`
+	Id    *int64 `form:"id,optional"`
 	Order string `form:"order,options=ASC|DESC"`
 	Type  string `form:"type,options=SORT_NAME|SORT_SIZE|SORT_SUFFIX|SORT_TYPE|SORT_CREATOR_ID|SORT_CREATE_TIME"`
 }
 
 type MoveResourcesReq struct {
-	Ids      []string `json:"ids"`
-	ParentId *int64   `json:"parentId,string,optional"`
+	Ids      []int64 `json:"ids"`
+	ParentId *int64  `json:"parentId,string,optional"`
 }
 
 type Recycle struct {
@@ -81,11 +81,11 @@ type ResourcesResp struct {
 }
 
 type SearchAllResourcesReq struct {
-	Name      string `form:"name,optional"`
-	Type      []int8 `form:"type,optional"`
-	Sort      string `form:"sort,optional,options=ASC|DESC"`
-	StartTime *int64 `form:"startTime,optional"`
-	EndTime   *int64 `form:"endTime,optional"`
+	Name      string  `form:"name,optional"`
+	Type      []int32 `form:"type,optional"`
+	Sort      string  `form:"sort,optional,options=ASC|DESC"`
+	StartTime *int64  `form:"startTime,optional"`
+	EndTime   *int64  `form:"endTime,optional"`
 }
 
 type UpdateFavoritesReq struct {

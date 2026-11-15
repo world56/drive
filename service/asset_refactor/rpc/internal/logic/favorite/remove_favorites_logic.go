@@ -4,9 +4,9 @@ import (
 	"context"
 
 	"asset/rpc/internal/model"
-	"asset/rpc/internal/pkg/ctxdata"
 	"asset/rpc/internal/svc"
 	"asset/rpc/pb"
+	"common/ctxdata"
 
 	"google.golang.org/protobuf/types/known/emptypb"
 	"gorm.io/gorm"
@@ -29,7 +29,7 @@ func NewRemoveFavoritesLogic(ctx context.Context, svcCtx *svc.ServiceContext) *R
 }
 
 func (l *RemoveFavoritesLogic) RemoveFavorites(in *pb.UpdateFavoritesReq) (*emptypb.Empty, error) {
-	userId := ctxdata.OperatorId(l.ctx)
+	userId := ctxdata.UserInfo(l.ctx).Id
 	if err := l.RemoveByIds(l.svcCtx.DB.WithContext(l.ctx), in.Ids, userId); err != nil {
 		return nil, err
 	}

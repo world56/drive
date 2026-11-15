@@ -6,10 +6,10 @@ import (
 
 	"asset/rpc/internal/enum"
 	"asset/rpc/internal/model"
-	"asset/rpc/internal/pkg/ctxdata"
 	"asset/rpc/internal/svc"
 	"asset/rpc/pb"
 	logclient "auth/rpc/client/log"
+	"common/ctxdata"
 	"common/databases"
 	utils "common/utils/jsonstring"
 
@@ -92,7 +92,7 @@ func (l *MoveResourcesLogic) MoveResources(in *pb.MoveResourcesReq) (*emptypb.Em
 		l.svcCtx.LogRpc.CreateLog(l.ctx, &logclient.CreateLogReq{
 			Event:      enum.LogEventResourceMove,
 			Desc:       utils.ToDescString(moved),
-			OperatorId: ctxdata.OperatorId(l.ctx),
+			OperatorId: ctxdata.UserInfo(l.ctx).Id,
 		})
 	}
 

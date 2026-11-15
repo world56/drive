@@ -9,10 +9,10 @@ import (
 	cryptologic "auth/rpc/internal/logic/crypto"
 	loglogic "auth/rpc/internal/logic/log"
 	"auth/rpc/internal/model"
-	"auth/rpc/internal/pkg/ctxdata"
 	"auth/rpc/internal/pkg/pwd"
 	"auth/rpc/internal/svc"
 	"auth/rpc/pb"
+	"common/ctxdata"
 
 	"google.golang.org/protobuf/types/known/emptypb"
 
@@ -77,7 +77,7 @@ func (l *CreateUserLogic) CreateUser(in *pb.CreateUserReq) (*emptypb.Empty, erro
 	loglogic.NewCreateLogLogic(l.ctx, l.svcCtx).CreateLog(&pb.CreateLogReq{
 		Desc:       in.Account,
 		Event:      enum.LogEventUserInsert,
-		OperatorId: ctxdata.OperatorId(l.ctx),
+		OperatorId: ctxdata.UserInfo(l.ctx).Id,
 	})
 
 	return &emptypb.Empty{}, nil

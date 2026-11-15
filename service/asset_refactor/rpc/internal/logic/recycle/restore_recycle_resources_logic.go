@@ -8,9 +8,9 @@ import (
 	"asset/rpc/internal/enum"
 	resourcelogic "asset/rpc/internal/logic/resource"
 	"asset/rpc/internal/model"
-	"asset/rpc/internal/pkg/ctxdata"
 	"asset/rpc/internal/svc"
 	"asset/rpc/pb"
+	"common/ctxdata"
 
 	"google.golang.org/protobuf/types/known/emptypb"
 	"gorm.io/gorm"
@@ -34,7 +34,7 @@ func NewRestoreRecycleResourcesLogic(ctx context.Context, svcCtx *svc.ServiceCon
 
 func (l *RestoreRecycleResourcesLogic) RestoreRecycleResources(in *pb.UpdateRecyclesReq) (*emptypb.Empty, error) {
 	var affected []model.Resource
-	operatorId := ctxdata.OperatorId(l.ctx)
+	operatorId := ctxdata.UserInfo(l.ctx).Id
 
 	if err := l.svcCtx.DB.WithContext(l.ctx).Transaction(func(t *gorm.DB) error {
 		if err := t.Where("resource_id IN ? AND user_id = ?", in.Ids, operatorId).Delete(&model.Recycle{}).Error; err != nil {

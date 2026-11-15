@@ -9,9 +9,9 @@ import (
 
 	"asset/rpc/internal/enum"
 	"asset/rpc/internal/model"
-	"asset/rpc/internal/pkg/ctxdata"
 	"asset/rpc/internal/svc"
 	"asset/rpc/pb"
+	"common/ctxdata"
 
 	"google.golang.org/protobuf/types/known/emptypb"
 	"gorm.io/gorm"
@@ -62,7 +62,7 @@ func (l *UpdateResourceLogic) UpdateResource(in *pb.UpdateResourceReq) (*emptypb
 	var updated model.Resource
 	if err := db.Where("id = ?", in.Id).First(&updated).Error; err == nil {
 		l.svcCtx.LogRpc.CreateLog(l.ctx, &logclient.CreateLogReq{
-			OperatorId: ctxdata.OperatorId(l.ctx),
+			OperatorId: ctxdata.UserInfo(l.ctx).Id,
 			Desc:       utils.ToDescString(update),
 			Event:      enum.LogEventResourceUpdate,
 		})

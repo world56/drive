@@ -9,10 +9,10 @@ import (
 	favoritelogic "asset/rpc/internal/logic/favorite"
 	resourcelogic "asset/rpc/internal/logic/resource"
 	"asset/rpc/internal/model"
-	"asset/rpc/internal/pkg/ctxdata"
 	"asset/rpc/internal/svc"
 	"asset/rpc/pb"
 	logclient "auth/rpc/client/log"
+	"common/ctxdata"
 
 	"google.golang.org/protobuf/types/known/emptypb"
 	"gorm.io/gorm"
@@ -37,7 +37,7 @@ func NewDeleteRestoreResourcesLogic(ctx context.Context, svcCtx *svc.ServiceCont
 func (l *DeleteRestoreResourcesLogic) DeleteRestoreResources(in *pb.UpdateRecyclesReq) (*emptypb.Empty, error) {
 	var objectNames []string
 	var removed []model.Resource
-	userId := ctxdata.OperatorId(l.ctx)
+	userId := ctxdata.UserInfo(l.ctx).Id
 
 	if err := l.svcCtx.DB.WithContext(l.ctx).Transaction(func(t *gorm.DB) error {
 		if err := t.Raw(`

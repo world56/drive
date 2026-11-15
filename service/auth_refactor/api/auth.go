@@ -10,6 +10,7 @@ import (
 	"auth/api/internal/config"
 	"auth/api/internal/handler"
 	"auth/api/internal/svc"
+	middlewarecommon "common/middleware"
 
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/rest"
@@ -24,6 +25,7 @@ func main() {
 	conf.MustLoad(*configFile, &c)
 
 	server := rest.MustNewServer(c.RestConf)
+	server.Use(middlewarecommon.NewUserAgentMiddleware().Handler)
 	defer server.Stop()
 
 	ctx := svc.NewServiceContext(c)

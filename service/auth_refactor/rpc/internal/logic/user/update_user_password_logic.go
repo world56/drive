@@ -10,10 +10,10 @@ import (
 	cryptologic "auth/rpc/internal/logic/crypto"
 	loglogic "auth/rpc/internal/logic/log"
 	"auth/rpc/internal/model"
-	"auth/rpc/internal/pkg/ctxdata"
 	"auth/rpc/internal/pkg/pwd"
 	"auth/rpc/internal/svc"
 	"auth/rpc/pb"
+	"common/ctxdata"
 
 	"google.golang.org/protobuf/types/known/emptypb"
 
@@ -45,7 +45,7 @@ func (l *UpdateUserPasswordLogic) UpdateUserPassword(in *pb.UpdateUserPasswordRe
 	if err != nil {
 		return nil, errors.New("Parse failed")
 	}
-	operatorId := ctxdata.OperatorId(l.ctx)
+	operatorId := ctxdata.UserInfo(l.ctx).Id
 
 	var userPwd UserResetPassword
 	if err := json.Unmarshal([]byte(body.Data), &userPwd); err != nil {
@@ -84,8 +84,8 @@ func (l *UpdateUserPasswordLogic) UpdateUserPassword(in *pb.UpdateUserPasswordRe
 	}
 
 	loglogic.NewCreateLogLogic(l.ctx, l.svcCtx).CreateLog(&pb.CreateLogReq{
+		OperatorId: operatorId,
 		Event:      enum.LogEventPwdUpdate,
-		OperatorId: ctxdata.OperatorId(l.ctx),
 		Desc: utils.ToDescString(map[string]interface{}{
 			"name":    user.Name,
 			"role":    user.Role,
