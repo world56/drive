@@ -10,6 +10,7 @@ import (
 	"asset/api/internal/types"
 
 	"github.com/zeromicro/go-zero/core/logx"
+	"google.golang.org/protobuf/types/known/emptypb"
 )
 
 type GetRecyclesLogic struct {
@@ -27,7 +28,31 @@ func NewGetRecyclesLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetRe
 }
 
 func (l *GetRecyclesLogic) GetRecycles() (resp *types.GetRecyclesResp, err error) {
-	// todo: add your logic here and delete this line
+	recycles, err := l.svcCtx.RecycleRpc.GetRecycles(l.ctx, &emptypb.Empty{})
+	if err != nil {
+		return nil, err
+	}
 
-	return
+	list := make([]types.Recycle, 0, len(recycles.List))
+	for _, val := range recycles.List {
+		list = append(list, types.Recycle{
+			Id:         val.Id,
+			UserName:   val.UserName,
+			ResourceId: val.ResourceId,
+			Remove:     val.Remove,
+			CreateTime: val.CreateTime,
+			Name:       val.Name,
+			FullName:   val.FullName,
+			Size:       val.Size,
+			Type:       val.Type,
+			Suffix:     val.Suffix,
+			ParentId:   val.ParentId,
+			Remark:     val.Remark,
+			Count:      val.Count,
+			CreatorId:  val.CreatorId,
+			ObjectName: val.ObjectName,
+		})
+	}
+
+	return &types.GetRecyclesResp{List: list}, nil
 }

@@ -17,7 +17,6 @@ import (
 
 type (
 	CreateFolderReq       = pb.CreateFolderReq
-	CreateResourceReq     = pb.CreateResourceReq
 	GetResourceReq        = pb.GetResourceReq
 	GetResourcesReq       = pb.GetResourcesReq
 	GetSearchResourcesReq = pb.GetSearchResourcesReq
@@ -35,7 +34,6 @@ type (
 		CreateFolder(ctx context.Context, in *CreateFolderReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
 		UpdateResource(ctx context.Context, in *UpdateResourceReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
 		MoveResources(ctx context.Context, in *MoveResourcesReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
-		CreateResource(ctx context.Context, in *CreateResourceReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
 		RemoveResources(ctx context.Context, in *RemoveResourcesReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	}
 
@@ -83,11 +81,6 @@ func (m *defaultResource) UpdateResource(ctx context.Context, in *UpdateResource
 func (m *defaultResource) MoveResources(ctx context.Context, in *MoveResourcesReq, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	client := pb.NewResourceClient(m.cli.Conn())
 	return client.MoveResources(ctx, in, opts...)
-}
-
-func (m *defaultResource) CreateResource(ctx context.Context, in *CreateResourceReq, opts ...grpc.CallOption) (*emptypb.Empty, error) {
-	client := pb.NewResourceClient(m.cli.Conn())
-	return client.CreateResource(ctx, in, opts...)
 }
 
 func (m *defaultResource) RemoveResources(ctx context.Context, in *RemoveResourcesReq, opts ...grpc.CallOption) (*emptypb.Empty, error) {

@@ -13,5 +13,5 @@ type GetRecyclesResp {
 }
 
 type UpdateRecyclesReq {
-	Ids []string `json:"ids"`
+	Ids []int64 `json:"ids"`
 }

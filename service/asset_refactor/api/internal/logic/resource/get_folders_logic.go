@@ -40,7 +40,7 @@ func (l *GetFoldersLogic) GetFolders() (resp *types.ResourcesResp, err error) {
 			Name:       v.Name,
 			FullName:   v.FullName,
 			Size:       v.Size,
-			Type:       int8(v.Type),
+			Type:       v.Type,
 			Suffix:     v.Suffix,
 			ParentId:   v.ParentId,
 			Remark:     v.Remark,

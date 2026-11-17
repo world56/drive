@@ -1,0 +1,37 @@
+syntax = "v1"
+
+type ObjectResourceReq {
+	ObjectName string `path:"objectName"`
+}
+
+type DownloadObjectResourceReq {
+	Id int64 `path:"id"`
+}
+
+type UploadResourceReq {
+	Id       string `form:"id" validate:"required"`
+	Name     string `form:"name" validate:"required"`
+	Index    int    `form:"index" validate:"required"`
+	Total    int    `form:"total" validate:"required"`
+	Size     int64  `form:"size" validate:"required"`
+	Path     string `form:"path,optional"`
+	ParentId *int64 `form:"parentId,optional"`
+}
+
+type UploadResourceResp {
+	ObjectName string `json:"objectName"`
+}
+
+// STORAGE
+service storage-api {
+	@handler UploadResource
+	post /upload (UploadResourceReq) returns (UploadResourceResp)
+
+	@handler DownloadObjectResourceReq
+	get /download/:id (DownloadObjectResourceReq)
+
+	// 预览：通配路由放最后，避免抢走 /upload、/download
+	@handler ObjectResourceReq
+	get /:objectName (ObjectResourceReq)
+}
+

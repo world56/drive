@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package storage;
+
+option go_package = "./pb";
+
+import "google/protobuf/empty.proto";
+
+message SpaceUsage {
+  int64 free  = 1; 
+  int64 total = 2; 
+  int64 used  = 3; 
+}
+
+message ObjectNames {
+  repeated string IDs = 1;
+}
+
+service Storage {
+  rpc GetSpaceUsage (google.protobuf.Empty) returns (SpaceUsage) {}
+  rpc RemoveResources (ObjectNames) returns (google.protobuf.Empty) {}
+}

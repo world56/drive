@@ -8,6 +8,7 @@ import (
 
 	"asset/api/internal/svc"
 	"asset/api/internal/types"
+	"asset/rpc/pb"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -27,7 +28,12 @@ func NewRemoveFavoritesLogic(ctx context.Context, svcCtx *svc.ServiceContext) *R
 }
 
 func (l *RemoveFavoritesLogic) RemoveFavorites(req *types.UpdateFavoritesReq) error {
-	// todo: add your logic here and delete this line
+	_, err := l.svcCtx.FavoriteRpc.RemoveFavorites(l.ctx, &pb.UpdateFavoritesReq{
+		Ids: req.Ids,
+	})
+	if err != nil {
+		return err
+	}
 
 	return nil
 }

@@ -27,7 +27,6 @@ const (
 	Resource_CreateFolder_FullMethodName       = "/asset.Resource/CreateFolder"
 	Resource_UpdateResource_FullMethodName     = "/asset.Resource/UpdateResource"
 	Resource_MoveResources_FullMethodName      = "/asset.Resource/MoveResources"
-	Resource_CreateResource_FullMethodName     = "/asset.Resource/CreateResource"
 	Resource_RemoveResources_FullMethodName    = "/asset.Resource/RemoveResources"
 )
 
@@ -42,7 +41,6 @@ type ResourceClient interface {
 	CreateFolder(ctx context.Context, in *CreateFolderReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	UpdateResource(ctx context.Context, in *UpdateResourceReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	MoveResources(ctx context.Context, in *MoveResourcesReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	CreateResource(ctx context.Context, in *CreateResourceReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	RemoveResources(ctx context.Context, in *RemoveResourcesReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
@@ -124,16 +122,6 @@ func (c *resourceClient) MoveResources(ctx context.Context, in *MoveResourcesReq
 	return out, nil
 }
 
-func (c *resourceClient) CreateResource(ctx context.Context, in *CreateResourceReq, opts ...grpc.CallOption) (*emptypb.Empty, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, Resource_CreateResource_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *resourceClient) RemoveResources(ctx context.Context, in *RemoveResourcesReq, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(emptypb.Empty)
@@ -155,7 +143,6 @@ type ResourceServer interface {
 	CreateFolder(context.Context, *CreateFolderReq) (*emptypb.Empty, error)
 	UpdateResource(context.Context, *UpdateResourceReq) (*emptypb.Empty, error)
 	MoveResources(context.Context, *MoveResourcesReq) (*emptypb.Empty, error)
-	CreateResource(context.Context, *CreateResourceReq) (*emptypb.Empty, error)
 	RemoveResources(context.Context, *RemoveResourcesReq) (*emptypb.Empty, error)
 	mustEmbedUnimplementedResourceServer()
 }
@@ -187,9 +174,6 @@ func (UnimplementedResourceServer) UpdateResource(context.Context, *UpdateResour
 }
 func (UnimplementedResourceServer) MoveResources(context.Context, *MoveResourcesReq) (*emptypb.Empty, error) {
 	return nil, status.Error(codes.Unimplemented, "method MoveResources not implemented")
-}
-func (UnimplementedResourceServer) CreateResource(context.Context, *CreateResourceReq) (*emptypb.Empty, error) {
-	return nil, status.Error(codes.Unimplemented, "method CreateResource not implemented")
 }
 func (UnimplementedResourceServer) RemoveResources(context.Context, *RemoveResourcesReq) (*emptypb.Empty, error) {
 	return nil, status.Error(codes.Unimplemented, "method RemoveResources not implemented")
@@ -341,24 +325,6 @@ func _Resource_MoveResources_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Resource_CreateResource_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateResourceReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ResourceServer).CreateResource(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Resource_CreateResource_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ResourceServer).CreateResource(ctx, req.(*CreateResourceReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _Resource_RemoveResources_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(RemoveResourcesReq)
 	if err := dec(in); err != nil {
@@ -411,10 +377,6 @@ var Resource_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "MoveResources",
 			Handler:    _Resource_MoveResources_Handler,
-		},
-		{
-			MethodName: "CreateResource",
-			Handler:    _Resource_CreateResource_Handler,
 		},
 		{
 			MethodName: "RemoveResources",

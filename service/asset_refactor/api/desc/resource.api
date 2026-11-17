@@ -6,7 +6,7 @@ type Resource {
 	Name       string  `json:"name"`
 	FullName   string  `json:"fullName"`
 	Size       int64   `json:"size"`
-	Type       int8    `json:"type"`
+	Type       int32    `json:"type"`
 	Suffix     *string `json:"suffix,optional"`
 	ParentId   *int64  `json:"parentId,string,optional"`
 	Remark     *string `json:"remark,optional"`

@@ -44,7 +44,7 @@ func (l *GetResourcesLogic) GetResources(req *types.GetResourcesReq) (resp *type
 			Name:       val.Name,
 			FullName:   val.FullName,
 			Size:       val.Size,
-			Type:       int8(val.Type),
+			Type:       val.Type,
 			Suffix:     val.Suffix,
 			ParentId:   val.ParentId,
 			Remark:     val.Remark,

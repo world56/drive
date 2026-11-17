@@ -13,14 +13,14 @@ type Favorite struct {
 	Resource
 	Id         int64  `json:"id,string"`
 	ResourceId int64  `json:"resourceId,string"`
-	Remove     int8   `json:"remove"`
+	Remove     int32  `json:"remove"`
 	CreateTime string `json:"createTime"`
 }
 
 type GetFavoritesReq struct {
-	Type       []int8 `form:"type,optional"`
-	FullName   string `form:"fullName,optional"`
-	CreateTime string `form:"createTime,optional,options=ASC|DESC"`
+	Type       []int32 `form:"type,optional"`
+	FullName   string  `form:"fullName,optional"`
+	CreateTime string  `form:"createTime,optional,options=ASC|DESC"`
 }
 
 type GetFavoritesResp struct {
@@ -61,7 +61,7 @@ type Resource struct {
 	Name       string  `json:"name"`
 	FullName   string  `json:"fullName"`
 	Size       int64   `json:"size"`
-	Type       int8    `json:"type"`
+	Type       int32   `json:"type"`
 	Suffix     *string `json:"suffix,optional"`
 	ParentId   *int64  `json:"parentId,string,optional"`
 	Remark     *string `json:"remark,optional"`
@@ -89,11 +89,11 @@ type SearchAllResourcesReq struct {
 }
 
 type UpdateFavoritesReq struct {
-	Ids []string `json:"ids"`
+	Ids []int64 `json:"ids"`
 }
 
 type UpdateRecyclesReq struct {
-	Ids []string `json:"ids"`
+	Ids []int64 `json:"ids"`
 }
 
 type UpdateResourceReq struct {

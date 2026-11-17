@@ -83,6 +83,5 @@ service Resource {
   rpc CreateFolder(CreateFolderReq) returns (google.protobuf.Empty){}
   rpc UpdateResource(UpdateResourceReq) returns (google.protobuf.Empty){}
   rpc MoveResources(MoveResourcesReq) returns (google.protobuf.Empty){}
-  rpc CreateResource(CreateResourceReq) returns (google.protobuf.Empty){}
   rpc RemoveResources (RemoveResourcesReq) returns (google.protobuf.Empty){}
 }

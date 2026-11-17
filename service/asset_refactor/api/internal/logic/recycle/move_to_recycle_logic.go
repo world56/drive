@@ -8,6 +8,7 @@ import (
 
 	"asset/api/internal/svc"
 	"asset/api/internal/types"
+	"asset/rpc/pb"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -27,7 +28,6 @@ func NewMoveToRecycleLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Mov
 }
 
 func (l *MoveToRecycleLogic) MoveToRecycle(req *types.UpdateRecyclesReq) error {
-	// todo: add your logic here and delete this line
-
-	return nil
+	_, err := l.svcCtx.RecycleRpc.MoveToRecycle(l.ctx, &pb.UpdateRecyclesReq{Ids: req.Ids})
+	return err
 }

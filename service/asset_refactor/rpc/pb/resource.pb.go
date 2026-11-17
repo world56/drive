@@ -784,7 +784,7 @@ const file_resource_proto_rawDesc = "" +
 	"\n" +
 	"_parent_id\"&\n" +
 	"\x12RemoveResourcesReq\x12\x10\n" +
-	"\x03ids\x18\x01 \x03(\x03R\x03ids2\xeb\x04\n" +
+	"\x03ids\x18\x01 \x03(\x03R\x03ids2\xa5\x04\n" +
 	"\bResource\x12J\n" +
 	"\x12GetSearchResources\x12\x1c.asset.GetSearchResourcesReq\x1a\x14.asset.ResourcesResp\"\x00\x12<\n" +
 	"\n" +
@@ -793,8 +793,7 @@ const file_resource_proto_rawDesc = "" +
 	"\vGetResource\x12\x15.asset.GetResourceReq\x1a\x13.asset.ResourceInfo\"\x00\x12@\n" +
 	"\fCreateFolder\x12\x16.asset.CreateFolderReq\x1a\x16.google.protobuf.Empty\"\x00\x12D\n" +
 	"\x0eUpdateResource\x12\x18.asset.UpdateResourceReq\x1a\x16.google.protobuf.Empty\"\x00\x12B\n" +
-	"\rMoveResources\x12\x17.asset.MoveResourcesReq\x1a\x16.google.protobuf.Empty\"\x00\x12D\n" +
-	"\x0eCreateResource\x12\x18.asset.CreateResourceReq\x1a\x16.google.protobuf.Empty\"\x00\x12F\n" +
+	"\rMoveResources\x12\x17.asset.MoveResourcesReq\x1a\x16.google.protobuf.Empty\"\x00\x12F\n" +
 	"\x0fRemoveResources\x12\x19.asset.RemoveResourcesReq\x1a\x16.google.protobuf.Empty\"\x00B\x06Z\x04./pbb\x06proto3"
 
 var (
@@ -832,19 +831,17 @@ var file_resource_proto_depIdxs = []int32{
 	5,  // 5: asset.Resource.CreateFolder:input_type -> asset.CreateFolderReq
 	6,  // 6: asset.Resource.UpdateResource:input_type -> asset.UpdateResourceReq
 	7,  // 7: asset.Resource.MoveResources:input_type -> asset.MoveResourcesReq
-	8,  // 8: asset.Resource.CreateResource:input_type -> asset.CreateResourceReq
-	9,  // 9: asset.Resource.RemoveResources:input_type -> asset.RemoveResourcesReq
-	2,  // 10: asset.Resource.GetSearchResources:output_type -> asset.ResourcesResp
-	2,  // 11: asset.Resource.GetFolders:output_type -> asset.ResourcesResp
-	2,  // 12: asset.Resource.GetResources:output_type -> asset.ResourcesResp
-	0,  // 13: asset.Resource.GetResource:output_type -> asset.ResourceInfo
-	10, // 14: asset.Resource.CreateFolder:output_type -> google.protobuf.Empty
-	10, // 15: asset.Resource.UpdateResource:output_type -> google.protobuf.Empty
-	10, // 16: asset.Resource.MoveResources:output_type -> google.protobuf.Empty
-	10, // 17: asset.Resource.CreateResource:output_type -> google.protobuf.Empty
-	10, // 18: asset.Resource.RemoveResources:output_type -> google.protobuf.Empty
-	10, // [10:19] is the sub-list for method output_type
-	1,  // [1:10] is the sub-list for method input_type
+	9,  // 8: asset.Resource.RemoveResources:input_type -> asset.RemoveResourcesReq
+	2,  // 9: asset.Resource.GetSearchResources:output_type -> asset.ResourcesResp
+	2,  // 10: asset.Resource.GetFolders:output_type -> asset.ResourcesResp
+	2,  // 11: asset.Resource.GetResources:output_type -> asset.ResourcesResp
+	0,  // 12: asset.Resource.GetResource:output_type -> asset.ResourceInfo
+	10, // 13: asset.Resource.CreateFolder:output_type -> google.protobuf.Empty
+	10, // 14: asset.Resource.UpdateResource:output_type -> google.protobuf.Empty
+	10, // 15: asset.Resource.MoveResources:output_type -> google.protobuf.Empty
+	10, // 16: asset.Resource.RemoveResources:output_type -> google.protobuf.Empty
+	9,  // [9:17] is the sub-list for method output_type
+	1,  // [1:9] is the sub-list for method input_type
 	1,  // [1:1] is the sub-list for extension type_name
 	1,  // [1:1] is the sub-list for extension extendee
 	0,  // [0:1] is the sub-list for field type_name

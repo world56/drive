@@ -59,11 +59,6 @@ func (s *ResourceServer) MoveResources(ctx context.Context, in *pb.MoveResources
 	return l.MoveResources(in)
 }
 
-func (s *ResourceServer) CreateResource(ctx context.Context, in *pb.CreateResourceReq) (*emptypb.Empty, error) {
-	l := resourcelogic.NewCreateResourceLogic(ctx, s.svcCtx)
-	return l.CreateResource(in)
-}
-
 func (s *ResourceServer) RemoveResources(ctx context.Context, in *pb.RemoveResourcesReq) (*emptypb.Empty, error) {
 	l := resourcelogic.NewRemoveResourcesLogic(ctx, s.svcCtx)
 	return l.RemoveResources(in)

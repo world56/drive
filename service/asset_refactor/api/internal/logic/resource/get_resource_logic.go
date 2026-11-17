@@ -39,7 +39,7 @@ func (l *GetResourceLogic) GetResource(req *types.GetResourceReq) (resp *types.G
 		Name:        data.Name,
 		FullName:    data.FullName,
 		Size:        data.Size,
-		Type:        int8(data.Type),
+		Type:        data.Type,
 		Suffix:      data.Suffix,
 		ParentId:    data.ParentId,
 		Remark:      data.Remark,
