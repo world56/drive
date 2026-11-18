@@ -8,6 +8,7 @@ import (
 
 	"asset/api/internal/svc"
 	"asset/api/internal/types"
+	"asset/rpc/pb"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -27,7 +28,12 @@ func NewUpdateResourceLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Up
 }
 
 func (l *UpdateResourceLogic) UpdateResource(req *types.UpdateResourceReq) error {
-	// todo: add your logic here and delete this line
+	_, err := l.svcCtx.ResourceRpc.UpdateResource(l.ctx, &pb.UpdateResourceReq{
+		Id:       req.Id,
+		Name:     req.Name,
+		Remark:   req.Remark,
+		ParentId: req.ParentId,
+	})
 
-	return nil
+	return err
 }

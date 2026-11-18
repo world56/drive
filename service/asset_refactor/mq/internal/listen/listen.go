@@ -1,34 +1,23 @@
 package listen
 
 import (
-	"asset/mq/internal/config"
 	"asset/mq/internal/consumer"
 	"asset/mq/internal/svc"
-	rabbitmq "common/rabbitmq"
 	"context"
+	"log"
+
+	"golang.org/x/sync/errgroup"
 )
 
-type Runner struct {
-	Name string
-	Run  func() error
-}
-
-func Mqs(c config.Config, ctx context.Context, svcCtx *svc.ServiceContext) []Runner {
+func Start(ctx context.Context, svcCtx *svc.ServiceContext) error {
 	upload := consumer.NewUploadConsumer(ctx, svcCtx)
 
-	return []Runner{
-		{
-			Name: "upload",
-			Run: func() error {
-				cli, err := rabbitmq.Open(c.RabbitMqUrl, "asset-upload", []rabbitmq.Binding{
-					{Kind: "direct", Exchange: "resource", Queue: "upload", RoutingKey: "upload"},
-				})
-				if err != nil {
-					return err
-				}
-				return cli.Serve("upload", "asset-resource-upload", upload.Consume)
-			},
-		},
-	}
+	g, _ := errgroup.WithContext(ctx)
 
+	g.Go(func() error {
+		log.Printf("mq consumer starting: upload")
+		return svcCtx.RabbitMQ.Serve("upload", "asset-resource-upload", upload.Consume)
+	})
+
+	return g.Wait()
 }

@@ -30,7 +30,7 @@ type Client struct {
 
 	conn      *RabbitMQ
 	publisher *Publisher
-	consumer  *Consumer
+	consumers []*Consumer
 
 	closed bool
 	mu     sync.Mutex
@@ -56,7 +56,7 @@ func Open(url, name string, bindings []Binding) (*Client, error) {
 func (c *Client) Serve(queue, consumerTag string, handle func(context.Context, amqp.Delivery) error) error {
 	backoff := time.Second
 	for {
-		deliveries, err := c.consume(queue, consumerTag)
+		consumer, deliveries, err := c.consume(queue, consumerTag)
 		if err != nil {
 			if errors.Is(err, errClosed) || !c.wait(backoff) {
 				return errClosed
@@ -81,6 +81,7 @@ func (c *Client) Serve(queue, consumerTag string, handle func(context.Context, a
 			}
 			_ = d.Ack(false)
 		}
+		c.releaseConsumer(consumer)
 		if !c.wait(time.Second) {
 			return errClosed
 		}
@@ -161,14 +162,14 @@ func (c *Client) Close() {
 	c.closed = true
 	close(c.stop)
 
-	publisher, consumer, conn := c.publisher, c.consumer, c.conn
-	c.publisher, c.consumer, c.conn = nil, nil, nil
+	publisher, consumers, conn := c.publisher, c.consumers, c.conn
+	c.publisher, c.consumers, c.conn = nil, nil, nil
 	c.mu.Unlock()
 
 	if publisher != nil {
 		publisher.Close()
 	}
-	if consumer != nil {
+	for _, consumer := range consumers {
 		consumer.Close()
 	}
 	if conn != nil {
@@ -176,32 +177,49 @@ func (c *Client) Close() {
 	}
 }
 
-func (c *Client) consume(queue, consumerTag string) (<-chan amqp.Delivery, error) {
+func (c *Client) consume(queue, consumerTag string) (*Consumer, <-chan amqp.Delivery, error) {
 	if err := c.connect(); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	c.mu.Lock()
 	conn := c.conn
 	c.mu.Unlock()
 	if conn == nil {
-		return nil, amqp.ErrClosed
+		return nil, nil, amqp.ErrClosed
 	}
 
 	consumer, err := conn.NewConsumer()
 	if err != nil {
 		c.drop(conn)
-		return nil, err
+		return nil, nil, err
+	}
+
+	deliveries, err := consumer.Consume(queue, consumerTag)
+	if err != nil {
+		consumer.Close()
+		return nil, nil, err
 	}
 
 	c.mu.Lock()
-	if c.consumer != nil {
-		c.consumer.Close()
-	}
-
-	c.consumer = consumer
+	c.consumers = append(c.consumers, consumer)
 	c.mu.Unlock()
-	return consumer.Consume(queue, consumerTag)
+	return consumer, deliveries, nil
+}
+
+func (c *Client) releaseConsumer(consumer *Consumer) {
+	if consumer == nil {
+		return
+	}
+	c.mu.Lock()
+	for i, item := range c.consumers {
+		if item == consumer {
+			c.consumers = append(c.consumers[:i], c.consumers[i+1:]...)
+			break
+		}
+	}
+	c.mu.Unlock()
+	_ = consumer.Close()
 }
 
 func (c *Client) connect() error {
@@ -249,7 +267,7 @@ func (c *Client) drop(conn *RabbitMQ) {
 	if c.publisher != nil {
 		c.publisher.Close()
 	}
-	c.publisher, c.conn = nil, nil
+	c.publisher, c.consumers, c.conn = nil, nil, nil
 	conn.Close()
 }
 

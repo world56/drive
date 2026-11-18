@@ -30,13 +30,17 @@ func NewRemoveFavoritesLogic(ctx context.Context, svcCtx *svc.ServiceContext) *R
 
 func (l *RemoveFavoritesLogic) RemoveFavorites(in *pb.UpdateFavoritesReq) (*emptypb.Empty, error) {
 	userId := ctxdata.UserInfo(l.ctx).Id
-	if err := l.RemoveByIds(l.svcCtx.DB.WithContext(l.ctx), in.Ids, userId); err != nil {
+	if err := l.RemoveByUser(l.svcCtx.DB.WithContext(l.ctx), in.Ids, userId); err != nil {
 		return nil, err
 	}
 
 	return &emptypb.Empty{}, nil
 }
 
-func (l *RemoveFavoritesLogic) RemoveByIds(tx *gorm.DB, ids []int64, userId string) error {
+func (l *RemoveFavoritesLogic) RemoveByUser(tx *gorm.DB, ids []int64, userId string) error {
 	return tx.Where("resource_id IN ? AND user_id = ?", ids, userId).Delete(&model.Favorite{}).Error
+}
+
+func (l *RemoveFavoritesLogic) RemoveByIds(tx *gorm.DB, ids []int64) error {
+	return tx.Where("resource_id IN ?", ids).Delete(&model.Favorite{}).Error
 }

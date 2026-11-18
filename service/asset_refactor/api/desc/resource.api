@@ -6,7 +6,7 @@ type Resource {
 	Name       string  `json:"name"`
 	FullName   string  `json:"fullName"`
 	Size       int64   `json:"size"`
-	Type       int32    `json:"type"`
+	Type       int32   `json:"type"`
 	Suffix     *string `json:"suffix,optional"`
 	ParentId   *int64  `json:"parentId,string,optional"`
 	Remark     *string `json:"remark,optional"`
@@ -26,7 +26,7 @@ type SearchAllResourcesReq {
 
 type ResourceItem {
 	Resource
-	Favorite int8 `json:"favorite"`
+	Favorite int32 `json:"favorite"`
 }
 
 type ResourcesResp {
@@ -55,7 +55,7 @@ type CreateFolderReq {
 }
 
 type UpdateResourceReq {
-	Id       string  `json:"id"`
+	Id       int64   `json:"id"`
 	Name     string  `json:"name"`
 	ParentId *int64  `json:"parentId,string,optional"`
 	Remark   *string `json:"remark,optional"`

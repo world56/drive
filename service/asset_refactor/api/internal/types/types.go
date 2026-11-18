@@ -73,7 +73,7 @@ type Resource struct {
 
 type ResourceItem struct {
 	Resource
-	Favorite int8 `json:"favorite"`
+	Favorite int32 `json:"favorite"`
 }
 
 type ResourcesResp struct {
@@ -97,7 +97,7 @@ type UpdateRecyclesReq struct {
 }
 
 type UpdateResourceReq struct {
-	Id       string  `json:"id"`
+	Id       int64   `json:"id"`
 	Name     string  `json:"name"`
 	ParentId *int64  `json:"parentId,string,optional"`
 	Remark   *string `json:"remark,optional"`

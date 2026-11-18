@@ -3,7 +3,6 @@ package svc
 import (
 	"asset/mq/internal/config"
 	"asset/mq/internal/pkg/db"
-	"asset/mq/internal/pkg/mq"
 
 	logclient "auth/rpc/client/log"
 	"common/idgen"
@@ -34,7 +33,9 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	db, err := db.InitPostgresSQL(c.PostgresDSN)
 	logx.Must(err)
 
-	mq, err := mq.InitRabbitMQ(c.RabbitMqUrl)
+	mq, err := rabbitmq.Open(c.RabbitMqUrl, "asset-mq", []rabbitmq.Binding{
+		{Kind: "direct", Exchange: "resource", Queue: "upload", RoutingKey: "upload"},
+	})
 	logx.Must(err)
 
 	authCli := zrpc.MustNewClient(c.AuthRpc, zrpc.WithUnaryClientInterceptor(interceptorclient.UnaryUser))

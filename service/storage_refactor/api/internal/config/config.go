@@ -10,11 +10,10 @@ import (
 
 type Config struct {
 	rest.RestConf
+	AssetRpc zrpc.RpcClientConf
 
 	RedisUrl    string
 	RabbitMqUrl string
-
-	AssetRpc zrpc.RpcClientConf
 
 	MINIO_ADDR          string
 	MINIO_BUCKET        string

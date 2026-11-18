@@ -38,7 +38,7 @@ func (l *GetResourcesLogic) GetResources(req *types.GetResourcesReq) (resp *type
 	}
 
 	list := make([]types.ResourceItem, 0, len(resources.List))
-	for _, val := range list {
+	for _, val := range resources.List {
 		list = append(list, types.ResourceItem{
 			Id:         val.Id,
 			Name:       val.Name,
@@ -52,7 +52,7 @@ func (l *GetResourcesLogic) GetResources(req *types.GetResourcesReq) (resp *type
 			CreatorId:  val.CreatorId,
 			CreateTime: val.CreateTime,
 			ObjectName: val.ObjectName,
-			Favorite:   val.Favorite,
+			Favorite:   val.GetFavorite(),
 		})
 	}
 

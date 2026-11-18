@@ -1,9 +1,9 @@
 package recyclelogic
 
 import (
+	mq "common/rabbitmq"
 	utils "common/utils/jsonstring"
 	"context"
-	"errors"
 
 	"asset/rpc/internal/enum"
 	favoritelogic "asset/rpc/internal/logic/favorite"
@@ -13,10 +13,12 @@ import (
 	"asset/rpc/pb"
 	logclient "auth/rpc/client/log"
 	"common/ctxdata"
+	storagepb "storage/rpc/pb"
 
 	"google.golang.org/protobuf/types/known/emptypb"
 	"gorm.io/gorm"
 
+	amqp "github.com/rabbitmq/amqp091-go"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -68,16 +70,12 @@ func (l *DeleteRestoreResourcesLogic) DeleteRestoreResources(in *pb.UpdateRecycl
 		if err := t.Where("resource_id IN ?", Ids).Delete(&model.Recycle{}).Error; err != nil {
 			return err
 		}
-		if err := favoritelogic.NewRemoveFavoritesLogic(l.ctx, l.svcCtx).RemoveByIds(t, Ids, userId); err != nil {
+		if err := favoritelogic.NewRemoveFavoritesLogic(l.ctx, l.svcCtx).RemoveByIds(t, Ids); err != nil {
 			return err
 		}
 		return nil
 	}); err != nil {
 		return nil, err
-	}
-
-	if len(objectNames) == 0 {
-		return nil, errors.New("Not a valid resource")
 	}
 
 	l.svcCtx.LogRpc.CreateLog(l.ctx, &logclient.CreateLogReq{
@@ -86,13 +84,17 @@ func (l *DeleteRestoreResourcesLogic) DeleteRestoreResources(in *pb.UpdateRecycl
 		Event:      enum.LogEventRecycleBinDelete,
 	})
 
-	// l.svcCtx.RabbitMQ.Publish(l.ctx, rabbitmq.PublishOptions{
-	// 	RoutingKey:  "remove",
-	// 	Exchange:    "resource",
-	// 	ContentType: "application/protobuf",
-	// 	Headers:     amqp.Table{"UserID": userId},
-	// 	Message:     &storagepb.ObjectNames{IDs: objectNames},
-	// })
+	if len(objectNames) == 0 {
+		return &emptypb.Empty{}, nil
+	}
+
+	l.svcCtx.RabbitMQ.Publish(l.ctx, mq.PublishOptions{
+		RoutingKey:  "remove",
+		Exchange:    "resource",
+		ContentType: "application/protobuf",
+		Headers:     amqp.Table{"UserID": userId},
+		Message:     &storagepb.ObjectNames{IDs: objectNames},
+	})
 
 	return &emptypb.Empty{}, nil
 }
