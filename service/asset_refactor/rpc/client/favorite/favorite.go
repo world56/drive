@@ -23,6 +23,7 @@ type (
 
 	Favorite interface {
 		GetFavorites(ctx context.Context, in *GetFavoritesReq, opts ...grpc.CallOption) (*GetFavoritesResp, error)
+		GetFavoriteTrend(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*GetFavoritesResp, error)
 		InsertFavorites(ctx context.Context, in *UpdateFavoritesReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
 		RemoveFavorites(ctx context.Context, in *UpdateFavoritesReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	}
@@ -41,6 +42,11 @@ func NewFavorite(cli zrpc.Client) Favorite {
 func (m *defaultFavorite) GetFavorites(ctx context.Context, in *GetFavoritesReq, opts ...grpc.CallOption) (*GetFavoritesResp, error) {
 	client := pb.NewFavoriteClient(m.cli.Conn())
 	return client.GetFavorites(ctx, in, opts...)
+}
+
+func (m *defaultFavorite) GetFavoriteTrend(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*GetFavoritesResp, error) {
+	client := pb.NewFavoriteClient(m.cli.Conn())
+	return client.GetFavoriteTrend(ctx, in, opts...)
 }
 
 func (m *defaultFavorite) InsertFavorites(ctx context.Context, in *UpdateFavoritesReq, opts ...grpc.CallOption) (*emptypb.Empty, error) {

@@ -6,7 +6,7 @@ option go_package="./pb";
 import "google/protobuf/empty.proto";
 
 message FavoriteInfo {
-  int64           id          = 1;  // 收藏记录 id
+  int64           id          = 1;
   int64           resource_id = 2;
   string          name        = 3;
   string          full_name   = 4;
@@ -17,7 +17,7 @@ message FavoriteInfo {
   optional string remark      = 9;
   optional int64  count       = 10;
   string          creator_id  = 11;
-  string          create_time = 12; // 收藏时间
+  string          create_time = 12;
   optional string object_name = 13;
   int32           remove      = 14;
 }
@@ -38,6 +38,7 @@ message UpdateFavoritesReq {
 
 service Favorite {
   rpc GetFavorites(GetFavoritesReq) returns (GetFavoritesResp){}
+  rpc GetFavoriteTrend (google.protobuf.Empty) returns (GetFavoritesResp){}
   rpc InsertFavorites(UpdateFavoritesReq) returns (google.protobuf.Empty){}
   rpc RemoveFavorites(UpdateFavoritesReq) returns (google.protobuf.Empty){}
 }

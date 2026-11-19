@@ -63,3 +63,8 @@ func (s *ResourceServer) RemoveResources(ctx context.Context, in *pb.RemoveResou
 	l := resourcelogic.NewRemoveResourcesLogic(ctx, s.svcCtx)
 	return l.RemoveResources(in)
 }
+
+func (s *ResourceServer) GetRecently(ctx context.Context, in *emptypb.Empty) (*pb.ResourcesResp, error) {
+	l := resourcelogic.NewGetRecentlyLogic(ctx, s.svcCtx)
+	return l.GetRecently(in)
+}

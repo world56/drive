@@ -29,6 +29,11 @@ func (s *FavoriteServer) GetFavorites(ctx context.Context, in *pb.GetFavoritesRe
 	return l.GetFavorites(in)
 }
 
+func (s *FavoriteServer) GetFavoriteTrend(ctx context.Context, in *emptypb.Empty) (*pb.GetFavoritesResp, error) {
+	l := favoritelogic.NewGetFavoriteTrendLogic(ctx, s.svcCtx)
+	return l.GetFavoriteTrend(in)
+}
+
 func (s *FavoriteServer) InsertFavorites(ctx context.Context, in *pb.UpdateFavoritesReq) (*emptypb.Empty, error) {
 	l := favoritelogic.NewInsertFavoritesLogic(ctx, s.svcCtx)
 	return l.InsertFavorites(in)

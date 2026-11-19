@@ -1,0 +1,68 @@
+syntax = "proto3";
+
+package stats;
+option go_package="./pb";
+
+import "google/protobuf/empty.proto";
+
+message AccessItem {
+  string date  = 1;
+  int64  value = 2;
+}
+
+message HotItem {
+  string name  = 1;
+  double value = 2; // ZSET score
+}
+
+message ResourceItem {
+  int64          id        = 1;
+  string         full_name = 2;
+  optional int64 parent_id = 3;
+  int32          type      = 4;
+  int64          count     = 5; 
+}
+
+message UpdateAccessReq {
+  string user_id = 1;
+}
+
+message UpdateHotReq {
+  string name = 1;
+}
+
+message UpdateResourceReq {
+  string            calculation = 1;
+  map<int32, int32> count       = 2;
+}
+
+message GetStorageResp {
+  uint64            free    = 1;
+  uint64            total   = 2;
+  uint64            used    = 3;
+  map<string,int64> storage = 4;
+}
+
+message GetAccessTrendsResp {
+  repeated AccessItem list = 1;
+}
+
+message GetHotResp {
+  repeated HotItem list = 1;
+}
+
+message GetResourceResp {
+  repeated ResourceItem list = 1;
+}
+
+service Stats {
+  rpc GetStorage (google.protobuf.Empty) returns (GetStorageResp) {}
+  rpc GetAccessTrends (google.protobuf.Empty) returns (GetAccessTrendsResp) {}
+  rpc GetHot (google.protobuf.Empty) returns (GetHotResp) {}
+  rpc GetRecently (google.protobuf.Empty) returns (GetResourceResp) {}
+  rpc GetFavorite (google.protobuf.Empty) returns (GetResourceResp) {}
+
+  rpc UpdateHot(UpdateHotReq) returns (google.protobuf.Empty) {}
+  rpc UpdateAccess(UpdateAccessReq) returns (google.protobuf.Empty) {}
+  rpc UpdateStorageCount(UpdateResourceReq) returns(google.protobuf.Empty) {}
+}

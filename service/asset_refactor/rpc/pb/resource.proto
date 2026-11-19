@@ -84,4 +84,5 @@ service Resource {
   rpc UpdateResource(UpdateResourceReq) returns (google.protobuf.Empty){}
   rpc MoveResources(MoveResourcesReq) returns (google.protobuf.Empty){}
   rpc RemoveResources (RemoveResourcesReq) returns (google.protobuf.Empty){}
+  rpc GetRecently (google.protobuf.Empty)  returns (ResourcesResp){}
 }

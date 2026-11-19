@@ -1,0 +1,72 @@
+syntax = "v1"
+
+type ResourceItem {
+	Id       int64  `json:"id"`
+	FullName string `json:"fullName"`
+	ParentID *int64 `json:"parentId,string,omitempty"`
+	Type     int32  `json:"type"`
+}
+
+type FavoriteItem {
+	ResourceItem
+	Count int64 `json:"count"`
+}
+
+type HotItem {
+	Name  string  `json:"name"`
+	Value float64 `json:"value"`
+}
+
+type StorageUsageResp {
+	Free    uint64           `json:"free"`
+	Total   uint64           `json:"total"`
+	Used    uint64           `json:"used"`
+	Storage map[string]int64 `json:"storage"`
+}
+
+type AccessItem {
+	Date  string `json:"date"`
+	Value int64  `json:"value"`
+}
+
+type AccessResp {
+	List []AccessItem `json:"list"`
+}
+
+type HotResp {
+	List []HotItem `json:"list"`
+}
+
+type HotUpdateReq {
+	Name string `json:"name" binding:"required,min=1"`
+}
+
+type ResourceResp {
+	List []ResourceItem `json:"list"`
+}
+
+type FavoriteResp {
+	List []FavoriteItem `json:"list"`
+}
+
+// STATS
+service stats-api {
+	@handler GetStorage
+	get /storage returns (StorageUsageResp)
+
+	@handler GetAccessTrends
+	get /access returns (AccessResp)
+
+	@handler GetHot
+	get /hot returns (HotResp)
+
+	@handler UpdateHot
+	put /hot (HotUpdateReq)
+
+	@handler GetRecently
+	get /recently returns (ResourceResp)
+
+	@handler GetFavorite
+	get /favorite returns (FavoriteResp)
+}
+

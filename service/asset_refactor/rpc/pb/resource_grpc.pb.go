@@ -28,6 +28,7 @@ const (
 	Resource_UpdateResource_FullMethodName     = "/asset.Resource/UpdateResource"
 	Resource_MoveResources_FullMethodName      = "/asset.Resource/MoveResources"
 	Resource_RemoveResources_FullMethodName    = "/asset.Resource/RemoveResources"
+	Resource_GetRecently_FullMethodName        = "/asset.Resource/GetRecently"
 )
 
 // ResourceClient is the client API for Resource service.
@@ -42,6 +43,7 @@ type ResourceClient interface {
 	UpdateResource(ctx context.Context, in *UpdateResourceReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	MoveResources(ctx context.Context, in *MoveResourcesReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	RemoveResources(ctx context.Context, in *RemoveResourcesReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	GetRecently(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ResourcesResp, error)
 }
 
 type resourceClient struct {
@@ -132,6 +134,16 @@ func (c *resourceClient) RemoveResources(ctx context.Context, in *RemoveResource
 	return out, nil
 }
 
+func (c *resourceClient) GetRecently(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ResourcesResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ResourcesResp)
+	err := c.cc.Invoke(ctx, Resource_GetRecently_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ResourceServer is the server API for Resource service.
 // All implementations must embed UnimplementedResourceServer
 // for forward compatibility.
@@ -144,6 +156,7 @@ type ResourceServer interface {
 	UpdateResource(context.Context, *UpdateResourceReq) (*emptypb.Empty, error)
 	MoveResources(context.Context, *MoveResourcesReq) (*emptypb.Empty, error)
 	RemoveResources(context.Context, *RemoveResourcesReq) (*emptypb.Empty, error)
+	GetRecently(context.Context, *emptypb.Empty) (*ResourcesResp, error)
 	mustEmbedUnimplementedResourceServer()
 }
 
@@ -177,6 +190,9 @@ func (UnimplementedResourceServer) MoveResources(context.Context, *MoveResources
 }
 func (UnimplementedResourceServer) RemoveResources(context.Context, *RemoveResourcesReq) (*emptypb.Empty, error) {
 	return nil, status.Error(codes.Unimplemented, "method RemoveResources not implemented")
+}
+func (UnimplementedResourceServer) GetRecently(context.Context, *emptypb.Empty) (*ResourcesResp, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetRecently not implemented")
 }
 func (UnimplementedResourceServer) mustEmbedUnimplementedResourceServer() {}
 func (UnimplementedResourceServer) testEmbeddedByValue()                  {}
@@ -343,6 +359,24 @@ func _Resource_RemoveResources_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Resource_GetRecently_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(emptypb.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ResourceServer).GetRecently(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Resource_GetRecently_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ResourceServer).GetRecently(ctx, req.(*emptypb.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Resource_ServiceDesc is the grpc.ServiceDesc for Resource service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -381,6 +415,10 @@ var Resource_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "RemoveResources",
 			Handler:    _Resource_RemoveResources_Handler,
+		},
+		{
+			MethodName: "GetRecently",
+			Handler:    _Resource_GetRecently_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

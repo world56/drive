@@ -35,6 +35,7 @@ type (
 		UpdateResource(ctx context.Context, in *UpdateResourceReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
 		MoveResources(ctx context.Context, in *MoveResourcesReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
 		RemoveResources(ctx context.Context, in *RemoveResourcesReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
+		GetRecently(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ResourcesResp, error)
 	}
 
 	defaultResource struct {
@@ -86,4 +87,9 @@ func (m *defaultResource) MoveResources(ctx context.Context, in *MoveResourcesRe
 func (m *defaultResource) RemoveResources(ctx context.Context, in *RemoveResourcesReq, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	client := pb.NewResourceClient(m.cli.Conn())
 	return client.RemoveResources(ctx, in, opts...)
+}
+
+func (m *defaultResource) GetRecently(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ResourcesResp, error) {
+	client := pb.NewResourceClient(m.cli.Conn())
+	return client.GetRecently(ctx, in, opts...)
 }

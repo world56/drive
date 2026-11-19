@@ -24,7 +24,7 @@ const (
 
 type FavoriteInfo struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"` // 收藏记录 id
+	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
 	ResourceId    int64                  `protobuf:"varint,2,opt,name=resource_id,json=resourceId,proto3" json:"resource_id,omitempty"`
 	Name          string                 `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
 	FullName      string                 `protobuf:"bytes,4,opt,name=full_name,json=fullName,proto3" json:"full_name,omitempty"`
@@ -35,7 +35,7 @@ type FavoriteInfo struct {
 	Remark        *string                `protobuf:"bytes,9,opt,name=remark,proto3,oneof" json:"remark,omitempty"`
 	Count         *int64                 `protobuf:"varint,10,opt,name=count,proto3,oneof" json:"count,omitempty"`
 	CreatorId     string                 `protobuf:"bytes,11,opt,name=creator_id,json=creatorId,proto3" json:"creator_id,omitempty"`
-	CreateTime    string                 `protobuf:"bytes,12,opt,name=create_time,json=createTime,proto3" json:"create_time,omitempty"` // 收藏时间
+	CreateTime    string                 `protobuf:"bytes,12,opt,name=create_time,json=createTime,proto3" json:"create_time,omitempty"`
 	ObjectName    *string                `protobuf:"bytes,13,opt,name=object_name,json=objectName,proto3,oneof" json:"object_name,omitempty"`
 	Remove        int32                  `protobuf:"varint,14,opt,name=remove,proto3" json:"remove,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -357,9 +357,10 @@ const file_favorite_proto_rawDesc = "" +
 	"\x10GetFavoritesResp\x12'\n" +
 	"\x04list\x18\x01 \x03(\v2\x13.asset.FavoriteInfoR\x04list\"&\n" +
 	"\x12UpdateFavoritesReq\x12\x10\n" +
-	"\x03ids\x18\x01 \x03(\x03R\x03ids2\xdd\x01\n" +
+	"\x03ids\x18\x01 \x03(\x03R\x03ids2\xa4\x02\n" +
 	"\bFavorite\x12A\n" +
-	"\fGetFavorites\x12\x16.asset.GetFavoritesReq\x1a\x17.asset.GetFavoritesResp\"\x00\x12F\n" +
+	"\fGetFavorites\x12\x16.asset.GetFavoritesReq\x1a\x17.asset.GetFavoritesResp\"\x00\x12E\n" +
+	"\x10GetFavoriteTrend\x12\x16.google.protobuf.Empty\x1a\x17.asset.GetFavoritesResp\"\x00\x12F\n" +
 	"\x0fInsertFavorites\x12\x19.asset.UpdateFavoritesReq\x1a\x16.google.protobuf.Empty\"\x00\x12F\n" +
 	"\x0fRemoveFavorites\x12\x19.asset.UpdateFavoritesReq\x1a\x16.google.protobuf.Empty\"\x00B\x06Z\x04./pbb\x06proto3"
 
@@ -386,13 +387,15 @@ var file_favorite_proto_goTypes = []any{
 var file_favorite_proto_depIdxs = []int32{
 	0, // 0: asset.GetFavoritesResp.list:type_name -> asset.FavoriteInfo
 	1, // 1: asset.Favorite.GetFavorites:input_type -> asset.GetFavoritesReq
-	3, // 2: asset.Favorite.InsertFavorites:input_type -> asset.UpdateFavoritesReq
-	3, // 3: asset.Favorite.RemoveFavorites:input_type -> asset.UpdateFavoritesReq
-	2, // 4: asset.Favorite.GetFavorites:output_type -> asset.GetFavoritesResp
-	4, // 5: asset.Favorite.InsertFavorites:output_type -> google.protobuf.Empty
-	4, // 6: asset.Favorite.RemoveFavorites:output_type -> google.protobuf.Empty
-	4, // [4:7] is the sub-list for method output_type
-	1, // [1:4] is the sub-list for method input_type
+	4, // 2: asset.Favorite.GetFavoriteTrend:input_type -> google.protobuf.Empty
+	3, // 3: asset.Favorite.InsertFavorites:input_type -> asset.UpdateFavoritesReq
+	3, // 4: asset.Favorite.RemoveFavorites:input_type -> asset.UpdateFavoritesReq
+	2, // 5: asset.Favorite.GetFavorites:output_type -> asset.GetFavoritesResp
+	2, // 6: asset.Favorite.GetFavoriteTrend:output_type -> asset.GetFavoritesResp
+	4, // 7: asset.Favorite.InsertFavorites:output_type -> google.protobuf.Empty
+	4, // 8: asset.Favorite.RemoveFavorites:output_type -> google.protobuf.Empty
+	5, // [5:9] is the sub-list for method output_type
+	1, // [1:5] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name
 	1, // [1:1] is the sub-list for extension extendee
 	0, // [0:1] is the sub-list for field type_name

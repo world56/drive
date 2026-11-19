@@ -20,9 +20,10 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	Favorite_GetFavorites_FullMethodName    = "/asset.Favorite/GetFavorites"
-	Favorite_InsertFavorites_FullMethodName = "/asset.Favorite/InsertFavorites"
-	Favorite_RemoveFavorites_FullMethodName = "/asset.Favorite/RemoveFavorites"
+	Favorite_GetFavorites_FullMethodName     = "/asset.Favorite/GetFavorites"
+	Favorite_GetFavoriteTrend_FullMethodName = "/asset.Favorite/GetFavoriteTrend"
+	Favorite_InsertFavorites_FullMethodName  = "/asset.Favorite/InsertFavorites"
+	Favorite_RemoveFavorites_FullMethodName  = "/asset.Favorite/RemoveFavorites"
 )
 
 // FavoriteClient is the client API for Favorite service.
@@ -30,6 +31,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type FavoriteClient interface {
 	GetFavorites(ctx context.Context, in *GetFavoritesReq, opts ...grpc.CallOption) (*GetFavoritesResp, error)
+	GetFavoriteTrend(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*GetFavoritesResp, error)
 	InsertFavorites(ctx context.Context, in *UpdateFavoritesReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	RemoveFavorites(ctx context.Context, in *UpdateFavoritesReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
@@ -46,6 +48,16 @@ func (c *favoriteClient) GetFavorites(ctx context.Context, in *GetFavoritesReq, 
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetFavoritesResp)
 	err := c.cc.Invoke(ctx, Favorite_GetFavorites_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *favoriteClient) GetFavoriteTrend(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*GetFavoritesResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetFavoritesResp)
+	err := c.cc.Invoke(ctx, Favorite_GetFavoriteTrend_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -77,6 +89,7 @@ func (c *favoriteClient) RemoveFavorites(ctx context.Context, in *UpdateFavorite
 // for forward compatibility.
 type FavoriteServer interface {
 	GetFavorites(context.Context, *GetFavoritesReq) (*GetFavoritesResp, error)
+	GetFavoriteTrend(context.Context, *emptypb.Empty) (*GetFavoritesResp, error)
 	InsertFavorites(context.Context, *UpdateFavoritesReq) (*emptypb.Empty, error)
 	RemoveFavorites(context.Context, *UpdateFavoritesReq) (*emptypb.Empty, error)
 	mustEmbedUnimplementedFavoriteServer()
@@ -91,6 +104,9 @@ type UnimplementedFavoriteServer struct{}
 
 func (UnimplementedFavoriteServer) GetFavorites(context.Context, *GetFavoritesReq) (*GetFavoritesResp, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetFavorites not implemented")
+}
+func (UnimplementedFavoriteServer) GetFavoriteTrend(context.Context, *emptypb.Empty) (*GetFavoritesResp, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetFavoriteTrend not implemented")
 }
 func (UnimplementedFavoriteServer) InsertFavorites(context.Context, *UpdateFavoritesReq) (*emptypb.Empty, error) {
 	return nil, status.Error(codes.Unimplemented, "method InsertFavorites not implemented")
@@ -133,6 +149,24 @@ func _Favorite_GetFavorites_Handler(srv interface{}, ctx context.Context, dec fu
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(FavoriteServer).GetFavorites(ctx, req.(*GetFavoritesReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Favorite_GetFavoriteTrend_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(emptypb.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FavoriteServer).GetFavoriteTrend(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Favorite_GetFavoriteTrend_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FavoriteServer).GetFavoriteTrend(ctx, req.(*emptypb.Empty))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -183,6 +217,10 @@ var Favorite_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetFavorites",
 			Handler:    _Favorite_GetFavorites_Handler,
+		},
+		{
+			MethodName: "GetFavoriteTrend",
+			Handler:    _Favorite_GetFavoriteTrend_Handler,
 		},
 		{
 			MethodName: "InsertFavorites",
