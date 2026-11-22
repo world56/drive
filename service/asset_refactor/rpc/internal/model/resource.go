@@ -18,7 +18,7 @@ type Resource struct {
 	Remark     *string   `gorm:"type:varchar(256);default:null;" json:"remark"`
 	Count      int64     `gorm:"type:bigint;default:0" json:"count"`
 	ObjectName string    `gorm:"type:varchar(100);uniqueIndex:idx_object_name,where:object_name <> '';" json:"object_name"`
-	CreatorId  string    `gorm:"type:char(36);not null;column:creator_id;" json:"creatorId"`
+	CreatorId  int64     `gorm:"type:bigint;not null;column:creator_id;" json:"creatorId,string"`
 	Remove     int8      `gorm:"type:int2;default:0;index:idx_parent_remove,priority:2;" json:"remove"`
 	CreateTime time.Time `gorm:"column:create_time;autoCreateTime;index:idx_create_time,sort:desc,where:remove=0;" json:"createTime"`
 }

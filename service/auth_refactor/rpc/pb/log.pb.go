@@ -117,7 +117,7 @@ func (x *LogInfo) GetUserAccount() string {
 type CreateLogReq struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Event         string                 `protobuf:"bytes,1,opt,name=event,proto3" json:"event,omitempty"`
-	OperatorId    string                 `protobuf:"bytes,2,opt,name=operator_id,json=operatorId,proto3" json:"operator_id,omitempty"`
+	OperatorId    int64                  `protobuf:"varint,2,opt,name=operator_id,json=operatorId,proto3" json:"operator_id,omitempty"`
 	Desc          string                 `protobuf:"bytes,3,opt,name=desc,proto3" json:"desc,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -160,11 +160,11 @@ func (x *CreateLogReq) GetEvent() string {
 	return ""
 }
 
-func (x *CreateLogReq) GetOperatorId() string {
+func (x *CreateLogReq) GetOperatorId() int64 {
 	if x != nil {
 		return x.OperatorId
 	}
-	return ""
+	return 0
 }
 
 func (x *CreateLogReq) GetDesc() string {
@@ -310,7 +310,7 @@ const file_log_proto_rawDesc = "" +
 	"\fuser_account\x18\a \x01(\tR\vuserAccount\"Y\n" +
 	"\fCreateLogReq\x12\x14\n" +
 	"\x05event\x18\x01 \x01(\tR\x05event\x12\x1f\n" +
-	"\voperator_id\x18\x02 \x01(\tR\n" +
+	"\voperator_id\x18\x02 \x01(\x03R\n" +
 	"operatorId\x12\x12\n" +
 	"\x04desc\x18\x03 \x01(\tR\x04desc\"{\n" +
 	"\n" +

@@ -17,7 +17,7 @@ message LogInfo {
 
 message CreateLogReq {
   string event       = 1;
-  string operator_id = 2;
+  int64  operator_id = 2;
   string desc        = 3;
 }
 

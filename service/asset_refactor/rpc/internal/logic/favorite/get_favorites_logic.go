@@ -7,6 +7,7 @@ import (
 	"asset/rpc/internal/svc"
 	"asset/rpc/pb"
 	"common/ctxdata"
+	"errors"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -26,6 +27,11 @@ func NewGetFavoritesLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetF
 }
 
 func (l *GetFavoritesLogic) GetFavorites(in *pb.GetFavoritesReq) (*pb.GetFavoritesResp, error) {
+	userID := ctxdata.UserInfo(l.ctx).Id
+	if userID == 0 {
+		return nil, errors.New("invalid user id")
+	}
+
 	order := enum.SortDesc
 	if in.CreateTime == enum.SortAsc {
 		order = enum.SortAsc
@@ -57,7 +63,7 @@ func (l *GetFavoritesLogic) GetFavorites(in *pb.GetFavoritesReq) (*pb.GetFavorit
 				END AS count
 	`, enum.ResourceNormal).
 		Joins("INNER JOIN resources AS r ON r.id = f.resource_id").
-		Where("f.user_id = ?", ctxdata.UserInfo(l.ctx).Id).
+		Where("f.user_id = ?", userID).
 		Where("r.remove = ?", enum.ResourceNormal).
 		Order("f.create_time " + order)
 

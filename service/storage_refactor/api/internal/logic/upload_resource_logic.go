@@ -67,8 +67,8 @@ func (l *UploadResourceLogic) clearFirstChunk(isFirst bool, info writeCache) {
 	}
 }
 
-func (l *UploadResourceLogic) publishUpload(userID string, info writeCache) error {
-	return l.svcCtx.RabbitMQ.Publish(l.ctx, rabbitmq.PublishOptions{
+func (l *UploadResourceLogic) publishUpload(userID string, info writeCache) {
+	err := l.svcCtx.RabbitMQ.Publish(l.ctx, rabbitmq.PublishOptions{
 		RoutingKey:  "upload",
 		Exchange:    "resource",
 		ContentType: "application/protobuf",
@@ -82,10 +82,13 @@ func (l *UploadResourceLogic) publishUpload(userID string, info writeCache) erro
 			CreatorId:  userID,
 		},
 	})
+	if err != nil {
+		l.Errorf("publish upload %s: %v", info.ObjectName, err)
+	}
 }
 
 func (l *UploadResourceLogic) UploadResource(req *types.UploadResourceReq, stream multipart.File, size int64) (resp *types.UploadResourceResp, err error) {
-	userID := ctxdata.UserInfo(l.ctx).Id
+	userID := ctxdata.UserID(l.ctx)
 	BUCKET := l.svcCtx.Config.MINIO_BUCKET
 	info := writeCache{
 		ID:       req.Id,
@@ -105,9 +108,7 @@ func (l *UploadResourceLogic) UploadResource(req *types.UploadResourceReq, strea
 		}); err != nil {
 			return nil, err
 		}
-		if err := l.publishUpload(userID, info); err != nil {
-			return nil, err
-		}
+		l.publishUpload(userID, info)
 		return &types.UploadResourceResp{ObjectName: info.ObjectName}, nil
 	}
 
@@ -164,10 +165,8 @@ func (l *UploadResourceLogic) UploadResource(req *types.UploadResourceReq, strea
 		if err != nil {
 			return nil, err
 		}
-		if err := l.publishUpload(userID, info); err != nil {
-			return nil, err
-		}
 		l.svcCtx.Redis.Del(l.ctx, `drive:write:`+info.ID)
+		l.publishUpload(userID, info)
 		return &types.UploadResourceResp{ObjectName: info.ObjectName}, nil
 	}
 

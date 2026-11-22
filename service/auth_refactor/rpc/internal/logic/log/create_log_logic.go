@@ -29,15 +29,18 @@ func NewCreateLogLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CreateL
 }
 
 func (l *CreateLogLogic) CreateLog(in *pb.CreateLogReq) (*emptypb.Empty, error) {
-	operatorId := in.OperatorId
-	if operatorId == "" {
-		operatorId = ctxdata.UserInfo(l.ctx).Id
+	userID := in.OperatorId
+	if userID == 0 {
+		userID = ctxdata.UserInfo(l.ctx).Id
+	}
+	if userID == 0 {
+		return nil, errors.New("@-ERROR Log write failed")
 	}
 
 	if err := l.svcCtx.DB.WithContext(l.ctx).Create(&model.Log{
+		UserId: userID,
 		Desc:   in.Desc,
 		Event:  in.Event,
-		UserId: operatorId,
 	}).Error; err != nil {
 		l.Errorf("write log failed: %v", err)
 		return nil, errors.New("@-ERROR Log write failed")

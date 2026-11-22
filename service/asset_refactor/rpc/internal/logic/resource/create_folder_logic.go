@@ -45,10 +45,13 @@ func (l *CreateFolderLogic) CreateFolder(in *pb.CreateFolderReq) (*emptypb.Empty
 		return nil, errors.New("folder already exists")
 	}
 
-	userId := ctxdata.UserInfo(l.ctx).Id
+	user := ctxdata.UserInfo(l.ctx)
+	if user.Id == 0 {
+		return nil, errors.New("invalid user id")
+	}
 
 	folder = model.Resource{
-		CreatorId: userId,
+		CreatorId: user.Id,
 		Name:      in.Name,
 		FullName:  in.Name,
 		Remark:    in.Remark,
@@ -60,7 +63,7 @@ func (l *CreateFolderLogic) CreateFolder(in *pb.CreateFolderReq) (*emptypb.Empty
 	}
 
 	l.svcCtx.LogRpc.CreateLog(l.ctx, &logclient.CreateLogReq{
-		OperatorId: userId,
+		OperatorId: user.Id,
 		Desc:       utils.ToDescString(folder),
 		Event:      enum.LogEventResourceMkdirFolder,
 	})

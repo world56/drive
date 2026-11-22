@@ -6,6 +6,7 @@ import (
 	"auth/rpc/internal/model"
 	"auth/rpc/internal/svc"
 	"auth/rpc/pb"
+	"common/idgen"
 
 	"github.com/zeromicro/go-zero/core/logx"
 	"gorm.io/gorm"
@@ -32,7 +33,11 @@ func (l *GetLogsLogic) GetLogs(in *pb.GetLogsReq) (*pb.GetLogsResp, error) {
 		db = db.Where("logs.event = ?", in.Event)
 	}
 	if in.UserId != "" {
-		db = db.Where("logs.user_id = ?", in.UserId)
+		userID, err := idgen.Parse(in.UserId)
+		if err != nil {
+			return nil, err
+		}
+		db = db.Where("logs.user_id = ?", userID)
 	}
 
 	var count int64

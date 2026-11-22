@@ -1,6 +1,8 @@
 package idgen
 
 import (
+	"strconv"
+
 	"github.com/bwmarrin/snowflake"
 )
 
@@ -27,4 +29,8 @@ func SnowflakeIDNext() int64 {
 		return 0
 	}
 	return snowflakeNode.Generate().Int64()
+}
+
+func Parse(id string) (int64, error) {
+	return strconv.ParseInt(id, 10, 64)
 }

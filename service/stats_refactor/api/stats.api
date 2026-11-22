@@ -1,7 +1,7 @@
 syntax = "v1"
 
 type ResourceItem {
-	Id       int64  `json:"id"`
+	Id       int64  `json:"id,string"`
 	FullName string `json:"fullName"`
 	ParentID *int64 `json:"parentId,string,omitempty"`
 	Type     int32  `json:"type"`

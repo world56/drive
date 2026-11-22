@@ -39,7 +39,8 @@ func NewDeleteRestoreResourcesLogic(ctx context.Context, svcCtx *svc.ServiceCont
 func (l *DeleteRestoreResourcesLogic) DeleteRestoreResources(in *pb.UpdateRecyclesReq) (*emptypb.Empty, error) {
 	var objectNames []string
 	var removed []model.Resource
-	userId := ctxdata.UserInfo(l.ctx).Id
+	user := ctxdata.UserInfo(l.ctx)
+	userId := ctxdata.UserID(l.ctx)
 
 	if err := l.svcCtx.DB.WithContext(l.ctx).Transaction(func(t *gorm.DB) error {
 		if err := t.Raw(`
@@ -79,7 +80,7 @@ func (l *DeleteRestoreResourcesLogic) DeleteRestoreResources(in *pb.UpdateRecycl
 	}
 
 	l.svcCtx.LogRpc.CreateLog(l.ctx, &logclient.CreateLogReq{
-		OperatorId: userId,
+		OperatorId: user.Id,
 		Desc:       utils.ToDescString(removed),
 		Event:      enum.LogEventRecycleBinDelete,
 	})

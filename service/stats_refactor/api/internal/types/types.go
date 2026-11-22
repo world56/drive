@@ -13,7 +13,7 @@ type AccessResp struct {
 }
 
 type ResourceItem struct {
-	ID       int64  `json:"id"`
+	ID       int64  `json:"id,string"`
 	FullName string `json:"fullName"`
 	ParentID *int64 `json:"parentId,string,omitempty"`
 	Type     int32  `json:"type"`

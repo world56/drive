@@ -14,10 +14,8 @@ type Claims struct {
 
 func CreateJWT(secret, userId string) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, Claims{
-		UserId: userId,
-		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 24)),
-		},
+		UserId:    userId,
+		ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 24 * 7)),
 	})
 	return token.SignedString([]byte(secret))
 }

@@ -160,7 +160,7 @@ export function compareType(a: Item, b: Item) {
 }
 
 export function compareCreator(a: Item, b: Item) {
-  return text(a.creatorName || a.creatorId, b.creatorName || b.creatorId);
+  return text(a.creatorId, b.creatorId);
 }
 
 export function compareTime(a: Item, b: Item) {

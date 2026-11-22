@@ -15,6 +15,7 @@ import (
 	"asset/rpc/pb"
 	logclient "auth/rpc/client/log"
 	"common/databases"
+	"common/idgen"
 	rabbitmq "common/rabbitmq"
 	utils "common/utils/jsonstring"
 	statsclient "stats/rpc/client/stats"
@@ -63,7 +64,10 @@ func (l *UploadConsumer) CreateResource(c context.Context, req *pb.CreateResourc
 	size := req.GetSize()
 	path := req.GetPath()
 	parentID := req.ParentId
-	creatorID := req.GetCreatorId()
+	creatorID, err := idgen.Parse(req.GetCreatorId())
+	if err != nil {
+		return nil, err
+	}
 
 	ext := filepath.Ext(fullName)
 	suffix := strings.TrimPrefix(ext, ".")
@@ -125,7 +129,7 @@ func (l *UploadConsumer) CreateResource(c context.Context, req *pb.CreateResourc
 	return nil, errors.New("resource name conflict")
 }
 
-func (l *UploadConsumer) createFolders(c context.Context, parentID *int64, path string, creatorID string) (*int64, error) {
+func (l *UploadConsumer) createFolders(c context.Context, parentID *int64, path string, creatorID int64) (*int64, error) {
 	dir := filepath.Dir(path)
 	paths := strings.Split(dir, "/")
 
@@ -160,7 +164,7 @@ func (l *UploadConsumer) createFolders(c context.Context, parentID *int64, path 
 	return last, nil
 }
 
-func (l *UploadConsumer) createFolder(c context.Context, parentId *int64, name, creatorID string) (int64, error) {
+func (l *UploadConsumer) createFolder(c context.Context, parentId *int64, name string, creatorID int64) (int64, error) {
 	db := l.svcCtx.DB.WithContext(c)
 
 	folder := model.Resource{

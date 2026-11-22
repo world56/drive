@@ -4,8 +4,7 @@ import { getLogs } from "@/api/log";
 import { toTime } from "@/utils/format";
 import { getAllUsers } from "@/api/user";
 import PagedQuery from "@/components/PagedQuery";
-import { DeleteOutlined } from "@ant-design/icons";
-import { Button, Popconfirm, Select, Table } from "antd";
+import { Select, Table } from "antd";
 import { useInput, usePageTurning, useWindowSize } from "@/hooks";
 
 import { DB_PRIMARY_KEY } from "@/config/db";
@@ -77,13 +76,6 @@ const Log = () => {
               fieldNames={{ value: "id", label: "name" }}
             />
           </>
-        }
-        button={
-          <Popconfirm title="确认清空全部日志？">
-            <Button danger icon={<DeleteOutlined />}>
-              清空日志
-            </Button>
-          </Popconfirm>
         }
       >
         <Table

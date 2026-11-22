@@ -7,6 +7,7 @@ import (
 	"asset/rpc/internal/svc"
 	"asset/rpc/pb"
 	"common/ctxdata"
+	"errors"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -26,6 +27,11 @@ func NewGetResourcesLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetR
 }
 
 func (l *GetResourcesLogic) GetResources(in *pb.GetResourcesReq) (*pb.ResourcesResp, error) {
+	userID := ctxdata.UserInfo(l.ctx).Id
+	if userID == 0 {
+		return nil, errors.New("invalid user id")
+	}
+
 	db := l.svcCtx.DB.WithContext(l.ctx).Order("create_time " + in.Order)
 
 	if in.Id == nil {
@@ -48,7 +54,7 @@ func (l *GetResourcesLogic) GetResources(in *pb.GetResourcesReq) (*pb.ResourcesR
 		`).
 		Where("r.remove = ?", enum.ResourceNormal).
 		Joins("LEFT JOIN resources AS f ON f.parent_id = r.id AND f.remove = ?", enum.ResourceNormal).
-		Joins("LEFT JOIN favorites AS l ON l.user_id = ? AND l.resource_id = r.id", ctxdata.UserInfo(l.ctx).Id).
+		Joins("LEFT JOIN favorites AS l ON l.user_id = ? AND l.resource_id = r.id", userID).
 		Group("r.id").
 		Scan(&files).Error; err != nil {
 		return nil, err

@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"strconv"
 	"time"
 
 	"auth/rpc/internal/enum"
@@ -66,7 +67,7 @@ func (l *LoginLogic) Login(in *pb.UserAuthReq) (*pb.UserAuthTokenResp, error) {
 		return nil, errors.New("Account Password Error")
 	}
 
-	UserId := user.Id.String()
+	UserId := strconv.FormatInt(user.Id, 10)
 	key := "drive:user:" + UserId
 	userInfo := map[string]interface{}{
 		"id":      UserId,
@@ -85,7 +86,7 @@ func (l *LoginLogic) Login(in *pb.UserAuthReq) (*pb.UserAuthTokenResp, error) {
 	}
 
 	loglogic.NewCreateLogLogic(l.ctx, l.svcCtx).CreateLog(&pb.CreateLogReq{
-		OperatorId: UserId,
+		OperatorId: user.Id,
 		Event:      enum.LogEventLogin,
 		Desc:       utils.ToDescString(userInfo),
 	})

@@ -11,6 +11,7 @@ import (
 	"auth/rpc/internal/svc"
 	"auth/rpc/pb"
 	"common/ctxdata"
+	"common/idgen"
 
 	"google.golang.org/protobuf/types/known/emptypb"
 
@@ -33,8 +34,12 @@ func NewUpdateUserLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Update
 
 func (l *UpdateUserLogic) UpdateUser(in *pb.UpdateUserReq) (*emptypb.Empty, error) {
 	db := l.svcCtx.DB.WithContext(l.ctx)
+	id, err := idgen.Parse(in.Id)
+	if err != nil {
+		return nil, errors.New("User not found")
+	}
 
-	if err := db.Where("id = ?", in.Id).First(&model.User{}).Error; err != nil {
+	if err := db.Where("id = ?", id).First(&model.User{}).Error; err != nil {
 		return nil, errors.New("User not found")
 	}
 
@@ -45,7 +50,7 @@ func (l *UpdateUserLogic) UpdateUser(in *pb.UpdateUserReq) (*emptypb.Empty, erro
 	}
 
 	if err := db.Model(&model.User{}).
-		Where("id = ?", in.Id).
+		Where("id = ?", id).
 		Updates(update).
 		Error; err != nil {
 		return nil, err

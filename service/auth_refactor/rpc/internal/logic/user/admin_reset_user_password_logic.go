@@ -14,6 +14,7 @@ import (
 	"auth/rpc/internal/svc"
 	"auth/rpc/pb"
 	"common/ctxdata"
+	"common/idgen"
 
 	"google.golang.org/protobuf/types/known/emptypb"
 
@@ -50,11 +51,16 @@ func (l *AdminResetUserPasswordLogic) AdminResetUserPassword(in *pb.AdminResetUs
 		return nil, err
 	}
 
+	userID, err := idgen.Parse(userPwd.Id)
+	if err != nil {
+		return nil, errors.New("Not a valid user")
+	}
+
 	db := l.svcCtx.DB.WithContext(l.ctx)
 	var user model.User
 	if err := db.
 		Select("password", "account", "name", "role", "status").
-		Where("id = ?", userPwd.Id).
+		Where("id = ?", userID).
 		First(&user).Error; err != nil {
 		return nil, errors.New("Not a valid user")
 	}
@@ -65,7 +71,7 @@ func (l *AdminResetUserPasswordLogic) AdminResetUserPassword(in *pb.AdminResetUs
 	}
 
 	if err := db.Model(&user).
-		Where("id = ?", userPwd.Id).
+		Where("id = ?", userID).
 		Update("password", pwd).
 		Error; err != nil {
 		return nil, err

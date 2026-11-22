@@ -11,6 +11,7 @@ import (
 	"asset/rpc/internal/svc"
 	"asset/rpc/pb"
 	"common/ctxdata"
+	"errors"
 
 	"google.golang.org/protobuf/types/known/emptypb"
 	"gorm.io/gorm"
@@ -35,12 +36,15 @@ func NewMoveToRecycleLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Mov
 
 func (l *MoveToRecycleLogic) MoveToRecycle(in *pb.UpdateRecyclesReq) (*emptypb.Empty, error) {
 	var affected []model.Resource
-	operatorId := ctxdata.UserInfo(l.ctx).Id
+	user := ctxdata.UserInfo(l.ctx)
+	if user.Id == 0 {
+		return nil, errors.New("invalid user id")
+	}
 
 	if err := l.svcCtx.DB.WithContext(l.ctx).Transaction(func(t *gorm.DB) error {
 		resources := make([]model.Recycle, 0, len(in.Ids))
 		for _, id := range in.Ids {
-			resources = append(resources, model.Recycle{UserId: operatorId, ResourceId: id})
+			resources = append(resources, model.Recycle{UserId: user.Id, ResourceId: id})
 		}
 		if err := t.Clauses(clause.OnConflict{DoNothing: true}).Create(&resources).Error; err != nil {
 			return err
@@ -54,7 +58,7 @@ func (l *MoveToRecycleLogic) MoveToRecycle(in *pb.UpdateRecyclesReq) (*emptypb.E
 	}
 
 	l.svcCtx.LogRpc.CreateLog(l.ctx, &logclient.CreateLogReq{
-		OperatorId: operatorId,
+		OperatorId: user.Id,
 		Desc:       utils.ToDescString(affected),
 		Event:      enum.LogEventResourceToRecycle,
 	})

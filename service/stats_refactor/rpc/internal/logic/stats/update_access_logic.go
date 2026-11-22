@@ -30,7 +30,7 @@ func NewUpdateAccessLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Upda
 func (l *UpdateAccessLogic) UpdateAccess(in *pb.UpdateAccessReq) (*emptypb.Empty, error) {
 	userId := in.GetUserId()
 	if userId == "" {
-		userId = ctxdata.UserInfo(l.ctx).Id
+		userId = ctxdata.UserID(l.ctx)
 	}
 	if userId == "" {
 		return &emptypb.Empty{}, nil

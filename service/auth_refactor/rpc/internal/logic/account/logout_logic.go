@@ -8,6 +8,7 @@ import (
 	loglogic "auth/rpc/internal/logic/log"
 	"auth/rpc/internal/svc"
 	"auth/rpc/pb"
+	"common/ctxdata"
 
 	"google.golang.org/protobuf/types/known/emptypb"
 
@@ -40,8 +41,8 @@ func (l *LogoutLogic) Logout(in *pb.LoginUserReq) (*emptypb.Empty, error) {
 
 	loglogic.NewCreateLogLogic(l.ctx, l.svcCtx).CreateLog(&pb.CreateLogReq{
 		Event:      enum.LogEventLogOut,
-		OperatorId: in.Id,
 		Desc:       utils.ToDescString(user),
+		OperatorId: ctxdata.UserInfo(l.ctx).Id,
 	})
 
 	return &emptypb.Empty{}, nil

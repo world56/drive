@@ -14,6 +14,7 @@ import (
 	"auth/rpc/internal/svc"
 	"auth/rpc/pb"
 	"common/ctxdata"
+	"common/idgen"
 
 	"google.golang.org/protobuf/types/known/emptypb"
 
@@ -45,7 +46,7 @@ func (l *UpdateUserPasswordLogic) UpdateUserPassword(in *pb.UpdateUserPasswordRe
 	if err != nil {
 		return nil, errors.New("Parse failed")
 	}
-	operatorId := ctxdata.UserInfo(l.ctx).Id
+	operatorId := ctxdata.UserID(l.ctx)
 
 	var userPwd UserResetPassword
 	if err := json.Unmarshal([]byte(body.Data), &userPwd); err != nil {
@@ -56,11 +57,16 @@ func (l *UpdateUserPasswordLogic) UpdateUserPassword(in *pb.UpdateUserPasswordRe
 		return nil, errors.New("Unauthorized")
 	}
 
+	userID, err := idgen.Parse(userPwd.Id)
+	if err != nil {
+		return nil, errors.New("Not a valid user")
+	}
+
 	db := l.svcCtx.DB.WithContext(l.ctx)
 	var user model.User
 	if err := db.
 		Select("password", "account", "name", "role", "status").
-		Where("id = ?", userPwd.Id).
+		Where("id = ?", userID).
 		First(&user).Error; err != nil {
 		return nil, errors.New("Not a valid user")
 	}
@@ -78,13 +84,13 @@ func (l *UpdateUserPasswordLogic) UpdateUserPassword(in *pb.UpdateUserPasswordRe
 		return nil, err
 	}
 	if err := db.Model(&user).
-		Where("id = ?", userPwd.Id).
+		Where("id = ?", userID).
 		Update("password", hash).Error; err != nil {
 		return nil, err
 	}
 
 	loglogic.NewCreateLogLogic(l.ctx, l.svcCtx).CreateLog(&pb.CreateLogReq{
-		OperatorId: operatorId,
+		OperatorId: userID,
 		Event:      enum.LogEventPwdUpdate,
 		Desc: utils.ToDescString(map[string]interface{}{
 			"name":    user.Name,

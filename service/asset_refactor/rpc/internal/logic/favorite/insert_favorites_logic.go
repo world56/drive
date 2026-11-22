@@ -2,6 +2,7 @@ package favoritelogic
 
 import (
 	"context"
+	"errors"
 
 	"asset/rpc/internal/model"
 	"asset/rpc/internal/svc"
@@ -30,6 +31,9 @@ func NewInsertFavoritesLogic(ctx context.Context, svcCtx *svc.ServiceContext) *I
 
 func (l *InsertFavoritesLogic) InsertFavorites(in *pb.UpdateFavoritesReq) (*emptypb.Empty, error) {
 	userId := ctxdata.UserInfo(l.ctx).Id
+	if userId == 0 {
+		return nil, errors.New("invalid user id")
+	}
 	favorites := make([]model.Favorite, 0, len(in.Ids))
 	for _, id := range in.Ids {
 		favorites = append(favorites, model.Favorite{

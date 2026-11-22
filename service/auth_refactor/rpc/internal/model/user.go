@@ -3,12 +3,13 @@ package model
 import (
 	"time"
 
-	"github.com/google/uuid"
+	"common/idgen"
+
 	"gorm.io/gorm"
 )
 
 type User struct {
-	Id         uuid.UUID `gorm:"column:id;type:uuid;primaryKey;default:gen_random_uuid();" json:"id"`
+	Id         int64     `gorm:"column:id;type:bigint;primaryKey;autoIncrement:false;" json:"id,string"`
 	Name       string    `gorm:"type:varchar(40);uniqueIndex;not null;" json:"name"`
 	Account    string    `gorm:"type:varchar(12);unique;not null;index:account_password;" json:"account"`
 	Password   string    `gorm:"type:varchar(255);not null;index:account_password;" json:"password"`
@@ -23,8 +24,8 @@ type User struct {
 }
 
 func (u *User) BeforeCreate(db *gorm.DB) error {
-	if u.Id == uuid.Nil {
-		u.Id = uuid.New()
+	if u.Id == 0 {
+		u.Id = idgen.SnowflakeIDNext()
 	}
 	return nil
 }

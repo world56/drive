@@ -57,7 +57,7 @@ export function splitFiles(
   >,
 ) {
   const chunks: FormData[] = [];
-  const length = parseInt(`${file.size / UPLOAD_SLICE_SIZE + 1}`);
+  const length = Math.ceil(file.size / UPLOAD_SLICE_SIZE) || 1;
   for (let i = 0; i < length; i++) {
     const start = i * UPLOAD_SLICE_SIZE;
     const data = new FormData();

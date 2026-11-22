@@ -3,15 +3,24 @@ package model
 import (
 	"time"
 
-	"github.com/google/uuid"
+	"common/idgen"
+
+	"gorm.io/gorm"
 )
 
 type Log struct {
-	Id         uuid.UUID `gorm:"column:id;type:uuid;default:gen_random_uuid();primaryKey;" json:"id"`
+	Id         int64     `gorm:"column:id;type:bigint;primaryKey;autoIncrement:false;" json:"id,string"`
 	Event      string    `gorm:"type:varchar(32);not null;index:user_id_event;" json:"event"`
 	Desc       string    `gorm:"type:text;" json:"desc"`
-	CreateTime time.Time `gorm:"column:create_time;autoCreateTime;" json:"createTime"`
+	CreateTime time.Time `gorm:"column:create_time;autoCreateTime;index:idx_logs_create_time,sort:desc;" json:"createTime"`
 
-	UserId string `gorm:"column:user_id;type:char(36);index:user_id_event;not null" json:"userId"`
-	User   *User  `gorm:"foreignKey:UserId;references:Id;" json:"user"`
+	UserId int64 `gorm:"column:user_id;type:bigint;index:user_id_event;not null" json:"userId,string"`
+	User   *User `gorm:"foreignKey:UserId;references:Id;" json:"user"`
+}
+
+func (l *Log) BeforeCreate(tx *gorm.DB) error {
+	if l.Id == 0 {
+		l.Id = idgen.SnowflakeIDNext()
+	}
+	return nil
 }

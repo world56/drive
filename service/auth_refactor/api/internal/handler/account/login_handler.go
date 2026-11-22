@@ -30,8 +30,8 @@ func LoginHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 				Name:     "Authorization",
 				Value:    *token,
 				Path:     "/",
-				MaxAge:   3600 * 24,
-				HttpOnly: false,
+				MaxAge:   3600 * 24 * 7,
+				HttpOnly: true,
 				Secure:   false,
 				SameSite: http.SameSiteLaxMode,
 			})
