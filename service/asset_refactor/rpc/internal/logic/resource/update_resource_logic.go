@@ -19,6 +19,7 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 
 	logclient "auth/rpc/client/log"
+	statsclient "stats/rpc/client/stats"
 )
 
 type UpdateResourceLogic struct {
@@ -121,11 +122,20 @@ func (l *UpdateResourceLogic) UpdateResourceStatus(
 		return nil, err
 	}
 
-	// CALC := "ADD"
-	// if removeStatus == enum.ResourceRecycled {
-	// 	CALC = "REDUCE"
-	// }
-	// go s.grpcClient.Stats.UpdateAssetCount(CALC, counts)
+	CALC := "ADD"
+	if removeStatus == enum.ResourceRecycled {
+		CALC = "REDUCE"
+	}
+	count := make(map[int32]int32, len(counts))
+	for k, v := range counts {
+		count[int32(k)] = v
+	}
+	go func() {
+		_, _ = l.svcCtx.StatsRpc.UpdateStorageCount(context.Background(), &statsclient.UpdateResourceReq{
+			Calculation: CALC,
+			Count:       count,
+		})
+	}()
 	return resources, nil
 }
 

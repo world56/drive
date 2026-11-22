@@ -8,6 +8,7 @@ import (
 
 	"auth/api/internal/svc"
 	"auth/api/internal/types"
+	"auth/rpc/pb"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -27,7 +28,9 @@ func NewAdminSetPasswordLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 }
 
 func (l *AdminSetPasswordLogic) AdminSetPassword(req *types.AdminSetPasswordReq) error {
-	// todo: add your logic here and delete this line
-
-	return nil
+	_, err := l.svcCtx.UserRpc.AdminResetUserPassword(l.ctx, &pb.AdminResetUserPasswordReq{
+		Id:       req.Id,
+		Password: req.Data,
+	})
+	return err
 }

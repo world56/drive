@@ -40,8 +40,8 @@ const Recently = () => {
           columns={columns}
           pagination={false}
           scroll={{ y: 476.5 }}
-          dataSource={data?.[1]}
           rowKey={DB_PRIMARY_KEY}
+          dataSource={data?.[1]?.list}
         />
       </Container>
       <Container title="收藏排行" loading={loading}>
@@ -49,8 +49,8 @@ const Recently = () => {
           columns={columns}
           pagination={false}
           scroll={{ y: 476.5 }}
-          dataSource={data?.[0]}
           rowKey={DB_PRIMARY_KEY}
+          dataSource={data?.[0]?.list}
         />
       </Container>
     </div>

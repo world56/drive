@@ -8,7 +8,7 @@ import type { TypeFavorite } from "@/interface/favorite";
  * @name getFavorites 获取“资源”收藏列表
  */
 export function getFavorites(params: TypeFavorite.ReqFavorites) {
-  return request<TypeFavorite.DTO[]>("favorite/list", {
+  return request<{ list: TypeFavorite.DTO[] }>("favorite/list", {
     method: ENUM_HTTP.REQUEST_MODE.GET,
     proxy: ENUM_HTTP.PROXY.ASSET,
     params,

@@ -4,9 +4,11 @@ import (
 	"context"
 	"errors"
 	"strconv"
+	"time"
 
 	"auth/rpc/internal/svc"
 	"auth/rpc/pb"
+	statsclient "stats/rpc/client/stats"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -40,7 +42,11 @@ func (l *GetLoginUserLogic) GetLoginUser(in *pb.LoginUserReq) (*pb.GetLoginUserR
 		return nil, errors.New("Failed to acquire a character")
 	}
 
-	// s.grpcClient.Stats.Access(in.Id)
+	go func(id string) {
+		ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+		defer cancel()
+		_, _ = l.svcCtx.StatsRpc.UpdateAccess(ctx, &statsclient.UpdateAccessReq{UserId: id})
+	}(in.Id)
 
 	return &pb.GetLoginUserResp{
 		Id:      user["id"],

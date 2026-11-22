@@ -16,6 +16,7 @@ import (
 )
 
 type (
+	Count                 = pb.Count
 	CreateFolderReq       = pb.CreateFolderReq
 	GetResourceReq        = pb.GetResourceReq
 	GetResourcesReq       = pb.GetResourcesReq
@@ -36,6 +37,7 @@ type (
 		MoveResources(ctx context.Context, in *MoveResourcesReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
 		RemoveResources(ctx context.Context, in *RemoveResourcesReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
 		GetRecently(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ResourcesResp, error)
+		GetCount(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*Count, error)
 	}
 
 	defaultResource struct {
@@ -92,4 +94,9 @@ func (m *defaultResource) RemoveResources(ctx context.Context, in *RemoveResourc
 func (m *defaultResource) GetRecently(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ResourcesResp, error) {
 	client := pb.NewResourceClient(m.cli.Conn())
 	return client.GetRecently(ctx, in, opts...)
+}
+
+func (m *defaultResource) GetCount(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*Count, error) {
+	client := pb.NewResourceClient(m.cli.Conn())
+	return client.GetCount(ctx, in, opts...)
 }

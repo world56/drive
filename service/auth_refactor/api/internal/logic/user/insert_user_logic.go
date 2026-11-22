@@ -8,6 +8,7 @@ import (
 
 	"auth/api/internal/svc"
 	"auth/api/internal/types"
+	"auth/rpc/pb"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -27,7 +28,18 @@ func NewInsertUserLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Insert
 }
 
 func (l *InsertUserLogic) InsertUser(req *types.UserInsertReq) error {
-	// todo: add your logic here and delete this line
+	in := &pb.CreateUserReq{
+		Name:     req.Name,
+		Account:  req.Account,
+		Password: req.Password,
+	}
+	if req.Contact != "" {
+		in.Contact = &req.Contact
+	}
+	if req.Remark != "" {
+		in.Remark = &req.Remark
+	}
 
-	return nil
+	_, err := l.svcCtx.UserRpc.CreateUser(l.ctx, in)
+	return err
 }

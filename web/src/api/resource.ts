@@ -8,7 +8,7 @@ import type { TypeResource } from "@/interface/resource";
  * @name getGlobalResources 查询全局资源
  */
 export function getGlobalResources(params: TypeResource.ReqGlobalResources) {
-  return request<TypeResource.DTO[]>("resource/search", {
+  return request<{ list: TypeResource.DTO[] }>("resource/search", {
     method: ENUM_HTTP.REQUEST_MODE.GET,
     proxy: ENUM_HTTP.PROXY.ASSET,
     params,
@@ -20,7 +20,7 @@ export function getGlobalResources(params: TypeResource.ReqGlobalResources) {
  * @param params 通过文件夹ID查询旗下的资源列表
  */
 export function getResources(params: TypeResource.ReqResources) {
-  return request<TypeResource.DTO[]>("resource/list", {
+  return request<{ list: TypeResource.DTO[] }>("resource/list", {
     method: ENUM_HTTP.REQUEST_MODE.GET,
     proxy: ENUM_HTTP.PROXY.ASSET,
     params,
@@ -32,7 +32,7 @@ export function getResources(params: TypeResource.ReqResources) {
  * @description 资源页面 左侧的文件夹目录树
  */
 export function getFolders() {
-  return request<TypeResource.DTO[]>("resource/folders", {
+  return request<{ list: TypeResource.DTO[] }>("resource/folders", {
     method: ENUM_HTTP.REQUEST_MODE.GET,
     proxy: ENUM_HTTP.PROXY.ASSET,
   });

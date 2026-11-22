@@ -7,10 +7,10 @@ import (
 	"context"
 	"net/http"
 
-	resourceclient "asset/rpc/client/resource"
 	"storage/api/internal/pkg/stream"
 	"storage/api/internal/svc"
 	"storage/api/internal/types"
+	storageclient "storage/rpc/client/storage"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -31,7 +31,7 @@ func NewDownloadObjectResourceReqLogic(ctx context.Context, svcCtx *svc.ServiceC
 
 // DownloadObjectResourceReq 下载（对齐 gin Download：先查资源再 attachment 流）
 func (l *DownloadObjectResourceReqLogic) DownloadObjectResourceReq(w http.ResponseWriter, r *http.Request, req *types.DownloadObjectResourceReq) error {
-	resource, err := l.svcCtx.AssetRpc.GetResource(l.ctx, &resourceclient.GetResourceReq{Id: req.Id})
+	resource, err := l.svcCtx.StorageRpc.Download(l.ctx, &storageclient.DownloadReq{Id: req.Id})
 	if err != nil {
 		return err
 	}

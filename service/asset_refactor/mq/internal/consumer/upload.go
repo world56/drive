@@ -17,6 +17,7 @@ import (
 	"common/databases"
 	rabbitmq "common/rabbitmq"
 	utils "common/utils/jsonstring"
+	statsclient "stats/rpc/client/stats"
 
 	amqp "github.com/rabbitmq/amqp091-go"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -94,7 +95,12 @@ func (l *UploadConsumer) CreateResource(c context.Context, req *pb.CreateResourc
 		}
 		err := l.svcCtx.DB.WithContext(c).Create(resource).Error
 		if err == nil {
-			// TODO: stats.UpdateAssetCount
+			go func() {
+				_, _ = l.svcCtx.StatsRpc.UpdateStorageCount(context.Background(), &statsclient.UpdateResourceReq{
+					Calculation: "ADD",
+					Count:       map[int32]int32{int32(resourceType): 1},
+				})
+			}()
 			_, _ = l.svcCtx.LogRpc.CreateLog(c, &logclient.CreateLogReq{
 				OperatorId: creatorID,
 				Desc:       utils.ToDescString(resource),

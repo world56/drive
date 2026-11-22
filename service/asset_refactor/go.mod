@@ -12,7 +12,7 @@ require (
 	google.golang.org/grpc v1.85.0
 	google.golang.org/protobuf v1.36.12
 	gorm.io/gorm v1.31.2
-	storage v0.0.0-00010101000000-000000000000
+	storage v0.0.0
 )
 
 require (
@@ -117,6 +117,7 @@ require (
 	sigs.k8s.io/randfill v1.0.0 // indirect
 	sigs.k8s.io/structured-merge-diff/v6 v6.4.2 // indirect
 	sigs.k8s.io/yaml v1.6.0 // indirect
+	stats v0.0.0 // indirect
 )
 
 replace common => ../../common
@@ -124,3 +125,5 @@ replace common => ../../common
 replace auth => ../auth_refactor
 
 replace storage => ../storage_refactor
+
+replace stats => ../stats_refactor

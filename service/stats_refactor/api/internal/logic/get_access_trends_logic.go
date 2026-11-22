@@ -9,6 +9,8 @@ import (
 	"stats/api/internal/svc"
 	"stats/api/internal/types"
 
+	"google.golang.org/protobuf/types/known/emptypb"
+
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -27,7 +29,17 @@ func NewGetAccessTrendsLogic(ctx context.Context, svcCtx *svc.ServiceContext) *G
 }
 
 func (l *GetAccessTrendsLogic) GetAccessTrends() (resp *types.AccessResp, err error) {
-	// todo: add your logic here and delete this line
+	data, err := l.svcCtx.StatsRpc.GetAccessTrends(l.ctx, &emptypb.Empty{})
+	if err != nil {
+		return nil, err
+	}
 
-	return
+	list := make([]types.AccessItem, 0, len(data.List))
+	for _, val := range data.List {
+		list = append(list, types.AccessItem{
+			Date:  val.Date,
+			Value: val.Value,
+		})
+	}
+	return &types.AccessResp{List: list}, nil
 }

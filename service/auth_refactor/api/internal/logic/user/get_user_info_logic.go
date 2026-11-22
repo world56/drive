@@ -8,6 +8,7 @@ import (
 
 	"auth/api/internal/svc"
 	"auth/api/internal/types"
+	"auth/rpc/pb"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -27,7 +28,19 @@ func NewGetUserInfoLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetUs
 }
 
 func (l *GetUserInfoLogic) GetUserInfo(req *types.UserInfoReq) (resp *types.UserInfoResp, err error) {
-	// todo: add your logic here and delete this line
+	data, err := l.svcCtx.UserRpc.GetUser(l.ctx, &pb.GetUserReq{Id: req.Id})
+	if err != nil {
+		return nil, err
+	}
 
-	return
+	return &types.UserInfoResp{
+		Id:         data.Id,
+		Name:       data.Name,
+		Role:       int(data.Role),
+		Account:    data.Account,
+		Status:     int(data.Status),
+		Contact:    data.GetContact(),
+		Remark:     data.GetRemark(),
+		CreateTime: data.CreateTime,
+	}, nil
 }

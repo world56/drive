@@ -9,7 +9,6 @@ import {
 } from "@ant-design/icons";
 import { Tooltip } from "antd";
 import styles from "./index.module.sass";
-import { getResources } from "@/api/resource";
 import { useStore, useActions } from "@/hooks";
 import { useDeferredValue, useMemo } from "react";
 
@@ -20,7 +19,7 @@ import type { TypeResource } from "@/interface/resource";
 
 interface TypeMultipleChoicesProps extends Pick<TypeFilesProps, "onMenu"> {
   /** @total 当前目录资源 */
-  data?: Awaited<ReturnType<typeof getResources>>;
+  data?: TypeResource.DTO[];
 }
 
 /**

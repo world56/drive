@@ -41,8 +41,9 @@ service auth-api {
 
 // USER
 @server (
-	prefix: /user
-	group:  user
+	prefix:     /user
+	group:      user
+	middleware: RoleGuard
 )
 service auth-api {
 	@handler GetAllUsers
@@ -63,17 +64,25 @@ service auth-api {
 	@handler UpdateUserStatus
 	put /:id/status (UserStatusUpdateReq)
 
-	@handler ChangePassword
-	put /pwd (ChangePasswordReq)
-
 	@handler AdminSetPassword
 	put /:id/password (AdminSetPasswordReq)
 }
 
+// USER
+@server (
+	prefix: /user
+	group:  user
+)
+service auth-api {
+	@handler ChangePassword
+	put /pwd (ChangePasswordReq)
+}
+
 // LOG
 @server (
-	prefix: /log
-	group:  log
+	prefix:     /log
+	group:      log
+	middleware: RoleGuard
 )
 service auth-api {
 	@handler GetLogs

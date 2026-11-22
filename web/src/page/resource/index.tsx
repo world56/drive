@@ -121,11 +121,11 @@ const Resource = () => {
   return (
     <div className={styles.layout}>
       <Folder />
-      <Files data={data} onMenu={onMenu} loading={loading} />
+      <Files data={data?.list} onMenu={onMenu} loading={loading} />
       <Attributes id={detailsID} onClose={onCloseDetails} />
       <Move ids={move} onClose={onCloseMove} />
       <Edit {...edit} onClose={onCloseEdit} />
-      <MultipleChoices data={data} onMenu={onMenu} />
+      <MultipleChoices data={data?.list} onMenu={onMenu} />
     </div>
   );
 };

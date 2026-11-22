@@ -110,9 +110,9 @@ const Recycle = () => {
         virtual
         columns={columns}
         loading={loading}
-        dataSource={data}
         pagination={false}
         rowKey={DB_PRIMARY_KEY}
+        dataSource={data?.list}
         scroll={{ y: height - 121 }}
       />
       <FloatButton

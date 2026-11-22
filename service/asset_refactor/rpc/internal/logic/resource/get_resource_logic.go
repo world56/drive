@@ -9,7 +9,6 @@ import (
 
 	"github.com/zeromicro/go-zero/core/logx"
 
-	// userclient "auth/rpc/client/user"
 	userclient "auth/rpc/client/user"
 )
 

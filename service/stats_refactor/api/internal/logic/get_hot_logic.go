@@ -9,6 +9,8 @@ import (
 	"stats/api/internal/svc"
 	"stats/api/internal/types"
 
+	"google.golang.org/protobuf/types/known/emptypb"
+
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -27,7 +29,17 @@ func NewGetHotLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetHotLogi
 }
 
 func (l *GetHotLogic) GetHot() (resp *types.HotResp, err error) {
-	// todo: add your logic here and delete this line
+	data, err := l.svcCtx.StatsRpc.GetHot(l.ctx, &emptypb.Empty{})
+	if err != nil {
+		return nil, err
+	}
 
-	return
+	list := make([]types.HotItem, 0, len(data.List))
+	for _, val := range data.List {
+		list = append(list, types.HotItem{
+			Name:  val.Name,
+			Value: val.Value,
+		})
+	}
+	return &types.HotResp{List: list}, nil
 }

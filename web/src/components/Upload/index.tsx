@@ -68,7 +68,7 @@ const Upload = () => {
       while (i < length) {
         if (!file?.run) return;
         file.control = new AbortController();
-        const objectName = await upload(file.chunks![i], file.control);
+        const { objectName } = await upload(file.chunks![i], file.control);
         file.index = ++i;
         setStatus((s) => {
           const target = s[id];

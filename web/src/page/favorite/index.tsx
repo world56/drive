@@ -129,7 +129,7 @@ const Favorite = () => {
       loading={loading}
       columns={columns}
       pagination={false}
-      dataSource={data}
+      dataSource={data?.list}
       rowKey={DB_PRIMARY_KEY}
       scroll={{ y: height - 121 }}
     />

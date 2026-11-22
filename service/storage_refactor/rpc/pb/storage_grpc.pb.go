@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.6.2
 // - protoc             v7.36.2
-// source: pb/storage.proto
+// source: storage.proto
 
 package pb
 
@@ -22,16 +22,16 @@ const _ = grpc.SupportPackageIsVersion9
 const (
 	Storage_GetSpaceUsage_FullMethodName   = "/storage.Storage/GetSpaceUsage"
 	Storage_RemoveResources_FullMethodName = "/storage.Storage/RemoveResources"
+	Storage_Download_FullMethodName        = "/storage.Storage/Download"
 )
 
 // StorageClient is the client API for Storage service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type StorageClient interface {
-	// 查询存储空间用量
 	GetSpaceUsage(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*SpaceUsage, error)
-	// 批量删除对象
 	RemoveResources(ctx context.Context, in *ObjectNames, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	Download(ctx context.Context, in *DownloadReq, opts ...grpc.CallOption) (*DownloadResp, error)
 }
 
 type storageClient struct {
@@ -62,14 +62,23 @@ func (c *storageClient) RemoveResources(ctx context.Context, in *ObjectNames, op
 	return out, nil
 }
 
+func (c *storageClient) Download(ctx context.Context, in *DownloadReq, opts ...grpc.CallOption) (*DownloadResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DownloadResp)
+	err := c.cc.Invoke(ctx, Storage_Download_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // StorageServer is the server API for Storage service.
 // All implementations must embed UnimplementedStorageServer
 // for forward compatibility.
 type StorageServer interface {
-	// 查询存储空间用量
 	GetSpaceUsage(context.Context, *emptypb.Empty) (*SpaceUsage, error)
-	// 批量删除对象
 	RemoveResources(context.Context, *ObjectNames) (*emptypb.Empty, error)
+	Download(context.Context, *DownloadReq) (*DownloadResp, error)
 	mustEmbedUnimplementedStorageServer()
 }
 
@@ -85,6 +94,9 @@ func (UnimplementedStorageServer) GetSpaceUsage(context.Context, *emptypb.Empty)
 }
 func (UnimplementedStorageServer) RemoveResources(context.Context, *ObjectNames) (*emptypb.Empty, error) {
 	return nil, status.Error(codes.Unimplemented, "method RemoveResources not implemented")
+}
+func (UnimplementedStorageServer) Download(context.Context, *DownloadReq) (*DownloadResp, error) {
+	return nil, status.Error(codes.Unimplemented, "method Download not implemented")
 }
 func (UnimplementedStorageServer) mustEmbedUnimplementedStorageServer() {}
 func (UnimplementedStorageServer) testEmbeddedByValue()                 {}
@@ -143,6 +155,24 @@ func _Storage_RemoveResources_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Storage_Download_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DownloadReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StorageServer).Download(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Storage_Download_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StorageServer).Download(ctx, req.(*DownloadReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Storage_ServiceDesc is the grpc.ServiceDesc for Storage service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -158,7 +188,11 @@ var Storage_ServiceDesc = grpc.ServiceDesc{
 			MethodName: "RemoveResources",
 			Handler:    _Storage_RemoveResources_Handler,
 		},
+		{
+			MethodName: "Download",
+			Handler:    _Storage_Download_Handler,
+		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "pb/storage.proto",
+	Metadata: "storage.proto",
 }

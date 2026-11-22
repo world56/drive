@@ -8,11 +8,11 @@ function* getGlobalFolders() {
   try {
     yield put(ActionsResource.setFolderLoading(true));
     const res: Awaited<ReturnType<typeof getFolders>> = yield call(getFolders);
-    const { list, obj } = listToTree(res);
+    const { list, obj } = listToTree(res.list);
     fillFolderPaths(obj);
     yield put(
       ActionsResource.setFolder({
-        folders: res,
+        folders: res.list,
         foldersObj: obj,
         folderTree: list,
       }),

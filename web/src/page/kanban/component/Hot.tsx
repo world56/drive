@@ -17,7 +17,7 @@ const Hot = () => {
 
   const { loading } = useRequest(async () => {
     const res = await getHotSearch();
-    const data = res.map((v) => {
+    const data = res.list.map((v) => {
       return {
         name: v.name.length > 10 ? `${v.name.slice(0, 9)}...` : v.name,
         value: v.value,

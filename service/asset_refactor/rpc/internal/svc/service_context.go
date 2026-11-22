@@ -16,6 +16,7 @@ import (
 
 	logclient "auth/rpc/client/log"
 	userclient "auth/rpc/client/user"
+	statsclient "stats/rpc/client/stats"
 )
 
 type ServiceContext struct {
@@ -25,10 +26,11 @@ type ServiceContext struct {
 	RabbitMQ *rabbitmq.Client
 	LogRpc   logclient.Log
 	UserRpc  userclient.User
+	StatsRpc statsclient.Stats
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
-	logx.Must(idgen.InitSnowflake(1))
+	logx.Must(idgen.InitSnowflake(idgen.NodeAsset))
 
 	redis, err := rdb.InitRedis(c.RedisUrl)
 	logx.Must(err)
@@ -40,6 +42,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	logx.Must(err)
 
 	authCli := zrpc.MustNewClient(c.AuthRpc, zrpc.WithUnaryClientInterceptor(interceptorclient.UnaryUser))
+	statsCli := zrpc.MustNewClient(c.StatsRpc, zrpc.WithUnaryClientInterceptor(interceptorclient.UnaryUser))
 
 	return &ServiceContext{
 		Config:   c,
@@ -48,5 +51,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		Redis:    redis,
 		LogRpc:   logclient.NewLog(authCli),
 		UserRpc:  userclient.NewUser(authCli),
+		StatsRpc: statsclient.NewStats(statsCli),
 	}
 }

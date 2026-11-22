@@ -34,7 +34,9 @@ const Password: React.FC<TypeResetPasswordProps> = ({ id, admin, onClose }) => {
   async function onSubmit() {
     const values = await form.validateFields();
     const data = await encryption(values);
-    await (admin ? adminResetUserPassword(data) : updatePassword(data));
+    await (admin
+      ? adminResetUserPassword({ id: values.id, data })
+      : updatePassword({ data }));
     onCancel();
   }
 

@@ -9,6 +9,8 @@ import (
 	"stats/api/internal/svc"
 	"stats/api/internal/types"
 
+	"google.golang.org/protobuf/types/known/emptypb"
+
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -27,7 +29,19 @@ func NewGetRecentlyLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetRe
 }
 
 func (l *GetRecentlyLogic) GetRecently() (resp *types.ResourceResp, err error) {
-	// todo: add your logic here and delete this line
+	data, err := l.svcCtx.StatsRpc.GetRecently(l.ctx, &emptypb.Empty{})
+	if err != nil {
+		return nil, err
+	}
 
-	return
+	list := make([]types.ResourceItem, 0, len(data.List))
+	for _, val := range data.List {
+		list = append(list, types.ResourceItem{
+			ID:       val.Id,
+			FullName: val.FullName,
+			ParentID: val.ParentId,
+			Type:     val.Type,
+		})
+	}
+	return &types.ResourceResp{List: list}, nil
 }

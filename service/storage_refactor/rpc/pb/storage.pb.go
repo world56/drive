@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.36.12
 // 	protoc        v7.36.2
-// source: pb/storage.proto
+// source: storage.proto
 
 package pb
 
@@ -22,19 +22,18 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// 空间用量（对齐旧 StatsService.GetSpaceUsage）
 type SpaceUsage struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Free          int64                  `protobuf:"varint,1,opt,name=free,proto3" json:"free,omitempty"`   // 剩余可用
-	Total         int64                  `protobuf:"varint,2,opt,name=total,proto3" json:"total,omitempty"` // 总量（配置了 bucket quota 时为配额上限）
-	Used          int64                  `protobuf:"varint,3,opt,name=used,proto3" json:"used,omitempty"`   // 已用
+	Free          int64                  `protobuf:"varint,1,opt,name=free,proto3" json:"free,omitempty"`
+	Total         int64                  `protobuf:"varint,2,opt,name=total,proto3" json:"total,omitempty"`
+	Used          int64                  `protobuf:"varint,3,opt,name=used,proto3" json:"used,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *SpaceUsage) Reset() {
 	*x = SpaceUsage{}
-	mi := &file_pb_storage_proto_msgTypes[0]
+	mi := &file_storage_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -46,7 +45,7 @@ func (x *SpaceUsage) String() string {
 func (*SpaceUsage) ProtoMessage() {}
 
 func (x *SpaceUsage) ProtoReflect() protoreflect.Message {
-	mi := &file_pb_storage_proto_msgTypes[0]
+	mi := &file_storage_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -59,7 +58,7 @@ func (x *SpaceUsage) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SpaceUsage.ProtoReflect.Descriptor instead.
 func (*SpaceUsage) Descriptor() ([]byte, []int) {
-	return file_pb_storage_proto_rawDescGZIP(), []int{0}
+	return file_storage_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *SpaceUsage) GetFree() int64 {
@@ -83,7 +82,6 @@ func (x *SpaceUsage) GetUsed() int64 {
 	return 0
 }
 
-// MinIO 对象名列表（删除用）
 type ObjectNames struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	IDs           []string               `protobuf:"bytes,1,rep,name=IDs,proto3" json:"IDs,omitempty"`
@@ -93,7 +91,7 @@ type ObjectNames struct {
 
 func (x *ObjectNames) Reset() {
 	*x = ObjectNames{}
-	mi := &file_pb_storage_proto_msgTypes[1]
+	mi := &file_storage_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -105,7 +103,7 @@ func (x *ObjectNames) String() string {
 func (*ObjectNames) ProtoMessage() {}
 
 func (x *ObjectNames) ProtoReflect() protoreflect.Message {
-	mi := &file_pb_storage_proto_msgTypes[1]
+	mi := &file_storage_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -118,7 +116,7 @@ func (x *ObjectNames) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ObjectNames.ProtoReflect.Descriptor instead.
 func (*ObjectNames) Descriptor() ([]byte, []int) {
-	return file_pb_storage_proto_rawDescGZIP(), []int{1}
+	return file_storage_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *ObjectNames) GetIDs() []string {
@@ -128,72 +126,179 @@ func (x *ObjectNames) GetIDs() []string {
 	return nil
 }
 
-var File_pb_storage_proto protoreflect.FileDescriptor
+type DownloadReq struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
 
-const file_pb_storage_proto_rawDesc = "" +
+func (x *DownloadReq) Reset() {
+	*x = DownloadReq{}
+	mi := &file_storage_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DownloadReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DownloadReq) ProtoMessage() {}
+
+func (x *DownloadReq) ProtoReflect() protoreflect.Message {
+	mi := &file_storage_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DownloadReq.ProtoReflect.Descriptor instead.
+func (*DownloadReq) Descriptor() ([]byte, []int) {
+	return file_storage_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *DownloadReq) GetId() int64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+type DownloadResp struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	ObjectName    string                 `protobuf:"bytes,1,opt,name=object_name,json=objectName,proto3" json:"object_name,omitempty"`
+	FullName      string                 `protobuf:"bytes,2,opt,name=full_name,json=fullName,proto3" json:"full_name,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DownloadResp) Reset() {
+	*x = DownloadResp{}
+	mi := &file_storage_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DownloadResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DownloadResp) ProtoMessage() {}
+
+func (x *DownloadResp) ProtoReflect() protoreflect.Message {
+	mi := &file_storage_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DownloadResp.ProtoReflect.Descriptor instead.
+func (*DownloadResp) Descriptor() ([]byte, []int) {
+	return file_storage_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *DownloadResp) GetObjectName() string {
+	if x != nil {
+		return x.ObjectName
+	}
+	return ""
+}
+
+func (x *DownloadResp) GetFullName() string {
+	if x != nil {
+		return x.FullName
+	}
+	return ""
+}
+
+var File_storage_proto protoreflect.FileDescriptor
+
+const file_storage_proto_rawDesc = "" +
 	"\n" +
-	"\x10pb/storage.proto\x12\astorage\x1a\x1bgoogle/protobuf/empty.proto\"J\n" +
+	"\rstorage.proto\x12\astorage\x1a\x1bgoogle/protobuf/empty.proto\"J\n" +
 	"\n" +
 	"SpaceUsage\x12\x12\n" +
 	"\x04free\x18\x01 \x01(\x03R\x04free\x12\x14\n" +
 	"\x05total\x18\x02 \x01(\x03R\x05total\x12\x12\n" +
 	"\x04used\x18\x03 \x01(\x03R\x04used\"\x1f\n" +
 	"\vObjectNames\x12\x10\n" +
-	"\x03IDs\x18\x01 \x03(\tR\x03IDs2\x8c\x01\n" +
+	"\x03IDs\x18\x01 \x03(\tR\x03IDs\"\x1d\n" +
+	"\vDownloadReq\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\x03R\x02id\"L\n" +
+	"\fDownloadResp\x12\x1f\n" +
+	"\vobject_name\x18\x01 \x01(\tR\n" +
+	"objectName\x12\x1b\n" +
+	"\tfull_name\x18\x02 \x01(\tR\bfullName2\xc7\x01\n" +
 	"\aStorage\x12>\n" +
 	"\rGetSpaceUsage\x12\x16.google.protobuf.Empty\x1a\x13.storage.SpaceUsage\"\x00\x12A\n" +
-	"\x0fRemoveResources\x12\x14.storage.ObjectNames\x1a\x16.google.protobuf.Empty\"\x00B\x06Z\x04./pbb\x06proto3"
+	"\x0fRemoveResources\x12\x14.storage.ObjectNames\x1a\x16.google.protobuf.Empty\"\x00\x129\n" +
+	"\bDownload\x12\x14.storage.DownloadReq\x1a\x15.storage.DownloadResp\"\x00B\x06Z\x04./pbb\x06proto3"
 
 var (
-	file_pb_storage_proto_rawDescOnce sync.Once
-	file_pb_storage_proto_rawDescData []byte
+	file_storage_proto_rawDescOnce sync.Once
+	file_storage_proto_rawDescData []byte
 )
 
-func file_pb_storage_proto_rawDescGZIP() []byte {
-	file_pb_storage_proto_rawDescOnce.Do(func() {
-		file_pb_storage_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_pb_storage_proto_rawDesc), len(file_pb_storage_proto_rawDesc)))
+func file_storage_proto_rawDescGZIP() []byte {
+	file_storage_proto_rawDescOnce.Do(func() {
+		file_storage_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_storage_proto_rawDesc), len(file_storage_proto_rawDesc)))
 	})
-	return file_pb_storage_proto_rawDescData
+	return file_storage_proto_rawDescData
 }
 
-var file_pb_storage_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
-var file_pb_storage_proto_goTypes = []any{
+var file_storage_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_storage_proto_goTypes = []any{
 	(*SpaceUsage)(nil),    // 0: storage.SpaceUsage
 	(*ObjectNames)(nil),   // 1: storage.ObjectNames
-	(*emptypb.Empty)(nil), // 2: google.protobuf.Empty
+	(*DownloadReq)(nil),   // 2: storage.DownloadReq
+	(*DownloadResp)(nil),  // 3: storage.DownloadResp
+	(*emptypb.Empty)(nil), // 4: google.protobuf.Empty
 }
-var file_pb_storage_proto_depIdxs = []int32{
-	2, // 0: storage.Storage.GetSpaceUsage:input_type -> google.protobuf.Empty
+var file_storage_proto_depIdxs = []int32{
+	4, // 0: storage.Storage.GetSpaceUsage:input_type -> google.protobuf.Empty
 	1, // 1: storage.Storage.RemoveResources:input_type -> storage.ObjectNames
-	0, // 2: storage.Storage.GetSpaceUsage:output_type -> storage.SpaceUsage
-	2, // 3: storage.Storage.RemoveResources:output_type -> google.protobuf.Empty
-	2, // [2:4] is the sub-list for method output_type
-	0, // [0:2] is the sub-list for method input_type
+	2, // 2: storage.Storage.Download:input_type -> storage.DownloadReq
+	0, // 3: storage.Storage.GetSpaceUsage:output_type -> storage.SpaceUsage
+	4, // 4: storage.Storage.RemoveResources:output_type -> google.protobuf.Empty
+	3, // 5: storage.Storage.Download:output_type -> storage.DownloadResp
+	3, // [3:6] is the sub-list for method output_type
+	0, // [0:3] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
 	0, // [0:0] is the sub-list for extension extendee
 	0, // [0:0] is the sub-list for field type_name
 }
 
-func init() { file_pb_storage_proto_init() }
-func file_pb_storage_proto_init() {
-	if File_pb_storage_proto != nil {
+func init() { file_storage_proto_init() }
+func file_storage_proto_init() {
+	if File_storage_proto != nil {
 		return
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_pb_storage_proto_rawDesc), len(file_pb_storage_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_storage_proto_rawDesc), len(file_storage_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
-		GoTypes:           file_pb_storage_proto_goTypes,
-		DependencyIndexes: file_pb_storage_proto_depIdxs,
-		MessageInfos:      file_pb_storage_proto_msgTypes,
+		GoTypes:           file_storage_proto_goTypes,
+		DependencyIndexes: file_storage_proto_depIdxs,
+		MessageInfos:      file_storage_proto_msgTypes,
 	}.Build()
-	File_pb_storage_proto = out.File
-	file_pb_storage_proto_goTypes = nil
-	file_pb_storage_proto_depIdxs = nil
+	File_storage_proto = out.File
+	file_storage_proto_goTypes = nil
+	file_storage_proto_depIdxs = nil
 }

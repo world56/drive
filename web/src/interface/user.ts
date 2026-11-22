@@ -43,6 +43,14 @@ export namespace TypeUser {
    */
   export interface ReqUsers
     extends
-      Partial<Pick<DTO, "name" | "account" | "status">>,
-      TypeCommon.PageTurning {}
+    Partial<Pick<DTO, "name" | "account" | "status">>,
+    TypeCommon.PageTurning { }
+
+  /**
+   * @name TypeAdminResetUserPWD 重制用户密码
+   */
+  export interface TypeAdminResetUserPWD {
+    id: TypeUser.DTO["id"];
+    data: string;
+  }
 }

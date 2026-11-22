@@ -20,7 +20,7 @@ export function getUsers(params: TypeUser.ReqUsers) {
  * @name getAllUsers 查询-所有用户
  */
 export function getAllUsers() {
-  return request<TypeUser.DTO[]>("user", {
+  return request<{ users: TypeUser.DTO[] }>("user", {
     method: ENUM_HTTP.REQUEST_MODE.GET,
     proxy: ENUM_HTTP.PROXY.AUTH,
   });
@@ -30,10 +30,9 @@ export function getAllUsers() {
  * @name getUser 查询-用户详情
  */
 export function getUser(params: Pick<TypeUser.DTO, "id">) {
-  return request<TypeUser.DTO>("user/detail", {
+  return request<TypeUser.DTO>(`user/${params.id}`, {
     method: ENUM_HTTP.REQUEST_MODE.GET,
     proxy: ENUM_HTTP.PROXY.AUTH,
-    params,
   });
 }
 
@@ -52,8 +51,10 @@ export function insertUser(data: TypeUser.DTO) {
 /**
  * @name updateUser 编辑-用户
  */
-export function updateUser(data: TypeUser.DTO) {
-  return request<TypeUser.DTO>("user/update", {
+export function updateUser(
+  data: Pick<TypeUser.DTO, "id" | "name" | "contact" | "remark">,
+) {
+  return request(`user/${data.id}`, {
     method: ENUM_HTTP.REQUEST_MODE.PUT,
     proxy: ENUM_HTTP.PROXY.AUTH,
     message: "编辑成功",
@@ -64,20 +65,19 @@ export function updateUser(data: TypeUser.DTO) {
 /**
  * @name changeUserStatus 编辑状态-用户
  */
-export function changeUserStatus(data: Pick<TypeUser.DTO, "id">) {
-  return request<TypeUser.DTO>("user/status", {
+export function changeUserStatus({ id }: Pick<TypeUser.DTO, "id">) {
+  return request(`user/${id}/status`, {
     method: ENUM_HTTP.REQUEST_MODE.PUT,
     proxy: ENUM_HTTP.PROXY.AUTH,
     message: "操作成功",
-    data,
   });
 }
 
 /**
  * @name updatePassword 修改 “用户密码”
  */
-export function updatePassword(data: string) {
-  return request<TypeUser.DTO>("user/pwd", {
+export function updatePassword(data: { data: string }) {
+  return request("user/pwd", {
     method: ENUM_HTTP.REQUEST_MODE.PUT,
     proxy: ENUM_HTTP.PROXY.AUTH,
     message: "密码修改成功",
@@ -88,8 +88,8 @@ export function updatePassword(data: string) {
 /**
  * @name adminResetUserPassword 管理员重置 “用户密码”
  */
-export function adminResetUserPassword(data: string) {
-  return request<TypeUser.DTO>("user/password", {
+export function adminResetUserPassword(data: TypeUser.TypeAdminResetUserPWD) {
+  return request(`user/${data.id}/password`, {
     method: ENUM_HTTP.REQUEST_MODE.PUT,
     proxy: ENUM_HTTP.PROXY.AUTH,
     message: "密码修改成功",

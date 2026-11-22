@@ -12,6 +12,7 @@ import (
 	"common/rdb"
 	"storage/api/internal/config"
 	"storage/api/internal/pkg/mq"
+	storageclient "storage/rpc/client/storage"
 
 	"github.com/minio/minio-go/v7"
 	"github.com/redis/go-redis/v9"
@@ -20,15 +21,16 @@ import (
 )
 
 type ServiceContext struct {
-	Config   config.Config
-	Minio    *minio.Core
-	Redis    *redis.Client
-	RabbitMQ *rabbitmq.Client
-	AssetRpc resourceclient.Resource
+	Config     config.Config
+	Minio      *minio.Core
+	Redis      *redis.Client
+	RabbitMQ   *rabbitmq.Client
+	AssetRpc   resourceclient.Resource
+	StorageRpc storageclient.Storage
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
-	logx.Must(idgen.InitSnowflake(1))
+	logx.Must(idgen.InitSnowflake(idgen.NodeStorage))
 
 	minioCore, err := minioclient.InitMinio(
 		c.MINIO_ADDR,
@@ -45,12 +47,14 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	logx.Must(err)
 
 	assetCli := zrpc.MustNewClient(c.AssetRpc, zrpc.WithUnaryClientInterceptor(interceptorclient.UnaryUser))
+	storageCli := zrpc.MustNewClient(c.StorageRpc, zrpc.WithUnaryClientInterceptor(interceptorclient.UnaryUser))
 
 	return &ServiceContext{
-		Config:   c,
-		Minio:    minioCore,
-		Redis:    redisCli,
-		RabbitMQ: mqCli,
-		AssetRpc: resourceclient.NewResource(assetCli),
+		Config:     c,
+		Minio:      minioCore,
+		Redis:      redisCli,
+		RabbitMQ:   mqCli,
+		AssetRpc:   resourceclient.NewResource(assetCli),
+		StorageRpc: storageclient.NewStorage(storageCli),
 	}
 }

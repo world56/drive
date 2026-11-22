@@ -68,3 +68,8 @@ func (s *ResourceServer) GetRecently(ctx context.Context, in *emptypb.Empty) (*p
 	l := resourcelogic.NewGetRecentlyLogic(ctx, s.svcCtx)
 	return l.GetRecently(in)
 }
+
+func (s *ResourceServer) GetCount(ctx context.Context, in *emptypb.Empty) (*pb.Count, error) {
+	l := resourcelogic.NewGetCountLogic(ctx, s.svcCtx)
+	return l.GetCount(in)
+}

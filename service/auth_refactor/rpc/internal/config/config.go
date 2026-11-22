@@ -11,4 +11,5 @@ type Config struct {
 	RedisUrl    string
 	RabbitMqUrl string
 	JwtSecret   string
+	StatsRpc    zrpc.RpcClientConf
 }

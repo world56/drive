@@ -37,7 +37,7 @@ const Log = () => {
     { refreshDeps: [currentPage, pageSize] },
   );
 
-  const { data: users } = useRequest(getAllUsers);
+  const allUsers = useRequest(getAllUsers);
 
   const columns = [
     {
@@ -72,8 +72,8 @@ const Log = () => {
             <Select
               allowClear
               {...userEvent}
-              options={users}
               placeholder="请选择状态状态"
+              options={allUsers.data?.users}
               fieldNames={{ value: "id", label: "name" }}
             />
           </>

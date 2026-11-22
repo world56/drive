@@ -16,12 +16,15 @@ import (
 )
 
 type (
-	ObjectNames = pb.ObjectNames
-	SpaceUsage  = pb.SpaceUsage
+	DownloadReq  = pb.DownloadReq
+	DownloadResp = pb.DownloadResp
+	ObjectNames  = pb.ObjectNames
+	SpaceUsage   = pb.SpaceUsage
 
 	Storage interface {
 		GetSpaceUsage(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*SpaceUsage, error)
 		RemoveResources(ctx context.Context, in *ObjectNames, opts ...grpc.CallOption) (*emptypb.Empty, error)
+		Download(ctx context.Context, in *DownloadReq, opts ...grpc.CallOption) (*DownloadResp, error)
 	}
 
 	defaultStorage struct {
@@ -43,4 +46,9 @@ func (m *defaultStorage) GetSpaceUsage(ctx context.Context, in *emptypb.Empty, o
 func (m *defaultStorage) RemoveResources(ctx context.Context, in *ObjectNames, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	client := pb.NewStorageClient(m.cli.Conn())
 	return client.RemoveResources(ctx, in, opts...)
+}
+
+func (m *defaultStorage) Download(ctx context.Context, in *DownloadReq, opts ...grpc.CallOption) (*DownloadResp, error) {
+	client := pb.NewStorageClient(m.cli.Conn())
+	return client.Download(ctx, in, opts...)
 }

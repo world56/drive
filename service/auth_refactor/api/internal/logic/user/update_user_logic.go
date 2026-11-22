@@ -8,6 +8,7 @@ import (
 
 	"auth/api/internal/svc"
 	"auth/api/internal/types"
+	"auth/rpc/pb"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -27,7 +28,11 @@ func NewUpdateUserLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Update
 }
 
 func (l *UpdateUserLogic) UpdateUser(req *types.UserInfoUpdateReq) error {
-	// todo: add your logic here and delete this line
-
-	return nil
+	_, err := l.svcCtx.UserRpc.UpdateUser(l.ctx, &pb.UpdateUserReq{
+		Id:      req.Id,
+		Name:    req.Name,
+		Contact: req.Contact,
+		Remark:  req.Remark,
+	})
+	return err
 }

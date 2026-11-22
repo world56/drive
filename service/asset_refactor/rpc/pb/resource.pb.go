@@ -702,6 +702,50 @@ func (x *RemoveResourcesReq) GetIds() []int64 {
 	return nil
 }
 
+type Count struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Count         map[string]int64       `protobuf:"bytes,1,rep,name=count,proto3" json:"count,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"varint,2,opt,name=value"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Count) Reset() {
+	*x = Count{}
+	mi := &file_resource_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Count) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Count) ProtoMessage() {}
+
+func (x *Count) ProtoReflect() protoreflect.Message {
+	mi := &file_resource_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Count.ProtoReflect.Descriptor instead.
+func (*Count) Descriptor() ([]byte, []int) {
+	return file_resource_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *Count) GetCount() map[string]int64 {
+	if x != nil {
+		return x.Count
+	}
+	return nil
+}
+
 var File_resource_proto protoreflect.FileDescriptor
 
 const file_resource_proto_rawDesc = "" +
@@ -784,7 +828,13 @@ const file_resource_proto_rawDesc = "" +
 	"\n" +
 	"_parent_id\"&\n" +
 	"\x12RemoveResourcesReq\x12\x10\n" +
-	"\x03ids\x18\x01 \x03(\x03R\x03ids2\xe4\x04\n" +
+	"\x03ids\x18\x01 \x03(\x03R\x03ids\"p\n" +
+	"\x05Count\x12-\n" +
+	"\x05count\x18\x01 \x03(\v2\x17.asset.Count.CountEntryR\x05count\x1a8\n" +
+	"\n" +
+	"CountEntry\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
+	"\x05value\x18\x02 \x01(\x03R\x05value:\x028\x012\x98\x05\n" +
 	"\bResource\x12J\n" +
 	"\x12GetSearchResources\x12\x1c.asset.GetSearchResourcesReq\x1a\x14.asset.ResourcesResp\"\x00\x12<\n" +
 	"\n" +
@@ -795,7 +845,8 @@ const file_resource_proto_rawDesc = "" +
 	"\x0eUpdateResource\x12\x18.asset.UpdateResourceReq\x1a\x16.google.protobuf.Empty\"\x00\x12B\n" +
 	"\rMoveResources\x12\x17.asset.MoveResourcesReq\x1a\x16.google.protobuf.Empty\"\x00\x12F\n" +
 	"\x0fRemoveResources\x12\x19.asset.RemoveResourcesReq\x1a\x16.google.protobuf.Empty\"\x00\x12=\n" +
-	"\vGetRecently\x12\x16.google.protobuf.Empty\x1a\x14.asset.ResourcesResp\"\x00B\x06Z\x04./pbb\x06proto3"
+	"\vGetRecently\x12\x16.google.protobuf.Empty\x1a\x14.asset.ResourcesResp\"\x00\x122\n" +
+	"\bGetCount\x12\x16.google.protobuf.Empty\x1a\f.asset.Count\"\x00B\x06Z\x04./pbb\x06proto3"
 
 var (
 	file_resource_proto_rawDescOnce sync.Once
@@ -809,7 +860,7 @@ func file_resource_proto_rawDescGZIP() []byte {
 	return file_resource_proto_rawDescData
 }
 
-var file_resource_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
+var file_resource_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
 var file_resource_proto_goTypes = []any{
 	(*ResourceInfo)(nil),          // 0: asset.ResourceInfo
 	(*GetSearchResourcesReq)(nil), // 1: asset.GetSearchResourcesReq
@@ -821,33 +872,38 @@ var file_resource_proto_goTypes = []any{
 	(*MoveResourcesReq)(nil),      // 7: asset.MoveResourcesReq
 	(*CreateResourceReq)(nil),     // 8: asset.CreateResourceReq
 	(*RemoveResourcesReq)(nil),    // 9: asset.RemoveResourcesReq
-	(*emptypb.Empty)(nil),         // 10: google.protobuf.Empty
+	(*Count)(nil),                 // 10: asset.Count
+	nil,                           // 11: asset.Count.CountEntry
+	(*emptypb.Empty)(nil),         // 12: google.protobuf.Empty
 }
 var file_resource_proto_depIdxs = []int32{
 	0,  // 0: asset.ResourcesResp.list:type_name -> asset.ResourceInfo
-	1,  // 1: asset.Resource.GetSearchResources:input_type -> asset.GetSearchResourcesReq
-	10, // 2: asset.Resource.GetFolders:input_type -> google.protobuf.Empty
-	3,  // 3: asset.Resource.GetResources:input_type -> asset.GetResourcesReq
-	4,  // 4: asset.Resource.GetResource:input_type -> asset.GetResourceReq
-	5,  // 5: asset.Resource.CreateFolder:input_type -> asset.CreateFolderReq
-	6,  // 6: asset.Resource.UpdateResource:input_type -> asset.UpdateResourceReq
-	7,  // 7: asset.Resource.MoveResources:input_type -> asset.MoveResourcesReq
-	9,  // 8: asset.Resource.RemoveResources:input_type -> asset.RemoveResourcesReq
-	10, // 9: asset.Resource.GetRecently:input_type -> google.protobuf.Empty
-	2,  // 10: asset.Resource.GetSearchResources:output_type -> asset.ResourcesResp
-	2,  // 11: asset.Resource.GetFolders:output_type -> asset.ResourcesResp
-	2,  // 12: asset.Resource.GetResources:output_type -> asset.ResourcesResp
-	0,  // 13: asset.Resource.GetResource:output_type -> asset.ResourceInfo
-	10, // 14: asset.Resource.CreateFolder:output_type -> google.protobuf.Empty
-	10, // 15: asset.Resource.UpdateResource:output_type -> google.protobuf.Empty
-	10, // 16: asset.Resource.MoveResources:output_type -> google.protobuf.Empty
-	10, // 17: asset.Resource.RemoveResources:output_type -> google.protobuf.Empty
-	2,  // 18: asset.Resource.GetRecently:output_type -> asset.ResourcesResp
-	10, // [10:19] is the sub-list for method output_type
-	1,  // [1:10] is the sub-list for method input_type
-	1,  // [1:1] is the sub-list for extension type_name
-	1,  // [1:1] is the sub-list for extension extendee
-	0,  // [0:1] is the sub-list for field type_name
+	11, // 1: asset.Count.count:type_name -> asset.Count.CountEntry
+	1,  // 2: asset.Resource.GetSearchResources:input_type -> asset.GetSearchResourcesReq
+	12, // 3: asset.Resource.GetFolders:input_type -> google.protobuf.Empty
+	3,  // 4: asset.Resource.GetResources:input_type -> asset.GetResourcesReq
+	4,  // 5: asset.Resource.GetResource:input_type -> asset.GetResourceReq
+	5,  // 6: asset.Resource.CreateFolder:input_type -> asset.CreateFolderReq
+	6,  // 7: asset.Resource.UpdateResource:input_type -> asset.UpdateResourceReq
+	7,  // 8: asset.Resource.MoveResources:input_type -> asset.MoveResourcesReq
+	9,  // 9: asset.Resource.RemoveResources:input_type -> asset.RemoveResourcesReq
+	12, // 10: asset.Resource.GetRecently:input_type -> google.protobuf.Empty
+	12, // 11: asset.Resource.GetCount:input_type -> google.protobuf.Empty
+	2,  // 12: asset.Resource.GetSearchResources:output_type -> asset.ResourcesResp
+	2,  // 13: asset.Resource.GetFolders:output_type -> asset.ResourcesResp
+	2,  // 14: asset.Resource.GetResources:output_type -> asset.ResourcesResp
+	0,  // 15: asset.Resource.GetResource:output_type -> asset.ResourceInfo
+	12, // 16: asset.Resource.CreateFolder:output_type -> google.protobuf.Empty
+	12, // 17: asset.Resource.UpdateResource:output_type -> google.protobuf.Empty
+	12, // 18: asset.Resource.MoveResources:output_type -> google.protobuf.Empty
+	12, // 19: asset.Resource.RemoveResources:output_type -> google.protobuf.Empty
+	2,  // 20: asset.Resource.GetRecently:output_type -> asset.ResourcesResp
+	10, // 21: asset.Resource.GetCount:output_type -> asset.Count
+	12, // [12:22] is the sub-list for method output_type
+	2,  // [2:12] is the sub-list for method input_type
+	2,  // [2:2] is the sub-list for extension type_name
+	2,  // [2:2] is the sub-list for extension extendee
+	0,  // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_resource_proto_init() }
@@ -868,7 +924,7 @@ func file_resource_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_resource_proto_rawDesc), len(file_resource_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   10,
+			NumMessages:   12,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

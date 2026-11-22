@@ -75,6 +75,10 @@ message RemoveResourcesReq {
   repeated int64 ids = 1;
 }
 
+message Count {
+  map<string, int64> count = 1;
+}
+
 service Resource {
   rpc GetSearchResources(GetSearchResourcesReq) returns (ResourcesResp){}
   rpc GetFolders(google.protobuf.Empty) returns (ResourcesResp){}
@@ -85,4 +89,5 @@ service Resource {
   rpc MoveResources(MoveResourcesReq) returns (google.protobuf.Empty){}
   rpc RemoveResources (RemoveResourcesReq) returns (google.protobuf.Empty){}
   rpc GetRecently (google.protobuf.Empty)  returns (ResourcesResp){}
+  rpc GetCount (google.protobuf.Empty) returns (Count){}
 }

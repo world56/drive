@@ -7,4 +7,5 @@ type Config struct {
 	RedisUrl    string
 	RabbitMqUrl string
 	AuthRpc     zrpc.RpcClientConf
+	StatsRpc    zrpc.RpcClientConf
 }

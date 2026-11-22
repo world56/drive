@@ -56,7 +56,6 @@ func (c Config) Routes() []Route {
 				"/api/auth/crypto",
 				"/api/auth/account/login",
 				"/api/auth/account/super",
-				"/api/auth/account/logout",
 				"/api/auth/account/register",
 			},
 		},

@@ -34,13 +34,15 @@ func (l *LogoutLogic) Logout(in *pb.LoginUserReq) (*emptypb.Empty, error) {
 		return nil, err
 	}
 
+	if err := l.svcCtx.Redis.Del(l.ctx, "drive:user:"+in.Id).Err(); err != nil {
+		return nil, err
+	}
+
 	loglogic.NewCreateLogLogic(l.ctx, l.svcCtx).CreateLog(&pb.CreateLogReq{
 		Event:      enum.LogEventLogOut,
 		OperatorId: in.Id,
 		Desc:       utils.ToDescString(user),
 	})
-
-	l.svcCtx.Redis.Del(l.ctx, "drive:user:"+in.Id)
 
 	return &emptypb.Empty{}, nil
 }

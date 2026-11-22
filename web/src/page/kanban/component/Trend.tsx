@@ -14,7 +14,7 @@ const Trend = () => {
     const res = await getAccessTrend();
     let date: string[] = [];
     let data: number[] = [];
-    res.reverse().forEach((v) => {
+    res.list.reverse().forEach((v) => {
       date.push(v.date);
       data.push(v.value);
     });

@@ -8,7 +8,7 @@ import type { TypeRecycle } from "@/interface/recycle";
  * @name getRecycles “回收站资源” 列表
  */
 export function getRecycles() {
-  return request<TypeRecycle.DTO[]>("recycle", {
+  return request<{ list: TypeRecycle.DTO[] }>("recycle", {
     method: ENUM_HTTP.REQUEST_MODE.GET,
     proxy: ENUM_HTTP.PROXY.ASSET,
   });

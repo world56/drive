@@ -10,7 +10,8 @@ import (
 
 type Config struct {
 	rest.RestConf
-	AssetRpc zrpc.RpcClientConf
+	AssetRpc   zrpc.RpcClientConf
+	StorageRpc zrpc.RpcClientConf
 
 	RedisUrl    string
 	RabbitMqUrl string

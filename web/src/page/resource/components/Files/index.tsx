@@ -1,19 +1,19 @@
 import Container from "./Container";
 import Thumbnail from "./Thumbnail";
 import { useMemo, useRef } from "react";
-import { getResources } from "@/api/resource";
 import { RESOURCE_SORTERS } from "@/utils/filter";
 import { usePreviewFile, useStore, useToFolder } from "@/hooks";
 
 import { ENUM_RESOURCE } from "@/enum/resource";
 
+import type { TypeResource } from "@/interface/resource";
 import type { TypeThumbnailProps } from "./Thumbnail";
 import type { TypeFilesContainerProps } from "./Container";
 
 export interface TypeFilesProps
   extends Pick<TypeFilesContainerProps, "onMenu" | "loading"> {
   /** @param list 资源列表 */
-  data?: Awaited<ReturnType<typeof getResources>>;
+  data?: TypeResource.DTO[];
 }
 
 /**

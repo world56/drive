@@ -8,6 +8,7 @@ import (
 
 	"auth/api/internal/svc"
 	"auth/api/internal/types"
+	"auth/rpc/pb"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -27,7 +28,6 @@ func NewChangePasswordLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Ch
 }
 
 func (l *ChangePasswordLogic) ChangePassword(req *types.ChangePasswordReq) error {
-	// todo: add your logic here and delete this line
-
-	return nil
+	_, err := l.svcCtx.UserRpc.UpdateUserPassword(l.ctx, &pb.UpdateUserPasswordReq{Data: req.Data})
+	return err
 }

@@ -8,6 +8,7 @@ import (
 
 	"stats/api/internal/svc"
 	"stats/api/internal/types"
+	"stats/rpc/pb"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -27,7 +28,6 @@ func NewUpdateHotLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UpdateH
 }
 
 func (l *UpdateHotLogic) UpdateHot(req *types.HotUpdateReq) error {
-	// todo: add your logic here and delete this line
-
-	return nil
+	_, err := l.svcCtx.StatsRpc.UpdateHot(l.ctx, &pb.UpdateHotReq{Name: req.Name})
+	return err
 }

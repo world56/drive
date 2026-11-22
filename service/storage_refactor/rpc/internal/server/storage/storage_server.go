@@ -34,3 +34,8 @@ func (s *StorageServer) RemoveResources(ctx context.Context, in *pb.ObjectNames)
 	l := storagelogic.NewRemoveResourcesLogic(ctx, s.svcCtx)
 	return l.RemoveResources(in)
 }
+
+func (s *StorageServer) Download(ctx context.Context, in *pb.DownloadReq) (*pb.DownloadResp, error) {
+	l := storagelogic.NewDownloadLogic(ctx, s.svcCtx)
+	return l.Download(in)
+}

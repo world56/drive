@@ -19,7 +19,7 @@ export function getStorageInfo() {
  * @description 系统14天的访问趋势
  */
 export function getAccessTrend() {
-  return request<TypeStats.ResAccess>("access", {
+  return request<{ list: TypeStats.ResAccess }>("access", {
     method: ENUM_HTTP.REQUEST_MODE.GET,
     proxy: ENUM_HTTP.PROXY.STATS,
   });
@@ -40,7 +40,7 @@ export function insertHotSearch(data: TypeStats.ReqHot) {
  * @name getHotSearch 查询 “用户热门” 字眼
  */
 export function getHotSearch() {
-  return request<TypeStats.ResHot>("hot", {
+  return request<{ list: TypeStats.ResHot }>("hot", {
     method: ENUM_HTTP.REQUEST_MODE.GET,
     proxy: ENUM_HTTP.PROXY.STATS,
   });
@@ -50,7 +50,7 @@ export function getHotSearch() {
  * @name getRecentResources 查询 “最近创建、上传资源”
  */
 export function getRecentResources() {
-  return request<TypeStats.ResRecently[]>("recently", {
+  return request<{ list: TypeStats.ResRecently[] }>("recently", {
     method: ENUM_HTTP.REQUEST_MODE.GET,
     proxy: ENUM_HTTP.PROXY.STATS,
   });
@@ -60,7 +60,7 @@ export function getRecentResources() {
  * @name getFavoriteCount 查询 “收藏排行”
  */
 export function getFavoriteCount() {
-  return request<TypeStats.ResFavorite[]>("favorite", {
+  return request<{ list: TypeStats.ResFavorite[] }>("favorite", {
     method: ENUM_HTTP.REQUEST_MODE.GET,
     proxy: ENUM_HTTP.PROXY.STATS,
   });

@@ -48,8 +48,10 @@ const Search = () => {
     setSearch(e);
   }
 
+  const list = data?.list;
+
   const desc = search.name
-    ? data?.length
+    ? list?.length
       ? ""
       : "没有找到相关资源"
     : "请输入关键字进行查询";
@@ -65,9 +67,9 @@ const Search = () => {
           height={600}
           itemSize={60}
           children={Item}
-          itemData={data}
+          itemData={list}
           className={styles.ctx}
-          itemCount={data?.length || 0}
+          itemCount={list?.length || 0}
         />
       )}
     </Container>

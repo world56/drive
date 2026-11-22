@@ -9,6 +9,8 @@ import (
 	"stats/api/internal/svc"
 	"stats/api/internal/types"
 
+	"google.golang.org/protobuf/types/known/emptypb"
+
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -27,7 +29,15 @@ func NewGetStorageLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetSto
 }
 
 func (l *GetStorageLogic) GetStorage() (resp *types.StorageUsageResp, err error) {
-	// todo: add your logic here and delete this line
+	data, err := l.svcCtx.StatsRpc.GetStorage(l.ctx, &emptypb.Empty{})
+	if err != nil {
+		return nil, err
+	}
 
-	return
+	return &types.StorageUsageResp{
+		Free:    data.Free,
+		Total:   data.Total,
+		Used:    data.Used,
+		Storage: data.Storage,
+	}, nil
 }

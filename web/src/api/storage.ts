@@ -7,7 +7,7 @@ import { API_PROXY_STORAGE_URL } from "@/config/request";
  * @name upload 上传资源
  */
 export function upload(data: FormData, control: AbortController) {
-  return request<string>("upload", {
+  return request<{ objectName: string }>("upload", {
     data,
     signal: control.signal,
     proxy: ENUM_HTTP.PROXY.STORAGE,

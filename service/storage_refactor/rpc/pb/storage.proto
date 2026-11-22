@@ -16,7 +16,17 @@ message ObjectNames {
   repeated string IDs = 1;
 }
 
+message DownloadReq {
+  int64 id = 1;
+}
+
+message DownloadResp {
+  string object_name = 1;
+  string full_name   = 2;
+}
+
 service Storage {
   rpc GetSpaceUsage (google.protobuf.Empty) returns (SpaceUsage) {}
   rpc RemoveResources (ObjectNames) returns (google.protobuf.Empty) {}
+  rpc Download (DownloadReq) returns (DownloadResp) {}
 }

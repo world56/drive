@@ -9,6 +9,8 @@ import (
 	"stats/api/internal/svc"
 	"stats/api/internal/types"
 
+	"google.golang.org/protobuf/types/known/emptypb"
+
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -27,7 +29,20 @@ func NewGetFavoriteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetFa
 }
 
 func (l *GetFavoriteLogic) GetFavorite() (resp *types.FavoriteResp, err error) {
-	// todo: add your logic here and delete this line
+	data, err := l.svcCtx.StatsRpc.GetFavorite(l.ctx, &emptypb.Empty{})
+	if err != nil {
+		return nil, err
+	}
 
-	return
+	list := make([]types.FavoriteItem, 0, len(data.List))
+	for _, val := range data.List {
+		list = append(list, types.FavoriteItem{
+			ID:       val.Id,
+			FullName: val.FullName,
+			ParentID: val.ParentId,
+			Type:     val.Type,
+			Count:    val.Count,
+		})
+	}
+	return &types.FavoriteResp{List: list}, nil
 }

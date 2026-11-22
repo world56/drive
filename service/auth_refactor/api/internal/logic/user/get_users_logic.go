@@ -8,6 +8,7 @@ import (
 
 	"auth/api/internal/svc"
 	"auth/api/internal/types"
+	"auth/rpc/pb"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -27,7 +28,38 @@ func NewGetUsersLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetUsers
 }
 
 func (l *GetUsersLogic) GetUsers(req *types.UsersReq) (resp *types.UsersResp, err error) {
-	// todo: add your logic here and delete this line
+	in := &pb.GetUsersReq{
+		Name:        req.Name,
+		Account:     req.Account,
+		PageSize:    int64(req.PageSize),
+		CurrentPage: int64(req.CurrentPage),
+	}
+	if req.Status != nil {
+		status := int32(*req.Status)
+		in.Status = &status
+	}
 
-	return
+	data, err := l.svcCtx.UserRpc.GetUsers(l.ctx, in)
+	if err != nil {
+		return nil, err
+	}
+
+	list := make([]types.User, 0, len(data.List))
+	for _, item := range data.List {
+		list = append(list, types.User{
+			Id:         item.Id,
+			Name:       item.Name,
+			Role:       int(item.Role),
+			Account:    item.Account,
+			Status:     int(item.Status),
+			Contact:    item.GetContact(),
+			Remark:     item.GetRemark(),
+			CreateTime: item.CreateTime,
+		})
+	}
+
+	return &types.UsersResp{
+		List:  list,
+		Count: int(data.Count),
+	}, nil
 }
