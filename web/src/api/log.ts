@@ -15,3 +15,14 @@ export function getLogs(params: TypeLog.ReqLogs) {
     params,
   });
 }
+
+/**
+ * @name clearLogs 清空 “系统日志”
+ */
+export function clearLogs() {
+  return request("log/clear", {
+    method: ENUM_HTTP.REQUEST_MODE.GET,
+    proxy: ENUM_HTTP.PROXY.AUTH,
+    message: "日志已清空",
+  });
+}

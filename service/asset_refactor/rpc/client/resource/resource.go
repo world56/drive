@@ -16,22 +16,24 @@ import (
 )
 
 type (
-	Count                 = pb.Count
-	CreateFolderReq       = pb.CreateFolderReq
-	GetResourceReq        = pb.GetResourceReq
-	GetResourcesReq       = pb.GetResourcesReq
-	GetSearchResourcesReq = pb.GetSearchResourcesReq
-	MoveResourcesReq      = pb.MoveResourcesReq
-	RemoveResourcesReq    = pb.RemoveResourcesReq
-	ResourceInfo          = pb.ResourceInfo
-	ResourcesResp         = pb.ResourcesResp
-	UpdateResourceReq     = pb.UpdateResourceReq
+	Count                      = pb.Count
+	CreateFolderReq            = pb.CreateFolderReq
+	GetResourceByObjectNameReq = pb.GetResourceByObjectNameReq
+	GetResourceReq             = pb.GetResourceReq
+	GetResourcesReq            = pb.GetResourcesReq
+	GetSearchResourcesReq      = pb.GetSearchResourcesReq
+	MoveResourcesReq           = pb.MoveResourcesReq
+	RemoveResourcesReq         = pb.RemoveResourcesReq
+	ResourceInfo               = pb.ResourceInfo
+	ResourcesResp              = pb.ResourcesResp
+	UpdateResourceReq          = pb.UpdateResourceReq
 
 	Resource interface {
 		GetSearchResources(ctx context.Context, in *GetSearchResourcesReq, opts ...grpc.CallOption) (*ResourcesResp, error)
 		GetFolders(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ResourcesResp, error)
 		GetResources(ctx context.Context, in *GetResourcesReq, opts ...grpc.CallOption) (*ResourcesResp, error)
 		GetResource(ctx context.Context, in *GetResourceReq, opts ...grpc.CallOption) (*ResourceInfo, error)
+		GetResourceByObjectName(ctx context.Context, in *GetResourceByObjectNameReq, opts ...grpc.CallOption) (*ResourceInfo, error)
 		CreateFolder(ctx context.Context, in *CreateFolderReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
 		UpdateResource(ctx context.Context, in *UpdateResourceReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
 		MoveResources(ctx context.Context, in *MoveResourcesReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
@@ -69,6 +71,11 @@ func (m *defaultResource) GetResources(ctx context.Context, in *GetResourcesReq,
 func (m *defaultResource) GetResource(ctx context.Context, in *GetResourceReq, opts ...grpc.CallOption) (*ResourceInfo, error) {
 	client := pb.NewResourceClient(m.cli.Conn())
 	return client.GetResource(ctx, in, opts...)
+}
+
+func (m *defaultResource) GetResourceByObjectName(ctx context.Context, in *GetResourceByObjectNameReq, opts ...grpc.CallOption) (*ResourceInfo, error) {
+	client := pb.NewResourceClient(m.cli.Conn())
+	return client.GetResourceByObjectName(ctx, in, opts...)
 }
 
 func (m *defaultResource) CreateFolder(ctx context.Context, in *CreateFolderReq, opts ...grpc.CallOption) (*emptypb.Empty, error) {

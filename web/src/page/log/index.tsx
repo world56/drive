@@ -1,10 +1,11 @@
 import Expand from "./Expand";
 import { useRequest } from "ahooks";
-import { getLogs } from "@/api/log";
 import { toTime } from "@/utils/format";
 import { getAllUsers } from "@/api/user";
+import { clearLogs, getLogs } from "@/api/log";
 import PagedQuery from "@/components/PagedQuery";
-import { Select, Table } from "antd";
+import { DeleteOutlined } from "@ant-design/icons";
+import { Button, Popconfirm, Select, Table } from "antd";
 import { useInput, usePageTurning, useWindowSize } from "@/hooks";
 
 import { DB_PRIMARY_KEY } from "@/config/db";
@@ -52,6 +53,11 @@ const Log = () => {
 
   pagination.total = data?.count;
 
+  async function onClear() {
+    await clearLogs();
+    currentPage === 1 ? run() : pagination.onChange(1, pageSize);
+  }
+
   return (
     <>
       <PagedQuery
@@ -76,6 +82,13 @@ const Log = () => {
               fieldNames={{ value: "id", label: "name" }}
             />
           </>
+        }
+        button={
+          <Popconfirm title="确认清空全部日志？" onConfirm={onClear}>
+            <Button danger icon={<DeleteOutlined />}>
+              清空日志
+            </Button>
+          </Popconfirm>
         }
       >
         <Table

@@ -15,7 +15,6 @@ type Log struct {
 	CreateTime time.Time `gorm:"column:create_time;autoCreateTime;index:idx_logs_create_time,sort:desc;" json:"createTime"`
 
 	UserId int64 `gorm:"column:user_id;type:bigint;index:user_id_event;not null" json:"userId,string"`
-	User   *User `gorm:"foreignKey:UserId;references:Id;" json:"user"`
 }
 
 func (l *Log) BeforeCreate(tx *gorm.DB) error {

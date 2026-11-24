@@ -12,6 +12,7 @@ import styles from "./index.module.sass";
 import { useStore, useActions } from "@/hooks";
 import { useDeferredValue, useMemo } from "react";
 
+import { ENUM_USER } from "@/enum/user";
 import { ENUM_RESOURCE } from "@/enum/resource";
 
 import type { TypeFilesProps } from "../Files";
@@ -30,6 +31,7 @@ const MultipleChoices: React.FC<TypeMultipleChoicesProps> = ({
   data = [],
 }) => {
   const actions = useActions();
+  const { role } = useStore("user");
   const { selects } = useStore("resource");
 
   const obj = useMemo(() => {
@@ -110,11 +112,13 @@ const MultipleChoices: React.FC<TypeMultipleChoicesProps> = ({
         <CloudDownloadOutlined onClick={onDownload} />
       </Tooltip>
 
-      <Tooltip title="删除">
-        <DeleteOutlined
-          onClick={() => onMenu(ENUM_RESOURCE.MENU.DELETE, selectKeys)}
-        />
-      </Tooltip>
+      {role === ENUM_USER.ROLE.SA ? (
+        <Tooltip title="删除">
+          <DeleteOutlined
+            onClick={() => onMenu(ENUM_RESOURCE.MENU.DELETE, selectKeys)}
+          />
+        </Tooltip>
+      ) : null}
 
       <Tooltip title="取消">
         <CloseCircleOutlined onClick={onCancel} />

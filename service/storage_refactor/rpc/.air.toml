@@ -1,0 +1,19 @@
+root = "."
+tmp_dir = "tmp"
+
+[build]
+cmd = "go build -o ./tmp/storage-rpc.next . && mv -f ./tmp/storage-rpc.next ./tmp/storage-rpc"
+bin = "./tmp/storage-rpc"
+full_bin = "./tmp/storage-rpc -f etc/storage.yaml"
+include_ext = ["go", "yaml", "yml"]
+exclude_dir = ["tmp", "vendor", "client"]
+delay = 1000
+stop_on_error = true
+send_interrupt = true
+kill_delay = "500ms"
+
+[log]
+time = true
+
+[misc]
+cleanup_on_exit = true

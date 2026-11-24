@@ -44,6 +44,10 @@ message GetResourceReq {
   int64 id = 1;
 }
 
+message GetResourceByObjectNameReq {
+  string object_name = 1;
+}
+
 message CreateFolderReq {
   string          name      = 1;
   optional string remark    = 2;
@@ -84,6 +88,7 @@ service Resource {
   rpc GetFolders(google.protobuf.Empty) returns (ResourcesResp){}
   rpc GetResources(GetResourcesReq) returns (ResourcesResp){}
   rpc GetResource(GetResourceReq) returns (ResourceInfo){}
+  rpc GetResourceByObjectName(GetResourceByObjectNameReq) returns (ResourceInfo){}
   rpc CreateFolder(CreateFolderReq) returns (google.protobuf.Empty){}
   rpc UpdateResource(UpdateResourceReq) returns (google.protobuf.Empty){}
   rpc MoveResources(MoveResourcesReq) returns (google.protobuf.Empty){}

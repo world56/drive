@@ -36,4 +36,5 @@ message GetLogsResp {
 service Log {
   rpc GetLogs (GetLogsReq) returns (GetLogsResp){}
   rpc CreateLog (CreateLogReq) returns (google.protobuf.Empty) {}
+  rpc DeleteAllLogs (google.protobuf.Empty) returns (google.protobuf.Empty) {}
 }

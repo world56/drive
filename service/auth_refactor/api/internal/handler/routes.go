@@ -67,6 +67,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Path:    "/",
 					Handler: log.GetLogsHandler(serverCtx),
 				},
+				{
+					Method:  http.MethodGet,
+					Path:    "/clear",
+					Handler: log.DeleteLogsHandler(serverCtx),
+				},
 			}...,
 		),
 		rest.WithPrefix("/log"),

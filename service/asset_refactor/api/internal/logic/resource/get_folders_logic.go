@@ -27,29 +27,21 @@ func NewGetFoldersLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetFol
 	}
 }
 
-func (l *GetFoldersLogic) GetFolders() (resp *types.ResourcesResp, err error) {
+func (l *GetFoldersLogic) GetFolders() (resp *types.FoldersResp, err error) {
 	folders, err := l.svcCtx.ResourceRpc.GetFolders(l.ctx, &emptypb.Empty{})
 	if err != nil {
 		return nil, err
 	}
 
-	list := make([]types.ResourceItem, 0, len(folders.List))
+	list := make([]types.Folder, 0, len(folders.List))
 	for _, v := range folders.List {
-		list = append(list, types.ResourceItem{
-			Id:         v.Id,
-			Name:       v.Name,
-			FullName:   v.FullName,
-			Size:       v.Size,
-			Type:       v.Type,
-			Suffix:     v.Suffix,
-			ParentId:   v.ParentId,
-			Remark:     v.Remark,
-			Count:      v.Count,
-			CreatorId:  v.CreatorId,
-			CreateTime: v.CreateTime,
-			ObjectName: v.ObjectName,
+		list = append(list, types.Folder{
+			Id:       v.Id,
+			Name:     v.Name,
+			Type:     v.Type,
+			ParentId: v.ParentId,
 		})
 	}
 
-	return &types.ResourcesResp{List: list}, nil
+	return &types.FoldersResp{List: list}, nil
 }

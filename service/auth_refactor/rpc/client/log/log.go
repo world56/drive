@@ -24,6 +24,7 @@ type (
 	Log interface {
 		GetLogs(ctx context.Context, in *GetLogsReq, opts ...grpc.CallOption) (*GetLogsResp, error)
 		CreateLog(ctx context.Context, in *CreateLogReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
+		DeleteAllLogs(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	}
 
 	defaultLog struct {
@@ -45,4 +46,9 @@ func (m *defaultLog) GetLogs(ctx context.Context, in *GetLogsReq, opts ...grpc.C
 func (m *defaultLog) CreateLog(ctx context.Context, in *CreateLogReq, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	client := pb.NewLogClient(m.cli.Conn())
 	return client.CreateLog(ctx, in, opts...)
+}
+
+func (m *defaultLog) DeleteAllLogs(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	client := pb.NewLogClient(m.cli.Conn())
+	return client.DeleteAllLogs(ctx, in, opts...)
 }

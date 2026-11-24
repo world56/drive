@@ -3,6 +3,7 @@ import {
   DeleteOutlined,
   ReloadOutlined,
   FolderOutlined,
+  LoadingOutlined,
   CaretRightOutlined,
 } from "@ant-design/icons";
 import { memo } from "react";
@@ -26,14 +27,16 @@ const Item: React.FC<ListChildComponentProps<TypeItemProps>> = ({
   index,
   style,
 }) => {
-  const { id, status, suffix, name, progress, size, parentId } = data[index];
+  const { id, status, suffix, name, progress, size, opening } = data[index];
 
   const STATUS = CONSTANT_RESOURCE.STATUS.OBJ[status];
 
   const BTN = {
-    // 完成 (parentId)
-    [ENUM_RESOURCE.STATUS.DONE]: (
-      <FolderOutlined data-id={parentId} data-type={ENUM_UPLOAD_EVENT.CD} />
+    // 完成
+    [ENUM_RESOURCE.STATUS.DONE]: opening ? (
+      <LoadingOutlined spin />
+    ) : (
+      <FolderOutlined data-id={id} data-type={ENUM_UPLOAD_EVENT.CD} />
     ),
     // 上传中
     [ENUM_RESOURCE.STATUS.UPLOADING]: (

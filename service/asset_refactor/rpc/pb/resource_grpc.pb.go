@@ -20,16 +20,17 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	Resource_GetSearchResources_FullMethodName = "/asset.Resource/GetSearchResources"
-	Resource_GetFolders_FullMethodName         = "/asset.Resource/GetFolders"
-	Resource_GetResources_FullMethodName       = "/asset.Resource/GetResources"
-	Resource_GetResource_FullMethodName        = "/asset.Resource/GetResource"
-	Resource_CreateFolder_FullMethodName       = "/asset.Resource/CreateFolder"
-	Resource_UpdateResource_FullMethodName     = "/asset.Resource/UpdateResource"
-	Resource_MoveResources_FullMethodName      = "/asset.Resource/MoveResources"
-	Resource_RemoveResources_FullMethodName    = "/asset.Resource/RemoveResources"
-	Resource_GetRecently_FullMethodName        = "/asset.Resource/GetRecently"
-	Resource_GetCount_FullMethodName           = "/asset.Resource/GetCount"
+	Resource_GetSearchResources_FullMethodName      = "/asset.Resource/GetSearchResources"
+	Resource_GetFolders_FullMethodName              = "/asset.Resource/GetFolders"
+	Resource_GetResources_FullMethodName            = "/asset.Resource/GetResources"
+	Resource_GetResource_FullMethodName             = "/asset.Resource/GetResource"
+	Resource_GetResourceByObjectName_FullMethodName = "/asset.Resource/GetResourceByObjectName"
+	Resource_CreateFolder_FullMethodName            = "/asset.Resource/CreateFolder"
+	Resource_UpdateResource_FullMethodName          = "/asset.Resource/UpdateResource"
+	Resource_MoveResources_FullMethodName           = "/asset.Resource/MoveResources"
+	Resource_RemoveResources_FullMethodName         = "/asset.Resource/RemoveResources"
+	Resource_GetRecently_FullMethodName             = "/asset.Resource/GetRecently"
+	Resource_GetCount_FullMethodName                = "/asset.Resource/GetCount"
 )
 
 // ResourceClient is the client API for Resource service.
@@ -40,6 +41,7 @@ type ResourceClient interface {
 	GetFolders(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ResourcesResp, error)
 	GetResources(ctx context.Context, in *GetResourcesReq, opts ...grpc.CallOption) (*ResourcesResp, error)
 	GetResource(ctx context.Context, in *GetResourceReq, opts ...grpc.CallOption) (*ResourceInfo, error)
+	GetResourceByObjectName(ctx context.Context, in *GetResourceByObjectNameReq, opts ...grpc.CallOption) (*ResourceInfo, error)
 	CreateFolder(ctx context.Context, in *CreateFolderReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	UpdateResource(ctx context.Context, in *UpdateResourceReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	MoveResources(ctx context.Context, in *MoveResourcesReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
@@ -90,6 +92,16 @@ func (c *resourceClient) GetResource(ctx context.Context, in *GetResourceReq, op
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ResourceInfo)
 	err := c.cc.Invoke(ctx, Resource_GetResource_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *resourceClient) GetResourceByObjectName(ctx context.Context, in *GetResourceByObjectNameReq, opts ...grpc.CallOption) (*ResourceInfo, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ResourceInfo)
+	err := c.cc.Invoke(ctx, Resource_GetResourceByObjectName_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -164,6 +176,7 @@ type ResourceServer interface {
 	GetFolders(context.Context, *emptypb.Empty) (*ResourcesResp, error)
 	GetResources(context.Context, *GetResourcesReq) (*ResourcesResp, error)
 	GetResource(context.Context, *GetResourceReq) (*ResourceInfo, error)
+	GetResourceByObjectName(context.Context, *GetResourceByObjectNameReq) (*ResourceInfo, error)
 	CreateFolder(context.Context, *CreateFolderReq) (*emptypb.Empty, error)
 	UpdateResource(context.Context, *UpdateResourceReq) (*emptypb.Empty, error)
 	MoveResources(context.Context, *MoveResourcesReq) (*emptypb.Empty, error)
@@ -191,6 +204,9 @@ func (UnimplementedResourceServer) GetResources(context.Context, *GetResourcesRe
 }
 func (UnimplementedResourceServer) GetResource(context.Context, *GetResourceReq) (*ResourceInfo, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetResource not implemented")
+}
+func (UnimplementedResourceServer) GetResourceByObjectName(context.Context, *GetResourceByObjectNameReq) (*ResourceInfo, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetResourceByObjectName not implemented")
 }
 func (UnimplementedResourceServer) CreateFolder(context.Context, *CreateFolderReq) (*emptypb.Empty, error) {
 	return nil, status.Error(codes.Unimplemented, "method CreateFolder not implemented")
@@ -299,6 +315,24 @@ func _Resource_GetResource_Handler(srv interface{}, ctx context.Context, dec fun
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ResourceServer).GetResource(ctx, req.(*GetResourceReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Resource_GetResourceByObjectName_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetResourceByObjectNameReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ResourceServer).GetResourceByObjectName(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Resource_GetResourceByObjectName_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ResourceServer).GetResourceByObjectName(ctx, req.(*GetResourceByObjectNameReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -433,6 +467,10 @@ var Resource_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetResource",
 			Handler:    _Resource_GetResource_Handler,
+		},
+		{
+			MethodName: "GetResourceByObjectName",
+			Handler:    _Resource_GetResourceByObjectName_Handler,
 		},
 		{
 			MethodName: "CreateFolder",

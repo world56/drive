@@ -39,6 +39,19 @@ export function getFolders() {
 }
 
 /**
+ * @name getResourceByObjectName 按对象名查所在目录
+ */
+export function getResourceByObjectName(objectName: string) {
+  return request<{ parentId: string | null } | Record<string, never>>(
+    `resource/object/${encodeURIComponent(objectName)}`,
+    {
+      method: ENUM_HTTP.REQUEST_MODE.GET,
+      proxy: ENUM_HTTP.PROXY.ASSET,
+    },
+  );
+}
+
+/**
  * @name getResourceDetails 获取资源详情
  */
 export function getResourceDetails(

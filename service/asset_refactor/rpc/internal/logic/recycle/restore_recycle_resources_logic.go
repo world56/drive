@@ -41,7 +41,7 @@ func (l *RestoreRecycleResourcesLogic) RestoreRecycleResources(in *pb.UpdateRecy
 	}
 
 	if err := l.svcCtx.DB.WithContext(l.ctx).Transaction(func(t *gorm.DB) error {
-		if err := t.Where("resource_id IN ? AND user_id = ?", in.Ids, user.Id).Delete(&model.Recycle{}).Error; err != nil {
+		if err := t.Where("resource_id IN ?", in.Ids).Delete(&model.Recycle{}).Error; err != nil {
 			return err
 		}
 		var err error

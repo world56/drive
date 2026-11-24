@@ -31,7 +31,7 @@ func LogoutHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 				Value:    "",
 				Path:     "/",
 				MaxAge:   -1,
-				HttpOnly: true,
+				HttpOnly: false,
 				SameSite: http.SameSiteLaxMode,
 			})
 			httpx.Ok(w)

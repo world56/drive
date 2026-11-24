@@ -321,10 +321,11 @@ const file_log_proto_rawDesc = "" +
 	"\fcurrent_page\x18\x04 \x01(\x03R\vcurrentPage\"F\n" +
 	"\vGetLogsResp\x12\x14\n" +
 	"\x05count\x18\x01 \x01(\x03R\x05count\x12!\n" +
-	"\x04list\x18\x02 \x03(\v2\r.auth.LogInfoR\x04list2r\n" +
+	"\x04list\x18\x02 \x03(\v2\r.auth.LogInfoR\x04list2\xb5\x01\n" +
 	"\x03Log\x120\n" +
 	"\aGetLogs\x12\x10.auth.GetLogsReq\x1a\x11.auth.GetLogsResp\"\x00\x129\n" +
-	"\tCreateLog\x12\x12.auth.CreateLogReq\x1a\x16.google.protobuf.Empty\"\x00B\x06Z\x04./pbb\x06proto3"
+	"\tCreateLog\x12\x12.auth.CreateLogReq\x1a\x16.google.protobuf.Empty\"\x00\x12A\n" +
+	"\rDeleteAllLogs\x12\x16.google.protobuf.Empty\x1a\x16.google.protobuf.Empty\"\x00B\x06Z\x04./pbb\x06proto3"
 
 var (
 	file_log_proto_rawDescOnce sync.Once
@@ -350,10 +351,12 @@ var file_log_proto_depIdxs = []int32{
 	0, // 0: auth.GetLogsResp.list:type_name -> auth.LogInfo
 	2, // 1: auth.Log.GetLogs:input_type -> auth.GetLogsReq
 	1, // 2: auth.Log.CreateLog:input_type -> auth.CreateLogReq
-	3, // 3: auth.Log.GetLogs:output_type -> auth.GetLogsResp
-	4, // 4: auth.Log.CreateLog:output_type -> google.protobuf.Empty
-	3, // [3:5] is the sub-list for method output_type
-	1, // [1:3] is the sub-list for method input_type
+	4, // 3: auth.Log.DeleteAllLogs:input_type -> google.protobuf.Empty
+	3, // 4: auth.Log.GetLogs:output_type -> auth.GetLogsResp
+	4, // 5: auth.Log.CreateLog:output_type -> google.protobuf.Empty
+	4, // 6: auth.Log.DeleteAllLogs:output_type -> google.protobuf.Empty
+	4, // [4:7] is the sub-list for method output_type
+	1, // [1:4] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name
 	1, // [1:1] is the sub-list for extension extendee
 	0, // [0:1] is the sub-list for field type_name

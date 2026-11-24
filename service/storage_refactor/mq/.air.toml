@@ -1,0 +1,19 @@
+root = "."
+tmp_dir = "tmp"
+
+[build]
+cmd = "go build -o ./tmp/storage-mq.next . && mv -f ./tmp/storage-mq.next ./tmp/storage-mq"
+bin = "./tmp/storage-mq"
+full_bin = "./tmp/storage-mq -f etc/storage.yaml"
+include_ext = ["go", "yaml", "yml"]
+exclude_dir = ["tmp", "vendor"]
+delay = 1000
+stop_on_error = true
+send_interrupt = true
+kill_delay = "500ms"
+
+[log]
+time = true
+
+[misc]
+cleanup_on_exit = true

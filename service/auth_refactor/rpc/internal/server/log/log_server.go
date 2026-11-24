@@ -33,3 +33,8 @@ func (s *LogServer) CreateLog(ctx context.Context, in *pb.CreateLogReq) (*emptyp
 	l := loglogic.NewCreateLogLogic(ctx, s.svcCtx)
 	return l.CreateLog(in)
 }
+
+func (s *LogServer) DeleteAllLogs(ctx context.Context, in *emptypb.Empty) (*emptypb.Empty, error) {
+	l := loglogic.NewDeleteAllLogsLogic(ctx, s.svcCtx)
+	return l.DeleteAllLogs(in)
+}

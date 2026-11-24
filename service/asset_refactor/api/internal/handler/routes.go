@@ -37,33 +37,41 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 	)
 
 	server.AddRoutes(
-		[]rest.Route{
-			{
-				Method:  http.MethodGet,
-				Path:    "/",
-				Handler: recycle.GetRecyclesHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodDelete,
-				Path:    "/delete",
-				Handler: recycle.DeleteRestoreResourcesHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/move",
-				Handler: recycle.MoveToRecycleHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/restore",
-				Handler: recycle.RestoreRecycleResourcesHandler(serverCtx),
-			},
-		},
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.RoleGuard},
+			[]rest.Route{
+				{
+					Method:  http.MethodGet,
+					Path:    "/",
+					Handler: recycle.GetRecyclesHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodDelete,
+					Path:    "/delete",
+					Handler: recycle.DeleteRestoreResourcesHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/restore",
+					Handler: recycle.RestoreRecycleResourcesHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/move",
+					Handler: recycle.MoveToRecycleHandler(serverCtx),
+				},
+			}...,
+		),
 		rest.WithPrefix("/recycle"),
 	)
 
 	server.AddRoutes(
 		[]rest.Route{
+			{
+				Method:  http.MethodGet,
+				Path:    "/object/:objectName",
+				Handler: resource.GetResourceByObjectNameHandler(serverCtx),
+			},
 			{
 				Method:  http.MethodGet,
 				Path:    "/:id",

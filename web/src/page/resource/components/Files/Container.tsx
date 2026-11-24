@@ -25,6 +25,7 @@ import { Dropdown, Spin, Breadcrumb, message } from "antd";
 import { useStore, useToFolder, useActions } from "@/hooks";
 import { useEffect, useMemo, useRef, useState } from "react";
 
+import { ENUM_USER } from "@/enum/user";
 import { ENUM_RESOURCE } from "@/enum/resource";
 
 import type { OnSelect } from "react-selecto";
@@ -139,6 +140,7 @@ const Container: React.FC<TypeFilesContainerProps> = ({
   const ref = useRef<HTMLDivElement>(null!);
 
   const actions = useActions();
+  const { role } = useStore("user");
   const resource = useStore("resource");
 
   const toFolder = useToFolder();
@@ -314,13 +316,15 @@ const Container: React.FC<TypeFilesContainerProps> = ({
       const items = IS_MULTIPLE_CHOICE
         ? MENU_MULTIPLE_CHOICE
         : [
-            IS_FOLDER ? MENU_PREVIEW_FOLDER : MENU_PREVIEW_RESOURCE,
-            IS_FAVORITE ? MENU_FAVORITE_DISABLE : MENU_FAVORITE_ENABLE,
-            ...MENU_FILE!,
-          ];
+          IS_FOLDER ? MENU_PREVIEW_FOLDER : MENU_PREVIEW_RESOURCE,
+          IS_FAVORITE ? MENU_FAVORITE_DISABLE : MENU_FAVORITE_ENABLE,
+          ...MENU_FILE!,
+        ];
       IS_MULTIPLE_CHOICE || (IS_FOLDER && items!.splice(6, 1));
       item.current = { id, fullName, favorite };
-      setMenus(items);
+      setMenus(
+        role === ENUM_USER.ROLE.SA ? items : items?.filter((v) => v !== DELETE),
+      );
     } else {
       item.current = null!;
       folderId || MENU_CONTAINER!.splice(-2);

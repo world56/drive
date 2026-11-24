@@ -4,6 +4,7 @@ import { upload } from "@/api/storage";
 import Container from "./Container/index";
 import { FixedSizeList } from "react-window";
 import { useMemo, useRef, useState } from "react";
+import { getResourceByObjectName } from "@/api/resource";
 import { useStore, useToFolder, useEventListener } from "@/hooks";
 
 import { ENUM_COMMON } from "@/enum/common";
@@ -36,6 +37,7 @@ export enum ENUM_UPLOAD_EVENT {
  */
 const Upload = () => {
   const toFolder = useToFolder();
+  const [openingId, setOpeningId] = useState<string>();
 
   const { path } = useStore("resource");
   const [status, setStatus] = useState<TypeUploadStatus>({});
@@ -158,6 +160,14 @@ const Upload = () => {
     }
   }
 
+  function onOpenFolder(taskId?: string) {
+    if (!taskId || openingId) return;
+    setOpeningId(taskId);
+    getResourceByObjectName(status[taskId].objectName)
+      .then((data) => "parentId" in data && toFolder(data.parentId || undefined))
+      .finally(() => setOpeningId(undefined));
+  }
+
   function onEvent(type: ENUM_UPLOAD_EVENT, id?: string) {
     switch (type) {
       case ENUM_UPLOAD_EVENT.START:
@@ -167,7 +177,7 @@ const Upload = () => {
       case ENUM_UPLOAD_EVENT.DELETE:
         return onDelete(id);
       case ENUM_UPLOAD_EVENT.CD:
-        return toFolder(id);
+        return onOpenFolder(id);
       default:
         return;
     }
@@ -187,8 +197,8 @@ const Upload = () => {
     () =>
       Object.values(queue.current)
         .flat()
-        .map((id) => status[id]),
-    [status],
+        .map((id) => ({ ...status[id], opening: id === openingId })),
+    [status, openingId],
   );
 
   return (

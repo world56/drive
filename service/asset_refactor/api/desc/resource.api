@@ -33,6 +33,17 @@ type ResourcesResp {
 	List []ResourceItem `json:"list"`
 }
 
+type Folder {
+	Id       int64  `json:"id,string"`
+	Name     string `json:"name"`
+	ParentId *int64 `json:"parentId,string,optional"`
+	Type     int32  `json:"type"`
+}
+
+type FoldersResp {
+	List []Folder `json:"list"`
+}
+
 type GetResourcesReq {
 	Id    *int64 `form:"id,optional"`
 	Order string `form:"order,options=ASC|DESC"`
@@ -41,6 +52,14 @@ type GetResourcesReq {
 
 type GetResourceReq {
 	Id int64 `path:"id"`
+}
+
+type GetResourceByObjectNameReq {
+	ObjectName string `path:"objectName"`
+}
+
+type GetResourceByObjectNameResp {
+	ParentId *int64 `json:"parentId,string"`
 }
 
 type GetResourceResp {

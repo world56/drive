@@ -394,6 +394,50 @@ func (x *GetResourceReq) GetId() int64 {
 	return 0
 }
 
+type GetResourceByObjectNameReq struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	ObjectName    string                 `protobuf:"bytes,1,opt,name=object_name,json=objectName,proto3" json:"object_name,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetResourceByObjectNameReq) Reset() {
+	*x = GetResourceByObjectNameReq{}
+	mi := &file_resource_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetResourceByObjectNameReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetResourceByObjectNameReq) ProtoMessage() {}
+
+func (x *GetResourceByObjectNameReq) ProtoReflect() protoreflect.Message {
+	mi := &file_resource_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetResourceByObjectNameReq.ProtoReflect.Descriptor instead.
+func (*GetResourceByObjectNameReq) Descriptor() ([]byte, []int) {
+	return file_resource_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *GetResourceByObjectNameReq) GetObjectName() string {
+	if x != nil {
+		return x.ObjectName
+	}
+	return ""
+}
+
 type CreateFolderReq struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
@@ -405,7 +449,7 @@ type CreateFolderReq struct {
 
 func (x *CreateFolderReq) Reset() {
 	*x = CreateFolderReq{}
-	mi := &file_resource_proto_msgTypes[5]
+	mi := &file_resource_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -417,7 +461,7 @@ func (x *CreateFolderReq) String() string {
 func (*CreateFolderReq) ProtoMessage() {}
 
 func (x *CreateFolderReq) ProtoReflect() protoreflect.Message {
-	mi := &file_resource_proto_msgTypes[5]
+	mi := &file_resource_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -430,7 +474,7 @@ func (x *CreateFolderReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateFolderReq.ProtoReflect.Descriptor instead.
 func (*CreateFolderReq) Descriptor() ([]byte, []int) {
-	return file_resource_proto_rawDescGZIP(), []int{5}
+	return file_resource_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *CreateFolderReq) GetName() string {
@@ -466,7 +510,7 @@ type UpdateResourceReq struct {
 
 func (x *UpdateResourceReq) Reset() {
 	*x = UpdateResourceReq{}
-	mi := &file_resource_proto_msgTypes[6]
+	mi := &file_resource_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -478,7 +522,7 @@ func (x *UpdateResourceReq) String() string {
 func (*UpdateResourceReq) ProtoMessage() {}
 
 func (x *UpdateResourceReq) ProtoReflect() protoreflect.Message {
-	mi := &file_resource_proto_msgTypes[6]
+	mi := &file_resource_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -491,7 +535,7 @@ func (x *UpdateResourceReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateResourceReq.ProtoReflect.Descriptor instead.
 func (*UpdateResourceReq) Descriptor() ([]byte, []int) {
-	return file_resource_proto_rawDescGZIP(), []int{6}
+	return file_resource_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *UpdateResourceReq) GetId() int64 {
@@ -532,7 +576,7 @@ type MoveResourcesReq struct {
 
 func (x *MoveResourcesReq) Reset() {
 	*x = MoveResourcesReq{}
-	mi := &file_resource_proto_msgTypes[7]
+	mi := &file_resource_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -544,7 +588,7 @@ func (x *MoveResourcesReq) String() string {
 func (*MoveResourcesReq) ProtoMessage() {}
 
 func (x *MoveResourcesReq) ProtoReflect() protoreflect.Message {
-	mi := &file_resource_proto_msgTypes[7]
+	mi := &file_resource_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -557,7 +601,7 @@ func (x *MoveResourcesReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use MoveResourcesReq.ProtoReflect.Descriptor instead.
 func (*MoveResourcesReq) Descriptor() ([]byte, []int) {
-	return file_resource_proto_rawDescGZIP(), []int{7}
+	return file_resource_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *MoveResourcesReq) GetIds() []int64 {
@@ -588,7 +632,7 @@ type CreateResourceReq struct {
 
 func (x *CreateResourceReq) Reset() {
 	*x = CreateResourceReq{}
-	mi := &file_resource_proto_msgTypes[8]
+	mi := &file_resource_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -600,7 +644,7 @@ func (x *CreateResourceReq) String() string {
 func (*CreateResourceReq) ProtoMessage() {}
 
 func (x *CreateResourceReq) ProtoReflect() protoreflect.Message {
-	mi := &file_resource_proto_msgTypes[8]
+	mi := &file_resource_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -613,7 +657,7 @@ func (x *CreateResourceReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateResourceReq.ProtoReflect.Descriptor instead.
 func (*CreateResourceReq) Descriptor() ([]byte, []int) {
-	return file_resource_proto_rawDescGZIP(), []int{8}
+	return file_resource_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *CreateResourceReq) GetCreatorId() string {
@@ -667,7 +711,7 @@ type RemoveResourcesReq struct {
 
 func (x *RemoveResourcesReq) Reset() {
 	*x = RemoveResourcesReq{}
-	mi := &file_resource_proto_msgTypes[9]
+	mi := &file_resource_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -679,7 +723,7 @@ func (x *RemoveResourcesReq) String() string {
 func (*RemoveResourcesReq) ProtoMessage() {}
 
 func (x *RemoveResourcesReq) ProtoReflect() protoreflect.Message {
-	mi := &file_resource_proto_msgTypes[9]
+	mi := &file_resource_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -692,7 +736,7 @@ func (x *RemoveResourcesReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RemoveResourcesReq.ProtoReflect.Descriptor instead.
 func (*RemoveResourcesReq) Descriptor() ([]byte, []int) {
-	return file_resource_proto_rawDescGZIP(), []int{9}
+	return file_resource_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *RemoveResourcesReq) GetIds() []int64 {
@@ -711,7 +755,7 @@ type Count struct {
 
 func (x *Count) Reset() {
 	*x = Count{}
-	mi := &file_resource_proto_msgTypes[10]
+	mi := &file_resource_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -723,7 +767,7 @@ func (x *Count) String() string {
 func (*Count) ProtoMessage() {}
 
 func (x *Count) ProtoReflect() protoreflect.Message {
-	mi := &file_resource_proto_msgTypes[10]
+	mi := &file_resource_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -736,7 +780,7 @@ func (x *Count) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Count.ProtoReflect.Descriptor instead.
 func (*Count) Descriptor() ([]byte, []int) {
-	return file_resource_proto_rawDescGZIP(), []int{10}
+	return file_resource_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *Count) GetCount() map[string]int64 {
@@ -795,7 +839,10 @@ const file_resource_proto_rawDesc = "" +
 	"\x04type\x18\x03 \x01(\tR\x04typeB\x05\n" +
 	"\x03_id\" \n" +
 	"\x0eGetResourceReq\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\x03R\x02id\"}\n" +
+	"\x02id\x18\x01 \x01(\x03R\x02id\"=\n" +
+	"\x1aGetResourceByObjectNameReq\x12\x1f\n" +
+	"\vobject_name\x18\x01 \x01(\tR\n" +
+	"objectName\"}\n" +
 	"\x0fCreateFolderReq\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1b\n" +
 	"\x06remark\x18\x02 \x01(\tH\x00R\x06remark\x88\x01\x01\x12 \n" +
@@ -834,13 +881,14 @@ const file_resource_proto_rawDesc = "" +
 	"\n" +
 	"CountEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\x03R\x05value:\x028\x012\x98\x05\n" +
+	"\x05value\x18\x02 \x01(\x03R\x05value:\x028\x012\xed\x05\n" +
 	"\bResource\x12J\n" +
 	"\x12GetSearchResources\x12\x1c.asset.GetSearchResourcesReq\x1a\x14.asset.ResourcesResp\"\x00\x12<\n" +
 	"\n" +
 	"GetFolders\x12\x16.google.protobuf.Empty\x1a\x14.asset.ResourcesResp\"\x00\x12>\n" +
 	"\fGetResources\x12\x16.asset.GetResourcesReq\x1a\x14.asset.ResourcesResp\"\x00\x12;\n" +
-	"\vGetResource\x12\x15.asset.GetResourceReq\x1a\x13.asset.ResourceInfo\"\x00\x12@\n" +
+	"\vGetResource\x12\x15.asset.GetResourceReq\x1a\x13.asset.ResourceInfo\"\x00\x12S\n" +
+	"\x17GetResourceByObjectName\x12!.asset.GetResourceByObjectNameReq\x1a\x13.asset.ResourceInfo\"\x00\x12@\n" +
 	"\fCreateFolder\x12\x16.asset.CreateFolderReq\x1a\x16.google.protobuf.Empty\"\x00\x12D\n" +
 	"\x0eUpdateResource\x12\x18.asset.UpdateResourceReq\x1a\x16.google.protobuf.Empty\"\x00\x12B\n" +
 	"\rMoveResources\x12\x17.asset.MoveResourcesReq\x1a\x16.google.protobuf.Empty\"\x00\x12F\n" +
@@ -860,47 +908,50 @@ func file_resource_proto_rawDescGZIP() []byte {
 	return file_resource_proto_rawDescData
 }
 
-var file_resource_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
+var file_resource_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
 var file_resource_proto_goTypes = []any{
-	(*ResourceInfo)(nil),          // 0: asset.ResourceInfo
-	(*GetSearchResourcesReq)(nil), // 1: asset.GetSearchResourcesReq
-	(*ResourcesResp)(nil),         // 2: asset.ResourcesResp
-	(*GetResourcesReq)(nil),       // 3: asset.GetResourcesReq
-	(*GetResourceReq)(nil),        // 4: asset.GetResourceReq
-	(*CreateFolderReq)(nil),       // 5: asset.CreateFolderReq
-	(*UpdateResourceReq)(nil),     // 6: asset.UpdateResourceReq
-	(*MoveResourcesReq)(nil),      // 7: asset.MoveResourcesReq
-	(*CreateResourceReq)(nil),     // 8: asset.CreateResourceReq
-	(*RemoveResourcesReq)(nil),    // 9: asset.RemoveResourcesReq
-	(*Count)(nil),                 // 10: asset.Count
-	nil,                           // 11: asset.Count.CountEntry
-	(*emptypb.Empty)(nil),         // 12: google.protobuf.Empty
+	(*ResourceInfo)(nil),               // 0: asset.ResourceInfo
+	(*GetSearchResourcesReq)(nil),      // 1: asset.GetSearchResourcesReq
+	(*ResourcesResp)(nil),              // 2: asset.ResourcesResp
+	(*GetResourcesReq)(nil),            // 3: asset.GetResourcesReq
+	(*GetResourceReq)(nil),             // 4: asset.GetResourceReq
+	(*GetResourceByObjectNameReq)(nil), // 5: asset.GetResourceByObjectNameReq
+	(*CreateFolderReq)(nil),            // 6: asset.CreateFolderReq
+	(*UpdateResourceReq)(nil),          // 7: asset.UpdateResourceReq
+	(*MoveResourcesReq)(nil),           // 8: asset.MoveResourcesReq
+	(*CreateResourceReq)(nil),          // 9: asset.CreateResourceReq
+	(*RemoveResourcesReq)(nil),         // 10: asset.RemoveResourcesReq
+	(*Count)(nil),                      // 11: asset.Count
+	nil,                                // 12: asset.Count.CountEntry
+	(*emptypb.Empty)(nil),              // 13: google.protobuf.Empty
 }
 var file_resource_proto_depIdxs = []int32{
 	0,  // 0: asset.ResourcesResp.list:type_name -> asset.ResourceInfo
-	11, // 1: asset.Count.count:type_name -> asset.Count.CountEntry
+	12, // 1: asset.Count.count:type_name -> asset.Count.CountEntry
 	1,  // 2: asset.Resource.GetSearchResources:input_type -> asset.GetSearchResourcesReq
-	12, // 3: asset.Resource.GetFolders:input_type -> google.protobuf.Empty
+	13, // 3: asset.Resource.GetFolders:input_type -> google.protobuf.Empty
 	3,  // 4: asset.Resource.GetResources:input_type -> asset.GetResourcesReq
 	4,  // 5: asset.Resource.GetResource:input_type -> asset.GetResourceReq
-	5,  // 6: asset.Resource.CreateFolder:input_type -> asset.CreateFolderReq
-	6,  // 7: asset.Resource.UpdateResource:input_type -> asset.UpdateResourceReq
-	7,  // 8: asset.Resource.MoveResources:input_type -> asset.MoveResourcesReq
-	9,  // 9: asset.Resource.RemoveResources:input_type -> asset.RemoveResourcesReq
-	12, // 10: asset.Resource.GetRecently:input_type -> google.protobuf.Empty
-	12, // 11: asset.Resource.GetCount:input_type -> google.protobuf.Empty
-	2,  // 12: asset.Resource.GetSearchResources:output_type -> asset.ResourcesResp
-	2,  // 13: asset.Resource.GetFolders:output_type -> asset.ResourcesResp
-	2,  // 14: asset.Resource.GetResources:output_type -> asset.ResourcesResp
-	0,  // 15: asset.Resource.GetResource:output_type -> asset.ResourceInfo
-	12, // 16: asset.Resource.CreateFolder:output_type -> google.protobuf.Empty
-	12, // 17: asset.Resource.UpdateResource:output_type -> google.protobuf.Empty
-	12, // 18: asset.Resource.MoveResources:output_type -> google.protobuf.Empty
-	12, // 19: asset.Resource.RemoveResources:output_type -> google.protobuf.Empty
-	2,  // 20: asset.Resource.GetRecently:output_type -> asset.ResourcesResp
-	10, // 21: asset.Resource.GetCount:output_type -> asset.Count
-	12, // [12:22] is the sub-list for method output_type
-	2,  // [2:12] is the sub-list for method input_type
+	5,  // 6: asset.Resource.GetResourceByObjectName:input_type -> asset.GetResourceByObjectNameReq
+	6,  // 7: asset.Resource.CreateFolder:input_type -> asset.CreateFolderReq
+	7,  // 8: asset.Resource.UpdateResource:input_type -> asset.UpdateResourceReq
+	8,  // 9: asset.Resource.MoveResources:input_type -> asset.MoveResourcesReq
+	10, // 10: asset.Resource.RemoveResources:input_type -> asset.RemoveResourcesReq
+	13, // 11: asset.Resource.GetRecently:input_type -> google.protobuf.Empty
+	13, // 12: asset.Resource.GetCount:input_type -> google.protobuf.Empty
+	2,  // 13: asset.Resource.GetSearchResources:output_type -> asset.ResourcesResp
+	2,  // 14: asset.Resource.GetFolders:output_type -> asset.ResourcesResp
+	2,  // 15: asset.Resource.GetResources:output_type -> asset.ResourcesResp
+	0,  // 16: asset.Resource.GetResource:output_type -> asset.ResourceInfo
+	0,  // 17: asset.Resource.GetResourceByObjectName:output_type -> asset.ResourceInfo
+	13, // 18: asset.Resource.CreateFolder:output_type -> google.protobuf.Empty
+	13, // 19: asset.Resource.UpdateResource:output_type -> google.protobuf.Empty
+	13, // 20: asset.Resource.MoveResources:output_type -> google.protobuf.Empty
+	13, // 21: asset.Resource.RemoveResources:output_type -> google.protobuf.Empty
+	2,  // 22: asset.Resource.GetRecently:output_type -> asset.ResourcesResp
+	11, // 23: asset.Resource.GetCount:output_type -> asset.Count
+	13, // [13:24] is the sub-list for method output_type
+	2,  // [2:13] is the sub-list for method input_type
 	2,  // [2:2] is the sub-list for extension type_name
 	2,  // [2:2] is the sub-list for extension extendee
 	0,  // [0:2] is the sub-list for field type_name
@@ -914,17 +965,17 @@ func file_resource_proto_init() {
 	file_resource_proto_msgTypes[0].OneofWrappers = []any{}
 	file_resource_proto_msgTypes[1].OneofWrappers = []any{}
 	file_resource_proto_msgTypes[3].OneofWrappers = []any{}
-	file_resource_proto_msgTypes[5].OneofWrappers = []any{}
 	file_resource_proto_msgTypes[6].OneofWrappers = []any{}
 	file_resource_proto_msgTypes[7].OneofWrappers = []any{}
 	file_resource_proto_msgTypes[8].OneofWrappers = []any{}
+	file_resource_proto_msgTypes[9].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_resource_proto_rawDesc), len(file_resource_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   12,
+			NumMessages:   13,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

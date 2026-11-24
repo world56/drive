@@ -31,6 +31,7 @@ func (l *GetFoldersLogic) GetFolders(in *emptypb.Empty) (*pb.ResourcesResp, erro
 	var folders []*pb.ResourceInfo
 	if err := l.svcCtx.DB.WithContext(l.ctx).
 		Model(&model.Resource{}).
+		Select("id", "name", "parent_id", "type").
 		Where("remove = ?", enum.ResourceNormal).
 		Where("type = ?", enum.ResourceTypeFolder).
 		Find(&folders).Error; err != nil {

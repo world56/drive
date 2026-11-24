@@ -19,7 +19,10 @@ service asset-api {
 	get /list (GetResourcesReq) returns (ResourcesResp)
 
 	@handler GetFolders
-	get /folders returns (ResourcesResp)
+	get /folders returns (FoldersResp)
+
+	@handler GetResourceByObjectName
+	get /object/:objectName (GetResourceByObjectNameReq) returns (GetResourceByObjectNameResp)
 
 	@handler GetResource
 	get /:id (GetResourceReq) returns (GetResourceResp)
@@ -52,20 +55,21 @@ service asset-api {
 
 // RECYCLE
 @server (
-	prefix: /recycle
-	group:  recycle
+	prefix:     /recycle
+	group:      recycle
+	middleware: RoleGuard
 )
 service asset-api {
 	@handler GetRecycles
 	get / returns (GetRecyclesResp)
-
-	@handler MoveToRecycle
-	post /move (UpdateRecyclesReq)
 
 	@handler RestoreRecycleResources
 	post /restore (UpdateRecyclesReq)
 
 	@handler DeleteRestoreResources
 	delete /delete (UpdateRecyclesReq)
+
+	@handler MoveToRecycle
+	post /move (UpdateRecyclesReq)
 }
 

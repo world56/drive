@@ -4,7 +4,7 @@ testdata_dir = "testdata"
 tmp_dir = "tmp"
 
 [build]
-  cmd = "go build -o ./tmp/main ./cmd/main.go"
+  cmd = "go build -o ./tmp/main.next ./cmd/main.go && mv -f ./tmp/main.next ./tmp/main"
   bin = "./tmp/main"
   full_bin = ""
   

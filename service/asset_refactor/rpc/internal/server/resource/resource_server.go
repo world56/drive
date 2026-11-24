@@ -44,6 +44,11 @@ func (s *ResourceServer) GetResource(ctx context.Context, in *pb.GetResourceReq)
 	return l.GetResource(in)
 }
 
+func (s *ResourceServer) GetResourceByObjectName(ctx context.Context, in *pb.GetResourceByObjectNameReq) (*pb.ResourceInfo, error) {
+	l := resourcelogic.NewGetResourceByObjectNameLogic(ctx, s.svcCtx)
+	return l.GetResourceByObjectName(in)
+}
+
 func (s *ResourceServer) CreateFolder(ctx context.Context, in *pb.CreateFolderReq) (*emptypb.Empty, error) {
 	l := resourcelogic.NewCreateFolderLogic(ctx, s.svcCtx)
 	return l.CreateFolder(in)

@@ -24,6 +24,8 @@ export type TypeUploadStatus = Record<
     status: ENUM_RESOURCE.STATUS;
     /** @param progress 进度百分比 */
     progress: number;
+    /** @param opening 正在查询所在目录 */
+    opening?: boolean;
   }
 >;
 

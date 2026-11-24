@@ -35,6 +35,14 @@ type GetResourceReq struct {
 	Id int64 `path:"id"`
 }
 
+type GetResourceByObjectNameReq struct {
+	ObjectName string `path:"objectName"`
+}
+
+type GetResourceByObjectNameResp struct {
+	ParentId *int64 `json:"parentId,string"`
+}
+
 type GetResourceResp struct {
 	Resource
 	CreatorName string `json:"creatorName"`
@@ -78,6 +86,17 @@ type ResourceItem struct {
 
 type ResourcesResp struct {
 	List []ResourceItem `json:"list"`
+}
+
+type Folder struct {
+	Id       int64  `json:"id,string"`
+	Name     string `json:"name"`
+	ParentId *int64 `json:"parentId,string,optional"`
+	Type     int32  `json:"type"`
+}
+
+type FoldersResp struct {
+	List []Folder `json:"list"`
 }
 
 type SearchAllResourcesReq struct {

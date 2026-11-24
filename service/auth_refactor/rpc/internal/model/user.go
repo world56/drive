@@ -19,8 +19,6 @@ type User struct {
 	Avatar     string    `gorm:"type:varchar(16)" json:"avatar"`
 	Remark     string    `gorm:"type:varchar(30);" json:"remark"` // 备注
 	CreateTime time.Time `gorm:"column:create_time;autoCreateTime" json:"createTime"`
-
-	Logs []Log `gorm:"foreignKey:UserId;references:Id" json:"logs"`
 }
 
 func (u *User) BeforeCreate(db *gorm.DB) error {

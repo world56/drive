@@ -1,6 +1,8 @@
 package svc
 
 import (
+	"context"
+
 	"auth/rpc/internal/config"
 	"auth/rpc/internal/pkg/db"
 	"auth/rpc/internal/pkg/mq"
@@ -26,10 +28,9 @@ type ServiceContext struct {
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
-	logx.Must(idgen.InitSnowflake(idgen.NodeAuth))
-
 	redis, err := rdb.InitRedis(c.RedisUrl)
 	logx.Must(err)
+	logx.Must(idgen.HoldSnowflake(context.Background(), redis))
 
 	db, err := db.InitPostgresSQL(c.PostgresDSN)
 	logx.Must(err)

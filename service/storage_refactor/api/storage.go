@@ -7,10 +7,10 @@ import (
 	"flag"
 	"fmt"
 
+	middlewarecommon "common/middleware"
 	"storage/api/internal/config"
 	"storage/api/internal/handler"
 	"storage/api/internal/svc"
-	middlewarecommon "common/middleware"
 
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/rest"

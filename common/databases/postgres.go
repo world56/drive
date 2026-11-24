@@ -7,7 +7,8 @@ import (
 
 func InitPostgresSQL(dsn string) (*gorm.DB, error) {
 	db, err := gorm.Open(
-		postgres.Open(dsn), &gorm.Config{},
+		postgres.Open(dsn),
+		&gorm.Config{DisableForeignKeyConstraintWhenMigrating: true},
 	)
 	if err != nil {
 		return nil, err

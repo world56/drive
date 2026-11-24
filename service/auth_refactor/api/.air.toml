@@ -2,12 +2,15 @@ root = "."
 tmp_dir = "tmp"
 
 [build]
-cmd = "go build -o ./tmp/auth-api ."
+cmd = "go build -o ./tmp/auth-api.next . && mv -f ./tmp/auth-api.next ./tmp/auth-api"
 bin = "./tmp/auth-api"
 full_bin = "./tmp/auth-api -f etc/auth-api.yaml"
 include_ext = ["go", "yaml", "yml", "api"]
 exclude_dir = ["tmp", "vendor"]
 delay = 1000
+stop_on_error = true
+send_interrupt = true
+kill_delay = "500ms"
 
 [log]
 time = true

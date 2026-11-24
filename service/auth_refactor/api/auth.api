@@ -87,5 +87,8 @@ service auth-api {
 service auth-api {
 	@handler GetLogs
 	get / (LogsReq) returns (LogsResp)
+
+	@handler DeleteLogs
+	get /clear
 }
 

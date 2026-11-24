@@ -99,7 +99,8 @@ func (t *wrapTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 	}
 
 	mt, _, _ := mime.ParseMediaType(resp.Header.Get("Content-Type"))
-	if mt != "application/json" && mt != "text/plain" {
+	emptyOK := resp.StatusCode == http.StatusOK && resp.ContentLength <= 0 && mt == ""
+	if mt != "application/json" && mt != "text/plain" && !emptyOK {
 		return resp, nil
 	}
 
@@ -107,6 +108,11 @@ func (t *wrapTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 	_ = resp.Body.Close()
 	if err != nil {
 		return nil, err
+	}
+	if emptyOK && len(bytes.TrimSpace(raw)) > 0 {
+		resp.Body = io.NopCloser(bytes.NewReader(raw))
+		resp.ContentLength = int64(len(raw))
+		return resp, nil
 	}
 
 	body := wrapBody(mt, resp.StatusCode, raw)
@@ -128,6 +134,10 @@ func wrapBody(mt string, status int, raw []byte) []byte {
 	}
 
 	ok := status == http.StatusOK
+	if ok && len(bytes.TrimSpace(raw)) == 0 {
+		b, _ := json.Marshal(out)
+		return b
+	}
 
 	if mt == "text/plain" {
 		text := string(raw)

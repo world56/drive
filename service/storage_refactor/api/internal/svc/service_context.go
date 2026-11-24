@@ -4,6 +4,8 @@
 package svc
 
 import (
+	"context"
+
 	resourceclient "asset/rpc/client/resource"
 	"common/idgen"
 	interceptorclient "common/interceptor/client"
@@ -30,7 +32,9 @@ type ServiceContext struct {
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
-	logx.Must(idgen.InitSnowflake(idgen.NodeStorage))
+	redisCli, err := rdb.InitRedis(c.RedisUrl)
+	logx.Must(err)
+	logx.Must(idgen.HoldSnowflake(context.Background(), redisCli))
 
 	minioCore, err := minioclient.InitMinio(
 		c.MINIO_ADDR,
@@ -38,9 +42,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		c.MINIO_ACCESS_SECRET,
 		c.MINIO_BUCKET,
 	)
-	logx.Must(err)
-
-	redisCli, err := rdb.InitRedis(c.RedisUrl)
 	logx.Must(err)
 
 	mqCli, err := mq.InitRabbitMQ(c.RabbitMqUrl)

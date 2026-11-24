@@ -20,8 +20,9 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	Log_GetLogs_FullMethodName   = "/auth.Log/GetLogs"
-	Log_CreateLog_FullMethodName = "/auth.Log/CreateLog"
+	Log_GetLogs_FullMethodName       = "/auth.Log/GetLogs"
+	Log_CreateLog_FullMethodName     = "/auth.Log/CreateLog"
+	Log_DeleteAllLogs_FullMethodName = "/auth.Log/DeleteAllLogs"
 )
 
 // LogClient is the client API for Log service.
@@ -30,6 +31,7 @@ const (
 type LogClient interface {
 	GetLogs(ctx context.Context, in *GetLogsReq, opts ...grpc.CallOption) (*GetLogsResp, error)
 	CreateLog(ctx context.Context, in *CreateLogReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	DeleteAllLogs(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
 type logClient struct {
@@ -60,12 +62,23 @@ func (c *logClient) CreateLog(ctx context.Context, in *CreateLogReq, opts ...grp
 	return out, nil
 }
 
+func (c *logClient) DeleteAllLogs(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, Log_DeleteAllLogs_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // LogServer is the server API for Log service.
 // All implementations must embed UnimplementedLogServer
 // for forward compatibility.
 type LogServer interface {
 	GetLogs(context.Context, *GetLogsReq) (*GetLogsResp, error)
 	CreateLog(context.Context, *CreateLogReq) (*emptypb.Empty, error)
+	DeleteAllLogs(context.Context, *emptypb.Empty) (*emptypb.Empty, error)
 	mustEmbedUnimplementedLogServer()
 }
 
@@ -81,6 +94,9 @@ func (UnimplementedLogServer) GetLogs(context.Context, *GetLogsReq) (*GetLogsRes
 }
 func (UnimplementedLogServer) CreateLog(context.Context, *CreateLogReq) (*emptypb.Empty, error) {
 	return nil, status.Error(codes.Unimplemented, "method CreateLog not implemented")
+}
+func (UnimplementedLogServer) DeleteAllLogs(context.Context, *emptypb.Empty) (*emptypb.Empty, error) {
+	return nil, status.Error(codes.Unimplemented, "method DeleteAllLogs not implemented")
 }
 func (UnimplementedLogServer) mustEmbedUnimplementedLogServer() {}
 func (UnimplementedLogServer) testEmbeddedByValue()             {}
@@ -139,6 +155,24 @@ func _Log_CreateLog_Handler(srv interface{}, ctx context.Context, dec func(inter
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Log_DeleteAllLogs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(emptypb.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LogServer).DeleteAllLogs(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Log_DeleteAllLogs_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LogServer).DeleteAllLogs(ctx, req.(*emptypb.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Log_ServiceDesc is the grpc.ServiceDesc for Log service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -153,6 +187,10 @@ var Log_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateLog",
 			Handler:    _Log_CreateLog_Handler,
+		},
+		{
+			MethodName: "DeleteAllLogs",
+			Handler:    _Log_DeleteAllLogs_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
