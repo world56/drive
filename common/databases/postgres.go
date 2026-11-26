@@ -5,7 +5,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func InitPostgresSQL(dsn string) (*gorm.DB, error) {
+func InitPostgresSQL(dsn string, models ...any) (*gorm.DB, error) {
 	db, err := gorm.Open(
 		postgres.Open(dsn),
 		&gorm.Config{DisableForeignKeyConstraintWhenMigrating: true},
@@ -20,6 +20,12 @@ func InitPostgresSQL(dsn string) (*gorm.DB, error) {
 	}
 
 	sqlDB.SetMaxOpenConns(100)
+	if len(models) == 0 {
+		return db, nil
+	}
+	if err := db.AutoMigrate(models...); err != nil {
+		return nil, err
+	}
 	return db, nil
 }
 

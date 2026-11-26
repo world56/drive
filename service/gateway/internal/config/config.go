@@ -1,8 +1,6 @@
 package config
 
-import (
-	"common/env"
-)
+import "strconv"
 
 type Route struct {
 	Prefix    string
@@ -11,35 +9,30 @@ type Route struct {
 	Whitelist []string
 }
 
-type Config struct {
-	HTTP_ADDR        string
-	APP_ENV          string
-	REDIS_URL        string
-	JWT_SECRET       string
-	UPSTREAM_AUTH    string
-	UPSTREAM_ASSET   string
-	UPSTREAM_STATS   string
-	UPSTREAM_STORAGE string
+type Upstream struct {
+	Auth    string
+	Asset   string
+	Stats   string
+	Storage string
 }
 
-func Load() Config {
-	env.LoadEnv()
+type Config struct {
+	Name      string
+	Host      string
+	Port      int
+	Mode      string
+	RedisUrl  string
+	JwtSecret string
+	Upstream  Upstream
+}
 
-	return Config{
-		HTTP_ADDR:        env.GetEnv("HTTP_ADDR"),
-		APP_ENV:          env.GetEnv("APP_ENV"),
-		REDIS_URL:        env.GetEnv("REDIS_URL"),
-		JWT_SECRET:       env.GetEnv("JWT_SECRET"),
-		UPSTREAM_AUTH:    env.GetEnv("UPSTREAM_AUTH"),
-		UPSTREAM_ASSET:   env.GetEnv("UPSTREAM_ASSET"),
-		UPSTREAM_STATS:   env.GetEnv("UPSTREAM_STATS"),
-		UPSTREAM_STORAGE: env.GetEnv("UPSTREAM_STORAGE"),
-	}
+func (c Config) Addr() string {
+	return c.Host + ":" + strconv.Itoa(c.Port)
 }
 
 func (c Config) IsLocal() bool {
-	switch c.APP_ENV {
-	case "", "local", "dev", "development":
+	switch c.Mode {
+	case "", "local", "dev", "development", "test":
 		return true
 	default:
 		return false
@@ -50,7 +43,7 @@ func (c Config) Routes() []Route {
 	return []Route{
 		{
 			Prefix:   "/api/auth",
-			Upstream: c.UPSTREAM_AUTH,
+			Upstream: c.Upstream.Auth,
 			Auth:     true,
 			Whitelist: []string{
 				"/api/auth/crypto",
@@ -59,8 +52,8 @@ func (c Config) Routes() []Route {
 				"/api/auth/account/register",
 			},
 		},
-		{Prefix: "/api/asset", Upstream: c.UPSTREAM_ASSET, Auth: true},
-		{Prefix: "/api/stats", Upstream: c.UPSTREAM_STATS, Auth: true},
-		{Prefix: "/api/storage", Upstream: c.UPSTREAM_STORAGE, Auth: true},
+		{Prefix: "/api/asset", Upstream: c.Upstream.Asset, Auth: true},
+		{Prefix: "/api/stats", Upstream: c.Upstream.Stats, Auth: true},
+		{Prefix: "/api/storage", Upstream: c.Upstream.Storage, Auth: true},
 	}
 }

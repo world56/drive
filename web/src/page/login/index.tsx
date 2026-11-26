@@ -47,9 +47,9 @@ const Login = () => {
             onPressEnter={onSubmit}
           />
         </Form.Item>
-        <Form.Item valuePropName="checked" name="expire">
+        {/* <Form.Item valuePropName="checked" name="expire">
           <Checkbox>Remember me.</Checkbox>
-        </Form.Item>
+        </Form.Item> */}
         <Button type="primary" onClick={onSubmit} loading={loading}>
           {data?.exists ? "Login" : "Register Administrator"}
         </Button>

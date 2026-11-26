@@ -32,8 +32,10 @@ export namespace TypeResource {
     creatorId: TypeUser.DTO["id"];
     /** @param creatorName 创建、上传人详情 */
     creatorName: TypeUser.DTO["name"];
-    /** @param count 下载次数 */
+    /** @param count 目录下的资源数量 */
     count: number;
+    /** @param downloadCount 下载次数 */
+    downloadCount: number;
     /** @param favorite 收藏 */
     favorite: ENUM_RESOURCE.FAVORITE;
     /** @param objectName 存储文件名称 */

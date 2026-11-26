@@ -18,16 +18,16 @@ type App struct {
 	http   *http.Server
 }
 
-func New() (*App, error) {
+func New(cfg config.Config) (*App, error) {
 	a := &App{
-		Config: config.Load(),
+		Config: cfg,
 	}
 
 	a.log = middleware.NewLogger(a.Config.IsLocal())
 	slog.SetDefault(a.log)
 
 	var err error
-	if a.Redis, err = rdb.InitRedis(a.Config.REDIS_URL); err != nil {
+	if a.Redis, err = rdb.InitRedis(a.Config.RedisUrl); err != nil {
 		return a, err
 	}
 
@@ -37,7 +37,7 @@ func New() (*App, error) {
 	}
 
 	a.http = &http.Server{
-		Addr:              a.Config.HTTP_ADDR,
+		Addr:              a.Config.Addr(),
 		Handler:           handler,
 		ReadHeaderTimeout: 10 * time.Second,
 		IdleTimeout:       120 * time.Second,

@@ -58,7 +58,7 @@ const Password: React.FC<TypeResetPasswordProps> = ({ id, admin, onClose }) => {
           <Form.Item
             name="pwd"
             label="旧密码"
-            rules={[{ min: 6, max: 20 }, ...RULES_DEFAULT]}
+            rules={[{ min:  5, max: 20 }, ...RULES_DEFAULT]}
           >
             <Input.Password
               allowClear

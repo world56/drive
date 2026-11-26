@@ -70,7 +70,7 @@ const Attributes: React.FC<TypeAttributesProps> = ({ id, onClose }) => {
 
         {IS_FOLDER ? null : (
           <Item span={3} label="下载次数">
-            {value?.count || 0} 次
+            {value?.downloadCount || 0} 次
           </Item>
         )}
 

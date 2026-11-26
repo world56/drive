@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+package asset;
+option go_package="./pb";
+
+import "google/protobuf/empty.proto";
+
+message RecycleInfo {
+  int64           id             = 1;  // 回收站记录 id
+  int64           resource_id    = 2;
+  string          name           = 3;
+  string          full_name      = 4;
+  int64           size           = 5;
+  int32           type           = 6;
+  optional string suffix         = 7;
+  optional int64  parent_id      = 8;
+  optional string remark         = 9;
+  optional int64  count          = 10;
+  string          creator_id     = 11;
+  string          create_time    = 12; // 操作/记录时间
+  optional string object_name    = 13;
+  int32           remove         = 14;
+  string          user_name      = 15;
+  optional int64  download_count = 16;
+}
+
+message GetRecyclesResp {
+  repeated RecycleInfo list = 1;
+}
+
+message UpdateRecyclesReq {
+  repeated int64 ids = 1;
+}
+
+service Recycle {
+  rpc GetRecycles(google.protobuf.Empty) returns (GetRecyclesResp){}
+  rpc MoveToRecycle(UpdateRecyclesReq) returns (google.protobuf.Empty){}
+  rpc RestoreRecycleResources(UpdateRecyclesReq) returns (google.protobuf.Empty){}
+  rpc DeleteRestoreResources(UpdateRecyclesReq) returns (google.protobuf.Empty){}
+}

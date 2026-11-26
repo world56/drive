@@ -1,0 +1,103 @@
+syntax = "proto3";
+
+package asset;
+option go_package="./pb";
+
+import "google/protobuf/empty.proto";
+
+message ResourceInfo {
+  int64           id             = 1;
+  string          name           = 2;
+  string          full_name      = 3;
+  int64           size           = 4;
+  int32           type           = 5;
+  optional string suffix         = 6;
+  optional int64  parent_id      = 7;
+  optional string remark         = 8;
+  optional int64  count          = 9;
+  string          creator_id     = 10;
+  optional string creator_name   = 11;
+  string          create_time    = 12;
+  optional string object_name    = 13;
+  optional int32  favorite       = 14;
+  optional int64  download_count = 15;
+}
+
+message GetSearchResourcesReq {
+  string         name       = 1;
+  repeated int32 type       = 2;
+  string         sort       = 3;
+  optional int64 start_time = 4;
+  optional int64 end_time   = 5;
+}
+
+message ResourcesResp {
+  repeated ResourceInfo list = 1;
+}
+
+message GetResourcesReq {
+  optional int64 id    = 1;
+  string         order = 2;
+  string         type  = 3;
+}
+
+message GetResourceReq {
+  int64 id = 1;
+}
+
+message GetResourceByObjectNameReq {
+  string object_name = 1;
+}
+
+message CreateFolderReq {
+  string          name      = 1;
+  optional string remark    = 2;
+  optional int64  parent_id = 3;
+}
+
+message UpdateResourceReq {
+  int64           id        = 1;
+  string          name      = 2;
+  optional int64  parent_id = 3;
+  optional string remark    = 4;
+}
+
+message MoveResourcesReq {
+  repeated int64 ids       = 1;
+  optional int64 parent_id = 2;
+}
+
+message CreateResourceReq {
+  string         creator_id  = 1;
+  string         full_name   = 2;
+  string         object_name = 3;
+  optional int64 parent_id   = 4;
+  int64          size        = 5;
+  string         path        = 6;
+}
+
+message UpdateResourceDownloadCountReq {
+  int64 id = 1;
+}
+
+message RemoveResourcesReq {
+  repeated int64 ids = 1;
+}
+
+message Count {
+  map<string, int64> count = 1;
+}
+
+service Resource {
+  rpc GetSearchResources(GetSearchResourcesReq) returns (ResourcesResp){}
+  rpc GetFolders(google.protobuf.Empty) returns (ResourcesResp){}
+  rpc GetResources(GetResourcesReq) returns (ResourcesResp){}
+  rpc GetResource(GetResourceReq) returns (ResourceInfo){}
+  rpc GetResourceByObjectName(GetResourceByObjectNameReq) returns (ResourceInfo){}
+  rpc CreateFolder(CreateFolderReq) returns (google.protobuf.Empty){}
+  rpc UpdateResource(UpdateResourceReq) returns (google.protobuf.Empty){}
+  rpc MoveResources(MoveResourcesReq) returns (google.protobuf.Empty){}
+  rpc RemoveResources (RemoveResourcesReq) returns (google.protobuf.Empty){}
+  rpc GetRecently (google.protobuf.Empty)  returns (ResourcesResp){}
+  rpc GetCount (google.protobuf.Empty) returns (Count){}
+}

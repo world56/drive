@@ -13,12 +13,12 @@ import (
 )
 
 func (a *App) RunHTTP() error {
-	a.log.Info("listening", "addr", a.Config.HTTP_ADDR)
+	a.log.Info("listening", "addr", a.Config.Addr())
 	return a.http.ListenAndServe()
 }
 
 func (a *App) buildHandler() (http.Handler, error) {
-	auth := middleware.NewAuth(a.Redis, a.Config.JWT_SECRET)
+	auth := middleware.NewAuth(a.Redis, a.Config.JwtSecret)
 	tr := proxy.SharedTransport()
 
 	r := chi.NewRouter()

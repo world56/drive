@@ -1,26 +1,33 @@
 package main
 
 import (
-	"gateway/internal/app"
+	"flag"
 	"log"
+
+	"gateway/internal/app"
+	"gateway/internal/config"
+
+	"github.com/zeromicro/go-zero/core/conf"
 )
 
+var configFile = flag.String("f", "etc/gateway.yaml", "the config file")
+
 func main() {
-	a, err := app.New()
+	flag.Parse()
+
+	var c config.Config
+	conf.MustLoad(*configFile, &c)
+
+	a, err := app.New(c)
 	if err != nil {
-		a.Close()
+		if a != nil {
+			a.Close()
+		}
 		log.Fatal(err)
 	}
 	defer a.Close()
 
-	ch := make(chan error, 1)
-
-	go func() {
-		ch <- a.RunHTTP()
-	}()
-
-	err = <-ch
-	if err != nil {
+	if err := a.RunHTTP(); err != nil {
 		log.Println(err)
 	}
 }

@@ -3,6 +3,7 @@ package mq
 import (
 	"context"
 	"errors"
+	"log"
 	"sync"
 	"time"
 
@@ -128,7 +129,13 @@ func retries(headers amqp.Table) int {
 	}
 }
 
-func (c *Client) Publish(ctx context.Context, opt PublishOptions) error {
+func (c *Client) Publish(ctx context.Context, opt PublishOptions) {
+	if err := c.send(ctx, opt); err != nil {
+		log.Printf("mq publish %s/%s: %v", opt.Exchange, opt.RoutingKey, err)
+	}
+}
+
+func (c *Client) send(ctx context.Context, opt PublishOptions) error {
 	var err error
 	for range 2 {
 		if err := c.connect(); err != nil {
